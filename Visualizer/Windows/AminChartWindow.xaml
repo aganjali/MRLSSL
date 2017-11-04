@@ -1,0 +1,16 @@
+﻿<Window x:Class="MRL.SSL.Visualizer.Windows.AminChartWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:chart="http://research.microsoft.com/DynamicDataDisplay/1.0"
+        Title="AminChartWindow" Height="300" Width="631"
+        Loaded="Window_Loaded">
+    <Grid>
+        <chart:ChartPlotter x:Name="mainPlotter"
+                            
+                            LegendVisible="False">
+            <chart:MagnifyingGlass  Height="46"
+                                    Width="47" />
+            
+        </chart:ChartPlotter>
+    </Grid>
+</Window>

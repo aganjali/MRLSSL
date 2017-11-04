@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>StaticAssigne</Title>
+			<Shortcut>asgn</Shortcut>
+			<Description>Code snippet for static role assing statement</Description>
+			<Author>MRL SSL</Author>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+				<SnippetType>SurroundsWith</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>RobotID</ID>
+					<ToolTip>RobotID</ToolTip>
+					<Default>RobotID</Default>
+				</Literal>
+				<Literal>
+					<ID>RoleBase</ID>
+					<ToolTip>Role that to be assgin</ToolTip>
+					<Default>RoleBase</Default>
+				</Literal>
+				<Literal>
+					<ID>function</ID>
+					<ToolTip>selected func</ToolTip>
+					<Default>function</Default>
+				</Literal>
+				<Literal>
+					<ID>params</ID>
+					<ToolTip>input params of function</ToolTip>
+					<Default>params</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+        <![CDATA[if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, $RobotID$, typeof($RoleBase$)))
+                Functions[$RobotID$] = (eng, wmd) => GetRole<$RoleBase$>($RobotID$).$function$($params$);]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>

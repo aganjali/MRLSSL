@@ -1,0 +1,87 @@
+﻿<Window x:Class="Visualizer.Windows.TacticWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="TacticWindow" Height="517" Width="355">
+    <Grid>
+        <GroupBox Header="Our KickOff" Height="104" Margin="8,8,0,0" Name="groupBox1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="132">
+            <Grid>
+                <RadioButton Margin="6,5,60,0" Name="ourKickOffAutoRadioButton" Height="16" VerticalAlignment="Top" Checked="ourKickOffAutoRadioButton_Checked" >Auto</RadioButton>
+                <RadioButton Margin="6,23,60,0" Name="ourkickoffdirectRadioButton" Checked="ourkickoffdirectRadioButton_Checked" IsChecked="True" Height="16.04" VerticalAlignment="Top">Direct</RadioButton>
+                <RadioButton Height="16.04" Margin="6,0,35,23" Name="ourkickoffinsideRadioButton" VerticalAlignment="Bottom" Checked="ourkickoffinsideRadioButton_Checked" IsChecked="True">Inside Pass</RadioButton>
+                <RadioButton Height="16.04" IsChecked="False" Margin="6.395,0,34.605,5" Name="chippassRadioButton" VerticalAlignment="Bottom" Checked="chippassRadioButton_Checked">Chip Pass</RadioButton>
+            </Grid>
+        </GroupBox>
+        <GroupBox Margin="144,8,9,0" Name="groupBox2" Height="104" VerticalAlignment="Top" Header="Our Corner Kick">
+            <Grid>
+                <RadioButton Height="16" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ourCornelKickautoRadioButton" VerticalAlignment="Top" Width="54" Checked="ourCornelKickautoRadioButton_Checked">Auto</RadioButton>
+                <RadioButton HorizontalAlignment="Left" Margin="10,32,0,33" Name="ourCornalheadingRadioButton" Width="65.015" Checked="ourCornalheadingRadioButton_Checked" IsChecked="True">Heading</RadioButton>
+                <RadioButton Height="16.04" HorizontalAlignment="Left" Margin="10,0,0,11" Name="ourcornelnormalRadioButton" VerticalAlignment="Bottom" Width="54" Checked="ourcornelnormalRadioButton_Checked">Normal</RadioButton>
+                <RadioButton Height="16.04" Margin="86,10,0,0" Name="ourcornalCompressRadioButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="84" Checked="ourcornalCompressRadioButton_Checked">Compress</RadioButton>
+                <RadioButton Margin="86,32,0,33" Name="ourcornelHeavyRadioButton"  HorizontalAlignment="Left" Width="69" Checked="ourcornelHeavyRadioButton_Checked">Heavy</RadioButton>
+                <RadioButton Height="16.04" Margin="86,0,0,10.8" Name="ourcornelnearRadioButton" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="69" Checked="ourcornelnearRadioButton_Checked">Near</RadioButton>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Penalty Goaller" HorizontalAlignment="Left" Margin="8,118,0,0" Name="groupBox3" Width="132" Height="102" VerticalAlignment="Top">
+            <Grid>
+                <RadioButton Height="16" Margin="6,4.444,12,0" Name="penaltygoallermovebyangleRadioButton" VerticalAlignment="Top" Checked="penaltygoallermovebyangleRadioButton_Checked" IsChecked="True">Move By Angle</RadioButton>
+                <RadioButton Margin="6,24.309,25,33.633" Name="penaltygoallerrandomlyRadioButton" Checked="penaltygoallerrandomlyRadioButton_Checked">Randomly</RadioButton>
+                <RadioButton Height="16" IsChecked="False" Margin="6,0,12,19.98" Name="panaltygoallerChangRadioButton" Checked="panaltygoallerChangButton_Checked" VerticalAlignment="Bottom">Dive</RadioButton>
+                <RadioButton Height="16" IsChecked="False" Margin="6,0,12,0.96" Checked="divebychangeRadioButton_Checked" Name="divebychangeRadioButton" VerticalAlignment="Bottom">Dive By Change</RadioButton>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Our Normal Game" Margin="144,118,9,0" Name="groupBox4" Height="102" VerticalAlignment="Top">
+            <Grid>
+                <RadioButton Height="16" Margin="6,0,12,6" Name="normalgamedirectRadioButton" VerticalAlignment="Bottom" Checked="normalgamedirectRadioButton_Checked">Direct</RadioButton>
+                <RadioButton Margin="6,33,0,25" Name="normalgameNormalRadioButton" HorizontalAlignment="Left" Width="69" Checked="normalgameNormalRadioButton_Checked" IsChecked="True">Normal</RadioButton>
+                <RadioButton Height="21.04" Margin="6,9,0,0" Name="normalgameautoRadioButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="58" Checked="normalgameautoRadioButton_Checked">Auto</RadioButton>
+                <RadioButton Height="21.04" Margin="69,9,21,0" Name="normalgameattackRadioButton" VerticalAlignment="Top" Checked="normalgameattackRadioButton_Checked">Attack</RadioButton>
+                <RadioButton Margin="69,32,21,0" Name="normalgamedefenceRadioButton" Checked="normalgamedefenceRadioButton_Checked" Height="21.04" VerticalAlignment="Top">Defence</RadioButton>
+                <RadioButton Height="21.04" Margin="69,0,3.076,0.96" Name="halfbackRadioButton" VerticalAlignment="Bottom" Checked="halfbackRadioButton_Checked" >With HalfBack</RadioButton>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Direct &amp; Indiect Free Kick" Height="149" Margin="8,319,9,0" Name="groupBox5" VerticalAlignment="Top">
+            <Grid>
+                <TabControl Margin="3.076,6.921,3.076,10" Name="tabControl1">
+                    <TabItem Header="Our Field" Name="tabItem1">
+                        <Grid>
+                            <RadioButton Height="16" HorizontalAlignment="Left" Margin="12.304,8.459,0,0" Name="fkourautoRadioButton" VerticalAlignment="Top" Width="54" Checked="fkourautoRadioButton_Checked">Auto</RadioButton>
+                            <RadioButton HorizontalAlignment="Left" Margin="12.304,31,0,30" Name="fkourheadingRadioButton" Width="65.015" Checked="fkourheadingRadioButton_Checked">Heading</RadioButton>
+                            <RadioButton Height="16.04" Margin="96.894,8.459,124.736,0" Name="fkournormalRadioButton" VerticalAlignment="Top" Checked="fkournormalRadioButton_Checked" IsChecked="True">Normal</RadioButton>
+                            <RadioButton Margin="96.894,31,112.716,30" Name="fkourcompressRadioButton" Checked="fkourcompressRadioButton_Checked">Compress</RadioButton>
+                            <RadioButton Height="16.04" Margin="181.346,8.459,0,0" Name="fkourheavyRadioButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="69.233" Checked="fkourheavyRadioButton_Checked">Heavy</RadioButton>
+                            <RadioButton Margin="181.346,31,0,30" Name="fkournearfreeRadioButton" HorizontalAlignment="Left" Width="69.233" Checked="fkournearfreeRadioButton_Checked">Near Free</RadioButton>
+                            <RadioButton Height="16.159" HorizontalAlignment="Left" Margin="12.304,0,0,8" Name="veryheavyRadioButton" VerticalAlignment="Bottom" Width="99.62" Checked="veryheavyRadioButton_Checked">Very Heavy</RadioButton>
+                            <RadioButton Height="16.159" Margin="96.894,0,91.334,8" Name="doubleRadioButton" VerticalAlignment="Bottom" Checked="doubleRadioButton_Checked">Double</RadioButton>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Middle field" >
+                        <Grid Height="51.092" Width="287.848">
+                            <RadioButton Height="16" HorizontalAlignment="Left" Margin="12.304,8.459,0,0" Name="fkmiddleautoRadioButton" VerticalAlignment="Top" Width="54" Checked="fkmiddleautoRadioButton_Checked">Auto</RadioButton>
+                            <RadioButton Height="16.04" HorizontalAlignment="Left" Margin="12.304,0,0,4.614" Name="fkmiddleheadingRadioButton" VerticalAlignment="Bottom" Width="65.015" Checked="fkmiddleheadingRadioButton_Checked">Heading</RadioButton>
+                            <RadioButton Height="16.04" Margin="96.894,8.459,124.736,0" Name="fkmiddlenormalRadioButton" VerticalAlignment="Top" Checked="fkmiddlenormalRadioButton_Checked" IsChecked="True">Normal</RadioButton>
+                            <RadioButton Height="16.04" Margin="96.894,0,112.716,4.614" Name="fkmiddlecompressRadioButton" VerticalAlignment="Bottom" Checked="fkmiddlecompressRadioButton_Checked">Compress</RadioButton>
+                            <RadioButton Height="16.04" HorizontalAlignment="Right" Margin="0,8.459,37.269,0" Name="fkmiddleheavyRadioButton" VerticalAlignment="Top" Width="69.233" Checked="fkmiddleheavyRadioButton_Checked">Heavy</RadioButton>
+                            <RadioButton Height="16.04" HorizontalAlignment="Right" Margin="0,0,37.269,4.614" Name="fkmiddlenearfreeRadioButton" VerticalAlignment="Bottom" Width="69.233" Checked="fkmiddlenearfreeRadioButton_Checked">Near Free</RadioButton>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Opponent Field" Name="tabItem3">
+                        <Grid Height="51.092" Width="287.848">
+                            <RadioButton Height="16" HorizontalAlignment="Left" Margin="12.304,8.459,0,0" Name="fkoppautoRadioButton" VerticalAlignment="Top" Width="54" Checked="fkoppautoRadioButton_Checked">Auto</RadioButton>
+                            <RadioButton Height="16.04" HorizontalAlignment="Left" Margin="12.304,0,0,4.614" Name="fkoppheadingRadioButton" VerticalAlignment="Bottom" Width="65.015" Checked="fkoppheadingRadioButton_Checked">Heading</RadioButton>
+                            <RadioButton Height="16.04" Margin="96.894,8.459,0,0" Name="fkoppnormalRadioButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="66.218" Checked="fkoppnormalRadioButton_Checked" IsChecked="True">Normal</RadioButton>
+                            <RadioButton Height="16.04" Margin="96.894,0,112.716,4.614" Name="fkoppcompressRadioButton" VerticalAlignment="Bottom" Checked="fkoppcompressRadioButton_Checked">Compress</RadioButton>
+                            <RadioButton Height="16.04" HorizontalAlignment="Right" Margin="0,8.459,37.269,0" Name="fkoppheavyRadioButton" VerticalAlignment="Top" Width="69.233" Checked="fkoppheavyRadioButton_Checked">Heavy</RadioButton>
+                            <RadioButton Height="16.04" HorizontalAlignment="Right" Margin="0,0,37.269,4.614" Name="fkoppnearfreeRadioButton" VerticalAlignment="Bottom" Width="69.233" Checked="fkoppnearfreeRadioButton_Checked">Near Free</RadioButton>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Penalty Shooter" Margin="8,223.2,9,0" Name="groupBox6" Height="92.2" VerticalAlignment="Top">
+            <Grid>
+                <RadioButton Checked="penaltyCenter_Checked" Height="16" IsChecked="True" Margin="6,14,12,0" Name="penaltyCorner" VerticalAlignment="Top">Center</RadioButton>
+                <RadioButton Checked="penaltyCorner_Checked" Height="21.04" Margin="6,0,25,9" Name="penaltyCenter" VerticalAlignment="Bottom">Corner </RadioButton>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

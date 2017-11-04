@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MRL.SSL.GameDefinitions.General_Settings" GeneratedClassName="VisualizerSettings">
+  <Profiles />
+  <Settings>
+    <Setting Name="LogUseDefaultName" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="LogUseDefaultAddress" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="LogUserFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">userFileName</Value>
+    </Setting>
+    <Setting Name="LogUserLogAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:/</Value>
+    </Setting>
+    <Setting Name="LoggerDelay" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

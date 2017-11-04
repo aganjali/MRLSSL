@@ -1,0 +1,1178 @@
+﻿<Window x:Class="Visualizer.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:field="clr-namespace:MRL.SSL.CommonControls.D2DControls;assembly=CommonControls"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        xmlns:d="clr-namespace:MRL.SSL.Visualizer.Classes"
+        xmlns:ch="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+        xmlns:player="clr-namespace:Visualizer.UserControls"
+        xmlns:convert="clr-namespace:Visualizer.Converters"
+        xmlns:wincont="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:wpf="clr-namespace:Enterprise.Wpf;assembly=Enterprise.Wpf"
+        Title="Visualizer"
+        Height="550"
+        Width="1077"
+        WindowState="Maximized"
+        Closing="Window_Closing"
+        Loaded="Window_Loaded"
+        Tag="main">
+    <Window.Resources>
+        <ResourceDictionary>
+            <convert:EngineColor x:Key="ColorConvert" />
+            <convert:ColorToBrush x:Key="colToBrush" />
+
+            <!-- Load this specific theme because the Aero theme for CheckBox has issues. -->
+            <!--<ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/PresentationFramework.Royale;V3.0.0.0;31bf3856ad364e35;component\themes\royale.normalcolor.xaml" />
+      </ResourceDictionary.MergedDictionaries>-->
+            <Style x:Key="TreeViewItemStyle"
+                   TargetType="telerik:RadTreeViewItem">
+                <Setter Property="IsExpanded"
+                        Value="True" />
+                <Setter Property="IsSelected"
+                        Value="{Binding IsInitiallySelected, Mode=OneTime}" />
+                <Setter Property="KeyboardNavigation.AcceptsReturn"
+                        Value="True" />
+                <Setter Property="d:VirtualToggleButton.IsVirtualToggleButton"
+                        Value="True" />
+                <Setter Property="d:VirtualToggleButton.IsChecked"
+                        Value="{Binding IsChecked}" />
+            </Style>
+            <HierarchicalDataTemplate x:Key="CheckBoxItemTemplate"
+                                      ItemsSource="{Binding Children, Mode=OneTime}">
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox Focusable="False"
+                              IsChecked="{Binding IsChecked}"
+                              VerticalAlignment="Center" />
+                    <ContentPresenter Content="{Binding Name, Mode=OneTime}"
+                                      Margin="2,0" />
+                </StackPanel>
+            </HierarchicalDataTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500*" />
+            <ColumnDefinition Width="700*" />
+        </Grid.ColumnDefinitions>
+        <TabControl Name="fieldTabControl2"
+                    Grid.Column="0">
+            <TabItem MouseDoubleClick="fieldTabItem_MouseDoubleClick"
+                     Name="fieldTabItem"
+                     Tag="MainFiled"
+                     Header="Main Field">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="465.317*" />
+                    </Grid.RowDefinitions>
+                    <WindowsFormsHost  Name="windowsFormsHost"
+                                       Grid.Row="1">
+                        <field:NewFieldVisualizer x:Name="Field" />
+                    </WindowsFormsHost>
+                    <Label Visibility="Collapsed"
+                           Name="eventsLabel"></Label>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <GridSplitter Width="5" />
+        <Grid Grid.Column="1"
+              Name="mainGrid"
+              Keyboard.PreviewKeyDown="mainGrid_PreviewKeyDown">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="370*" />
+            </Grid.RowDefinitions>
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0"
+                                     EndPoint="1,1">
+                    <GradientStop Color="White"
+                                  Offset="1" />
+                    <GradientStop Color="#dbe9ff"
+                                  Offset="0" />
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid Name="headerGrid"
+                  Grid.Row="1"
+                  Height="27">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"
+                                      MinWidth="12.987" />
+                    <ColumnDefinition Width="auto"
+                                      MinWidth="12" />
+                    <ColumnDefinition Width="auto"
+                                      MinWidth="10.25" />
+                    <ColumnDefinition Width="auto"
+                                      MinWidth="12" />
+                    <ColumnDefinition Width="auto"
+                                      MinWidth="12" />
+                    <ColumnDefinition Width="794.416*" />
+                </Grid.ColumnDefinitions>
+                <Label Name="statusLabel"
+                       Margin="0,0,3,0" />
+                <Label Margin="0,0,2,0"
+                       Name="refereLabel"
+                       Grid.Column="1" />
+                <Label Grid.Column="2"
+                       Name="simstateLabel"
+                       Margin="0,0,0.334,0"></Label>
+                <Label Margin="0,0,2,0"
+                       Name="loggertimeLabel"
+                       Grid.Column="3" />
+                <Label Name="ballstatusLabel"
+                       Grid.Column="4"
+                       Margin="0,0,1.5,0" />
+            </Grid>
+            <Expander Name="robotcontrollerExpander"
+                      Grid.Row="2">
+                <Expander.Header>
+                    <Label Content="Robot Controller"
+                           Height="26" />
+                </Expander.Header>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Name="robotControllerStackPanel"
+                                Orientation="Horizontal">
+                    </StackPanel>
+                </ScrollViewer>
+            </Expander>
+            <telerik:RadToolBar Name="toolBar1"
+                                AllowDrop="True"
+                                telerik:StyleManager.Theme="Windows7">
+                <Button Width="36"
+                        Name="recieveButton"
+                        ToolTip="Recieve Start/Pause"
+                        Click="recieveButton_Click">
+                    <Image Name="recieveImage"
+                           Source="/Visualizer;component/Images/display-off-48x48.png"></Image>
+                </Button>
+                <Button MouseLeftButtonDown="startLog_MouseLeftButtonDown"
+                        MouseRightButtonDown="startLog_MouseRightButtonDown"
+                        Width="36"
+                        Name="startLog"
+                        Click="startLog_Click"
+                        ToolTip="Logger">
+                    <Image Name="logImage"
+                           Height="15"
+                           Source="/Visualizer;component/Images/record.png"></Image>
+                </Button>
+                <Button Width="36"
+                        Name="logPlayer"
+                        Click="logPlayer_Click"
+                        ToolTip="Log Viewer">
+                    <Image Source="/Visualizer;component/Images/logplayer.png"></Image>
+                </Button>
+                <Button Width="36"
+                        Name="logPropertiesButton"
+                        ToolTip="Log Properties"
+                        Click="logPropertiesButton_Click">
+                    <Image Source="/Visualizer;component/Images/loggerSetting.png"></Image>
+                </Button>
+                <Button Width="36"
+                        Name="techniqueButton"
+                        ToolTip="Techinque Manager"
+                        Click="techniqueButton_Click">
+                    <Image Source="/Visualizer;component/Images/technique.png"></Image>
+                </Button>
+                <Button Width="36"
+                        Name="tacticButton"
+                        ToolTip="Tactic Manager"
+                        Click="tacticButton_Click">
+                    <Image Source="/Visualizer;component/Images/tactic.png"></Image>
+                </Button>
+                <Button Width="36"
+                        Name="refreeBoxButton"
+                        ToolTip="Referee Box"
+                        Click="refreeBoxButton_Click">
+                    <Image Source="/Visualizer;component/Images/whistle-icon.png"></Image>
+                </Button>
+                
+                
+                <!--<Button Width="36"
+                        Click="loganalizerButtun_Click"
+                        Name="loganalizerButtun"
+                        ToolTip="Log Analizer">
+                    <Image Source="/Visualizer;component/Images/loganalizer.png" />
+                </Button>-->
+                <Button Width="36"
+                        Name="selectballButtun"
+                        Click="selectballButtun_Click"
+                        ToolTip="Select Ball">
+                    <Image Name="selectballImage"
+                           Source="/Visualizer;component/Images/Soccer-Ball.png"
+                           Opacity="0.5" />
+                </Button>
+
+                <Button Width="36"
+                        Name="analizePanelButton"
+                        Click="analizePanelButton_Click"
+                        ToolTip="Analizer Panel">
+                    <Image Source="/Visualizer;component/Images/analize.png"></Image>
+                </Button>
+                <Button Width="36"
+                        Name="debugButton"
+                        Click="debugButton_Click"
+                        ToolTip="Debug(Wireless)">
+                    <Image Source="/Visualizer;component/Images/Bug.png"></Image>
+                </Button>
+                <Button Width="38"
+                        Name="strategyManagerButton"
+                        Click="strategyManagerButton_Click">
+                    <Image Source="/Visualizer;component/Images/1394.png"></Image>
+                </Button>
+
+                <Button Width="36"
+                        Name="controldataButton"
+                        Click="controldataButton_Click"
+                        ToolTip="Velocity Chart Data">
+                    <Image Source="/Visualizer;component/Images/cont.png"></Image>
+                </Button>
+                <!--<Button Width="36"
+                        Name="motorcurrentButton"
+                        Click="motorcurrentButton_Click"
+                        ToolTip="Current Chart Data">
+                    <Image  Source="/Visualizer;component/Images/current.png"></Image>
+                </Button>-->
+                <telerik:RadToggleButton IsChecked="false"
+                                         Width="36"
+                                         telerik:RadControl.Theme="Windows7"
+                                         Name="consoleButton"
+                                         Unchecked="consoleButton_Unchecked"
+                                         Checked="consoleButton_Checked"
+                                         Click="consoleButton_Click"
+                                         ToolTip="Console">
+                    <Image Source="/Visualizer;component/Images/console.png"></Image>
+                </telerik:RadToggleButton>
+                <Button Width="36"
+                        Name="activesettingButton"
+                        ToolTip=""
+                        Click="activesettingButton_Click">
+                    Act
+                </Button>
+                <!--<Button Width="36"
+                        Name="wirelessswitchButton"
+                        ToolTip="Send To Robot From Ai/Visualizer"
+                        Click="wirelessswitchButton_Click">
+                    <Image Name="switchImage"
+                           Source="/Visualizer;component/Images/switch.png"
+                           Opacity="0.5"></Image>
+                </Button>-->
+                <Button Width="36"
+                        Name="whirelesssettingButton"
+                        Click="whirelesssettingButton_Click"
+                        ToolTip="Wireless Setting">
+                    <Image Source="/Visualizer;component/Images/signal.png"></Image>
+                </Button>
+                <Button Width="36"
+                        Name="PassShootTuneTool"
+                        Click="PassShootTuneTool_Click"
+                        ToolTip="Pass Shoot Tune Tool"
+                        Content="PST">
+                     
+                </Button>
+                <Button Width="36"
+                        Name="visionCalButton"
+                        Click="visionCalButton_Click"
+                        Content="Vi">
+                </Button>
+                <telerik:RadDropDownButton  Width="50"
+                                            telerik:StyleManager.Theme="Windows7"
+                                            Name="changreciveModeButton"
+                                            ToolTip="Recieve Mode">
+                    <Image Name="recievemodeImage"
+                           Source="/Visualizer;component/Images/visionmode.png"></Image>
+                    <telerik:RadDropDownButton.DropDownContent>
+                        <telerik:RadContextMenu>
+                            <telerik:RadMenuItem Header="Vision"
+                                                 Name="visionMenuItem"
+                                                 Click="visionMenuItem_Click" />
+                            <telerik:RadMenuItem Header="LogViwer"
+                                                 Name="logviwerMwnuItem"
+                                                 Click="logviwerMwnuItem_Click" />
+                            <telerik:RadMenuItem Header="Analizer"
+                                                 Name="analizerMenuItem"
+                                                 Click="analizerMenuItem_Click" />
+                            <telerik:RadMenuItem Header="Simulator"
+                                                 Name="simulatorMenuItem"
+                                                 Click="simulatorMenuItem_Click" />
+                        </telerik:RadContextMenu>
+                    </telerik:RadDropDownButton.DropDownContent>
+                </telerik:RadDropDownButton>
+                <Button  Width="36"
+                         Name="simstateButton"
+                         MouseRightButtonUp="simstateButton_MouseRightButtonUp"
+                         Click="simstateButton_Click"
+                         MouseDoubleClick="simstateButton_MouseDoubleClick"
+                         ToolTip="Simulator Engine on/off">
+                    <Image Source="/Visualizer;component/Images/Soccer-Goal.png"
+                           Opacity="0.6"
+                           Name="simImage"></Image>
+                </Button>
+                <Button  Width="36"
+                         Name="visionButton"
+                         Click="visionButton_Click"
+                         ToolTip="Get Data From Vision">
+                    <Image Source="/Visualizer;component/Images/Camera-icon.png"
+                           Name="visionImage"
+                           Opacity="0.5"></Image>
+                </Button>
+                <Button  Width="36"
+                         Name="joystickButton"
+                         Click="joystickButton_Click"
+                         ToolTip="Joystick">
+                    <Image Source="/Visualizer;component/Images/joystik.png"></Image>
+                </Button>
+                <!--<Button  Width="36"
+                         Name="graberButon"
+                         Click="graberButon_Click"
+                         ToolTip="Grabber">
+                    <Image Source="/Visualizer;component/Images/camera.png"></Image>
+                </Button>-->
+                <!--<Button Width="36"
+                        Name="strategyviewerButton"
+                        Click="strategyviewerButton_Click">
+                    <Button.ToolTip>Strategy Viewer</Button.ToolTip>
+                    <Image Source="/Visualizer;component/Images/diagram-icon.png"></Image>
+                </Button>-->
+                <!--<telerik:RadToggleButton Width="36"
+                                         telerik:StyleManager.Theme="Windows7"
+                                         Checked="mobileRefreeBox_Checked"
+                                         Unchecked="mobileRefreeBox_Unchecked"
+                                         Name="mobileRefreeBox"
+                                         ToolTip="Device Refree"
+                                         Click="mobileRefreeBox_Click">
+                    <Image Source="/Visualizer;component/Images/phone.png" />
+                </telerik:RadToggleButton>-->
+                <!--<Button Name="calcangButton"
+                        Click="calcangButton_Click"
+                        ToolTip="Calculat">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock TextAlignment="Center"
+                                   Text="CalcError"
+                                   Width="54.439"
+                                   Height="16.665" />
+                        <TextBox BorderThickness="0.5"
+                                 BorderBrush="Black"
+                                 Width="30"
+                                 Name="robotidTextBox" />
+                    </StackPanel>
+                </Button>-->
+                <!--<Button Width="30"
+                        Name="defendingButton"
+                        Click="defendingButton_Click">
+                    Defending
+                </Button>-->
+                <Button Width="30"
+                        Name="Scoring"
+                        Click="Scoring_Click">
+                    Scoring
+                </Button>
+                <!--<Button Width="36"
+                        Name="wheeldataButton"
+                        Click="wheeldataButton_Click"
+                        ToolTip="Wheel Chart Data">
+                    <Image Source="/Visualizer;component/Images/wheelchart.png"></Image>
+                </Button>-->
+                <Button Name="reflecttunningButton"
+                        Click="reflecttunningButton_Click">
+                    Reflect
+                </Button>
+                <Button Name="Control"
+                        Click="Control_Click"
+                        Width="36">
+                    <Image Source="/Visualizer;component/Images/1250.png"></Image>
+                </Button>
+                <Button Name="rotateBatton" Content="Rotate"
+                        Click="rotateBatton_Click" />
+            </telerik:RadToolBar>
+            <Grid Grid.Row="4"
+                  Name="grid1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="331*" />
+                    <RowDefinition Height="auto"
+                                   MinHeight="0" />
+                    <RowDefinition Height="auto"
+                                   MinHeight="22.5" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"
+                                      MinWidth="31.15" />
+                    <ColumnDefinition Width="688.748*" />
+                    <ColumnDefinition Width="auto"
+                                      MinWidth="0" />
+                    <ColumnDefinition Width="auto"
+                                      MinWidth="0" />
+                </Grid.ColumnDefinitions>
+
+                <Expander IsExpanded="false"
+                          ExpandDirection="Left"
+                          BorderBrush="Black"
+                          BorderThickness="0.4"
+                          Grid.Column="3"
+                          Grid.RowSpan="3"
+                          Margin="8.888,0,1.111,0">
+                    <Expander.Header>
+                        <StackPanel Orientation="Vertical"
+                                    Width="32.915">
+                            <TextBlock TextAlignment="Center"
+                                       Text="Status"
+                                       Width="32.301">
+                            <TextBlock.RenderTransform>
+                                <RotateTransform Angle="90"
+                                                 CenterX="13"
+                                                 CenterY="12" />
+                            </TextBlock.RenderTransform>
+                            </TextBlock>
+                        </StackPanel>
+                    </Expander.Header>
+                    <ScrollViewer VerticalScrollBarVisibility="Visible">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7"
+                                                         Name="refreshbatteryButton"
+                                                         Checked="refreshbatteryButton_Checked"
+                                                         Unchecked="refreshbatteryButton_Unchecked"
+                                                         Click="refreshbatteryButton_Click">
+                                    <Image Source="/Visualizer;component/Images/refresh1.png"
+                                           Height="19"></Image>
+                                </telerik:RadToggleButton>
+                                <telerik:RadButton telerik:StyleManager.Theme="Windows7"
+                                                   Content="Recieve ON"
+                                                   Name="wirelessrecieveButton"
+                                                   Click="wirelessrecieveButton_Click"
+                                                   Width="77.469" />
+                                <ComboBox Name="portComboBox"
+                                          SelectionChanged="portComboBox_SelectionChanged" />
+                            </StackPanel>
+
+                            <ListBox Name="robotstatusListBox"
+                                     ScrollViewer.CanContentScroll="True" />
+
+
+
+                        </StackPanel>
+                    </ScrollViewer>
+                    <!--<StackPanel Name="robotstatusStackPanel" Orientation="Vertical">
+
+                </StackPanel>-->
+                </Expander>
+                <Expander Name="expander1"
+                          FlowDirection="RightToLeft"
+                          ExpandDirection="Left"
+                          IsExpanded="True"
+                          Background="Transparent"
+                          BorderBrush="Black"
+                          BorderThickness="0.4"
+                          Grid.RowSpan="2"
+                          Margin="0,0,0.003,0">
+                    <Expander.Header>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock TextAlignment="Center"
+                                       Text="Tools">
+                            <TextBlock.RenderTransform>
+                                <RotateTransform Angle="-90"
+                                                 CenterX="17"
+                                                 CenterY="12" />
+                            </TextBlock.RenderTransform>
+                            </TextBlock>
+                        </StackPanel>
+                    </Expander.Header>
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="130*" />
+                            </Grid.RowDefinitions>
+                            <Label VerticalAlignment="Top" FlowDirection="LeftToRight" Height="25" Content="Goalie ID : "
+                                   Margin="0,2,0,0"
+                                   HorizontalAlignment="Right"
+                                   Width="68" />
+                            <wpf:NumberTextBox Text="0" FlowDirection="LeftToRight" BorderBrush="Black" Height="25" VerticalAlignment="Top"  Name="goalieIDTextBox"
+                                               Margin="6,3,65,0"
+                                               Width="95"
+                                               TextChanged="goalieIDTextBox_TextChanged" />
+                            <telerik:RadPanelBar x:Name="radPanelBar"
+                                                 Margin="0,30,0,0"
+                                                 FlowDirection="LeftToRight"
+                                                 Grid.Column="1"
+                                                 HorizontalAlignment="Left"
+                                                 telerik:StyleManager.Theme="Windows7">
+                                
+                                <telerik:RadPanelBarItem IsExpanded="False">
+                                    <telerik:RadPanelBarItem.Header>
+                                        <TextBlock Text="Drawing Object"
+                                                   Margin="5 4 5 5" />
+                                    </telerik:RadPanelBarItem.Header>
+                                    <telerik:RadTreeView x:Name="objectTreeView"
+                                                         IsLineEnabled="True"
+                                                         telerik:StyleManager.Theme="Windows7"
+                                                         ItemTemplate="{StaticResource CheckBoxItemTemplate}"
+                                                         ItemContainerStyle="{StaticResource TreeViewItemStyle}"
+                                                         ItemsSource="{Binding Mode=Default}"
+                                                         MaxHeight="300">
+                                        <telerik:RadTreeView.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Chang Darwing Pen"
+                                                          Name="changMenuItem"
+                                                          Click="changMenuItem_Click" />
+                                            </ContextMenu>
+                                        </telerik:RadTreeView.ContextMenu>
+                                    </telerik:RadTreeView>
+                                </telerik:RadPanelBarItem>
+                                <!--darw setting-->
+                                <telerik:RadPanelBarItem  IsExpanded="False">
+                                    <telerik:RadPanelBarItem.Header>
+                                        <TextBlock Text="Draw Setting"
+                                                   Margin="5 4 5 5" />
+                                    </telerik:RadPanelBarItem.Header>
+                                    <StackPanel Orientation="Vertical">
+                                        <CheckBox Name="showOurRobotCheckBox"
+                                                  Checked="showOurRobotCheckBox_Checked"
+                                                  Unchecked="showOurRobotCheckBox_Unchecked"
+                                                  Content="Show Our Robot"
+                                                  IsChecked="True" />
+                                        <CheckBox Name="showOppRobotCheckBox"
+                                                  Checked="showOppRobotCheckBox_Checked"
+                                                  Unchecked="showOppRobotCheckBox_Unchecked"
+                                                  Content="Show Opp Robot"
+                                                  IsChecked="True" />
+                                        <CheckBox Name="showTextCheckBox"
+                                                  Checked="showTextCheckBox_Checked"
+                                                  Unchecked="showTextCheckBox_Unchecked"
+                                                  Content="Show Texts"
+                                                  IsChecked="True" />
+                                        <CheckBox Name="showvectorsCheckBox"
+                                                  Checked="showvectorsCheckBox_Checked"
+                                                  Unchecked="showvectorsCheckBox_Unchecked"
+                                                  Content="Show Speed Vectors"
+                                                  IsChecked="False" />
+                                        <CheckBox Name="showballTailCheckBox"
+                                                  Checked="showballTailCheckBox_Checked"
+                                                  Unchecked="showballTailCheckBox_Unchecked"
+                                                  Content="Show Ball Tail"
+                                                  IsChecked="True" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Tail Count :" />
+                                            <my:NumericUpDown Minimum="2"
+                                                              ValueChanged="ballTailNum_ValueChanged"
+                                                              Height="21.944"
+                                                              Maximum="1000"
+                                                              Name="ballTailNum"
+                                                              Value="200"
+                                                              Width="59"
+                                                              xmlns:my="clr-namespace:Enterprise.Wpf;assembly=Enterprise.Wpf" />
+                                        </StackPanel>
+                                        <CheckBox Name="showrobottailTextCheckBox"
+                                                  Checked="showrobottailTextCheckBox_Checked"
+                                                  Unchecked="showrobottailTextCheckBox_Unchecked"
+                                                  Content="Show RobotTail"
+                                                  IsChecked="False" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Tail Count :" />
+                                            <my:NumericUpDown Minimum="2"
+                                                              ValueChanged="robotTailNum_ValueChanged"
+                                                              Height="21.944"
+                                                              Maximum="1000"
+                                                              Name="robotTailNum"
+                                                              Value="300"
+                                                              Width="59"
+                                                              xmlns:my="clr-namespace:Enterprise.Wpf;assembly=Enterprise.Wpf" />
+                                        </StackPanel>
+                                        <CheckBox Name="showrobotangleTextCheckBox"
+                                                  Checked="showrobotangleTextCheckBox_Checked"
+                                                  Unchecked="showrobotangleTextCheckBox_Unchecked"
+                                                  Content="Show Robot Angle"
+                                                  IsChecked="False" />
+                                    </StackPanel>
+                                </telerik:RadPanelBarItem>
+
+                                <telerik:RadPanelBarItem  IsExpanded="false">
+                                    <telerik:RadPanelBarItem.Header>
+                                        <TextBlock Text="Main Game Parameters"
+                                                   Margin="5 4 5 5" />
+                                    </telerik:RadPanelBarItem.Header>
+
+                                    <ListView Name="mainParametersListView"
+                                              MaxHeight="150">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Name"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding Name}" />
+                                                <GridViewColumn Header="Value"
+                                                                Width="auto">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBox Text="{Binding Value}"
+                                                                     Name="parameterTextBox"
+                                                                     GotFocus="parameterTextBox_GotFocus"
+                                                                     TextChanged="parameterTextBox_TextChanged" />
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                    <StackPanel Orientation="Horizontal">
+                                        <telerik:RadButton telerik:StyleManager.Theme="Windows7"
+                                                           Name="mainrefreshButton"
+                                                           Click="mainrefreshButton_Click"
+                                                           Height="25">
+                                            <Image Source="/Visualizer;component/Images/refresh1.png"></Image>
+                                        </telerik:RadButton>
+                                        <telerik:RadButton telerik:StyleManager.Theme="Windows7"
+                                                           Name="saveButton"
+                                                           Height="25"
+                                                           Width="47"
+                                                           Click="saveButton_Click">
+                                            Save
+                                        </telerik:RadButton>
+                                        <telerik:RadButton telerik:StyleManager.Theme="Windows7"
+                                                           Name="openButton"
+                                                           Height="25"
+                                                           Width="49"
+                                                           Click="openButton_Click">
+                                            Open
+                                        </telerik:RadButton>
+                                    </StackPanel>
+                                </telerik:RadPanelBarItem>
+                                <!--engine manager-->
+                                <telerik:RadPanelBarItem IsEnabled="True"
+                                                         IsExpanded="False">
+                                    <telerik:RadPanelBarItem.Header>
+                                        <TextBlock Text="Engine Manager"
+                                                   Margin="5 4 5 5" />
+                                    </telerik:RadPanelBarItem.Header>
+                                    <ListView Name="engineListView">
+                                        <ListView.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Add Engine"
+                                                          Name="addengineMenuItem"
+                                                          Click="addengineMenuItem_Click" />
+                                                <MenuItem Header="Delete Engine"
+                                                          Name="deleteengineMenuItem"
+                                                          Click="deleteengineMenuItem_Click" />
+                                                <MenuItem Header="Refresh"
+                                                          Name="refreshMenuItem"
+                                                          Click="refreshMenuItem_Click" />
+                                            </ContextMenu>
+                                        </ListView.ContextMenu>
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="EngineID"
+                                                                Width="70"
+                                                                DisplayMemberBinding="{Binding Id}" />
+                                                <GridViewColumn Header="Color"
+                                                                Width="80">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox Name="enginecolorCheckBox"
+                                                                      SelectedIndex="{Binding ReverseColor,Converter={StaticResource ColorConvert}}"
+                                                                      GotFocus="enginecolorCheckBox_GotFocus"
+                                                                      SelectionChanged="enginecolorCheckBox_SelectionChanged">
+                                                                <ComboBoxItem Content="Blue" />
+                                                                <ComboBoxItem Content="Yellow" />
+                                                            </ComboBox>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                                <GridViewColumn Header="Reverse Side"
+                                                                Width="80">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <CheckBox Name="reverseengineCheckBox"
+                                                                      IsChecked="{Binding ReverseSide}"
+                                                                      GotFocus="reverseengineCheckBox_GotFocus"
+                                                                      Checked="reverseengineCheckBox_Checked"
+                                                                      Unchecked="reverseengineCheckBox_Unchecked" />
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                    <Separator />
+                                    <ListView Name="robotListView">
+                                        <ListView.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Add to Engine"
+                                                          Name="robottoengineMenuItem"
+                                                          Click="robottoengineMenuItem_Click" />
+                                            </ContextMenu>
+                                        </ListView.ContextMenu>
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn DisplayMemberBinding="{Binding EngineId}"
+                                                                Header="EnginID"
+                                                                Width="100" />
+                                                <GridViewColumn DisplayMemberBinding="{Binding Id}"
+                                                                Header="RobotID"
+                                                                Width="100" />
+                                                <GridViewColumn Header="Color">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <Border BorderThickness="1"
+                                                                    Width="20"
+                                                                    Height="20"
+                                                                    Background="{Binding TeamColor,Converter={StaticResource colToBrush}}" />
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </telerik:RadPanelBarItem>
+                                <telerik:RadPanelBarItem IsExpanded="False">
+                                    <telerik:RadPanelBarItem.Header>
+                                        <TextBlock Text="Merger Tracker Setting"
+                                                   Margin="5 4 5 5" />
+                                    </telerik:RadPanelBarItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Max fram to shadow : "
+                                                   Width="120"
+                                                   TextAlignment="Right" />
+                                        <TextBox Width="40"
+                                                 Name="maxframTextBox"
+                                                 TextChanged="maxframTextBox_TextChanged">30</TextBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="ActionDelay : "
+                                                   Width="120"
+                                                   TextAlignment="Right" />
+                                        <TextBox Width="40"
+                                                 Name="actiondelayTextBox"
+                                                 TextChanged="maxframTextBox_TextChanged">0.03</TextBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Max Ball Distance : "
+                                                   Width="120"
+                                                   TextAlignment="Right" />
+                                        <TextBox Width="40"
+                                                 Name="maxballDistTextBox"
+                                                 TextChanged="maxframTextBox_TextChanged">0.7</TextBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Camera Sate : "
+                                                   Width="120"
+                                                   TextAlignment="Right" />
+                                        <ComboBox Width="40"
+                                                  Name="cameraComboBox"
+                                                  SelectedIndex="0"
+                                                  SelectionChanged="cameraComboBox_SelectionChanged">
+                                            <ComboBoxItem>Both</ComboBoxItem>
+                                            <ComboBoxItem>1'stCam</ComboBoxItem>
+                                            <ComboBoxItem>2'stCam</ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Max Not Seen : "
+                                                   Width="120"
+                                                   TextAlignment="Right" />
+                                        <TextBox Width="40"
+                                                 Name="maxnotseenTextBox"
+                                                 TextChanged="maxframTextBox_TextChanged">120</TextBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Max to Imagine : "
+                                                   Width="120"
+                                                   TextAlignment="Right" />
+                                        <TextBox Width="40"
+                                                 Name="maxtoimagineTextBox"
+                                                 TextChanged="maxframTextBox_TextChanged">1</TextBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Max Opp Distance : "
+                                                   Width="120"
+                                                   TextAlignment="Right" />
+                                        <TextBox Width="40"
+                                                 Name="maxoppdisTextBox"
+                                                 TextChanged="maxframTextBox_TextChanged">0.2</TextBox>
+                                    </StackPanel>
+                                    <CheckBox Content="Calculate Regions"
+                                              Name="calcregionCheckBox"
+                                              Checked="calcregionCheckBox_Checked"
+                                              Unchecked="calcregionCheckBox_Unchecked" />
+                                    <CheckBox Content="On Game"
+                                              Name="ongameCheckBox"
+                                              IsChecked="True"
+                                              Checked="ongameCheckBox_Checked"
+                                              Unchecked="ongameCheckBox_Unchecked" />
+                                    <CheckBox Content="Correct Angle Error"
+                                              Name="correctangleCheckBox"
+                                              IsChecked="True"
+                                              Checked="correctangleCheckBox_Checked"
+                                              Unchecked="correctangleCheckBox_Unchecked" />
+                                    <telerik:RadButton Name="getparametersButton"
+                                                       Height="24"
+                                                       Content="Get GameParameters"
+                                                       telerik:StyleManager.Theme="Windows7"
+                                                       Click="getparametersButton_Click" />
+                                </telerik:RadPanelBarItem>
+                                <telerik:RadPanelBarItem IsExpanded="False">
+                                    <telerik:RadPanelBarItem.Header>
+                                        <TextBlock Text="Custom Variable"
+                                                   Margin="5 4 5 5" />
+                                    </telerik:RadPanelBarItem.Header>
+                                    <ListView Name="doublecustomVarListView"
+                                              MaxHeight="150">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Name"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding Name}" />
+                                                <GridViewColumn Header="Value"
+                                                                Width="auto">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBox GotFocus="doubleTextBox_GotFocus"
+                                                                     Text="{Binding Value.Text}"
+                                                                     Name="doubleTextBox"
+                                                                     TextChanged="doubleTextBox_TextChanged" />
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                    <Separator />
+                                    <ListView Name="position2dListView"
+                                              MaxHeight="100">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Name"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding Name}" />
+                                                <GridViewColumn Header="X"
+                                                                Width="auto">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBox Text="{Binding X.Text}"
+                                                                     GotFocus="xTextBox_GotFocus"
+                                                                     Name="xTextBox"
+                                                                     TextChanged="xTextBox_TextChanged" />
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                                <GridViewColumn Header="Y"
+                                                                Width="auto">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBox Text="{Binding Y.Text}"
+                                                                     GotFocus="yTextBox_GotFocus"
+                                                                     Name="yTextBox"
+                                                                     TextChanged="yTextBox_TextChanged" />
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                    <ListView Name="boolListView"
+                                              MaxHeight="100">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Name"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding Name}" />
+                                                <GridViewColumn Header="Value"
+                                                                Width="auto">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <CheckBox IsChecked="{Binding Value.IsChecked}"
+                                                                      GotFocus="valueCheckBox_GotFocus"
+                                                                      Checked="valueCheckBox_Checked"
+                                                                      Unchecked="valueCheckBox_Unchecked"
+                                                                      Name="valueCheckBox" />
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                    <telerik:RadButton telerik:StyleManager.Theme="Windows7"
+                                                       Name="refreshButton"
+                                                       Click="refreshButton_Click"
+                                                       Content="Refresh" />
+                                </telerik:RadPanelBarItem>
+                                <telerik:RadPanelBarItem IsExpanded="False">
+                                    <telerik:RadPanelBarItem.Header>
+                                        <TextBlock Text="Lookup Table"
+                                                   Margin="5 4 5 5" />
+                                    </telerik:RadPanelBarItem.Header>
+                                    <ListView Name="directListView"
+                                              MaxHeight="250">
+                                        <ListView.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Add"
+                                                          Name="addMenuItem"
+                                                          Click="addMenuItem_Click" />
+                                                <MenuItem Header="Delete"
+                                                          Name="deleteMenuItem"
+                                                          Click="deleteMenuItem_Click" />
+                                            </ContextMenu>
+                                        </ListView.ContextMenu>
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="ID"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding RobotID}" />
+                                                <GridViewColumn Header="Power"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding Power}" />
+                                                <GridViewColumn Header="Speed"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding Speed}" />
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                    <Separator />
+                                    <ListView Name="chikickListView"
+                                              MaxHeight="200">
+                                        <ListView.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Add"
+                                                          Name="addchipMenuItem"
+                                                          Click="addchipMenuItem_Click" />
+                                                <MenuItem Header="Delete"
+                                                          Name="delMenuItem"
+                                                          Click="delMenuItem_Click" />
+                                            </ContextMenu>
+                                        </ListView.ContextMenu>
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="ID"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding RobotID}" />
+                                                <GridViewColumn Header="Power"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding Power}" />
+                                                <GridViewColumn Header="Len"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding Lenght}" />
+                                                <GridViewColumn Header="Safe"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding SafeRadi}" />
+                                                <GridViewColumn Header="HasSpin"
+                                                                Width="auto">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <CheckBox IsChecked="{Binding HasSpin}" />
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                                <GridViewColumn Header="Back Sensore"
+                                                                Width="auto">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <CheckBox IsChecked="{Binding BackSensore}" />
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                                <GridViewColumn Header="Time"
+                                                                Width="auto"
+                                                                DisplayMemberBinding="{Binding Time}" />
+
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                    <StackPanel Orientation="Horizontal">
+                                        <telerik:RadButton telerik:StyleManager.Theme="Windows7"
+                                                           Name="lookuprefreshButton"
+                                                           Content="Refresh"
+                                                           Click="lookuprefreshButton_Click"
+                                                           Width="66.66" />
+                                        <telerik:RadButton telerik:StyleManager.Theme="Windows7"
+                                                           Name="changerobotidButton"
+                                                           Content="Change ID"
+                                                           Width="64.438"
+                                                           Click="changerobotidButton_Click" />
+                                        <telerik:RadButton telerik:StyleManager.Theme="Windows7"
+                                                           Name="saveLoockupButton"
+                                                           Content="Save"
+                                                           Width="60"
+                                                           Click="saveloockupdButton_Click" />
+                                        <telerik:RadButton telerik:StyleManager.Theme="Windows7"
+                                                           Name="loadLoockupButton"
+                                                           Content="load"
+                                                           Width="60"
+                                                           Click="loadloockupButton_Click" />
+
+                                    </StackPanel>
+                                </telerik:RadPanelBarItem>
+                                <telerik:RadPanelBarItem IsExpanded="False">
+                                    <telerik:RadPanelBarItem.Header>
+                                        <TextBlock Text="Network Setting"
+                                                   Margin="5 4 5 5" />
+                                    </telerik:RadPanelBarItem.Header>
+                                    <StackPanel>
+                                        <TextBlock Text="CMC Setting"
+                                                   Height="31"
+                                                   Width="163.506"
+                                                   Foreground="Brown"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="NoWrap" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Name : "
+                                                       Width="74.5"
+                                                       TextAlignment="Right" />
+                                            <TextBox Width="92.106" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Port : "
+                                                       Width="74.315"
+                                                       TextAlignment="Right" />
+                                            <TextBox Width="92.685" />
+                                        </StackPanel>
+                                        <Separator />
+                                        <TextBlock Text="AI Setting"
+                                                   Height="31"
+                                                   Foreground="Brown"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="NoWrap" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Name : "
+                                                       Width="77"
+                                                       TextAlignment="Right" />
+                                            <TextBox Width="88" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Port : "
+                                                       Width="77"
+                                                       FlowDirection="LeftToRight"
+                                                       TextAlignment="Right" />
+                                            <TextBox Width="88" />
+                                        </StackPanel>
+                                        <Separator />
+
+                                        <TextBlock Text="Simulator Setting"
+                                                   Height="31"
+                                                   Foreground="Brown"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="NoWrap" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Name : "
+                                                       Width="74.75"
+                                                       TextAlignment="Right" />
+                                            <TextBox Width="90" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Send Port : "
+                                                       Width="74.625"
+                                                       TextAlignment="Right" />
+                                            <TextBox Width="90.2" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Recieve Port : " />
+                                            <TextBox Width="90.4" />
+                                        </StackPanel>
+                                        <Separator />
+                                        <TextBlock Text="Refree Setting"
+                                                   Height="31"
+                                                   Foreground="Brown"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="NoWrap" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="IP : "
+                                                       Width="77"
+                                                       TextAlignment="Right" />
+                                            <TextBox Width="88" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Port : "
+                                                       Width="77"
+                                                       FlowDirection="LeftToRight"
+                                                       TextAlignment="Right" />
+                                            <TextBox Width="88" />
+                                        </StackPanel>
+                                        <Separator />
+                                        <TextBlock Text="SSLVision Setting"
+                                                   Height="31"
+                                                   Foreground="Brown"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="NoWrap" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="IP : "
+                                                       Width="77"
+                                                       TextAlignment="Right" />
+                                            <TextBox Width="88" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Port : "
+                                                       Width="77"
+                                                       FlowDirection="LeftToRight"
+                                                       TextAlignment="Right" />
+                                            <TextBox Width="88" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </telerik:RadPanelBarItem>
+
+                            </telerik:RadPanelBar>
+
+                        </Grid>
+                    </ScrollViewer>
+                </Expander>
+
+                <TabControl Name="fieldTabControl"
+                            Grid.Column="1">
+                    <TabControl.Background>
+                        <LinearGradientBrush StartPoint="0,0"
+                                             EndPoint="2,2">
+                            <GradientStop Color="White"
+                                          Offset="1" />
+                            <GradientStop Color="#dbe9ff"
+                                          Offset="0" />
+                            <GradientStop Color="#dbe9ff"
+                                          Offset="2" />
+                        </LinearGradientBrush>
+                    </TabControl.Background>
+                </TabControl>
+
+                <!--<player:ConsolUserControl x:Name="mainConsol"
+                                          Height="150"
+                                          Visibility="Collapsed"
+                                          Grid.Row="1"
+                                          Grid.Column="1" />-->
+                <!--<GridSplitter Name="conSplit" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top" />-->
+                <Expander Header="Charter"
+                          Name="charterEpander"
+                          Grid.ColumnSpan="2"
+                          ExpandDirection="Up"
+                          BorderBrush="Black"
+                          BorderThickness="0.4"
+                          Margin="0,0.598,0,0"
+                          Grid.Row="2">
+                    <Grid Height="300">
+                        <!--<WindowsFormsHost Name="CharterHost" Grid.Row="1">
+                        <field:Charter x:Name="MainCharter">
+                        </field:Charter>
+                    </WindowsFormsHost>-->
+
+                        <player:DynamicDataChartUserControl x:Name="MainCharter" />
+                    </Grid>
+                </Expander>
+                <TabControl Grid.Column="2"
+                            Name="mainTabControl"
+                            MinWidth="0"
+                            Grid.RowSpan="3"
+                            PreviewMouseDown="mainTabControl_PreviewMouseDown">
+
+                </TabControl>
+
+            </Grid>
+        </Grid>
+        <!--<Grid Name="leftFieldGrid" Visibility="Collapsed" Grid.Column="0">
+            <WindowsFormsHost Width="auto" Name="windowsFormsHost2" ChildChanged="windowsFormsHost2_ChildChanged">
+                
+            </WindowsFormsHost>
+        </Grid>-->
+    </Grid>
+</Window>
+
+    

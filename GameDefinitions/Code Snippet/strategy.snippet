@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>Strategy</Title>
+			<Shortcut>strg</Shortcut>
+			<Description>Code snippet for strategy statement</Description>
+			<Author>MRL SSL</Author>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+				<SnippetType>SurroundsWith</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>attendanceSize</ID>
+					<ToolTip></ToolTip>
+					<Default>attendanceSize</Default>
+				</Literal>
+				<Literal>
+					<ID>CompareMode</ID>
+					<ToolTip></ToolTip>
+					<Default>CompareMode</Default>
+				</Literal>
+				<Literal>
+					<ID>PolicyMode</ID>
+					<ToolTip></ToolTip>
+					<Default>PolicyMode</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+              <![CDATA[StrategyBase s = strategyManager.SelectStrategy(engine, Model, $attendanceSize$, 
+                StrategyManager.AttendanceCompare.$CompareMode$, StrategyManager.StrategyPolicy.$PolicyMode$);
+            Dictionary<int, RoleBase> strategyRoles = new Dictionary<int, RoleBase>();
+            s.Run(out strategyRoles);
+            Commands = s.Commands;
+			$selected$ $end$
+			]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>

@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="MRL.SSL.Visualizer.UserControls.VertexUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             >
+    <Grid Name="mainGrid" SizeChanged="Grid_SizeChanged">
+        <Ellipse Name="node" StrokeThickness="2"
+                 Stroke="#FF0089FF">
+            <Ellipse.Fill>
+                <LinearGradientBrush EndPoint="0.5,1"
+                                     StartPoint="0.5,0">
+                    <GradientStop Color="White"
+                                  Offset="0" />
+                    <GradientStop Color="#FFD5EDF8"
+                                  Offset="1" />
+                </LinearGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+        <TextBlock SizeChanged="nodenameTextBlock_SizeChanged" FontSize="12" FontWeight="Bold" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Name="nodenameTextBlock" />
+    </Grid>
+</UserControl>

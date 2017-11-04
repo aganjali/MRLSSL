@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>creat state</Title>
+			<Shortcut>addst</Shortcut>
+			<Description>Code snippet for creat state</Description>
+			<Author>MRL SSL</Author>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+				<SnippetType>SurroundsWith</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>statename</ID>
+					<ToolTip>state name</ToolTip>
+					<Default>statename</Default>
+				</Literal>
+				<Literal>
+					<ID>robotID</ID>
+					<ToolTip>robotID</ToolTip>
+					<Default>robotID</Default>
+				</Literal>
+				<Literal>
+					<ID>RoleBase</ID>
+					<ToolTip>RoleBase</ToolTip>
+					<Default>RoleBase</Default>
+				</Literal>
+				<Literal>
+					<ID>function</ID>
+					<ToolTip>Function</ToolTip>
+					<Default>function</Default>
+				</Literal>
+				<Literal>
+					<ID>params</ID>
+					<ToolTip>Function parameters</ToolTip>
+					<Default>params</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp"><![CDATA[$statename$.AssignedRoles.Add($robotID$, engine.ImplementedRoles[typeof($RoleBase$)]);
+            $statename$.Commands.Add($robotID$, $statename$.GetRole<$RoleBase$>($robotID$).$function$($params$));]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>

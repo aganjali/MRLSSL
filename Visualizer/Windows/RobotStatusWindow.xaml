@@ -1,0 +1,11 @@
+﻿<Window x:Class="Visualizer.Windows.RobotStatusWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:robotstatus="clr-namespace:Visualizer.UserControls"
+    Title="Robot Status" Height="356" Width="209.916">
+    <Grid> 
+        <StackPanel Name="mainStackPanel">
+            
+        </StackPanel>
+    </Grid>
+</Window>

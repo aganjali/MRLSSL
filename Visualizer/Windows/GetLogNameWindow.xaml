@@ -1,0 +1,15 @@
+﻿<Window x:Class="Visualizer.Windows.GetLogNameWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="GetLogNameWindow" MouseLeftButtonDown="Window_MouseLeftButtonDown" AllowsTransparency="True" Background="Transparent" WindowStyle="None"  Height="120" Width="458" ResizeMode="NoResize" SizeToContent="Manual" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Border Opacity="0.9" Background="White"  CornerRadius="20" BorderBrush="Black" Margin="5,5,5,5" Height="65" Width="409">
+        <Border.BitmapEffect>
+            <DropShadowBitmapEffect Color="YellowGreen" Direction="320" Softness="1" ShadowDepth="2"/>
+        </Border.BitmapEffect>
+        <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" PreviewKeyDown="Grid_PreviewKeyDown" Height="50" Width="384">
+            <Label HorizontalAlignment="Left" Margin="7,12,0,0" Name="label1" Width="78" Height="27" VerticalAlignment="Top">Log Name :</Label>
+            <TextBox BorderBrush="Black"   Margin="83,14,54,0" Name="nameTextBox" Height="23" VerticalAlignment="Top" />
+            <Button HorizontalAlignment="Right" Margin="0,14,12,0" Name="okButton" Width="36" Click="okButton_Click" Height="24" VerticalAlignment="Top">Ok</Button>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,40 @@
+﻿<Window x:Class="Visualizer.Windows.LoggerPropertiesWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Log Properties" Height="445" Width="Auto">
+    <Grid Width="341" Loaded="Grid_Loaded">
+        <GroupBox Header="Log Files Setting" Margin="1.5,4.444,1.5,29" Name="groupBox1">
+            <Grid>
+                <GroupBox Header="File Name" Margin="6,12,6,0" Name="groupBox2" Height="115" VerticalAlignment="Top">
+                    <Grid>
+                        <Label Margin="6,53,0,0" Name="label1" Height="29" VerticalAlignment="Top" HorizontalAlignment="Left" Width="73">File Name :</Label>
+                        <TextBox Margin="80,56,6,0" Name="customnameTextBox" Height="24" VerticalAlignment="Top" BorderThickness="0.5" BorderBrush="Black" TextChanged="customnameTextBox_TextChanged" />
+                        <RadioButton Height="16" HorizontalAlignment="Left" Margin="6,9,0,0" Name="defaulnameRadioButton" VerticalAlignment="Top" Width="96" IsChecked="True" Checked="defaulnameRadioButton_Checked">Default Name</RadioButton>
+                        <Label Height="28" Margin="103,6,6,0" Name="label2" VerticalAlignment="Top" FontSize="11">(Generat name by date and time)</Label>
+                        <RadioButton Height="16" HorizontalAlignment="Left" Margin="6,31,0,0" Name="customnameRadioButton" VerticalAlignment="Top" Width="96" Checked="customnameRadioButton_Checked">Select Name</RadioButton>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="File Address" Margin="6,133,6,0" Name="groupBox3" Height="115.04" VerticalAlignment="Top">
+                    <Grid>
+                        <Label Height="29" HorizontalAlignment="Left" Margin="6,53,0,0" Name="label3" VerticalAlignment="Top" Width="73">Address :</Label>
+                        <TextBox BorderBrush="Black" BorderThickness="0.5" Height="24" Margin="66,0,30.303,12" Name="customaddressTextBox" VerticalAlignment="Bottom" TextChanged="customaddressTextBox_TextChanged" />
+                        <RadioButton Height="16" HorizontalAlignment="Left" IsChecked="True" Margin="6,9,0,0" Name="defaultaddressRadioButton" VerticalAlignment="Top" Width="105.228" Checked="defaultaddressRadioButton_Checked">Default address</RadioButton>
+                        <Label FontSize="11" Height="28" Margin="107.892,6,49.284,0" Name="label4" VerticalAlignment="Top">(Mydocument/SSLLog)</Label>
+                        <RadioButton Height="16" HorizontalAlignment="Left" Margin="6,31,0,0" Name="customaddressRadioButton" VerticalAlignment="Top" Width="96" Checked="customaddressRadioButton_Checked">Select Address</RadioButton>
+                        <Button Height="24" HorizontalAlignment="Right" Margin="0,0,1.998,12" Name="selectaddressButton" VerticalAlignment="Bottom" Width="26.64" Click="selectaddressButton_Click">
+                            <Image Source="/Visualizer;component/Images/openFile.png"></Image>
+                        </Button>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Other Setting" Height="91" Margin="6.318,253.596,6,0" Name="groupBox4" VerticalAlignment="Top">
+                    <Grid>
+                        <Label HorizontalAlignment="Left" Margin="5.682,35,0,0" Name="label5" Width="85.027" Height="32.04" VerticalAlignment="Top">Record Delay :</Label>
+                        <my:NumericUpDown Margin="92.127,37,0,0" Maximum="50" ValueChanged="loggerDelayNum_ValueChanged" Name="loggerDelayNum" Value="1" xmlns:my="clr-namespace:Enterprise.Wpf;assembly=Enterprise.Wpf" HorizontalAlignment="Left" Width="52.873" Height="22.04" VerticalAlignment="Top" />
+                        <Label HorizontalAlignment="Left" Margin="23,4,0,0" Name="label6" Width="73" Height="29.04" VerticalAlignment="Top">Comment :</Label>
+                        <TextBox BorderBrush="Black" BorderThickness="0.5" Margin="92,7,6.318,0" Name="commentTextBox" Height="24.04" VerticalAlignment="Top" TextChanged="commentTextBox_TextChanged">without Comment</TextBox>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

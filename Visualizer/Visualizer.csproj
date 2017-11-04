@@ -1,0 +1,646 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7DE7CF56-668C-4BC8-B3E9-806AFF137CEF}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MRL.SSL.Visualizer</RootNamespace>
+    <AssemblyName>Visualizer</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisLogFile>bin\Debug\Visualizer.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Visualizer.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DataGrid2DLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Third Party\Assemblies\DataGrid2DLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="DynamicDataDisplay">
+      <HintPath>..\Third Party\Assemblies\DynamicDataDisplay.dll</HintPath>
+    </Reference>
+    <Reference Include="Enterprise.Wpf">
+      <HintPath>..\Third Party\Assemblies\Enterprise.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Logger">
+      <HintPath>..\Third Party\Assemblies\Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\Third Party\Assemblies\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX, Version=4.0.12.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Third Party\Assemblies\SlimDX\x64\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls, Version=2011.1.315.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Third Party\Assemblies\Telerik.Windows.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Navigation, Version=2011.1.315.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Third Party\Assemblies\Telerik.Windows.Controls.Navigation.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\ActiveSettingTableFormat.cs" />
+    <Compile Include="Classes\BatteryInfo.cs" />
+    <Compile Include="Classes\BoolTableFormat.cs" />
+    <Compile Include="Classes\CharterThread.cs" />
+    <Compile Include="Classes\ChipKickCalibrator.cs" />
+    <Compile Include="Classes\DataReciever.cs" />
+    <Compile Include="Classes\DataSender.cs" />
+    <Compile Include="Classes\DebugData.cs" />
+    <Compile Include="Classes\DefendingState.cs" />
+    <Compile Include="Classes\DoubleTableFormat.cs" />
+    <Compile Include="Classes\GameParametersTemplate.cs" />
+    <Compile Include="Classes\LogProssesor.cs" />
+    <Compile Include="Classes\PositionTableFormat.cs" />
+    <Compile Include="Classes\TechniqueTable.cs" />
+    <Compile Include="Classes\VirtualToggleButton.cs" />
+    <Compile Include="Classes\WirelessReciever.cs" />
+    <Compile Include="Classes\WirelessSender.cs" />
+    <Compile Include="Converters\ActiveParametersConverters.cs" />
+    <Compile Include="Converters\ColorToBrush.cs" />
+    <Compile Include="Converters\EngineColor.cs" />
+    <Compile Include="Extention\CommonExtensions.cs" />
+    <Compile Include="Extention\WindowExtensions.cs" />
+    <Compile Include="Formula\ErrorException.cs" />
+    <Compile Include="Formula\Evaluator.cs" />
+    <Compile Include="Formula\ExpParser.cs" />
+    <Compile Include="Formula\ExpTreeNode.cs" />
+    <Compile Include="Formula\Operators.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="UserControls\ChipKickTunnerUserControl.xaml.cs">
+      <DependentUpon>ChipKickTunnerUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\DynamicDataChartUserControl.xaml.cs">
+      <DependentUpon>DynamicDataChartUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GetNumberUserControl.xaml.cs">
+      <DependentUpon>GetNumberUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\GetVectorParameterUserControl.xaml.cs">
+      <DependentUpon>GetVectorParameterUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ListViewTemplateUserControl.xaml.cs">
+      <DependentUpon>ListViewTemplateUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\LogPlayerPanelView.xaml.cs">
+      <DependentUpon>LogPlayerPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PictureBoxUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PictureBoxUserControl.Designer.cs">
+      <DependentUpon>PictureBoxUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\RobotControllerUserControl.xaml.cs">
+      <DependentUpon>RobotControllerUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\RobotViewerUserControl.xaml.cs">
+      <DependentUpon>RobotViewerUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\VertexUserControl.xaml.cs">
+      <DependentUpon>VertexUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ActiveRoleParametersWindow.xaml.cs">
+      <DependentUpon>ActiveRoleParametersWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddChipkickWindow.xaml.cs">
+      <DependentUpon>AddChipkickWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddDirectkickWindow.xaml.cs">
+      <DependentUpon>AddDirectkickWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddVectorWindow.xaml.cs">
+      <DependentUpon>AddVectorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AminChartWindow.xaml.cs">
+      <DependentUpon>AminChartWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AnalizerWindow.xaml.cs">
+      <DependentUpon>AnalizerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ChangeObjectPenWindow.xaml.cs">
+      <DependentUpon>ChangeObjectPenWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ChartItemSettingWindow.xaml.cs">
+      <DependentUpon>ChartItemSettingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ControlChartWindow.xaml.cs">
+      <DependentUpon>ControlChartWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ControlParameteresWindow.xaml.cs">
+      <DependentUpon>ControlParameteresWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\DefencefileCreatorWindow.xaml.cs">
+      <DependentUpon>DefencefileCreatorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\DefenderOptimusWindow.xaml.cs">
+      <DependentUpon>DefenderOptimusWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ExtractLogData.xaml.cs">
+      <DependentUpon>ExtractLogData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\FieldWindow.xaml.cs">
+      <DependentUpon>FieldWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\GetLogNameWindow.xaml.cs">
+      <DependentUpon>GetLogNameWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\GetMatrixWindow.xaml.cs">
+      <DependentUpon>GetMatrixWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\JoystickWindow.xaml.cs">
+      <DependentUpon>JoystickWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\LogAnalizerWindow.xaml.cs">
+      <DependentUpon>LogAnalizerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\LoggerPropertiesWindow.xaml.cs">
+      <DependentUpon>LoggerPropertiesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\MergerCalib.xaml.cs">
+      <DependentUpon>MergerCalib.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\MotorCurrentChartWindow.xaml.cs">
+      <DependentUpon>MotorCurrentChartWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\PassAndShootTuneWindow.xaml.cs">
+      <DependentUpon>PassAndShootTuneWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RefreeBoxWindow.xaml.cs">
+      <DependentUpon>RefreeBoxWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RobotStatusWindow.xaml.cs">
+      <DependentUpon>RobotStatusWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RotateParametersWindow.xaml.cs">
+      <DependentUpon>RotateParametersWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ScoreWindow.xaml.cs">
+      <DependentUpon>ScoreWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\StrategyDesigner.xaml.cs">
+      <DependentUpon>StrategyDesigner.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\StrategyManagerWindow.xaml.cs">
+      <DependentUpon>StrategyManagerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\TacticWindow.xaml.cs">
+      <DependentUpon>TacticWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\VisionCalibrate.xaml.cs">
+      <DependentUpon>VisionCalibrate.xaml</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PictureBoxUserControl.resx">
+      <DependentUpon>PictureBoxUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="Robot.DAE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="UserControls\ChipKickTunnerUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\DynamicDataChartUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\GetNumberUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\GetVectorParameterUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ListViewTemplateUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\LogPlayerPanelView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\RobotControllerUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\RobotViewerUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\VertexUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ActiveRoleParametersWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AddChipkickWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\AddDirectkickWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\AddVectorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AminChartWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AnalizerWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ChangeObjectPenWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ChartItemSettingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ControlChartWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ControlParameteresWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\DefencefileCreatorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\DefenderOptimusWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ExtractLogData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\FieldWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\GetLogNameWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\GetMatrixWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\JoystickWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\LogAnalizerWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\LoggerPropertiesWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MergerCalib.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\MotorCurrentChartWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\PassAndShootTuneWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\RefreeBoxWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\RobotStatusWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\RotateParametersWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ScoreWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\StrategyDesigner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\StrategyManagerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\TacticWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\VisionCalibrate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\analize.png" />
+    <Resource Include="Images\analizermdoe.png" />
+    <Resource Include="Images\bb.png" />
+    <Resource Include="Images\blue.png" />
+    <Resource Include="Images\Bug.png" />
+    <Resource Include="Images\Camera-icon.png" />
+    <Resource Include="Images\camera.png" />
+    <Resource Include="Images\chart pause.png" />
+    <Resource Include="Images\chartplay.png" />
+    <Resource Include="Images\clear.png" />
+    <Resource Include="Images\clearText.png" />
+    <Resource Include="Images\close1.png" />
+    <Resource Include="Images\close2.png" />
+    <Resource Include="Images\close3.png" />
+    <Resource Include="Images\console.png" />
+    <Resource Include="Images\cont.png" />
+    <Resource Include="Images\control.png" />
+    <Resource Include="Images\current.png" />
+    <Resource Include="Images\dataStop.png" />
+    <Resource Include="Images\display-32x32.png" />
+    <Resource Include="Images\display-off-48x48.png" />
+    <Resource Include="Images\down.png" />
+    <Resource Include="Images\eject.png" />
+    <Resource Include="Images\ff.png" />
+    <Resource Include="Images\floppy.png" />
+    <Resource Include="Images\hero-icon-record.png" />
+    <Resource Include="Images\Itunes-Button--Stop-256.png" />
+    <Resource Include="Images\joystik.png" />
+    <Resource Include="Images\left.png" />
+    <Resource Include="Images\loganalizer.png" />
+    <Resource Include="Images\loggerSetting.png" />
+    <Resource Include="Images\logplayer.png" />
+    <Resource Include="Images\logviwermode.png" />
+    <Resource Include="Images\open.png" />
+    <Resource Include="Images\openFile.png" />
+    <Resource Include="Images\pause.png" />
+    <Resource Include="Images\pen.png" />
+    <Resource Include="Images\play.png" />
+    <Resource Include="Images\point.png" />
+    <Resource Include="Images\record.png" />
+    <Resource Include="Images\redPause.png" />
+    <Resource Include="Images\redPlay.png" />
+    <Resource Include="Images\redplus.png" />
+    <Resource Include="Images\refresh1.png" />
+    <Resource Include="Images\right.png" />
+    <Resource Include="Images\robot.png" />
+    <Resource Include="Images\save.png" />
+    <Resource Include="Images\search.png" />
+    <Resource Include="Images\signal.png" />
+    <Resource Include="Images\simulatormode.png" />
+    <Resource Include="Images\Soccer-Ball.png" />
+    <Resource Include="Images\Soccer-Goal.png" />
+    <Resource Include="Images\switch.png" />
+    <Resource Include="Images\tactic.png" />
+    <Resource Include="Images\technique.png" />
+    <Resource Include="Images\turnLeft.png" />
+    <Resource Include="Images\turnRight.png" />
+    <Resource Include="Images\undo.png" />
+    <Resource Include="Images\up.png" />
+    <Resource Include="Images\view.png" />
+    <Resource Include="Images\visionmode.png" />
+    <Resource Include="Images\wheelchart.png" />
+    <Resource Include="Images\whistle-icon.png" />
+    <Resource Include="Images\yellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonCLasses\CommonCLasses.csproj">
+      <Project>{AC0BFBED-A264-4980-9E61-E2254DF142C6}</Project>
+      <Name>CommonCLasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonControls\CommonControls.csproj">
+      <Project>{6B590691-31C0-4367-8CDD-68002C47DF10}</Project>
+      <Name>CommonControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameDefinitions\GameDefinitions.csproj">
+      <Project>{6C6869F5-B118-4B53-93B1-FC1149BCBC76}</Project>
+      <Name>GameDefinitions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simulator\Simulator.csproj">
+      <Project>{79FEF5F4-45AA-4D6A-B2DB-E6955D8814BA}</Project>
+      <Name>Simulator</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cudart32_30_9.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cudart64_30_9.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Images\phone.png" />
+    <Resource Include="Images\diagram-icon.png" />
+    <Resource Include="Images\1250.png" />
+    <Resource Include="Images\1394.png" />
+    <Resource Include="Images\Robot0.png" />
+    <Resource Include="Images\Robot1.png" />
+    <Resource Include="Images\Robot10.png" />
+    <Resource Include="Images\Robot11.png" />
+    <Resource Include="Images\Robot2.png" />
+    <Resource Include="Images\Robot3.png" />
+    <Resource Include="Images\robot3A %281%29.png" />
+    <Resource Include="Images\robot3A %2810%29.png" />
+    <Resource Include="Images\robot3A %2811%29.png" />
+    <Resource Include="Images\robot3A %2812%29.png" />
+    <Resource Include="Images\robot3A %282%29.png" />
+    <Resource Include="Images\robot3A %283%29.png" />
+    <Resource Include="Images\robot3A %284%29.png" />
+    <Resource Include="Images\robot3A %285%29.png" />
+    <Resource Include="Images\robot3A %286%29.png" />
+    <Resource Include="Images\robot3A %287%29.png" />
+    <Resource Include="Images\robot3A %288%29.png" />
+    <Resource Include="Images\robot3A %289%29.png" />
+    <Resource Include="Images\Robot4.png" />
+    <Resource Include="Images\Robot5.png" />
+    <Resource Include="Images\Robot6.png" />
+    <Resource Include="Images\Robot7.png" />
+    <Resource Include="Images\Robot8.png" />
+    <Resource Include="Images\Robot9.png" />
+    <Resource Include="Images\PAss.png" />
+    <Content Include="NxCharacter.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NxCharacter64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NxCooking.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PhysXCooking.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PhysXCooking64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PhysXCore.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PhysXCore64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PhysXDevice.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PhysXDevice64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PhysXLoader.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PhysXLoader64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StillDesign.PhysX.Net.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

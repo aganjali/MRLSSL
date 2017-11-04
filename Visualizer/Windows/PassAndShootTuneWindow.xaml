@@ -1,0 +1,78 @@
+﻿<Window x:Class="MRL.SSL.Visualizer.Windows.PassAndSHootTuneWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="OneTouch Tuning Tools" Height="264" Width="752" ResizeMode="NoResize" >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="12*" />
+            <RowDefinition Height="6*" />
+            <RowDefinition Height="19*" />
+            <RowDefinition Height="13*" />
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="22*" />
+            <RowDefinition Height="24*" />
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="24*" />
+            <RowDefinition Height="14*" />
+            <RowDefinition Height="22*" />
+            <RowDefinition Height="9*" />
+            <RowDefinition Height="23*" />
+            <RowDefinition Height="17*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="22*" />
+            <ColumnDefinition Width="98*" />
+            <ColumnDefinition Width="54*" />
+            <ColumnDefinition Width="28*" />
+            <ColumnDefinition Width="44*" />
+            <ColumnDefinition Width="52*" />
+            <ColumnDefinition Width="40*" />
+            <ColumnDefinition Width="30*" />
+            <ColumnDefinition Width="18*" />
+            <ColumnDefinition Width="32*" />
+            <ColumnDefinition Width="30*" />
+            <ColumnDefinition Width="10*" />
+            <ColumnDefinition Width="70*" />
+            <ColumnDefinition Width="38*" />
+            <ColumnDefinition Width="152*" />
+            <ColumnDefinition Width="12*" />
+        </Grid.ColumnDefinitions>
+        <Button Content="HALT" Height="41" HorizontalAlignment="Left" Margin="0,3,0,0" Name="button1" VerticalAlignment="Top" Width="151" Background="#59000000" BorderThickness="0" Padding="0" BorderBrush="{x:Null}" UseLayoutRounding="False" ForceCursor="False" Foreground="Black" Grid.Column="14" Grid.RowSpan="4" Grid.Row="1" Click="button1_Click" />
+        <Button Background="#59000000" BorderBrush="{x:Null}" BorderThickness="0" Content="Positioning" ForceCursor="False" Height="41" HorizontalAlignment="Left" Margin="0,2,0,0" Name="button2" Padding="0" UseLayoutRounding="False" VerticalAlignment="Top" Width="151" Grid.Column="14" Grid.Row="5" Grid.RowSpan="2" Click="button2_Click" />
+        <Button Background="#59000000" BorderBrush="{x:Null}" BorderThickness="0" Content="Pass And Shoot" ForceCursor="False" Height="41" HorizontalAlignment="Left" Margin="0,3,0,0" Name="button3" Padding="0" UseLayoutRounding="False" VerticalAlignment="Top" Width="151" Grid.Column="14" Grid.Row="7" Grid.RowSpan="3" Click="button3_Click" />
+        <Button Background="#59000000" BorderBrush="{x:Null}" BorderThickness="0" Content="Test Coefs" ForceCursor="False" Height="57" HorizontalAlignment="Left" Margin="74,2,0,0" Name="button4" Padding="0" UseLayoutRounding="False" VerticalAlignment="Top" Width="77" Grid.Column="14" Grid.Row="10" Grid.RowSpan="4" Click="button4_Click" />
+        <Label Content="Passer ID" Height="28" HorizontalAlignment="Left" Margin="0,3,0,0" Name="label1" VerticalAlignment="Top" Grid.RowSpan="3" Grid.Column="1" Grid.Row="1" />
+        <Label Content="Shooter ID" Height="28" HorizontalAlignment="Left" Margin="0,12,0,0" Name="label2" VerticalAlignment="Top" Grid.RowSpan="3" Grid.Row="3" Grid.Column="1" />
+        <Label Content="Shoot Speed" Height="26" HorizontalAlignment="Left" Margin="3,8,0,0" Name="label4" VerticalAlignment="Top" Grid.Row="7" Grid.RowSpan="2" Grid.Column="4" Grid.ColumnSpan="2" />
+        <TextBox Height="23" Text="0" TextAlignment="Center" HorizontalAlignment="Left" Margin="1,2,0,0" Name="textBox1" VerticalAlignment="Top" Width="53" Grid.Column="2" Grid.Row="2" TextChanged="textBox1_TextChanged" Grid.RowSpan="2" />
+        <TextBox Height="23" Text="1" TextAlignment="Center" HorizontalAlignment="Left" Margin="1,1,0,0" Name="textBox2" VerticalAlignment="Top" Width="53" Grid.Column="2" Grid.Row="4" Grid.RowSpan="2" TextChanged="textBox2_TextChanged" />
+        <Slider  Height="23" Value="3" Maximum="5" Minimum=".1" SmallChange=".01" HorizontalAlignment="Left" Name="PasserDistance" VerticalAlignment="Top" Width="152" TickPlacement="TopLeft" TickFrequency="0.5" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="{StaticResource {x:Static SystemParameters.WheelScrollLinesKey}}" IsDirectionReversed="False" IsManipulationEnabled="False" Grid.ColumnSpan="2" Grid.Row="9" Grid.Column="1" Grid.RowSpan="2" ValueChanged="PasserDistance_ValueChanged" />
+        <Slider AutoToolTipPlacement="TopLeft" Value="4" AutoToolTipPrecision="{StaticResource {x:Static SystemParameters.WheelScrollLinesKey}}" Grid.ColumnSpan="5" Grid.Row="9" Height="23" HorizontalAlignment="Left" IsDirectionReversed="False" IsManipulationEnabled="False" Margin="3,0,0,0" Maximum="15" Minimum="1" Name="PassSpeed" SmallChange=".01" TickFrequency="0.5" TickPlacement="TopLeft" VerticalAlignment="Top" Width="152" Grid.Column="9" Grid.RowSpan="2" ValueChanged="PassSpeed_ValueChanged" />
+        <Slider Name="ShootSpeed" Value="8" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="{StaticResource {x:Static SystemParameters.WheelScrollLinesKey}}" Grid.ColumnSpan="4" Grid.Row="9" Height="23" HorizontalAlignment="Left" IsDirectionReversed="False" IsManipulationEnabled="False" Margin="3,0,0,0" Maximum="15" Minimum="0"  SmallChange=".01" TickFrequency="0.5" TickPlacement="TopLeft" VerticalAlignment="Top" Width="152" Grid.Column="4" Grid.RowSpan="2" ValueChanged="ShootSpeed_ValueChanged" />
+        <Separator Height="7" HorizontalAlignment="Left" Margin="15,3,0,0" Name="separator1" VerticalAlignment="Top" Width="475" Grid.ColumnSpan="12" Grid.Row="7" Grid.Column="1" />
+        <Label Content="Passer Distance X" Height="26" HorizontalAlignment="Left" Margin="0,8,0,0" Name="label5" VerticalAlignment="Top" Grid.Row="7" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Width="125" />
+        <Label Content="Pass Fited Linear Poly" Height="28" HorizontalAlignment="Left" Margin="0,3,0,0" Name="label6" VerticalAlignment="Top" Grid.Column="4" Grid.RowSpan="3" Width="131" Grid.ColumnSpan="3" Grid.Row="1" />
+        <Label Content="X +" Height="28" HorizontalAlignment="Left" Margin="3,3,0,0" Name="label7" VerticalAlignment="Top" Grid.Column="9" Grid.RowSpan="3" Grid.Row="1" />
+        <Label Content="-->" Height="28" HorizontalAlignment="Left" Margin="7,3,0,0" Name="label10" VerticalAlignment="Top" Grid.Column="7" Grid.RowSpan="3" Grid.ColumnSpan="2" Grid.Row="1" />
+        <Label Content="Shoot Fited Linear Poly" Height="28" HorizontalAlignment="Left" Margin="0,9,0,0" Name="label11" VerticalAlignment="Top" Grid.Column="4" Grid.RowSpan="3" Grid.Row="3" Width="137" Grid.ColumnSpan="4" />
+        <Label Content="X +" Height="28" HorizontalAlignment="Left" Margin="3,9,0,0" Name="label12" VerticalAlignment="Top" Grid.Column="9" Grid.RowSpan="3" Grid.Row="3" />
+        <Label Content="-->" Height="28" HorizontalAlignment="Left" Margin="7,9,0,0" Name="label15" VerticalAlignment="Top" Grid.Column="7" Grid.RowSpan="3" Grid.Row="3" Grid.ColumnSpan="2" />
+        <Label Content="Alpha" Height="28" HorizontalAlignment="Left" Margin="0,21,0,0" Name="label16" VerticalAlignment="Top" Grid.Column="4" Grid.Row="5" Grid.RowSpan="3" Width="40" />
+        <Label Content="Beta" Height="28" HorizontalAlignment="Left" Margin="2,21,0,0" Name="label17" VerticalAlignment="Top" Grid.Column="6" Grid.Row="5" Grid.RowSpan="3" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="1,4,0,0" Name="Alpha" Text="0.00" VerticalAlignment="Top" Grid.Column="5" Grid.Row="6" Grid.RowSpan="2" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="1,4,0,0" Name="Beta" Text="0.00" VerticalAlignment="Top" Grid.Column="7" Grid.Row="6" Grid.RowSpan="2" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="11,1,0,0" Name="textBlock3" Text="a" VerticalAlignment="Top" Grid.Column="8" Grid.Row="4" Grid.RowSpan="2" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="11,2,0,0" Name="textBlock4" Text="a" VerticalAlignment="Top" Grid.Column="8" Grid.Row="2" Grid.RowSpan="2" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="2,1,0,0" Name="textBlock5" Text="b" VerticalAlignment="Top" Width="24" FlowDirection="LeftToRight" Grid.Column="10" Grid.Row="4" Grid.RowSpan="2" />
+        <TextBlock Height="23" Margin="1,2,4,0" Name="textBlock6" Text="b" VerticalAlignment="Top" Grid.Column="10" Grid.Row="2" Grid.RowSpan="2" />
+        <Label Content="PassSpeed" Grid.ColumnSpan="3" Grid.RowSpan="2" Height="26" HorizontalAlignment="Left" Margin="3,8,0,0" Name="label8" VerticalAlignment="Top" Grid.Column="9" Grid.Row="7" />
+        <Label Content="Error" Grid.ColumnSpan="2" Grid.RowSpan="3" Height="28" HorizontalAlignment="Left" Margin="85,21,0,0" Name="label3" VerticalAlignment="Top" Width="40" Grid.Column="1" Grid.Row="5" />
+        <TextBlock Grid.Column="2" Grid.Row="6" Grid.RowSpan="2" Height="23" HorizontalAlignment="Left" Margin="32,4,0,0" Name="textBlock1" Text="0.00" VerticalAlignment="Top" />
+        <Slider AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="{StaticResource {x:Static SystemParameters.WheelScrollLinesKey}}" Grid.ColumnSpan="2" Grid.Row="12" Height="23" HorizontalAlignment="Left" IsDirectionReversed="False" IsManipulationEnabled="False" Maximum="5" Minimum=".1" Name="passerYDistance" SmallChange=".01" TickFrequency="0.5" TickPlacement="TopLeft" Value="3" VerticalAlignment="Top" Width="152" Grid.Column="1" ValueChanged="passerYDistance_ValueChanged" />
+        <Label Content="Passer Distance Y" Grid.ColumnSpan="2" Grid.RowSpan="2" Height="26" HorizontalAlignment="Left" Margin="0,5,0,0" Name="label9" VerticalAlignment="Top" Width="125" Grid.Column="1" Grid.Row="10" />
+        <Button Background="#8C88FF00" BorderBrush="{x:Null}" BorderThickness="0" Content="Accept" ForceCursor="False" Grid.RowSpan="2" Height="29" HorizontalAlignment="Left" Name="button5" Padding="0" UseLayoutRounding="False" VerticalAlignment="Bottom" Width="68" Grid.Column="14" Grid.Row="10" AllowDrop="False" Click="button5_Click" />
+        <Button Background="#71FF0707" BorderBrush="{x:Null}" BorderThickness="0" Content="Clear" ForceCursor="False" Grid.RowSpan="2" Height="28" HorizontalAlignment="Left" Name="button6" Padding="0" UseLayoutRounding="False" VerticalAlignment="Top" Width="68" Grid.Column="14" Grid.Row="12" AllowDrop="False" Click="button6_Click" />
+        <CheckBox Content="Spin Back" Checked="checkBox1_Checked" Unchecked="SpinBack_Unchecked" Grid.Column="12" Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="0,2,0,0" Name="SpinBack" VerticalAlignment="Top" />
+       
+    </Grid>
+</Window>

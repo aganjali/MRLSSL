@@ -1,0 +1,26 @@
+﻿<Window x:Class="Visualizer.Windows.GetMatrixWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Get Matrix" Height="319.872" Width="296.31" ResizeMode="NoResize" Loaded="Window_Loaded">
+    <Grid>
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="9.996,36.414,0,0" Name="e00" VerticalAlignment="Top" Width="60" BorderBrush="Black" />
+        <TextBox BorderBrush="Black" Height="23" HorizontalAlignment="Left" Margin="9.996,65.688,0,0" Name="e10" VerticalAlignment="Top" Width="60" />
+        <TextBox BorderBrush="Black" HorizontalAlignment="Left" Margin="9.996,94.248,0,0" Name="e20" Width="60" Height="23" VerticalAlignment="Top" />
+        <TextBox BorderBrush="Black" Margin="75.684,36.414,0,0" Name="e01" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" />
+        <TextBox BorderBrush="Black" Height="23" Margin="75.684,65.688,0,0" Name="e11" VerticalAlignment="Top" HorizontalAlignment="Left" Width="60" />
+        <TextBox BorderBrush="Black" Margin="75.684,94.248,0,0" Name="e21" HorizontalAlignment="Left" Width="60" Height="23" VerticalAlignment="Top" />
+        <TextBox BorderBrush="Black" Height="23" HorizontalAlignment="Left" Margin="141.372,36.414,0,0" Name="e02" VerticalAlignment="Top" Width="60" />
+        <TextBox BorderBrush="Black" Height="23" HorizontalAlignment="Left" Margin="141.372,65.688,0,0" Name="e12" VerticalAlignment="Top" Width="60" />
+        <TextBox BorderBrush="Black" HorizontalAlignment="Left" Margin="141.372,94.248,0,0" Name="e22" Width="60" Height="23" VerticalAlignment="Top" />
+        <Label Height="30.969" HorizontalAlignment="Left" Margin="9.996,0.714,0,0" Name="label1" VerticalAlignment="Top" Width="55" FontFamily="symbol" FontSize="20">e :</Label>
+        <TextBox BorderBrush="Black" Height="23" HorizontalAlignment="Left" Margin="207.872,36.414,0,0" Name="e03" VerticalAlignment="Top" Width="60" />
+        <TextBox BorderBrush="Black" Height="23" HorizontalAlignment="Left" Margin="207.872,65.688,0,0" Name="e13" VerticalAlignment="Top" Width="60" />
+        <TextBox BorderBrush="Black" HorizontalAlignment="Left" Margin="207.872,94.248,0,0" Name="e23" Width="60" Height="23" VerticalAlignment="Top" />
+        <Label FontFamily="symbol" FontSize="20" Height="33.558" HorizontalAlignment="Left" Margin="9.996,123.522,0,0" Name="label2" VerticalAlignment="Top" Width="35.7" ContentStringFormat="">D :</Label>
+        <TextBox BorderBrush="Black" Height="23" HorizontalAlignment="Left" Margin="9.996,162.792,0,0" Name="d00" VerticalAlignment="Top" Width="60" />
+        <TextBox BorderBrush="Black" Height="23" HorizontalAlignment="Left" Margin="9.996,191.352,0,0" Name="d10" VerticalAlignment="Top" Width="60" />
+        <TextBox BorderBrush="Black" Height="23" HorizontalAlignment="Left" Margin="9.996,220.626,0,0" Name="d20" VerticalAlignment="Top" Width="60" />
+        <TextBox BorderBrush="Black" Height="23" HorizontalAlignment="Left" Margin="9.996,249.59,0,0" Name="d30" VerticalAlignment="Top" Width="60" />
+        <Button Height="23" Margin="0,0,6.438,9.282" Name="saveButton" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75.104" Click="saveButton_Click">Save</Button>
+    </Grid>
+</Window>

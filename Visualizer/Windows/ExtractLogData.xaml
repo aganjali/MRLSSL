@@ -1,0 +1,8 @@
+﻿<Window x:Class="MRL.SSL.Visualizer.Windows.ExtractLogData"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ExtractLogData" Height="300" Width="300">
+    <Grid>
+        <TreeView Name="maintree"/>
+    </Grid>
+</Window>

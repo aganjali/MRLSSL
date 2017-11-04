@@ -1,0 +1,101 @@
+﻿<Window x:Class="Visualizer.Windows.AnalizerWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:field="clr-namespace:MRL.SSL.CommonControls.D2DControls;assembly=CommonControls"
+    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+    Title="AnalizerWindow" Height="504" Width="824">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="691.152*" />
+            <ColumnDefinition Width="110.848" />
+        </Grid.ColumnDefinitions>
+        <WindowsFormsHost MouseRightButtonUp="mainHost_MouseRightButtonUp" Name="mainHost" Grid.ColumnSpan="2" Margin="0,0,110.67,0">
+            <field:NewFieldVisualizer x:Name="mainField"/>
+            <!--<WindowsFormsHost.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Select Ball" Name="selectballMenuItem" Click="selectballMenuItem_Click"/>
+                </ContextMenu>
+            </WindowsFormsHost.ContextMenu>-->
+        </WindowsFormsHost>
+        <GroupBox Header="ToolBox" Name="groupBox1" Grid.Column="1" Margin="4.995,0,1.332,0">
+            <Grid Name="toolGrid">
+                <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" Height="42.021" Margin="4.284,30,0,0" Name="bluerobotButton" VerticalAlignment="Top" Checked="bluerobotButton_Checked" Unchecked="bluerobotButton_Unchecked" HorizontalAlignment="Left" Width="40.442">
+                    <Image Source="/Visualizer;component/Images/blue.png"></Image>
+                </telerik:RadToggleButton>
+                <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" Height="42.021" Margin="0,30,4.284,0" Name="yellowrobotButton" VerticalAlignment="Top" HorizontalAlignment="Right" Width="40.959" Checked="yellowrobotButton_Checked" Unchecked="yellowrobotButton_Unchecked">
+                    <Image Source="/Visualizer;component/Images/yellow.png"></Image>
+                </telerik:RadToggleButton>
+                <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" Height="26.872" Margin="0,104,4.284,0" Name="circleButton" VerticalAlignment="Top" Checked="circleButton_Checked" Unchecked="circleButton_Unchecked" HorizontalAlignment="Right" Width="40.959">
+                    <Ellipse Height="20.6" Width="21.8" Fill="Transparent" Stroke="Black"></Ellipse>
+                </telerik:RadToggleButton>
+                <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" Height="26.68" Margin="4.284,104,0,0" Name="lineButton" VerticalAlignment="Top" IsThreeState="False" SnapsToDevicePixels="False" ClickMode="Press" IsChecked="False" Checked="lineButton_Checked" Unchecked="lineButton_Unchecked" HorizontalAlignment="Left" Width="40.338">
+                    <Border Width="30.636" Height="2.5" Background="Black">
+                        <Border.RenderTransform>
+                            <RotateTransform Angle="-25" CenterX="17"/>
+                        </Border.RenderTransform>
+                    </Border>
+                </telerik:RadToggleButton>
+                <telerik:RadButton telerik:StyleManager.Theme="Windows7" Name="undoButton" Height="22.815" Margin="4.284,133,0,0"  VerticalAlignment="Top" Click="undoButton_Click" ToolTip="Undo" HorizontalAlignment="Left" Width="40.382">
+                    <Image Source="/Visualizer;component/Images/undo.png"></Image>
+                </telerik:RadButton>
+                <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="22.815" Margin="0,133,4.284,0" Name="clearButton" VerticalAlignment="Top" Click="clearButton_Click" ToolTip="Clear" HorizontalAlignment="Right" Width="40.959">
+                    <Image Source="/Visualizer;component/Images/clear.png" />
+                </telerik:RadButton>
+                <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" Height="26.872" Margin="0,75,4,0" Name="penButton" VerticalAlignment="Top" HorizontalAlignment="Right" Width="40.959" Checked="penButton_Checked" Unchecked="penButton_Unchecked">
+                    <Image Source="/Visualizer;component/Images/pen.png"></Image>
+                </telerik:RadToggleButton>
+                <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" ClickMode="Press" Height="26.872" IsChecked="False" IsThreeState="False" Margin="4.284,75,0,0" Name="ballButton" SnapsToDevicePixels="False" VerticalAlignment="Top" Checked="ballButton_Checked" Unchecked="ballButton_Unchecked" HorizontalAlignment="Left" Width="40.442">
+                    <Image Source="/Visualizer;component/Images/Soccer-Ball.png"></Image>
+                </telerik:RadToggleButton>
+                <GroupBox Header="Strok width" Margin="4.284,165,4.284,0" Name="groupBox2" Height="91.04" VerticalAlignment="Top">
+                    <Grid Name="strokGrid">
+                        <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" ClickMode="Press" Height="16.918" IsChecked="True" IsThreeState="False" Margin="3.785,5.994,3.845,0" Name="storksmallButton" SnapsToDevicePixels="False" VerticalAlignment="Top" Checked="storksmallButton_Checked" Unchecked="storksmallButton_Unchecked">
+                            <Border Background="Black" Height="1.5" Width="45.371">
+                                
+                            </Border>
+                        </telerik:RadToggleButton>
+                        <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" ClickMode="Press" IsChecked="False" IsThreeState="False" Margin="3.845,25.974,3.845,0" Name="strokmiddleButton" SnapsToDevicePixels="False" Height="17.028" VerticalAlignment="Top" Checked="strokmiddleButton_Checked" Unchecked="strokmiddleButton_Unchecked">
+                            <Border Background="Black" Height="3" Width="45.371" />
+                        </telerik:RadToggleButton>
+                        <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" ClickMode="Press" Height="17.028" IsChecked="False" IsThreeState="False" Margin="3.785,0,3.58,4.662" Name="stroklargButton" SnapsToDevicePixels="False" VerticalAlignment="Bottom" Checked="stroklargButton_Checked" Unchecked="stroklargButton_Unchecked">
+                            <Border Background="Black" Height="6" Width="45.371" />
+                        </telerik:RadToggleButton>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Color" Height="69.368" Margin="4.284,262.672,4.284,0" Name="groupBox3" VerticalAlignment="Top">
+                    <Grid Name="colorGrid">
+                        <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" ClickMode="Press" Height="19" IsChecked="False" IsThreeState="False" Margin="1,3.5,0,0" Name="blackButton" SnapsToDevicePixels="False" VerticalAlignment="Top" HorizontalAlignment="Left" Width="22.157" Checked="blackButton_Checked">
+                            <Border Background="Black" Height="13.5" Width="17" />
+                        </telerik:RadToggleButton>
+                        <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" ClickMode="Press" Height="19" IsChecked="False" IsThreeState="False" Margin="24.5,3.5,25.5,0" Name="redButton" SnapsToDevicePixels="False" VerticalAlignment="Top" Checked="redButton_Checked">
+                            <Border Background="Red" Height="13.5" Width="17" />
+                        </telerik:RadToggleButton>
+                        <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" ClickMode="Press" Height="19" HorizontalAlignment="Right" IsChecked="False" IsThreeState="False" Margin="0,4.002,2,0" Name="blueButton" SnapsToDevicePixels="False" VerticalAlignment="Top" Width="22.157" Checked="blueButton_Checked">
+                            <Border Background="Blue" Height="13.5" Width="17" />
+                        </telerik:RadToggleButton>
+                        <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" ClickMode="Press" HorizontalAlignment="Left" IsChecked="False" IsThreeState="False" Margin="1,24.5,0,0" Name="yellowButton" SnapsToDevicePixels="False" Width="22.157" Height="18.886" VerticalAlignment="Top" Checked="yellowButton_Checked">
+                            <Border Background="Yellow" Height="13.5" Width="17" />
+                        </telerik:RadToggleButton>
+                        <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" ClickMode="Press" IsChecked="False" IsThreeState="False" Margin="24.5,24.5,25.5,0" Name="greenButton" SnapsToDevicePixels="False" Height="18.886" VerticalAlignment="Top" Checked="greenButton_Checked">
+                            <Border Background="GreenYellow" Height="13.5" Width="17" />
+                        </telerik:RadToggleButton>
+                        <telerik:RadToggleButton telerik:StyleManager.Theme="Windows7" ClickMode="Press" HorizontalAlignment="Right" IsChecked="False" IsThreeState="False" Margin="0,24.5,2,0" Name="witeButton" SnapsToDevicePixels="False" Width="22.157" Height="18.886" VerticalAlignment="Top" Checked="witeButton_Checked">
+                            <Border Background="White" Height="13.5" Width="17" />
+                        </telerik:RadToggleButton>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Get Data" Height="81.374" Margin="4.284,338.24,4.284,0" Name="groupBox4" VerticalAlignment="Top">
+                    <Grid Name="grid1">
+                        <telerik:RadButton Margin="1.2,1.6,1.6,0" Click="getRealModelButton_Click" Name="getRealModelButton" Height="25.6" VerticalAlignment="Top">
+                           Real Model
+                        </telerik:RadButton>
+                        <telerik:RadButton Margin="1.2,30.5,1.6,0" Name="getloggermodelButton" Click="getloggermodelButton_Click" Height="26.84" VerticalAlignment="Top">Log Model</telerik:RadButton>
+                    </Grid>
+                </GroupBox>
+                <telerik:RadToggleButton Checked="pointerButton_Checked" Unchecked="pointerButton_Unchecked"  telerik:StyleManager.Theme="Windows7" Height="22.815" Margin="4.284,4.669,4.284,0" Name="pointerButton" ToolTip="Clear" VerticalAlignment="Top">
+                    Pointer
+                </telerik:RadToggleButton>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

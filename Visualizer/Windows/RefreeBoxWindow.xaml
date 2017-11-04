@@ -1,0 +1,42 @@
+﻿<Window x:Class="Visualizer.Windows.RefreeBoxWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Referee Box" Height="567" Width="256" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" >
+    <ScrollViewer>
+        <Grid Width="234" HorizontalAlignment="Center" VerticalAlignment="Center" Height="515">
+            <GroupBox   Header="Blue Team" Margin="6,7,6,0" Name="groupBox1" Height="150" VerticalAlignment="Top" BorderBrush="Blue" Width="220" BorderThickness="3">
+                <Grid>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="34" Margin="6,0,106,6" Name="bluekikckoffButton" VerticalAlignment="Bottom" Click="bluekikckoffButton_Click">Kick Off</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" HorizontalAlignment="Right" Margin="0,48,6,45" Name="bluedirectButton" Width="96" Click="bluedirectButton_Click">Direct</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" HorizontalAlignment="Left" Margin="6,48,0,45" Name="blueindirectButton" Width="96" Click="blueindirectButton_Click">Indirect</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="34.04" HorizontalAlignment="Right" Margin="0,8,6,0" Name="bluepenaltyButton" VerticalAlignment="Top" Width="96" Click="bluepenaltyButton_Click">Penalty</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="34.04" Margin="6,8,0,0" Name="bluetimeoutButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="96" Click="bluetimeoutButton_Click">Time Out</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="34.04" Margin="106,87,0,0" Name="blueBallPlacement" VerticalAlignment="Top" HorizontalAlignment="Left" Width="96" Click="blueBallPlacement_Click">Ball Placement</telerik:RadButton>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Global command" Margin="7,0,7,9" Name="groupBox3" Height="187" VerticalAlignment="Bottom" BorderBrush="Green" BorderThickness="3">
+                <Grid>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="34" Margin="6,87.04,0,0" Name="stopButton" VerticalAlignment="Top" Click="stopButton_Click" HorizontalAlignment="Left" Width="96">Stop</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" HorizontalAlignment="Right" Margin="0,47,6,0" Name="normalstartButton" Width="96" Click="normalstartButton_Click" Height="34.04" VerticalAlignment="Top">Normal Start</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Margin="6,47,0,0" Name="forcestartButton" HorizontalAlignment="Left" Width="96" Click="forcestartButton_Click" Height="34.04" VerticalAlignment="Top">Force Start</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="34.04" HorizontalAlignment="Right" Margin="0,7,6,0" Name="comhereButton" VerticalAlignment="Top" Width="96" Click="comhereButton_Click">Come Here</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="34.04" Margin="6,7,0,0" Name="haltButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="96" Click="haltButton_Click">Halt</telerik:RadButton>
+                    <telerik:RadButton Height="34" Margin="0,87.04,6,0" Name="robotcontrollerButton" telerik:StyleManager.Theme="Windows7" VerticalAlignment="Top" HorizontalAlignment="Right" Width="96" Click="robotcontrollerButton_Click">Robot Controller</telerik:RadButton>
+                    <telerik:RadButton Height="34" Margin="6,0,0,5" Name="moveRobotButton" telerik:StyleManager.Theme="Windows7" VerticalAlignment="Bottom" Click="moveRobotButton_Click" HorizontalAlignment="Left" Width="96">Move Robot
+                    </telerik:RadButton>
+                    <telerik:RadButton Height="34" Margin="0,0,6,5" Name="radButton1" telerik:StyleManager.Theme="Windows7" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="96" Click="radButton1_Click">Matrix Calculatore</telerik:RadButton>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Yellow Team" Margin="6,163,6,0" Name="groupBox2" Height="150" VerticalAlignment="Top" BorderBrush="Yellow" Width="220" BorderThickness="3">
+                <Grid>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7"  Height="34" Margin="6,0,106,6" Name="yellowkickoffButton" VerticalAlignment="Bottom" Click="yellowkickoffButton_Click">Kick Off</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" HorizontalAlignment="Right" Margin="0,48,6,45" Name="yellowdirectButton" Width="96" Click="yellowdirectButton_Click">Direct</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" HorizontalAlignment="Left" Margin="6,48,0,45" Name="yellowindirectbutton" Width="96" Click="yellowindirectbutton_Click">Indirect</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="34.04" HorizontalAlignment="Right" Margin="0,8,6,0" Name="yellowpenaltyButton" VerticalAlignment="Top" Width="96" Click="yellowpenaltyButton_Click">Penalty</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="34.04" HorizontalAlignment="Left" Margin="6,8,0,0" Name="yellowtimeoutButton" VerticalAlignment="Top" Width="96" Click="yellowtimeoutButton_Click">Time Out</telerik:RadButton>
+                    <telerik:RadButton telerik:StyleManager.Theme="Windows7" Height="34.04" Margin="106,87,0,0" Name="YellowBallPlacement" VerticalAlignment="Top" HorizontalAlignment="Left" Width="96" Click="YellowBallPlacement_Click">Ball Placement</telerik:RadButton>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
+</Window>

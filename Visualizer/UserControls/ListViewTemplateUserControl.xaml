@@ -1,0 +1,11 @@
+﻿<UserControl x:Class="Visualizer.UserControls.ListViewTemplateUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Height="26" Width="114">
+    <Grid Name="ParentGrid">
+        <StackPanel Orientation="Horizontal">
+            <ComboBox Name="namesComboBox" SelectionChanged="namesComboBox_SelectionChanged" MinWidth="38" Width="47" />
+            <Label>:</Label>
+            <TextBox Name="valueTextBox" MinWidth="25" >asdasda</TextBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

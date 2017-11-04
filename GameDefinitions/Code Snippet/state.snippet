@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>creat state</Title>
+			<Shortcut>state</Shortcut>
+			<Description>Code snippet for creat state</Description>
+			<Author>MRL SSL</Author>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+				<SnippetType>SurroundsWith</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>state</ID>
+					<ToolTip>State</ToolTip>
+					<Default>state</Default>
+				</Literal>
+				<Literal>
+					<ID>name</ID>
+					<ToolTip>name of state</ToolTip>
+					<Default>untitle</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp"><![CDATA[State $state$ = new State("$name$");]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>

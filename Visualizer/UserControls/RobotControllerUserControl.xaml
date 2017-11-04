@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Visualizer.UserControls.RobotControllerUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Height="151" Width="232.764"  xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation">
+    <Border Margin="3,3,3,3" BorderBrush="Black" BorderThickness="1">
+        <Grid >
+            <telerik:RadToggleButton Content="Chip Kick" telerik:StyleManager.Theme="Windows7" Margin="66,0,102,32" Name="chipkickButton" Height="23.9" VerticalAlignment="Bottom" Checked="chipkickButton_Checked" Unchecked="chipkickButton_Unchecked" HorizontalAlignment="Stretch" />
+            <telerik:RadToggleButton Content="Spin Back" telerik:StyleManager.Theme="Windows7" Height="24" HorizontalAlignment="Left" Margin="3,0,0,59" VerticalAlignment="Bottom" Width="60" Name="spinbackButton" Checked="spinbackButton_Checked" Unchecked="spinbackButton_Unchecked" />
+            <telerik:RadToggleButton Content="Has Delay" Height="24" Margin="3,0,0,32" telerik:StyleManager.Theme="Windows7" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="60" Name="hasdelayButton" Checked="hasdelayButton_Checked" Unchecked="hasdelayButton_Unchecked"></telerik:RadToggleButton>
+            <Label Margin="127,0,0,82" Name="label22" HorizontalAlignment="Left" Width="40" Height="28.2" VerticalAlignment="Bottom">V X :</Label>
+            <Label Margin="128,0,0,55" Name="label23" HorizontalAlignment="Left" Width="40" Height="28" VerticalAlignment="Bottom">V Y :</Label>
+            <Label Margin="132,0,0,28" Name="label24" Height="28" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="40">W :</Label>
+            <my:NumericUpDown DecimalPlaces="3" HorizontalAlignment="Left" Increment="0.01" Margin="162,0,0,86" Maximum="4" Minimum="-4" Name="vxTextBox" Value="0" Width="60" xmlns:my="clr-namespace:Enterprise.Wpf;assembly=Enterprise.Wpf" Height="22.2" VerticalAlignment="Bottom" ValueChanged="vxTextBox_ValueChanged" />
+            <my:NumericUpDown DecimalPlaces="3" HorizontalAlignment="Left" Increment="0.01" Margin="162,0,0,58" Maximum="4" Minimum="-4" Name="vyTextBox" Value="0" Width="59.612" xmlns:my="clr-namespace:Enterprise.Wpf;assembly=Enterprise.Wpf" Height="22" VerticalAlignment="Bottom" ValueChanged="vyTextBox_ValueChanged" />
+            <my:NumericUpDown DecimalPlaces="3" HorizontalAlignment="Left" Increment="0.01" Margin="162,0,0,31" Maximum="4" Minimum="-4" Name="wTextBox" Value="0" Width="59.612" xmlns:my="clr-namespace:Enterprise.Wpf;assembly=Enterprise.Wpf" Height="21.944" VerticalAlignment="Bottom"  ValueChanged="wTextBox_ValueChanged" />
+            <Label Margin="0,0,0,84" Name="label1" HorizontalAlignment="Left" Width="73.2" Height="28.2" VerticalAlignment="Bottom">Kick Power :</Label>
+            <my:NumericUpDown DecimalPlaces="0" Increment="1" Margin="73,0,0,87" Maximum="255" Minimum="0" Name="kickpowerTextBox" Value="0" xmlns:my="clr-namespace:Enterprise.Wpf;assembly=Enterprise.Wpf" Height="21.8" VerticalAlignment="Bottom"  ValueChanged="kickpowerTextBox_ValueChanged" HorizontalAlignment="Left" Width="50" />
+            <Label Height="28" Margin="2,3.335,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="77.8">Robot ID :</Label>
+            <Label Height="28" Margin="68,2,104,0" Name="idLabel" VerticalAlignment="Top" FontWeight="Bold" Foreground="Red" FontSize="14">0</Label>
+            <Button Height="23" HorizontalAlignment="Left" Margin="162,6,0,0" Name="resetButton" VerticalAlignment="Top" Width="60" Click="resetButton_Click">Reset</Button>
+            <telerik:RadToggleButton Height="23.6" HorizontalAlignment="Stretch" Margin="66,0,102,59" Name="kickEnableToggleButton" telerik:StyleManager.Theme="Windows7" VerticalAlignment="Bottom" Checked="kickEnableToggleButton_Checked" Unchecked="kickEnableToggleButton_Unchecked">Kick</telerik:RadToggleButton>
+            <telerik:RadToggleButton Content="With Back Sensore"
+                                     Height="24"
+                                     HorizontalAlignment="Left"
+                                     Margin="3,0,0,5"
+                                     Name="backSensoreToggleButton"
+                                     telerik:StyleManager.Theme="Windows7"
+                                     VerticalAlignment="Bottom"
+                                     Width="120"
+                                     Checked="backSensoreToggleButton_Checked"
+                                     Unchecked="backSensoreToggleButton_Unchecked"/>
+        </Grid>
+    </Border>
+</UserControl>

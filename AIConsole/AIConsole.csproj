@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{34F49838-A923-42A6-80D7-486F2AD31652}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MRL.SSL.AIConsole</RootNamespace>
+    <AssemblyName>AIConsole</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\AIConsole.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\AIConsole.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;D:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Logger">
+      <HintPath>..\Third Party\Assemblies\Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="Meta.Numerics">
+      <HintPath>..\Third Party\Assemblies\Meta.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\Third Party\Assemblies\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Engine\CommonDelegate.cs" />
+    <Compile Include="Engine\DefenceMatchers\DefenceTest.cs" />
+    <Compile Include="Engine\DefenceMatchers\FreeKickDefence.cs" />
+    <Compile Include="Engine\DefenceMatchers\NormalDefenceAssigner.cs" />
+    <Compile Include="Engine\EngineManager.cs" />
+    <Compile Include="Engine\GameStrategyEngine.cs" />
+    <Compile Include="Engine\MotionModel.cs" />
+    <Compile Include="Engine\NormalSharedState.cs" />
+    <Compile Include="Engine\PenaltyGoalKeeperLearningUnit.cs" />
+    <Compile Include="Engine\PlayBase.cs" />
+    <Compile Include="Engine\Program.cs" />
+    <Compile Include="Engine\RefereeConnection.cs" />
+    <Compile Include="Engine\RoleAssigner.cs" />
+    <Compile Include="Engine\RoleBase.cs" />
+    <Compile Include="Engine\RoleMatcher.cs" />
+    <Compile Include="Engine\SkillBase.cs" />
+    <Compile Include="Engine\StaticRoleAssigner.cs" />
+    <Compile Include="Engine\StrategyBase.cs" />
+    <Compile Include="Engine\StrategyManager.cs" />
+    <Compile Include="Merger and Tracker\Accurate\BallTracker.cs" />
+    <Compile Include="Merger and Tracker\Accurate\Kalman.cs" />
+    <Compile Include="Merger and Tracker\Accurate\RobotTracker.cs" />
+    <Compile Include="Merger and Tracker\Accurate\vtracker.cs" />
+    <Compile Include="Merger and Tracker\ChipKickPrediction.cs" />
+    <Compile Include="Merger and Tracker\DecisionMaking.cs" />
+    <Compile Include="Merger and Tracker\Fast\KalmanFilter.cs" />
+    <Compile Include="Merger and Tracker\Fast\Tracker.cs" />
+    <Compile Include="Merger and Tracker\GlobalMerger.cs" />
+    <Compile Include="Merger and Tracker\HiddenBallGuesser.cs" />
+    <Compile Include="Merger and Tracker\NewMerger\Merger.cs" />
+    <Compile Include="Merger and Tracker\Utillity.cs" />
+    <Compile Include="Plays\ComeHereNewPlay.cs" />
+    <Compile Include="Plays\ComponentsTestPlay.cs" />
+    <Compile Include="Plays\HaltPlay.cs" />
+    <Compile Include="Plays\MoveRobotPlay.cs" />
+    <Compile Include="Plays\Opp\BusDefencePlay.cs" />
+    <Compile Include="Plays\Opp\OppBallPlacePlay.cs" />
+    <Compile Include="Plays\Opp\OppCornerMarkPlay.cs" />
+    <Compile Include="Plays\Opp\OppCornerPlay.cs" />
+    <Compile Include="Plays\Opp\OppFreeKickMiddlePlay.cs" />
+    <Compile Include="Plays\Opp\OppFreeKickRearPlay.cs" />
+    <Compile Include="Plays\Opp\OppKickOffPlay.cs" />
+    <Compile Include="Plays\Opp\OppPenaltyPlay.cs" />
+    <Compile Include="Plays\Opp\OppNewPenaltyPlay.cs" />
+    <Compile Include="Plays\Our\NewPassingNormalPlay.cs" />
+    <Compile Include="Plays\Our\NewNormalPlay.cs" />
+    <Compile Include="Plays\Our\OurBallPlacePlay.cs" />
+    <Compile Include="Plays\Our\OurNewPenaltyPlay.cs" />
+    <Compile Include="Plays\PassShootTune.cs" />
+    <Compile Include="Roles\ActiveRoles\Actions\NewPassDesc.cs" />
+    <Compile Include="Roles\ActiveRoles\Actions\RotateAndKick.cs" />
+    <Compile Include="Roles\ActiveRoles\Actions\RotateAndPassDesc.cs" />
+    <Compile Include="Roles\ActiveRoles\New\ActiveRole2017.cs" />
+    <Compile Include="Roles\ActiveRoles\New\AttackerRole2017.cs" />
+    <Compile Include="Roles\ActiveRoles\New\NewAttacker2.cs" />
+    <Compile Include="Roles\ActiveRoles\New\NewAttacker3Role.cs" />
+    <Compile Include="Roles\BallPlacement\BallPlacerRole.cs" />
+    <Compile Include="Roles\Defending\BusDefenceRoles\BusBase.cs" />
+    <Compile Include="Roles\Defending\BusDefenceRoles\BusRole1.cs" />
+    <Compile Include="Roles\Defending\BusDefenceRoles\BusRole2.cs" />
+    <Compile Include="Roles\Defending\BusDefenceRoles\BusRole3.cs" />
+    <Compile Include="Roles\Defending\BusDefenceRoles\BusRole4.cs" />
+    <Compile Include="Roles\Defending\BusDefenceRoles\BusStopRole1.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\ArtiCover.cs" />
+    <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole1.cs" />
+    <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole2.cs" />
+    <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole3.cs" />
+    <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole4.cs" />
+    <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole5.cs" />
+    <Compile Include="Roles\Defending\Normal\CenterBackNormalRole.cs" />
+    <Compile Include="Roles\Defending\Normal\LeftBackMarkerNormalRole.cs" />
+    <Compile Include="Roles\Defending\Normal\RightBackMarkerNormalRole.cs" />
+    <Compile Include="Roles\GoalieRole\BusGoalieCornerRole.cs" />
+    <Compile Include="Roles\GoalieRole\GoalieCornerRole.cs" />
+    <Compile Include="Roles\GoalieRole\NewStaticGoalieRole.cs" />
+    <Compile Include="Roles\GoalieRole\StaticGoalieRole.cs" />
+    <Compile Include="Roles\Stop\RotationalStopCover.cs" />
+    <Compile Include="Roles\TestRole\DefenderCornerRole1Test.cs" />
+    <Compile Include="Roles\TestRole\DefenderCornerRole2Test.cs" />
+    <Compile Include="Roles\ActiveRoles\Actions\ActionDescriptionBase.cs" />
+    <Compile Include="Roles\ActiveRoles\Actions\ConflictDesc.cs" />
+    <Compile Include="Roles\ActiveRoles\Actions\PassDesc.cs" />
+    <Compile Include="Roles\ActiveRoles\Actions\ShootDesc.cs" />
+    <Compile Include="Roles\ActiveRoles\Actions\DibbleDesc.cs" />
+    <Compile Include="Roles\ActiveRoles\New\ActiveRole2.cs" />
+    <Compile Include="Roles\ActiveRoles\New\NewPickerRole.cs" />
+    <Compile Include="Plays\Our\OurStrategyPlay.cs" />
+    <Compile Include="Plays\Our\OurKickOffPlay.cs" />
+    <Compile Include="Plays\Our\StopPlay.cs" />
+    <Compile Include="Plays\Our\OurPenaltyPlay.cs" />
+    <Compile Include="Plays\RotateTunePlay.cs" />
+    <Compile Include="Plays\TestPlays\GoaliTestPlay.cs" />
+    <Compile Include="Plays\TestPlays\MoveTestPlay.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Roles\ActiveRoles\ActiveRole.cs" />
+    <Compile Include="Roles\ActiveRoles\AttackerRole.cs" />
+    <Compile Include="Roles\ActiveRoles\CutBallRole.cs" />
+    <Compile Include="Roles\ActiveRoles\New\NewActiveRole.cs" />
+    <Compile Include="Roles\ActiveRoles\New\NewAttackerRole.cs" />
+    <Compile Include="Roles\ActiveRoles\New\NewSupporter2Role.cs" />
+    <Compile Include="Roles\ActiveRoles\NewSupporterRole.cs" />
+    <Compile Include="Roles\ActiveRoles\OneTouchRole.cs" />
+    <Compile Include="Roles\ActiveRoles\SupporterRole.cs" />
+    <Compile Include="Roles\CatchAndRotateBallRole.cs" />
+    <Compile Include="Roles\ComehereRole.cs" />
+    <Compile Include="Roles\ComponetsTestRole.cs" />
+    <Compile Include="Roles\DataBridge.cs" />
+    <Compile Include="Roles\Defender.cs" />
+    <Compile Include="Roles\DefenderRole.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\CornerStopRole.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\DefenderCornerRole1.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\DefenderCornerRole2.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\DefenderCornerRole3.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\DefenderCornerRole4.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\DefenderMarkerRole.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\DefenderMarkerRole2.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\DefenderMarkerRole3.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\NewDefenderMarkerRole2.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\NewDefenderMarkerRole3.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\NewDefenderMrkerRole.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\RearStopRole.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\RegionalDefenderRole.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\RegionalDefenderRole2.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\StopCoverRole.cs" />
+    <Compile Include="Roles\Defending\DefenceUtilities.cs" />
+    <Compile Include="Roles\Defending\DefenderStopRole1.cs" />
+    <Compile Include="Roles\Defending\DefenderStopRole2.cs" />
+    <Compile Include="Roles\Defending\DefendGotoPointRole.cs" />
+    <Compile Include="Roles\Defending\IFirstDefender.cs" />
+    <Compile Include="Roles\Defending\IGoalie.cs" />
+    <Compile Include="Roles\Defending\IMarkerDefender.cs" />
+    <Compile Include="Roles\Defending\IRegionalDefender.cs" />
+    <Compile Include="Roles\Defending\ISecondDefender.cs" />
+    <Compile Include="Roles\Defending\MarkerRoleStatic.cs" />
+    <Compile Include="Roles\Defending\Normal\DefenderMarkerNormalRole1.cs" />
+    <Compile Include="Roles\Defending\Normal\DefenderMarkerNormalRole2.cs" />
+    <Compile Include="Roles\Defending\Normal\DefenderMarkerNormalRole3.cs" />
+    <Compile Include="Roles\Defending\Normal\DefenderMarkerNormalRole4.cs" />
+    <Compile Include="Roles\Defending\Normal\DefenderNormalRole1.cs" />
+    <Compile Include="Roles\Defending\Normal\DefenderNormalRole2.cs" />
+    <Compile Include="Roles\Defending\ParticleSwarm.cs" />
+    <Compile Include="Roles\Defending\SpecificRandomGenerator.cs" />
+    <Compile Include="Roles\Defending\StaticDefender1.cs" />
+    <Compile Include="Roles\Defending\StaticDefender2.cs" />
+    <Compile Include="Roles\DiveStopRole.cs" />
+    <Compile Include="Roles\GoalieRole\GoalieNormalRole.cs" />
+    <Compile Include="Roles\GotoPointRole.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Roles\HaltRole.cs" />
+    <Compile Include="Roles\MoveRobotRole.cs" />
+    <Compile Include="Roles\Penalty\PenaltyGoalieRole.cs" />
+    <Compile Include="Roles\Penalty\IntelligencePenaltyGoalKeeperRole.cs" />
+    <Compile Include="Roles\Penalty\PenaltyKeeperRole.cs" />
+    <Compile Include="Roles\Penalty\PenaltyShooterRole.cs" />
+    <Compile Include="Roles\Positionning\OppPenaltyPositionerRole1.cs" />
+    <Compile Include="Roles\Positionning\OppPenaltyPositionerRole2.cs" />
+    <Compile Include="Roles\Positionning\OppPenaltyPositionerRole3.cs" />
+    <Compile Include="Roles\Positionning\OppPenaltyPositionerRole4.cs" />
+    <Compile Include="Roles\Positionning\OppPenaltyPositionerRole5.cs" />
+    <Compile Include="Roles\Positionning\PenaltyPositionningRole1.cs" />
+    <Compile Include="Roles\Positionning\PenaltyPositionningRole2.cs" />
+    <Compile Include="Roles\GoalieRole\GoalieStopRole.cs" />
+    <Compile Include="Roles\ShamsaE.cs" />
+    <Compile Include="Roles\Stop\StopCoverRole.cs" />
+    <Compile Include="Roles\Stop\StopRole1.cs" />
+    <Compile Include="Roles\Stop\StopRole2.cs" />
+    <Compile Include="Roles\Stop\StopRole3.cs" />
+    <Compile Include="Roles\TestRole\CutTestRole.cs" />
+    <Compile Include="Roles\TestRole\NewCutBallTestRole.cs" />
+    <Compile Include="Roles\TestRole\OneTouchTestRole.cs" />
+    <Compile Include="Roles\TestRole\TestRole.cs" />
+    <Compile Include="Skills\ActiveSkills\CutBallSkill.cs" />
+    <Compile Include="Skills\ActiveSkills\GetBallSkill.cs" />
+    <Compile Include="Skills\ActiveSkills\OneTouchSkill.cs" />
+    <Compile Include="Skills\ActiveSkills\PickOppSkill.cs" />
+    <Compile Include="Skills\ActiveSkills\ActiveRotateSkill.cs" />
+    <Compile Include="Skills\ActiveSkills\RotateWithBallSkill.cs" />
+    <Compile Include="Skills\ActiveSkills\SupportBallSkill.cs" />
+    <Compile Include="Skills\CatchBallSkill.cs" />
+    <Compile Include="Skills\CircularMotionSkill.cs" />
+    <Compile Include="Skills\GoalieSkills\GoaliDiveSkill.cs" />
+    <Compile Include="Skills\GoalieSkills\GoalieInPenaltyAreaSkill.cs" />
+    <Compile Include="Skills\GoalieSkills\GoaliePositioningSkill.cs" />
+    <Compile Include="Skills\GotoPointSkill.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Skills\rotatedrible.cs" />
+    <Compile Include="Skills\RotateWheelsSkill.cs" />
+    <Compile Include="Skills\StarkCatchSkill.cs" />
+    <Compile Include="Skills\TestSkill\NewCutBallSkill.cs" />
+    <Compile Include="Strategies\Faeze\Strategy12.cs" />
+    <Compile Include="Strategies\Faeze\PounderStrategy.cs" />
+    <Compile Include="Strategies\Faeze\SimpleShootStrategy.cs" />
+    <Compile Include="Strategies\Faeze\WallMounting.cs" />
+    <Compile Include="Strategies\Mamad\3inMiddle.cs" />
+    <Compile Include="Strategies\Mamad\LineAttakers.cs" />
+    <Compile Include="Strategies\Mamad\new1-2.cs" />
+    <Compile Include="Strategies\Mamad\NewCornerPassShoot.cs" />
+    <Compile Include="Strategies\Mamad\RearOneTouchPassBack.cs" />
+    <Compile Include="Strategies\Mamad\Rotational.cs" />
+    <Compile Include="Strategies\Syncronizer.cs" />
+    <Compile Include="Strategies\Vahid\CrazyRobots.cs" />
+    <Compile Include="Strategies\Vahid\RushingAttackers.cs" />
+    <Compile Include="Strategies\Vahid\RearChipAndConfuse.cs" />
+    <Compile Include="Strategies\Vahid\RearDirectTwoPass.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonCLasses\CommonCLasses.csproj">
+      <Project>{AC0BFBED-A264-4980-9E61-E2254DF142C6}</Project>
+      <Name>CommonCLasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GameDefinitions\GameDefinitions.csproj">
+      <Project>{6C6869F5-B118-4B53-93B1-FC1149BCBC76}</Project>
+      <Name>GameDefinitions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GamePlanner\GamePlannerCore\GamePlanner.csproj">
+      <Project>{A3C4F8E8-F068-4D40-8B94-47DCBD6686EF}</Project>
+      <Name>GamePlanner</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GPUDirect\GPUDirect.csproj">
+      <Project>{0FF8E98C-5502-444D-B853-61D2036F2C49}</Project>
+      <Name>GPUDirect</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MotionPlanner\MotionPlanner\MotionPlanner.csproj">
+      <Project>{7448FB95-0E59-467B-8AD5-D2BE5139E622}</Project>
+      <Name>MotionPlanner</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Roles\Penalty\NewPenaltyShooterRole.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

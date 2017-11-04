@@ -1,0 +1,145 @@
+﻿<Window x:Class="MRL.SSL.Visualizer.Windows.StrategyManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:control="clr-namespace:MRL.SSL.CommonControls.D2DControls;assembly=CommonControls"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        
+        Title="StrategyManagerWindow"
+        Height="447"
+        Width="526">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="407*" />
+            <ColumnDefinition Width="130*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="216*" />
+            <RowDefinition Height="300" />
+        </Grid.RowDefinitions>
+        
+        <ListView Margin="0,27,4,0"
+                  Name="techniquesListView"
+                  MouseLeftButtonDown="techniquesListView_MouseLeftButtonDown"
+                  SelectionChanged="techniquesListView_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name"
+                                    Width="100"
+                                    DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Attendance"
+                                    Width="70"
+                                    DisplayMemberBinding="{Binding AttendanceSize}" />
+
+                    <GridViewColumn Header="Probability"
+                                    Width="70">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Probability}"
+                                         Name="probabilityTextBox"
+                                         TextChanged="probabilityTextBox_TextChanged" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Enabled"
+                                    Width="60">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Enabled}"
+                                          Name="enabledTechCheckBox"
+                                          Checked="enabledTechCheckBox_Checked"
+                                          Unchecked="enabledTechCheckBox_Unchecked" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="About"
+                                    Width="100"
+                                    DisplayMemberBinding="{Binding About}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button Height="23"
+                HorizontalAlignment="Left"
+                Name="refreshButton"
+                VerticalAlignment="Top"
+                Width="31"
+                Margin="3,3,0,0"
+                Click="refreshButton_Click">
+            <Image Source="/Visualizer;component/Images/refresh1.png"></Image>
+        </Button>
+        <Grid Grid.Row="1"
+              Name="grid1"
+              Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="378*" />
+                <ColumnDefinition Width="130*" />
+            </Grid.ColumnDefinitions>
+            <WindowsFormsHost Name="windowsFormsHost1"
+                              Margin="0,6,0,0">
+                <control:NewFieldVisualizer x:Name="mainField"
+                                            strategyviewer="True" />
+                
+            </WindowsFormsHost>
+            <ListView Name="vectorList"
+                      Margin="7,6,5,31"
+                      Grid.Column="1">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="From" Width="50"
+                                        DisplayMemberBinding="{Binding X}" />
+                        <GridViewColumn Header="To"
+                                        Width="50"
+                                        DisplayMemberBinding="{Binding Y}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+                <Button Content="Add"
+                    Grid.Column="1"
+                    Height="23"
+                    Margin="7,0,0,4"
+                    Name="addvecButton"
+                    VerticalAlignment="Bottom"
+                    Click="addvecButton_Click"
+                    HorizontalAlignment="Left"
+                    Width="55" />
+            <Button Content="Remove"
+                    Height="23"
+                    Margin="65,0,0,4"
+                    Name="removevecButton"
+                    VerticalAlignment="Bottom"
+                    Grid.Column="1"
+                    Click="removevecButton_Click"
+                    HorizontalAlignment="Left"
+                    Width="59" />
+        </Grid>
+        <ListView Margin="0,56,5,29"
+                  Name="gameStatusListView"
+                  Grid.Column="1">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Game Status"
+                                    DisplayMemberBinding="{Binding}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ComboBox Height="23"
+                  Margin="0,27,53,0"
+                  Name="statusComboBox"
+                  VerticalAlignment="Top"
+                  Grid.Column="1" />
+        <Button Content="Add"
+                Grid.Column="1"
+                Height="23"
+                HorizontalAlignment="Right"
+                Margin="0,27,5,0"
+                Name="addStatusButton"
+                VerticalAlignment="Top"
+                Width="42"
+                Click="addStatusButton_Click" />
+        <Button Content="Remove"
+                Height="23"
+                Margin="0,0,5,0"
+                Name="removestatusButton"
+                VerticalAlignment="Bottom"
+                Click="removestatusButton_Click"
+                Grid.Column="1" />
+    </Grid>
+</Window>

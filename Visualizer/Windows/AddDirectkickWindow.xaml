@@ -1,0 +1,15 @@
+﻿<Window x:Class="Visualizer.Windows.AddDirectkickWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:my="clr-namespace:Enterprise.Wpf;assembly=Enterprise.Wpf"
+    Title="Direct Kick" Height="168" Width="223" ResizeMode="NoResize">
+    <Grid>
+        <Label Height="28" Margin="10,38,0,0" Name="label1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="50">Power :</Label>
+        <Label Margin="10,68,0,0" Name="label2" HorizontalAlignment="Left" Width="50" Height="28" VerticalAlignment="Top">Speed :</Label>
+        <my:NumericUpDown Height="23" Margin="66,40,15,0" Name="powerTextBox" VerticalAlignment="Top" BorderBrush="Black" BorderThickness="0.5" Maximum="255" />
+        <my:NumericUpDown Margin="66,70,15,0" Name="speedTextBox" BorderBrush="Black" BorderThickness="0.5" DecimalPlaces="2" Height="23" VerticalAlignment="Top" />
+        <Button Height="23" Margin="66,99,41,0" Name="addbutton" VerticalAlignment="Top" Click="addbutton_Click">Add</Button>
+        <Label Height="28" HorizontalAlignment="Left" Margin="30,8,0,0" Name="label3" VerticalAlignment="Top" Width="30">ID :</Label>
+        <my:NumericUpDown BorderBrush="Black" BorderThickness="0.5" Value="1" Minimum="0" Height="23" Margin="66,10,82,0" Maximum="7" Name="robotidNum" VerticalAlignment="Top" />
+    </Grid>
+</Window>

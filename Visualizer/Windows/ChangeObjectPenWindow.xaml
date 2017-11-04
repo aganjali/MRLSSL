@@ -1,0 +1,43 @@
+﻿<Window x:Class="Visualizer.Windows.ChangeObjectPenWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Change Object Pen" Height="260.61" Width="216.342" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="193.494*" />
+            <RowDefinition Height="29.116*" />
+        </Grid.RowDefinitions>
+        <Label Height="28" Margin="31.416,22,0,0" Name="label1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="52">Color  :</Label>
+        <Label Height="28" Margin="29.988,56,0,0" Name="label2" VerticalAlignment="Top" HorizontalAlignment="Left" Width="52">Width :</Label>
+        <Label Margin="17.136,124,0,0" Name="label3" HorizontalAlignment="Left" Width="60" Height="28" VerticalAlignment="Top">End Cap :</Label>
+        <Label Margin="12.852,90,0,0" Name="label4" HorizontalAlignment="Left" Width="71" Height="28" VerticalAlignment="Top">Start Cap :</Label>
+        <Label Height="28" Margin="6.426,157.962,0,0" Name="label5" VerticalAlignment="Top" HorizontalAlignment="Left" Width="71">Dash Style :</Label>
+        <Border BorderBrush="Black" Height="25" Margin="82.824,22.98,0,0" Name="border1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="27.98">
+            <Border Background="Black" BorderBrush="Black" Height="20" Name="objectColorBorder" Width="22" />
+        </Border>
+        <Button Height="26" Margin="116.382,21.98,0,0" Name="objectcolorselectButton" VerticalAlignment="Top" HorizontalAlignment="Left" Width="29.209" Click="objectcolorselectButton_Click">...</Button>
+        <TextBox Height="23" Margin="82.824,58.696,0,0" Name="witdhTextBox" VerticalAlignment="Top" BorderBrush="Black" BorderThickness="0.5" HorizontalAlignment="Left" Width="27.98">0.01</TextBox>
+        <ComboBox Margin="82.824,94.047,0,0" Name="startcapComboBox" HorizontalAlignment="Left" Width="91.907" Height="23" VerticalAlignment="Top" >
+            <ComboBoxItem Content="Flat"/>
+            <ComboBoxItem Content="Round"/>
+            <ComboBoxItem Content="Square"/>            
+            <ComboBoxItem Content="Triangle"/>
+        </ComboBox>
+        <ComboBox Margin="82.824,126.73,0,0" Name="endcapComboBox" Height="23.214" VerticalAlignment="Top" HorizontalAlignment="Left" Width="92.102" >
+            <ComboBoxItem Content="Flat"/>
+            <ComboBoxItem Content="Round"/>
+            <ComboBoxItem Content="Square"/>
+            <ComboBoxItem Content="Triangle"/>
+        </ComboBox>
+        <ComboBox Height="23" Margin="82.824,160.961,0,0" Name="dashstyleComboBox" VerticalAlignment="Top" HorizontalAlignment="Left" Width="92.135" >
+            <ComboBoxItem Content="Dash"/>
+            <ComboBoxItem Content="DashDot"/>
+            <ComboBoxItem Content="DashDotDot"/>
+            <ComboBoxItem Content="Dot"/>
+            <ComboBoxItem Content="Solid"/>
+            
+        </ComboBox>
+        <Label Height="28" Margin="110.67,56.695,0,0" Name="label6" VerticalAlignment="Top" HorizontalAlignment="Left" Width="21.872">m</Label>
+        <Button Margin="0,2.856,2.856,2.856" Name="okButton" HorizontalAlignment="Right" Width="75.104" Grid.Row="1" Click="okButton_Click">Ok</Button>
+    </Grid>
+</Window>

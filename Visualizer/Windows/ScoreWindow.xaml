@@ -1,0 +1,256 @@
+﻿<Window x:Class="MRL.SSL.Visualizer.Windows.ScoreWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ScoreWindow"
+        Height="505"
+        Width="326"
+        MaxWidth="326"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="220" />
+            <RowDefinition Height="249*" />
+            <RowDefinition Height="33" />
+        </Grid.RowDefinitions>
+        <GroupBox Header="Info">
+            <Grid>
+                <Label Content="RobotX :"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Margin="7,5,0,0"
+                       Name="label1"
+                       VerticalAlignment="Top" />
+                <Label Content="RobotY :"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Margin="7,39,0,0"
+                       Name="label2"
+                       VerticalAlignment="Top" />
+                <TextBox Height="23"
+                         HorizontalAlignment="Left"
+                         Margin="68,7,0,0"
+                         Name="robotxTextBox"
+                         VerticalAlignment="Top"
+                         Width="77"
+                         BorderBrush="Black"
+                         Text="0"
+                         IsReadOnly="True" />
+                <TextBox Height="23"
+                         HorizontalAlignment="Left"
+                         Margin="68,41,0,0"
+                         Name="robotyTextBox"
+                         VerticalAlignment="Top"
+                         Width="77"
+                         BorderBrush="Black"
+                         Text="0"
+                         IsReadOnly="True" />
+                <Label Content="Region :"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Margin="149,5,0,0"
+                       Name="label3"
+                       VerticalAlignment="Top" />
+                <TextBox Height="23"
+                         HorizontalAlignment="Left"
+                         Margin="208,7,0,0"
+                         Name="regionTextBox"
+                         VerticalAlignment="Top"
+                         Width="77"
+                         BorderBrush="Black"
+                         Text="0"
+                         IsReadOnly="False" />
+                <Button Content="Add"
+                        Height="23"
+                        HorizontalAlignment="Left"
+                        Margin="223,168,0,0"
+                        Name="addToTable"
+                        VerticalAlignment="Top"
+                        Width="62"
+                        Click="addToTable_Click" />
+                <Label Content="Score :"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Margin="157,37,0,0"
+                       Name="label5"
+                       VerticalAlignment="Top" />
+                <TextBox Height="23"
+                         HorizontalAlignment="Left"
+                         Margin="208,39,0,0"
+                         Name="scoreTextBox"
+                         VerticalAlignment="Top"
+                         Width="77"
+                         BorderBrush="Black"
+                         Text="0"
+                         IsReadOnly="False" />
+                <Button Content="Catch"
+                        Height="23"
+                        HorizontalAlignment="Left"
+                        Margin="157,168,0,0"
+                        Name="catchdataButton"
+                        VerticalAlignment="Top"
+                        Width="62"
+                        Click="catchdataButton_Click" />
+                <Label Content="DegY :"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Margin="158,71,0,0"
+                       Name="label6"
+                       VerticalAlignment="Top" />
+                <TextBox BorderBrush="Black"
+                         Height="23"
+                         HorizontalAlignment="Left"
+                         IsReadOnly="False"
+                         Margin="208,73,0,0"
+                         Name="degyTextBox"
+                         Text="1"
+                         VerticalAlignment="Top"
+                         Width="77" />
+                <Label Content="DegX :"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Margin="17,71,0,0"
+                       Name="label7"
+                       VerticalAlignment="Top" />
+                <TextBox BorderBrush="Black"
+                         Height="23"
+                         HorizontalAlignment="Left"
+                         IsReadOnly="False"
+                         Margin="68,73,0,0"
+                         Name="degxTextBox"
+                         Text="1"
+                         VerticalAlignment="Top"
+                         Width="77" />
+                <Label Content="SigmaY :"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Margin="147,102,0,0"
+                       Name="label8"
+                       VerticalAlignment="Top" />
+                <TextBox BorderBrush="Black"
+                         Height="23"
+                         HorizontalAlignment="Left"
+                         IsReadOnly="False"
+                         Margin="208,104,0,0"
+                         Name="sigmayTextBox"
+                         Text="0"
+                         VerticalAlignment="Top"
+                         Width="77" />
+                <Label Content="SigmaX :"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Margin="6,102,0,0"
+                       Name="label9"
+                       VerticalAlignment="Top" />
+                <TextBox BorderBrush="Black"
+                         Height="23"
+                         HorizontalAlignment="Left"
+                         IsReadOnly="False"
+                         Margin="68,104,0,0"
+                         Name="sigmaxTextBox"
+                         Text="0"
+                         VerticalAlignment="Top"
+                         Width="77" />
+                <Label Content="SigmaYt :"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Margin="146,132,0,0"
+                       Name="label4"
+                       VerticalAlignment="Top" />
+                <TextBox BorderBrush="Black"
+                         Height="23"
+                         HorizontalAlignment="Left"
+                         IsReadOnly="False"
+                         Margin="208,134,0,0"
+                         Name="sigmaytTextBox"
+                         Text="0"
+                         VerticalAlignment="Top"
+                         Width="77" />
+                <Label Content="SigmaXt :"
+                       Height="28"
+                       HorizontalAlignment="Left"
+                       Margin="3,132,0,0"
+                       Name="label10"
+                       VerticalAlignment="Top" />
+                <TextBox BorderBrush="Black"
+                         Height="23"
+                         HorizontalAlignment="Left"
+                         IsReadOnly="False"
+                         Margin="68,134,0,0"
+                         Name="sigmaxtTextBox"
+                         Text="0"
+                         VerticalAlignment="Top"
+                         Width="77" />
+            </Grid>
+        </GroupBox>
+        <ListView Grid.Row="1"
+                  Name="dataListView">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Delete" Name="deleteMenuItem" Click="deleteMenuItem_Click"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Robot.X}" Header="RobotX"
+                                    Width="60" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Robot.Y}" Header="RobotY"
+                                    Width="60" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Region}" Header="Region"
+                                    Width="60" />
+                    <GridViewColumn DisplayMemberBinding="{Binding PosScore}" Header="Score"
+                                    Width="60" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <telerik:RadDropDownButton Content="Export"
+                                   Grid.Row="2"
+                                   telerik:StyleManager.Theme="Windows7"
+                                   Height="23"
+                                   HorizontalAlignment="Left"
+                                   Margin="6,5,0,0"
+                                   Name="radDropDownButton1"
+                                   VerticalAlignment="Top"
+                                   Width="70">
+            <telerik:RadDropDownButton.DropDownContent>
+                <telerik:RadContextMenu>
+                    <telerik:RadMenuItem Header="to Text file"
+                                         Name="exporttotextMenuItem"
+                                         Click="exporttotextMenuItem_Click" />
+                    <telerik:RadMenuItem Header="to Excel"
+                                         Name="exporttoexcelMenuItem"
+                                         Click="exporttoexcelMenuItem_Click" />
+                    <telerik:RadMenuItem Header="to Binary"
+                                         Name="exporttobinaryMenuItem"
+                                         Click="exporttobinaryMenuItem_Click" />
+                </telerik:RadContextMenu>
+            </telerik:RadDropDownButton.DropDownContent>
+        </telerik:RadDropDownButton>
+        <Button Content="Clear"
+                Height="23"
+                HorizontalAlignment="Left"
+                Margin="164,5,0,0"
+                Name="clearButton"
+                VerticalAlignment="Top"
+                Width="62"
+                Grid.Row="2"
+                Click="clearButton_Click" />
+        <Button Content="Fit"
+                Height="23"
+                HorizontalAlignment="Left"
+                Margin="236,5,0,0"
+                Name="fitButton"
+                VerticalAlignment="Top"
+                Width="62"
+                Grid.Row="2"
+                Click="fitButton_Click" />
+        <Button Content="Open"
+                Grid.Row="2"
+                Height="23"
+                HorizontalAlignment="Left"
+                Margin="83,5,0,0"
+                Name="openButton"
+                VerticalAlignment="Top"
+                Width="58"
+                Click="openButton_Click" />
+    </Grid>
+</Window>

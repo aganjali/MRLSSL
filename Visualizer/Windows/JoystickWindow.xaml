@@ -1,0 +1,41 @@
+﻿<Window x:Class="Visualizer.Windows.JoystickWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="JoystickWindow" Height="421.498" Width="218.484" Loaded="Window_Loaded" MaxWidth="218.484">
+    <Grid Loaded="Grid_Loaded">
+        <GroupBox Header="Settings" Height="83.538" Margin="4.284,4.998,4.284,0" Name="groupBox1" VerticalAlignment="Top">
+            <Grid>
+                <Label Name="label1" HorizontalAlignment="Left" Width="62.118" Height="27.734" VerticalAlignment="Top" Margin="2.142,2.142,0,0">JoyStick :</Label>
+                <Label HorizontalAlignment="Left" Margin="0.714,0,0,3.57" Name="label2" Width="62.118" Height="26.306" VerticalAlignment="Bottom">RobotID :</Label>
+                <ComboBox Margin="61.404,4.998,6.426,0" Name="joystickComboBox" Height="22.736" VerticalAlignment="Top" SelectionChanged="joystickComboBox_SelectionChanged" Width="108" />
+                <ComboBox Margin="61.404,32.844,6.426,0" Name="robotidComboBox" Height="22.736" VerticalAlignment="Top" Width="108">
+                    <ComboBoxItem>0</ComboBoxItem>
+                    <ComboBoxItem>1</ComboBoxItem>
+                    <ComboBoxItem>2</ComboBoxItem>
+                    <ComboBoxItem>3</ComboBoxItem>
+                    <ComboBoxItem>4</ComboBoxItem>
+                    <ComboBoxItem>5</ComboBoxItem>
+                    <ComboBoxItem>6</ComboBoxItem>
+                    <ComboBoxItem>7</ComboBoxItem>
+                    <ComboBoxItem>8</ComboBoxItem>
+                    <ComboBoxItem>9</ComboBoxItem>
+                    
+                </ComboBox>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Keys" Margin="4.284,94.536,4.284,0" Name="groupBox2" Height="288.962" VerticalAlignment="Top">
+            <Grid>
+                <Image Margin="0,24,70.702,0" Name="upImage" Stretch="Fill" Height="38" VerticalAlignment="Top" Source="/Visualizer;component/Images/up.png" HorizontalAlignment="Right" Width="38.318" Opacity="0.6" />
+                <Image Margin="0,78,70.702,0" Name="downImage" Source="/Visualizer;component/Images/down.png" Stretch="Fill" Height="38.245" VerticalAlignment="Top" HorizontalAlignment="Right" Width="38.318" Opacity="0.6" />
+                <Image HorizontalAlignment="Right" Margin="0,52,32.016,0" Name="rightImage" Source="/Visualizer;component/Images/right.png" Stretch="Fill" Width="38.318" Height="37.943" VerticalAlignment="Top" Opacity="0.6" />
+                <Image HorizontalAlignment="Right" Margin="0,52,109.388,0" Name="leftImage" Source="/Visualizer;component/Images/left.png" Stretch="Fill" Width="38.318" Height="38" VerticalAlignment="Top" Opacity="0.6" />
+                <Image Height="38.245" HorizontalAlignment="Right" Margin="0,126.374,120.923,0" Name="kickImage" Opacity="0.6" Source="/Visualizer;component/Images/Soccer-Ball.png" Stretch="Fill" VerticalAlignment="Top" Width="38.318" />
+                <Label Height="28" Margin="16.66,168.266,0,0" Name="xLable" VerticalAlignment="Top" HorizontalAlignment="Left" Width="73.241"></Label>
+                <Label Margin="16.66,192.423,0,0" Name="yLabel" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="73.241"></Label>
+                <Image Height="38" HorizontalAlignment="Right" Margin="0,14,32,0" Name="turnrightImage" Opacity="0.6" Source="/Visualizer;component/Images/turnRight.png" Stretch="Fill" VerticalAlignment="Top" Width="38.318" />
+                <Image Height="38" HorizontalAlignment="Right" Margin="0,14,109.388,0" Name="turnleftImage" Opacity="0.6" Source="/Visualizer;component/Images/turnLeft.png" Stretch="Fill" VerticalAlignment="Top" Width="38.318" />
+                <Label Height="28" Margin="16.66,227.173,0,0" Name="rLabel" VerticalAlignment="Top" HorizontalAlignment="Left" Width="73.241" />
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

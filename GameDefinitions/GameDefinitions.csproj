@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6C6869F5-B118-4B53-93B1-FC1149BCBC76}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MRL.SSL.GameDefinitions</RootNamespace>
+    <AssemblyName>GameDefinitions</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\GameDefinitions.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\GameDefinitions.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DynamicDataDisplay">
+      <HintPath>..\Third Party\Assemblies\DynamicDataDisplay.dll</HintPath>
+    </Reference>
+    <Reference Include="Logger">
+      <HintPath>..\Third Party\Assemblies\Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="Meta.Numerics">
+      <HintPath>..\Third Party\Assemblies\Meta.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\Third Party\Assemblies\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActiveParameters.cs" />
+    <Compile Include="ActiveRoleSettingTemplate.cs" />
+    <Compile Include="AISettings.cs" />
+    <Compile Include="CharterClasses\CharterData.cs" />
+    <Compile Include="CharterClasses\FilteringDataSource.cs" />
+    <Compile Include="CharterClasses\Filters.cs" />
+    <Compile Include="CharterClasses\IFilter.cs" />
+    <Compile Include="CharterClasses\PerformanceDataSource.cs" />
+    <Compile Include="CommunicationController.cs" />
+    <Compile Include="ControlData.cs" />
+    <Compile Include="ControlParameters.cs" />
+    <Compile Include="Engines.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Extentions.cs" />
+    <Compile Include="FastMatrix.cs" />
+    <Compile Include="GameEvents.cs" />
+    <Compile Include="GameParameters.cs" />
+    <Compile Include="GameStatus.cs" />
+    <Compile Include="GamestatusCalculator.cs" />
+    <Compile Include="General Settings\ActiveRoleSettings.cs" />
+    <Compile Include="General Settings\ActiveRoleSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>ActiveRoleSettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="General Settings\AISettings.cs" />
+    <Compile Include="General Settings\AISettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>AISettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="General Settings\GameSettings.cs" />
+    <Compile Include="General Settings\GameSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>GameSettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="General Settings\LookUpTable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="General Settings\LookUpTable.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>LookUpTable.settings</DependentUpon>
+    </Compile>
+    <Compile Include="General Settings\MainGameParameters.cs" />
+    <Compile Include="General Settings\MainGameParameters.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>MainGameParameters.settings</DependentUpon>
+    </Compile>
+    <Compile Include="General Settings\RegionScore.cs" />
+    <Compile Include="General Settings\RegionScore.Designer.cs">
+      <DependentUpon>RegionScore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="General Settings\SimulatorSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>SimulatorSettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="General Settings\TuneVariables.cs" />
+    <Compile Include="General Settings\TuneVariables.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>TuneVariables.settings</DependentUpon>
+    </Compile>
+    <Compile Include="General Settings\VisualizerSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>VisualizerSettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalRobotCommands.cs" />
+    <Compile Include="GoogleSerializer.cs" />
+    <Compile Include="HiPerfTimer.cs" />
+    <Compile Include="LookupTable.cs" />
+    <Compile Include="Matrix.cs" />
+    <Compile Include="MergerAndTrackerSetting.cs" />
+    <Compile Include="NetworkSettings.cs" />
+    <Compile Include="NewMerger\MergerCalibrationData.cs" />
+    <Compile Include="NewMerger\MergerParameters.cs" />
+    <Compile Include="PassShootParameter.cs" />
+    <Compile Include="PlaySettings.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Quaternion.cs" />
+    <Compile Include="RobotCommands.cs" />
+    <Compile Include="RobotParameters.cs" />
+    <Compile Include="Robots.cs" />
+    <Compile Include="RotateParameters.cs" />
+    <Compile Include="RotateParametersNew.cs" />
+    <Compile Include="SaveModelData.cs" />
+    <Compile Include="Score.cs" />
+    <Compile Include="SimulatorControlInfo.cs" />
+    <Compile Include="SimulatorParameters.cs" />
+    <Compile Include="SingleObjectState.cs" />
+    <Compile Include="SingleRobotCommand.cs" />
+    <Compile Include="SingleRotateCommand.cs" />
+    <Compile Include="SingleWirelessCommand.cs" />
+    <Compile Include="SpecializedExtensions.cs" />
+    <Compile Include="StaticVariables.cs" />
+    <Compile Include="StrategyInfo.cs" />
+    <Compile Include="StrategyModel.cs" />
+    <Compile Include="Visualizer Classes\AiToVisDataWrapper.cs" />
+    <Compile Include="Visualizer Classes\AiToVisualizerWrapper.cs" />
+    <Compile Include="Visualizer Classes\ChartObject.cs" />
+    <Compile Include="Visualizer Classes\ChipKick.cs" />
+    <Compile Include="Visualizer Classes\ChipKickTemplate.cs" />
+    <Compile Include="Visualizer Classes\CustomVariables.cs" />
+    <Compile Include="Visualizer Classes\DirectKickTemplat.cs" />
+    <Compile Include="Visualizer Classes\DrawCollection.cs" />
+    <Compile Include="Visualizer Classes\DrawingGroup.cs" />
+    <Compile Include="Visualizer Classes\DrawingObjects.cs" />
+    <Compile Include="Visualizer Classes\DrawRegion.cs" />
+    <Compile Include="Visualizer Classes\IGoogleSerializable.cs" />
+    <Compile Include="Visualizer Classes\ILogger.cs" />
+    <Compile Include="Visualizer Classes\LoggerDrawingObject.cs" />
+    <Compile Include="Visualizer Classes\LogLoading.cs" />
+    <Compile Include="Visualizer Classes\MetricChipKick.cs" />
+    <Compile Include="Visualizer Classes\OptimizationMatrix.cs" />
+    <Compile Include="Visualizer Classes\RobotComponentsController.cs" />
+    <Compile Include="Visualizer Classes\StringDraw.cs" />
+    <Compile Include="Visualizer Classes\VisionDataTemplate.cs" />
+    <Compile Include="Visualizer Classes\VisToAiDataWrapper.cs" />
+    <Compile Include="Visualizer Classes\VisualizerConsole.cs" />
+    <Compile Include="Visualizer Classes\VisualizerToAiWrapper.cs" />
+    <Compile Include="Wireless Packets\BatteryStatus.cs" />
+    <Compile Include="Wireless Packets\CheckChannelAvailability.cs" />
+    <Compile Include="Wireless Packets\DebugMode.cs" />
+    <Compile Include="Wireless Packets\DebugModeWrapper.cs" />
+    <Compile Include="Wireless Packets\kickLookup.cs" />
+    <Compile Include="Wireless Packets\MotorCurrentData.cs" />
+    <Compile Include="Wireless Packets\PIDCoeffData.cs" />
+    <Compile Include="Wireless Packets\PIDErrorData.cs" />
+    <Compile Include="Wireless Packets\RecievedData.cs" />
+    <Compile Include="Wireless Packets\RequestPacketinDebugMode.cs" />
+    <Compile Include="Wireless Packets\RobotStatus.cs" />
+    <Compile Include="Wireless Packets\RunTimePacket.cs" />
+    <Compile Include="Wireless Packets\SetChannelOnAI.cs" />
+    <Compile Include="Wireless Packets\SetChannelOnRobot.cs" />
+    <Compile Include="Wireless Packets\SetPID.cs" />
+    <Compile Include="Wireless Packets\TestPacketForReliability.cs" />
+    <Compile Include="Wireless Packets\VelocityData.cs" />
+    <Compile Include="Wireless Packets\WheelSpeedData.cs" />
+    <Compile Include="Wireless Packets\WirelessPacket.cs" />
+    <Compile Include="WorldModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Code Snippet\addstate.snippet" />
+    <None Include="Code Snippet\assign.snippet" />
+    <None Include="Code Snippet\play.snippet" />
+    <None Include="Code Snippet\state.snippet">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Code Snippet\strategy.snippet" />
+    <None Include="General Settings\ActiveRoleSettings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>ActiveRoleSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="General Settings\AISettings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>AISettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="General Settings\GameSettings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>GameSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="General Settings\LookUpTable.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>LookUpTable.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="General Settings\MainGameParameters.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>MainGameParameters.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="General Settings\RegionScore.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>RegionScore1.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="General Settings\SimulatorSettings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>SimulatorSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="General Settings\TuneVariables.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>TuneVariables.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="General Settings\VisualizerSettings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>VisualizerSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonCLasses\CommonCLasses.csproj">
+      <Project>{AC0BFBED-A264-4980-9E61-E2254DF142C6}</Project>
+      <Name>CommonCLasses</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

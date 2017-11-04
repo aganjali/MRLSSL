@@ -1,0 +1,198 @@
+﻿<Window x:Class="MRL.SSL.Visualizer.Windows.MergerCalib"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:control="clr-namespace:MRL.SSL.CommonControls.D2DControls;assembly=CommonControls"
+        Title="MergerCalib" Height="565" Width="693">
+    <Grid>
+        <TabControl Margin="0,0,0,0">
+            <TabItem Header="Merger Calib">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="129" />
+                        <ColumnDefinition Width="532" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="80" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="293*" />
+                    </Grid.RowDefinitions>
+                    <WindowsFormsHost Name="windowsFormsHost1" Grid.Row="2" Grid.ColumnSpan="2">
+                        <control:NewFieldVisualizer x:Name="mainField" />
+                    </WindowsFormsHost>
+                    <Label Content="" Height="28" HorizontalAlignment="Left"  Name="lbl1" VerticalAlignment="Center"  Grid.Row="1" Margin="0,6" />
+                    <Button Content="Set" Height="23" HorizontalAlignment="Left" Margin="201,0,0,0" Name="btnSet" VerticalAlignment="Center" Width="75" Grid.Row="1" Click="btnSet_Click" Grid.Column="1" />
+                    <Button Content="Add" Height="23" HorizontalAlignment="Left" Margin="282,0,0,0" Name="btnAdd" VerticalAlignment="Center" Width="75" Grid.Row="1" Click="btnAdd_Click" Grid.Column="1" />
+                    <Button Content="Remove" Height="23" HorizontalAlignment="Left" Margin="363,0,0,0" Name="btnRemove" VerticalAlignment="Center" Width="75" Grid.Row="1" Click="btnRemove_Click" Grid.Column="1" />
+                    <Button Content="Save" Height="23" HorizontalAlignment="Left" Margin="42,8,0,8" Name="btnSave" VerticalAlignment="Center" Width="75" Grid.Row="1" Click="btnSave_Click" Grid.Column="1" />
+                    <Button Content="Clear" Height="23" HorizontalAlignment="Left" Margin="120,8,0,8" Name="btnClear" VerticalAlignment="Center" Width="75" Grid.Row="1" Click="btnClear_Click" Grid.Column="1" />
+                    <ToggleButton Content="Vision" Height="23" HorizontalAlignment="Left" Margin="444,0,0,0" Name="btnVision" VerticalAlignment="Center" Width="75" Grid.Row="1" Checked="btnVision_Checked" Unchecked="btnVision_Unchecked" Grid.Column="1" />
+                    <GroupBox Width="655" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2">
+                        <StackPanel  HorizontalAlignment="Left" Name="sp1" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,0,0,0" Grid.RowSpan="2">
+                            <StackPanel>
+                                <Label Content="" Name="lblTitle" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <Label Content="Packet" Name="lblTitle1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <Label Content="Saved" Name="lblTitle2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="RealX" Name="lblRealX" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <TextBox Height="23" Width="60" Name="txtRealX" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txt_KeyDown"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="RealY" Name="lblRealY" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <TextBox Height="23" Width="60" Name="txtRealY" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txt_KeyDown"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="Cam0X" Name="lblCam0X" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <TextBox Height="23" Width="60" Name="txtCam0X" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txt_KeyDown"/>
+                                <TextBox Height="29" Width="60" Name="txtCam0XStat" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2,0,0" IsEnabled="False" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="Cam0Y" Name="lblCam0Y" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <TextBox Height="23" Width="60" Name="txtCam0Y" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txt_KeyDown"/>
+                                <TextBox Height="29" Width="60" Name="txtCam0YStat" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2,0,0" IsEnabled="False" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="Cam1X" Name="lblCam1X" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <TextBox Height="23" Width="60" Name="txtCam1X" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txt_KeyDown"/>
+                                <TextBox Height="29" Width="60" Name="txtCam1XStat" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2,0,0" IsEnabled="False" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="Cam1Y" Name="lblCam1Y" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <TextBox Height="23" Width="60" Name="txtCam1Y" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txt_KeyDown"/>
+                                <TextBox Height="29" Width="60" Name="txtCam1YStat" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2,0,0" IsEnabled="False" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="Cam2X" Name="lblCam2X" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <TextBox Height="23" Width="60" Name="txtCam2X" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txt_KeyDown"/>
+                                <TextBox Height="29" Width="60" Name="txtCam2XStat" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2,0,0" IsEnabled="False" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="Cam2Y" Name="lblCam2Y" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <TextBox Height="23" Width="60" Name="txtCam2Y" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txt_KeyDown"/>
+                                <TextBox Height="29" Width="60" Name="txtCam2YStat" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2,0,0" IsEnabled="False" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="Cam3X" Name="lblCam3X" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <TextBox Height="23" Width="60" Name="txtCam3X" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txt_KeyDown"/>
+                                <TextBox Height="29" Width="60" Name="txtCam3XStat" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2,0,0" IsEnabled="False" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="Cam3Y" Name="lblCam3Y" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                <TextBox Height="23" Width="60" Name="txtCam3Y" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="txt_KeyDown"/>
+                                <TextBox Height="29" Width="60" Name="txtCam3YStat" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2,0,0" IsEnabled="False" />
+
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    
+                </Grid>
+            </TabItem>
+            <TabItem Header="Parameters">
+                <GroupBox Header="Data">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="270*" />
+                            <RowDefinition Height="37" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <ListView Name="visionDataListView" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="xReal"
+                                            Width="auto">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Name="Txt_xReal" Width="50" Text="{Binding xReal}" IsEnabled="False"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="yReal"
+                                            Width="auto">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Name="Txt_yReal" Width="50" Text="{Binding yReal}" IsEnabled="False"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="xCam0"
+                                            Width="auto">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Name="Txt_xCam0" Width="50" Text="{Binding xCam0}" IsEnabled="False"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="yCam0"
+                                            Width="auto">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Name="Txt_xCam0" Width="50" Text="{Binding yCam0}" IsEnabled="False"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="xCam1"
+                                            Width="auto">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Name="Txt_xCam1" Width="50" Text="{Binding xCam1}" IsEnabled="False"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="yCam1"
+                                            Width="auto">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Name="Txt_yCam1" Width="50" Text="{Binding yCam1}" IsEnabled="False"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="xCam2"
+                                            Width="auto">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Name="Txt_xCam2" Width="50" Text="{Binding xCam2}" IsEnabled="False"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="yCam2"
+                                            Width="auto">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Name="Txt_yCam2" Width="50" Text="{Binding yCam2}" IsEnabled="False"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="xCam3"
+                                            Width="auto">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Name="Txt_xCam3" Width="50" Text="{Binding xCam3}" IsEnabled="False"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="yCam3"
+                                            Width="auto">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBox Name="Txt_yCam3" Width="50" Text="{Binding yCam3}" IsEnabled="False"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </Grid>
+                        <Label Content="Available Camera IDs:" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="6,0,0,0" Name="lbl5" VerticalAlignment="Center" Padding="5" />
+                        <TextBox HorizontalAlignment="Left" Height="23" Margin="136,0,0,0" Grid.Row="1" TextWrapping="NoWrap" VerticalAlignment="Center" Width="75" Name="txt1" TextChanged="TextBox_TextChanged"/>
+                    </Grid>
+                </GroupBox>
+            </TabItem>
+        </TabControl>
+        
+    </Grid>
+</Window>

@@ -1,0 +1,51 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MRL.SSL.GameDefinitions.General_Settings" GeneratedClassName="AISettings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AiPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1011</Value>
+    </Setting>
+    <Setting Name="VisPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1017</Value>
+    </Setting>
+    <Setting Name="RefIP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">224.5.23.1</Value>
+    </Setting>
+    <Setting Name="RefPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10003</Value>
+    </Setting>
+    <Setting Name="SSLVisionIP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">224.5.23.2</Value>
+    </Setting>
+    <Setting Name="SSLVisionPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10006</Value>
+    </Setting>
+    <Setting Name="AnalayzerPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10016</Value>
+    </Setting>
+    <Setting Name="SimulatorSendPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10020</Value>
+    </Setting>
+    <Setting Name="SimulatorRecievePort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">20011</Value>
+    </Setting>
+    <Setting Name="RecievePort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="AiName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MRL-SSL2-PC</Value>
+    </Setting>
+    <Setting Name="VisName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MRL-SSL2-PC</Value>
+    </Setting>
+    <Setting Name="SimulatorName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MRL-SSL2-PC</Value>
+    </Setting>
+    <Setting Name="AnalayzerName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MRL-SSL2-PC</Value>
+    </Setting>
+    <Setting Name="SerialPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">6</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,300 @@
+﻿<Window x:Class="MRL.SSL.Visualizer.Windows.ControlParameteresWindow"
+        xmlns:num="clr-namespace:Enterprise.Wpf;assembly=Enterprise.Wpf"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:control="clr-namespace:Visualizer.UserControls"
+        Title="ControlParameteresWindow"
+        Height="450"
+        Width="634"
+        Loaded="Window_Loaded"
+        xmlns:my="clr-namespace:Visualizer.UserControls">
+    <Grid Loaded="Grid_Loaded">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="27" />
+        </Grid.RowDefinitions>
+        <ListView SelectionChanged="doubleListView_SelectionChanged"
+                  Margin="0,0,0,2"
+                  Name="doubleListView">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Accel">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="accelTextBox_TextChanged"
+                                                              ParameterValue="{Binding Accel}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Decel">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="decelTextBox_TextChanged"
+                                                              ParameterValue="{Binding Decel}" />
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="aFactor">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="afactorTextBox_TextChanged"
+                                                              ParameterValue="{Binding aFactor}" />
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="WaFactor">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="waFactorTextBox_TextChanged"
+                                                              ParameterValue="{Binding WaFactor}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Accuercy">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="accuercyTextBox_TextChanged"
+                                                              ParameterValue="{Binding Accuercy}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Waccuercy">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="waccuercyTextBox_TextChanged"
+                                                              ParameterValue="{Binding Waccuercy}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="MaxSpeed">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="maxSpeedTextBox_TextChanged"
+                                                              ParameterValue="{Binding MaxSpeed}" />
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="wAccel">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="wAccelTextBox_TextChanged"
+                                                              ParameterValue="{Binding wAccel}" />
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="wDecel">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="wDecelTextBox_TextChanged"
+                                                              ParameterValue="{Binding wDecel}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="wMaxS">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="wMaxSTextBox_TextChanged"
+                                                              ParameterValue="{Binding wMaxS}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="TunningDist">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="tunningDistTextBox_TextChanged"
+                                                              ParameterValue="{Binding TunningDist}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="TunningAngle">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="tunningAngleTextBox_TextChanged"
+                                                              ParameterValue="{Binding TunningAngle}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Mean">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="meanTextBox_TextChanged"
+                                                              ParameterValue="{Binding Mean}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Variance">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="varianceTextBox_TextChanged"
+                                                              ParameterValue="{Binding Variance}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Path Weight">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="pathweightTextBox_TextChanged"
+                                                              ParameterValue="{Binding PathWeight}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="K_V0">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="kv0TextBox_TextChanged"
+                                                              ParameterValue="{Binding K_v0}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="K_lf">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="klfTextBox_TextChanged"
+                                                              ParameterValue="{Binding K_lf}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="K_ang">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="kangTextBox_TextChanged"
+                                                              ParameterValue="{Binding K_ang}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="K_sumAng">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="ksumangTextBox_TextChanged"
+                                                              ParameterValue="{Binding K_sumAng}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="K_total">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetNumberUserControl ValueChanged="ktotalTextBox_TextChanged"
+                                                              ParameterValue="{Binding K_total}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListView Margin="0,4,0,0"
+                  SelectionChanged="positionListView_SelectionChanged"
+                  Grid.Row="1"
+                  Name="positionListView">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="P0"
+                                    Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetVectorParameterUserControl ValueChanged="p0TextBox_TextChanged"
+                                                                       ParameterValue="{Binding P0}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                   <GridViewColumn Header="P1"
+                                    Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetVectorParameterUserControl ValueChanged="p1TextBox_TextChanged"
+                                                                       ParameterValue="{Binding P1}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn  Header="Q0"
+                                     Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetVectorParameterUserControl ValueChanged="q0TextBox_TextChanged"
+                                                                       ParameterValue="{Binding Q0}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Q1"
+                                    Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetVectorParameterUserControl ValueChanged="q1TextBox_TextChanged"
+                                                                       ParameterValue="{Binding Q1}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="wP0"
+                                    Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetVectorParameterUserControl ValueChanged="wp0TextBox_TextChanged"
+                                                                       ParameterValue="{Binding wP0}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="wP1"
+                                    Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetVectorParameterUserControl ValueChanged="wp1TextBox_TextChanged"
+                                                                       ParameterValue="{Binding wP1}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="wQ0"
+                                    Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetVectorParameterUserControl ValueChanged="wq0TextBox_TextChanged"
+                                                                       ParameterValue="{Binding wQ0}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="wQ1"
+                                    Width="auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <control:GetVectorParameterUserControl ValueChanged="wq1TextBox_TextChanged"
+                                                                       ParameterValue="{Binding wQ1}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <CheckBox Grid.Row="2"
+                  Margin="4,4,0,4"
+                  Content="Save On Change"
+                  Name="saveonchangeCheckBox"
+                  IsChecked="True"
+                  HorizontalAlignment="Left"
+                  Width="118" />
+        <Button Name="refreshButton"
+                Click="refreshButton_Click"
+                Content="Refresh"
+                Grid.Row="2"
+                Margin="0,2,4,2"
+                HorizontalAlignment="Right"
+                Width="60" />
+        <Button Name="saveButton"
+                Click="saveButton_Click"
+                Content="Save As ..."
+                Grid.Row="2"
+                Margin="0,2,66,2"
+                HorizontalAlignment="Right"
+                Width="60" />
+        <Button Content="Load"
+                Click="loadButton_Click"
+                Margin="0,2,128,2"
+                Name="loadButton"
+                Grid.Row="2"
+                HorizontalAlignment="Right"
+                Width="60" />
+    </Grid>
+</Window>
