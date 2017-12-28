@@ -33,7 +33,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             get { return oneCamera; }
             set { oneCamera = value; }
         }
-        private const double disEps = 100;
+        private const double disEps = 280; //TODO: CHANGE TO 100 
         private bool lastColorIsYellow = false;
         private float minConfidence = 0.6f;
         private mRobot MergeRobot(List<mRobot> robots)

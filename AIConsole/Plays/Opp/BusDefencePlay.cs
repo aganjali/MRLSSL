@@ -12,6 +12,7 @@ namespace MRL.SSL.AIConsole.Plays
 {
     class BusDefencePlay : PlayBase
     {
+
         Position2D lastballstate;
         Position2D firstballstate;
         bool flag = false;

@@ -311,12 +311,12 @@ namespace MRL.SSL.AIConsole.Strategies.new_RC2017
         {
             if (chip)
             {
-                sync.kMotionChip = 1.2;
+                //sync.kMotionChip = 1.2;
             }
             else
             {
-                sync.kMotionDirect = 1;
-            }
+               // sync.kMotionDirect = 1;
+            }//
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
 

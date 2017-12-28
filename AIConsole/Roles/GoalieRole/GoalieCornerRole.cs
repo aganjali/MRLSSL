@@ -58,6 +58,7 @@ namespace MRL.SSL.AIConsole.Roles
         Position2D intersectTime;
         Position2D lastBallPosOutOfDangerZone = new Position2D();
         Position2D initialpos = Position2D.Zero;
+        int kick2RobotCounter = 0;
 
         public void Run(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D TargetPos, double Teta, DefenceInfo gol, Position2D DefencePos, int? cornerRole1ID, bool strategyGoalie)
         {
@@ -74,8 +75,9 @@ namespace MRL.SSL.AIConsole.Roles
                 ballStateFast = Model.BallStateFast;
             }
             DefenceInfo inf = null;
-            if (FreekickDefence.CurrentInfos.Any(a => a.RoleType == typeof(DefenderNormalRole1)))
-                inf = FreekickDefence.CurrentInfos.Where(w => w.RoleType == typeof(DefenderNormalRole1)).First();
+            //var asd = FreekickDefence.CurrentInfos.Any(a => a.RoleType == typeof(DefenderCornerRole1));
+            if (FreekickDefence.CurrentInfos.Any(a => a.RoleType == typeof(DefenderCornerRole1)))
+                inf = FreekickDefence.CurrentInfos.Where(w => w.RoleType == typeof(DefenderCornerRole1)).First();
             if (inf != null && inf.TargetState.Location.X > GameParameters.OurGoalCenter.X)
             {
                 if (inf.TargetState.Location.Y < 0)
@@ -97,290 +99,299 @@ namespace MRL.SSL.AIConsole.Roles
 
 
             #region Normal
+
             if (CurrentState == (int)GoalieStates.Normal)
             {
-                Position2D PosTarget = GameParameters.OurGoalCenter;
-                angle = -Model.BallState.Speed.AngleInDegrees;
-                if (gol.TargetState != null)
+                Position2D finalTarget = GameParameters.OurGoalCenter;
+                //angle = ( Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees ;
+                //if (gol.TargetState != null)
+                //{
+                if (gol == null)
                 {
-                    double x = 0;
-                    double y = 0;
-                    if ((gol.TargetState.Type == ObjectType.Opponent && !GameParameters.IsInDangerousZone(gol.TargetState.Location, false, .3, out x, out y))
-                        || (gol.TargetState.Type == ObjectType.Ball && !GameParameters.IsInDangerousZone(gol.TargetState.Location, false, .2, out x, out y)))//WC2017
+                    gol = new DefenceInfo();
+                    gol.TargetState = Model.BallState;
+                }
+                else if (gol.TargetState == null)
+                {
+                    gol.TargetState = Model.BallState;
+                }
+                double x = 0;
+                double y = 0;
+                DrawingObjects.AddObject(new Circle(gol.TargetState.Location, .13, new Pen(Color.Red, 0.01f)));
+                if ((gol.TargetState.Type == ObjectType.Opponent && !GameParameters.IsInDangerousZone(gol.TargetState.Location, false, .3, out x, out y))
+                    || (gol.TargetState.Type == ObjectType.Ball && !GameParameters.IsInDangerousZone(gol.TargetState.Location, false, .2, out x, out y)))//WC2017
+                {
+                    #region MyRegion
+
+                    if (cornerRole1ID.HasValue && Model.OurRobots.ContainsKey(cornerRole1ID.Value))
                     {
-                        if (cornerRole1ID.HasValue && Model.OurRobots.ContainsKey(cornerRole1ID.Value))
+                        if (Model.OurRobots[cornerRole1ID.Value].Location.DistanceFrom(DefencePos) > .1)
                         {
-                            if (Model.OurRobots[cornerRole1ID.Value].Location.DistanceFrom(DefencePos) > .1)
-                            {
-                                Position2D currentPos = Model.OurRobots[RobotID].Location;//WC2017
-                                Vector2D targetvector = gol.TargetState.Location - GameParameters.OurGoalCenter;//WC2017
+                            Position2D robotLocation = Model.OurRobots[RobotID].Location;//WC2017
+                            Vector2D GoalToTargetVector = gol.TargetState.Location - GameParameters.OurGoalCenter;//WC2017
+                            Position2D robotPerpWithTargetToGoal = GoalToTargetVector.PrependecularPoint(GameParameters.OurGoalCenter, robotLocation);
 
-                                bool gotoperp = false;
-                                Position2D perp = targetvector.PrependecularPoint(GameParameters.OurGoalCenter, currentPos);
+                            if (robotPerpWithTargetToGoal.X > GameParameters.OurGoalCenter.X)
+                            {
+                                //Line goalLine = new Line(GameParameters.OurGoalLeft, GameParameters.OurGoalRight);
 
-                                if (perp.X > GameParameters.OurGoalCenter.X)
-                                {
-                                    Line goalLine = new Line(GameParameters.OurGoalLeft, GameParameters.OurGoalRight);
-                                    Line targetLine = new Line(gol.TargetState.Location, gol.TargetState.Location + targetvector);
-                                    Position2D? intersectPos = goalLine.IntersectWithLine(targetLine);
-                                    if (intersectPos.HasValue)
-                                    {
-                                        perp = gol.TargetState.Location + (intersectPos.Value - gol.TargetState.Location).GetNormalizeToCopy(intersectPos.Value.DistanceFrom(gol.TargetState.Location) - 0.1);//WC2017
-                                    }
-                                }
-                                if (perp.DistanceFrom(currentPos) > .1 && perp.DistanceFrom(GameParameters.OurGoalCenter) < .9)
-                                {
-                                    gotoperp = true;
-                                }
-                                if (gotoperp)
-                                {
-                                    DrawingObjects.AddObject(new StringDraw("Prependicular,CR1>0.1," + gol.TargetState.Type.ToString() + ",margin:" + (gol.TargetState.Type == ObjectType.Ball ? "0.2" : "0.3"), new Position2D(5.4, 0)), "Z3cx2s1fdsf698546546546546");
-                                    PosTarget = perp;
-                                    angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
-                                    //Planner.Add(RobotID, perp, (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
-                                }
-                                else
-                                {
-                                    DrawingObjects.AddObject(new StringDraw("targetPos,CR1>0.1," + gol.TargetState.Type.ToString() + ",margin:" + (gol.TargetState.Type == ObjectType.Ball ? "0.2" : "0.3"), new Position2D(5.4, 0)), "56465132cd5s64fd5s64fa65987f4654");
-                                    Position2D tg = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(.9);
-                                    PosTarget = new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y);
-                                    angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
-                                    //Planner.Add(RobotID, new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y), (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
-                                }
+                                //Line targetLine = new Line(gol.TargetState.Location, gol.TargetState.Location + GoalToTargetVector);
+                                //Position2D? intersectPos = goalLine.IntersectWithLine(targetLine);//ourGoalCenter
+                                //if (intersectPos.HasValue)
+                                //{
+                                //    robotPerpWithTargetToGoal = gol.TargetState.Location + (intersectPos.Value - gol.TargetState.Location).GetNormalizeToCopy(intersectPos.Value.DistanceFrom(gol.TargetState.Location) - 0.1);//WC2017
+                                //}
+                                robotPerpWithTargetToGoal = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);// 11/25/2017 replaced vahid
                             }
-                            else
+                            if (robotPerpWithTargetToGoal.DistanceFrom(robotLocation) > .1 && robotPerpWithTargetToGoal.DistanceFrom(GameParameters.OurGoalCenter) < .9)
                             {
-                                DrawingObjects.AddObject(new StringDraw("targetPos,CR1<0.1," + gol.TargetState.Type.ToString() + ",margin:" + (gol.TargetState.Type == ObjectType.Ball ? "0.2" : "0.3"), new Position2D(5.4, 0)), "5646321dsf54dsrbgs3f1dgbvr6e6qwwl54654");
-                                Planner.AddKick(RobotID, true);
-                                Planner.AddKick(RobotID, kickPowerType.Power, true, 255);
-                                PosTarget = TargetPos;
-                                angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
-                                //Planner.Add(RobotID, TargetPos, (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
-                            }
-                        }
-                        else//WC2017
-                        {
-                            Position2D currentPos = Model.OurRobots[RobotID].Location;//WC2017
-                            Vector2D targetvector = gol.TargetState.Location - GameParameters.OurGoalCenter;//WC2017
-
-                            bool gotoperp = false;
-                            Position2D perp = targetvector.PrependecularPoint(GameParameters.OurGoalCenter, currentPos);
-
-                            if (perp.X > GameParameters.OurGoalCenter.X)
-                            {
-                                Line goalLine = new Line(GameParameters.OurGoalLeft, GameParameters.OurGoalRight);
-                                Line targetLine = new Line(gol.TargetState.Location, gol.TargetState.Location + targetvector);
-                                Position2D? intersectPos = goalLine.IntersectWithLine(targetLine);
-                                if (intersectPos.HasValue)
-                                {
-                                    perp = gol.TargetState.Location + (intersectPos.Value - gol.TargetState.Location).GetNormalizeToCopy(intersectPos.Value.DistanceFrom(gol.TargetState.Location) - 0.1);//WC2017
-                                }
-                            }
-                            if (perp.DistanceFrom(currentPos) > .1 && perp.DistanceFrom(GameParameters.OurGoalCenter) < .9)
-                            {
-                                gotoperp = true;
-                            }
-                            if (gotoperp)
-                            {
-                                DrawingObjects.AddObject(new StringDraw("Prependicular,CR1=null," + gol.TargetState.Type.ToString(), new Position2D(5.4, 0)), "222f2f2f2s5edf4we6rwe4fw987+564ew");
-                                PosTarget = perp;
+                                DrawingObjects.AddObject(new StringDraw("Prependicular,CR1>0.1," + gol.TargetState.Type.ToString() + ",margin:" + (gol.TargetState.Type == ObjectType.Ball ? "0.2" : "0.3"), new Position2D(5.4, 0)), "Z3cx2s1fdsf698546546546546");
+                                finalTarget = robotPerpWithTargetToGoal;
                                 angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
-                                //Planner.Add(RobotID, perp, (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
                             }
                             else
                             {
-                                DrawingObjects.AddObject(new StringDraw("targetPos,CR1=null," + gol.TargetState.Type.ToString(), new Position2D(5.4, 0)), "56465132trg564fg5szgdfrg4654");
+                                DrawingObjects.AddObject(new StringDraw("targetPos,CR1>0.1," + gol.TargetState.Type.ToString() + ",margin:" + (gol.TargetState.Type == ObjectType.Ball ? "0.2" : "0.3"), new Position2D(5.4, 0)), "56465132cd5s64fd5s64fa65987f4654");
                                 Position2D tg = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(.9);
-                                PosTarget = new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y);
+                                finalTarget = new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y);
                                 angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
-                                //Planner.Add(RobotID, new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y), (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
                             }
                         }
-                    }
-                    else if (gol.TargetState.Type == ObjectType.Opponent && GameParameters.IsInDangerousZone(gol.TargetState.Location, false, .3, out x, out y)) //WC2017
-                    {
-                        if (gol != null && gol.TargetState != null
-                            && gol.TargetState.Type == ObjectType.Opponent && GameParameters.IsInDangerousZone(gol.TargetState.Location, false, 0, out x, out y))
+                        else
                         {
-                            DrawingObjects.AddObject(new StringDraw("targetPos," + gol.TargetState.Type.ToString() + ",margin=0.0", new Position2D(5.4, 0)), "5646w35rey4abuops54654");
+                            ///////////////////insharte ke miofte
+                            DrawingObjects.AddObject(new StringDraw("targetPos,CR1<0.1," + gol.TargetState.Type.ToString() + ",margin:" + (gol.TargetState.Type == ObjectType.Ball ? "0.2" : "0.3"), new Position2D(5.4, 0)), "5646321dsf54dsrbgs3f1dgbvr6e6qwwl54654");
                             Planner.AddKick(RobotID, true);
-                            Planner.AddKick(RobotID, kickPowerType.Power, true, 255);
-                            DrawingObjects.AddObject(new Circle(Model.BallState.Location + (gol.TargetState.Location - Model.BallState.Location).GetNormalizeToCopy(.3), .05, new Pen(Color.Gray, .03f)), "987893z2s1dfgh56er751221");
-                            PosTarget = gol.TargetState.Location;
-                            angle = -Model.BallState.Speed.AngleInDegrees;
-                            //Planner.Add(RobotID, gol.TargetState.Location, -Model.BallState.Speed.AngleInDegrees, PathType.UnSafe, false, false, false, false);
-                        }
-                        else
-                        {
-                            if (gol == null || gol.TargetState == null)
-                            {
-                                gol.TargetState = Model.BallState;
-                            }
-                            Position2D currentPos = Model.OurRobots[RobotID].Location;//WC2017
-                            Vector2D targetvector = gol.TargetState.Location - GameParameters.OurGoalCenter;//WC2017
-
-                            bool gotoperp = false;
-                            Position2D perp = targetvector.PrependecularPoint(GameParameters.OurGoalCenter, currentPos);
-
-                            if (perp.X > GameParameters.OurGoalCenter.X)
-                            {
-                                Line goalLine = new Line(GameParameters.OurGoalLeft, GameParameters.OurGoalRight);
-                                Line targetLine = new Line(gol.TargetState.Location, gol.TargetState.Location + targetvector);
-                                Position2D? intersectPos = goalLine.IntersectWithLine(targetLine);
-                                if (intersectPos.HasValue)
-                                {
-                                    perp = gol.TargetState.Location + (intersectPos.Value - gol.TargetState.Location).GetNormalizeToCopy(intersectPos.Value.DistanceFrom(gol.TargetState.Location) - 0.1);//WC2017
-                                }
-                            }
-                            if (perp.DistanceFrom(currentPos) > .1 && perp.DistanceFrom(GameParameters.OurGoalCenter) < .9)
-                            {
-                                gotoperp = true;
-                            }
-                            if (gotoperp)
-                            {
-                                DrawingObjects.AddObject(new StringDraw("Prependicular," + gol.TargetState.Type.ToString() + ",margin!= 0.0", new Position2D(5.4, 0)), "698543ddsva1658hbgb6546546546");
-                                PosTarget = perp;
-                                angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
-                                //Planner.Add(RobotID, perp, (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
-                            }
-                            else
-                            {
-                                DrawingObjects.AddObject(new StringDraw("targetPos," + gol.TargetState.Type.ToString() + ",margin!= 0.0", new Position2D(5.4, 0)), "56fbghf58465465sdfgb564hshhsh4");
-                                Position2D tg = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(.9);
-                                PosTarget = new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y);
-                                angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
-                                //Planner.Add(RobotID, new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y), (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
-                            }
+                            Planner.AddKick(RobotID, kickPowerType.Speed, true, 5);
+                            finalTarget = TargetPos;
+                            angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                         }
                     }
-                    else if (gol.TargetState.Type == ObjectType.Ball && GameParameters.IsInDangerousZone(gol.TargetState.Location, false, .2, out x, out y)) //WC2017
+                    else//WC2017
                     {
-                        if (Model.BallState.Speed.Size > 1 && GameParameters.IsInDangerousZone(Model.BallState.Location, falled, 0.0, out x, out y))
+                        Position2D currentPos = Model.OurRobots[RobotID].Location;//WC2017
+                        Vector2D targetVector = gol.TargetState.Location - GameParameters.OurGoalCenter;//WC2017
+
+
+                        Position2D robotPerpWithTargetToGoal = targetVector.PrependecularPoint(GameParameters.OurGoalCenter, currentPos);
+
+                        if (robotPerpWithTargetToGoal.X > GameParameters.OurGoalCenter.X)
                         {
-                            DrawingObjects.AddObject(new StringDraw("targetPos," + gol.TargetState.Type.ToString() + " , bs>1 , margin = 0.0", new Position2D(5.4, 0)), "56463ds25f146hb4lkagpewg545252eg654");
-                            //1
-                            Position2D p = Model.BallState.Location + Model.BallState.Speed.GetNormalizeToCopy(0.2);
-                            Line ballline = new Line(Model.BallState.Location, Model.BallState.Location + Model.BallState.Speed.GetNormalizeToCopy(10));
-                            List<Position2D> posIntersectList = new List<Position2D>() { new Position2D(3.60, 1.21), new Position2D(5, 0.61) };//GameParameters.LineIntersectWithDangerZone(ballline, true);
-                            List<Position2D> TempPos = new List<Position2D>();
-                            foreach (var item in posIntersectList)
-                            {
-                                if (item.X > GameParameters.OurGoalCenter.X)
-                                {
-                                    Line l = new Line(Model.BallState.Location, item);
-                                    Position2D? pi = l.IntersectWithLine(new Line(GameParameters.OurLeftCorner, GameParameters.OurRightCorner));
-                                    Vector2D v = (pi.Value - Model.BallState.Location).GetNormalizeToCopy(Model.BallState.Location.DistanceFrom(pi.Value) - 0.11);
-                                    TempPos.Add(Model.BallState.Location + v);
-                                }
-                                else
-                                {
-                                    TempPos.Add(item);
-                                }
-                            }
-                            posIntersectList = TempPos.OrderBy(o => o.DistanceFrom(Model.BallState.Location)).ToList();
-                            if (posIntersectList.Count > 0)
-                            {
-                                Position2D? posi = posIntersectList.FirstOrDefault();
-                                if (posi.HasValue)
-                                {
-                                    p = posi.Value + (GameParameters.OurGoalCenter - posi.Value).GetNormalizeToCopy(0.2);
-                                }
-                                if (p.X > GameParameters.OurGoalCenter.X)
-                                {
-                                    p = p + (p - Model.BallState.Location).GetNormalizeToCopy(p.DistanceFrom(Model.BallState.Location) - 0.1);
-                                }
-                            }
-                            else
-                            {
-                                //2
-                                p = GameParameters.OurGoalCenter + (Model.BallState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(Model.BallState.Location.DistanceFrom(GameParameters.OurGoalCenter) - 0.2);
-                                PosTarget = p;
-                                angle = -Model.BallState.Speed.AngleInDegrees;
-                                DrawingObjects.AddObject(new Circle(p, 0.02, new Pen(Brushes.DarkRed, 0.05f)), "ds21f32ds1ffsd53fds58ref2w365ef4fr4");
-                            }
+                            robotPerpWithTargetToGoal = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);// 11/25/2017 replaced vahid
+                        }
+                        if (robotPerpWithTargetToGoal.DistanceFrom(currentPos) > .1 && robotPerpWithTargetToGoal.DistanceFrom(GameParameters.OurGoalCenter) < .9)
+                        {
+                            DrawingObjects.AddObject(new StringDraw("Prependicular,CR1=null," + gol.TargetState.Type.ToString(), new Position2D(5.4, 0)), "222f2f2f2s5edf4we6rwe4fw987+564ew");
+                            finalTarget = robotPerpWithTargetToGoal;
+                            angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                         }
                         else
                         {
-                            DrawingObjects.AddObject(new StringDraw("targetPos," + gol.TargetState.Type.ToString() + ", bs<1 ,margin != 0.0", new Position2D(5.4, 0)), "56fbghf58465465sdfgb564hshhsh4");
-                            Position2D p = Model.BallState.Location + Model.BallState.Speed.GetNormalizeToCopy(0.15);
+                            DrawingObjects.AddObject(new StringDraw("targetPos,CR1=null," + gol.TargetState.Type.ToString(), new Position2D(5.4, 0)), "56465132trg564fg5szgdfrg4654");
+                            Position2D tg = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(.9);
+                            finalTarget = new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y);
+                            angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
+                        }
+                    }
+                    #endregion
+                }
+
+                else if (gol.TargetState.Type == ObjectType.Opponent && GameParameters.IsInDangerousZone(gol.TargetState.Location, false, .3, out x, out y)) //WC2017
+                {
+                    #region MyRegion
+                    if (gol != null && gol.TargetState != null
+                                        && gol.TargetState.Type == ObjectType.Opponent && GameParameters.IsInDangerousZone(gol.TargetState.Location, false, 0, out x, out y))
+                    {
+                        DrawingObjects.AddObject(new StringDraw("targetPos," + gol.TargetState.Type.ToString() + ",margin=0.0", new Position2D(5.4, 0)), "5646w35rey4abuops54654");
+                        Planner.AddKick(RobotID, true);
+                        Planner.AddKick(RobotID, kickPowerType.Power, true, 255);
+                        DrawingObjects.AddObject(new Circle(Model.BallState.Location + (gol.TargetState.Location - Model.BallState.Location).GetNormalizeToCopy(.3), .05, new Pen(Color.Gray, .03f)), "987893z2s1dfgh56er751221");
+                        finalTarget = gol.TargetState.Location;
+                        angle = -Model.BallState.Speed.AngleInDegrees;
+                        //Planner.Add(RobotID, gol.TargetState.Location, -Model.BallState.Speed.AngleInDegrees, PathType.UnSafe, false, false, false, false);
+                    }
+                    else
+                    {
+                        if (gol == null || gol.TargetState == null)
+                        {
+                            gol.TargetState = Model.BallState;
+                        }
+                        Position2D currentPos = Model.OurRobots[RobotID].Location;//WC2017
+                        Vector2D targetvector = gol.TargetState.Location - GameParameters.OurGoalCenter;//WC2017
+
+                        bool gotoperp = false;
+                        Position2D perp = targetvector.PrependecularPoint(GameParameters.OurGoalCenter, currentPos);
+
+                        if (perp.X > GameParameters.OurGoalCenter.X)
+                        {
+                            Line goalLine = new Line(GameParameters.OurGoalLeft, GameParameters.OurGoalRight);
+                            Line targetLine = new Line(gol.TargetState.Location, gol.TargetState.Location + targetvector);
+                            Position2D? intersectPos = goalLine.IntersectWithLine(targetLine);
+                            if (intersectPos.HasValue)
+                            {
+                                perp = gol.TargetState.Location + (intersectPos.Value - gol.TargetState.Location).GetNormalizeToCopy(intersectPos.Value.DistanceFrom(gol.TargetState.Location) - 0.1);//WC2017
+                            }
+                        }
+                        if (perp.DistanceFrom(currentPos) > .1 && perp.DistanceFrom(GameParameters.OurGoalCenter) < .9)
+                        {
+                            gotoperp = true;
+                        }
+                        if (gotoperp)
+                        {
+                            DrawingObjects.AddObject(new StringDraw("Prependicular," + gol.TargetState.Type.ToString() + ",margin!= 0.0", new Position2D(5.4, 0)), "698543ddsva1658hbgb6546546546");
+                            finalTarget = perp;
+                            angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
+                            //Planner.Add(RobotID, perp, (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
+                        }
+                        else
+                        {
+                            DrawingObjects.AddObject(new StringDraw("targetPos," + gol.TargetState.Type.ToString() + ",margin!= 0.0", new Position2D(5.4, 0)), "56fbghf58465465sdfgb564hshhsh4");
+                            Position2D tg = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(.9);
+                            finalTarget = new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y);
+                            angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
+                            //Planner.Add(RobotID, new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y), (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
+                        }
+                    }
+
+                    #endregion
+                }
+                else if (gol.TargetState.Type == ObjectType.Ball && GameParameters.IsInDangerousZone(gol.TargetState.Location, false, .2, out x, out y)) //WC2017
+                {
+
+                    #region MyRegion
+                    if (Model.BallState.Speed.Size > 1 && GameParameters.IsInDangerousZone(Model.BallState.Location, falled, 0.0, out x, out y))
+                    {
+                        DrawingObjects.AddObject(new StringDraw("targetPos," + gol.TargetState.Type.ToString() + " , bs>1 , margin = 0.0", new Position2D(5.4, 0)), "56463ds25f146hb4lkagpewg545252eg654");
+                        //1
+                        Position2D p = Model.BallState.Location + Model.BallState.Speed.GetNormalizeToCopy(0.2);
+                        Line ballline = new Line(Model.BallState.Location, Model.BallState.Location + Model.BallState.Speed.GetNormalizeToCopy(10));
+                        List<Position2D> posIntersectList = new List<Position2D>() { new Position2D(3.60, 1.21), new Position2D(5, 0.61) };//GameParameters.LineIntersectWithDangerZone(ballline, true);
+                        List<Position2D> TempPos = new List<Position2D>();
+                        foreach (var item in posIntersectList)
+                        {
+                            if (item.X > GameParameters.OurGoalCenter.X)
+                            {
+                                Line l = new Line(Model.BallState.Location, item);
+                                Position2D? pi = l.IntersectWithLine(new Line(GameParameters.OurLeftCorner, GameParameters.OurRightCorner));
+                                Vector2D v = (pi.Value - Model.BallState.Location).GetNormalizeToCopy(Model.BallState.Location.DistanceFrom(pi.Value) - 0.11);
+                                TempPos.Add(Model.BallState.Location + v);
+                            }
+                            else
+                            {
+                                TempPos.Add(item);
+                            }
+                        }
+                        posIntersectList = TempPos.OrderBy(o => o.DistanceFrom(Model.BallState.Location)).ToList();
+                        if (posIntersectList.Count > 0)
+                        {
+                            Position2D? posi = posIntersectList.FirstOrDefault();
+                            if (posi.HasValue)
+                            {
+                                p = posi.Value + (GameParameters.OurGoalCenter - posi.Value).GetNormalizeToCopy(0.2);
+                            }
                             if (p.X > GameParameters.OurGoalCenter.X)
                             {
-                                p = new Position2D(GameParameters.OurGoalCenter.X, p.Y);
+                                p = p + (p - Model.BallState.Location).GetNormalizeToCopy(p.DistanceFrom(Model.BallState.Location) - 0.1);
                             }
-                            DrawingObjects.AddObject(new Circle(p, 0.02, new Pen(Brushes.DarkRed, 0.05f)), "ds21f32ds1sd35f4qwnghppsb2ff58ref2w365ef4fr4");
-                            PosTarget = p;
+                        }
+                        else
+                        {
+                            //2
+                            p = GameParameters.OurGoalCenter + (Model.BallState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(Model.BallState.Location.DistanceFrom(GameParameters.OurGoalCenter) - 0.2);
+                            finalTarget = p;
                             angle = -Model.BallState.Speed.AngleInDegrees;
-                        }
-                    }
-
-                    if (initialpos == Position2D.Zero)
-                    {
-                        initialpos = Model.BallState.Location;
-                    }
-                    Line goalerLine = new Line(Model.OurRobots[RobotID].Location, PosTarget);
-                    Line ballLine = new Line(Model.BallState.Location, Model.BallState.Location + Model.BallState.Speed);
-                    Position2D? PosIntersect = ballLine.IntersectWithLine(goalerLine);
-                    double xx, yy;
-
-                    initialpos = Model.BallState.Location;
-                    intersectTime = IntersectFind(Model, RobotID, initialpos, Model.OurRobots[RobotID].Location);
-                    double velocity = Model.BallState.Speed.Size;
-                    ballcoeff = root(-.3, velocity, Model.BallState.Location.DistanceFrom(intersectTime));
-                    robotCoeff = predicttime(Model, RobotID, initialpos, intersectTime);
-                    double robotIntersectTime = timeRobotToTargetInIntersect(Model, RobotID, initialpos, Model.OurRobots[RobotID].Location, intersectTime);
-
-
-                    cut = false;
-                    if (!BallKickedToOurGoal(Model) && PosIntersect.HasValue && (Model.OurRobots[RobotID].Location - PosIntersect.Value).GetNormnalizedCopy().InnerProduct((PosTarget - PosIntersect.Value).GetNormnalizedCopy()) < -0.1 &&
-                        Model.BallState.Speed.Size > 0.5 && (PosIntersect.Value - Model.BallState.Location).GetNormnalizedCopy().InnerProduct(Model.BallState.Speed.GetNormnalizedCopy()) > 0.1 && Model.OurRobots[RobotID].Location.X < PosIntersect.Value.X)// (PosIntersect.Value.X > Model.OurRobots[RobotID].Location.X + 0.9) && GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out xx, out yy))//&& (PosTarget.X > Model.OurRobots[RobotID].Location.X + 0.9))//(PosTarget.DistanceFrom(GameParameters.OurGoalCenter) < Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter)))
-                    {
-                        if (ballcoeff > 0 && intersectTime != (new Position2D(100, 100)) && (((robotCoeff - ballcoeff) > -0.2 && (robotCoeff - ballcoeff) < 0.3)))
-                        {
-                            lastPosNormal = Model.OurRobots[RobotID].Location;
-                            cut = true;
-                        }
-
-                        if (cut)
-                        {
-                            if (GameParameters.IsInDangerousZone(lastPosNormal, false, 0.2, out xx, out yy) && lastPosNormal != Position2D.Zero)
-                                PosTarget = lastPosNormal;
-                            DrawingObjects.AddObject(new StringDraw("cut = true , cutpos = " + PosIntersect.Value.toString(), GameParameters.OurGoalCenter.Extend(1, 0)), "sd3fs2d13ah321hg3h21dfs2ghdfgh");
+                            DrawingObjects.AddObject(new Circle(p, 0.15, new Pen(Brushes.Yellow, 0.05f)), "ds21f32ds1ffsd53fds58ref2w365ef4fr4");
                         }
                     }
                     else
                     {
-                        cut = false;
-                        lastPosNormal = Position2D.Zero;
+                        //DrawingObjects.AddObject(new StringDraw("targetPos," + gol.TargetState.Type.ToString() + ", bs<1 ,margin != 0.0", new Position2D(5.4, 0)), "56fbghf58465465sdfgb564hshhsh4");
+                        //Position2D p = Model.BallState.Location + Model.BallState.Speed.GetNormalizeToCopy(0.15);
+                        //if (p.X > GameParameters.OurGoalCenter.X)
+                        //{
+                        //    p = new Position2D(GameParameters.OurGoalCenter.X, p.Y);
+                        //}
+                        //DrawingObjects.AddObject(new Circle(p, 0.15, new Pen(Brushes.Yellow, 0.05f)), "ds21f32ds1sd35f4qwnghppsb2ff58ref2w365ef4fr4");
+                        //finalTarget = p;
+                        //angle = -Model.BallState.Speed.AngleInDegrees;
+
+                        // 11/26/2017 vahid replaced 
+                        GetSkill<GetBallSkill>().SetAvoidDangerZone(false, true);
+                        Position2D tar = GameParameters.OppGoalCenter;//TargetToKick(Model, RobotID);
+                        GetSkill<GetBallSkill>().OutGoingSideTrack(Model, RobotID, tar);
+                        Planner.AddKick(RobotID, kickPowerType.Speed, 4, true, false);
+                        return;
+                    }
+                    #endregion
+                }
+                //if (initialpos == Position2D.Zero)
+                //{
+                //    initialpos = Model.BallState.Location;
+                //}
+                Line goalerLine = new Line(Model.OurRobots[RobotID].Location, finalTarget);
+                Line ballLine = new Line(Model.BallState.Location, Model.BallState.Location + Model.BallState.Speed);
+                Position2D? PosIntersect = ballLine.IntersectWithLine(goalerLine);
+                double xx, yy;
+
+                initialpos = Model.BallState.Location;
+                intersectTime = IntersectFind(Model, RobotID, initialpos, Model.OurRobots[RobotID].Location);
+                double velocity = Model.BallState.Speed.Size;
+                ballcoeff = root(-.3, velocity, Model.BallState.Location.DistanceFrom(intersectTime));
+                robotCoeff = predicttime(Model, RobotID, initialpos, intersectTime);
+                double robotIntersectTime = timeRobotToTargetInIntersect(Model, RobotID, initialpos, Model.OurRobots[RobotID].Location, intersectTime);
+
+
+                cut = false;
+                if (!BallKickedToOurGoal(Model) && PosIntersect.HasValue && (Model.OurRobots[RobotID].Location - PosIntersect.Value).GetNormnalizedCopy().InnerProduct((finalTarget - PosIntersect.Value).GetNormnalizedCopy()) < -0.1 &&
+                    Model.BallState.Speed.Size > 0.5 && (PosIntersect.Value - Model.BallState.Location).GetNormnalizedCopy().InnerProduct(Model.BallState.Speed.GetNormnalizedCopy()) > 0.1 && Model.OurRobots[RobotID].Location.X < PosIntersect.Value.X)// (PosIntersect.Value.X > Model.OurRobots[RobotID].Location.X + 0.9) && GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out xx, out yy))//&& (PosTarget.X > Model.OurRobots[RobotID].Location.X + 0.9))//(PosTarget.DistanceFrom(GameParameters.OurGoalCenter) < Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter)))
+                {
+                    if (ballcoeff > 0 && intersectTime != (new Position2D(100, 100)) && (((robotCoeff - ballcoeff) > -0.2 && (robotCoeff - ballcoeff) < 0.3)))
+                    {
+                        lastPosNormal = Model.OurRobots[RobotID].Location;
+                        cut = true;
                     }
 
-                    if ((robotCoeff - ballcoeff) > 0.4 || (robotCoeff - ballcoeff) < -0.3)
+                    if (cut)
                     {
-                        cut = false;
-                        lastPosNormal = Position2D.Zero;
+                        if (GameParameters.IsInDangerousZone(lastPosNormal, false, 0.2, out xx, out yy) && lastPosNormal != Position2D.Zero)
+                            finalTarget = lastPosNormal;
+                        DrawingObjects.AddObject(new StringDraw("cut = true , cutpos = " + PosIntersect.Value.toString(), GameParameters.OurGoalCenter.Extend(1, 0)), "sd3fs2d13ah321hg3h21dfs2ghdfgh");
                     }
-
-                    if (!cut)
-                    {
-                        lastPosNormal = Position2D.Zero;
-                    }
-                    bool debug = true;
-                    if (debug)
-                    {
-                        DrawingObjects.AddObject(new StringDraw("time = " + (robotCoeff - ballcoeff).ToString(), new Position2D(5, 2)), "3asf21asf21a3sdsrytwr68hj514trehj");
-                        DrawingObjects.AddObject(new Circle(intersectTime, 0.02, new Pen(Brushes.Red, 0.05f)), "ret5w4ert5uh1terj31eyt58kj6tr5j");
-
-                        DrawingObjects.AddObject(new StringDraw((gol.TargetState.Type == ObjectType.Opponent) ? "Robot" : "Ball", new Position2D(4.6, 0.0)), "12345ccxz6789abcdefgha35s21c4");
-                        DrawingObjects.AddObject(new Circle(gol.TargetState.Location, 0.15, new System.Drawing.Pen(System.Drawing.Color.Purple, 0.02f)), "as.d02s3d21f3ds21f32ds14f8s2dqfjk6");
-                        DrawingObjects.AddObject(new Circle(PosTarget, 0.02, new Pen(Brushes.Blue, 0.05f)), "56cxvcxdv564sd2v44asd32dsd3f54dddss654654");
-                        DrawingObjects.AddObject(new StringDraw("cut:" + cut.ToString() + " , " + PosTarget.toString(), new Position2D(5.2, 2)), "5646543sd8sd3vcsd153vsdqwdeqwftry76546ij654");
-                    }
-                    Planner.Add(RobotID, PosTarget, angle, PathType.UnSafe, false, false, false, false);
                 }
                 else
                 {
-                    DrawingObjects.AddObject(new StringDraw("Gol == null,exception", new Position2D(5.3, 2)), "564sdv12ds65f3fdsf63654654");
-                    Planner.Add(RobotID, GameParameters.OurGoalCenter, angle, PathType.UnSafe, false, false, false, false);
+                    cut = false;
+                    lastPosNormal = Position2D.Zero;
                 }
+
+                if ((robotCoeff - ballcoeff) > 0.4 || (robotCoeff - ballcoeff) < -0.3)
+                {
+                    cut = false;
+                    lastPosNormal = Position2D.Zero;
+                }
+
+                if (!cut)
+                {
+                    lastPosNormal = Position2D.Zero;
+                }
+                bool debug = true;
+                if (debug)
+                {
+                    DrawingObjects.AddObject(new StringDraw("time = " + (robotCoeff - ballcoeff).ToString(), new Position2D(5, 2)), "3asf21asf21a3sdsrytwr68hj514trehj");
+                    DrawingObjects.AddObject(new Circle(intersectTime, 0.02, new Pen(Brushes.Red, 0.05f)), "ret5w4ert5uh1terj31eyt58kj6tr5j");
+
+                    DrawingObjects.AddObject(new StringDraw((gol.TargetState.Type == ObjectType.Opponent) ? "Robot" : "Ball", new Position2D(4.6, 0.0)), "12345ccxz6789abcdefgha35s21c4");
+                    DrawingObjects.AddObject(new Circle(gol.TargetState.Location, 0.15, new System.Drawing.Pen(System.Drawing.Color.Purple, 0.02f)), "as.d02s3d21f3ds21f32ds14f8s2dqfjk6");
+                    DrawingObjects.AddObject(new Circle(finalTarget, 0.02, new Pen(Brushes.Blue, 0.05f)), "56cxvcxdv564sd2v44asd32dsd3f54dddss654654");
+                    DrawingObjects.AddObject(new StringDraw("cut:" + cut.ToString() + " , " + finalTarget.toString(), new Position2D(5.2, 2)), "5646543sd8sd3vcsd153vsdqwdeqwftry76546ij654");
+                }
+                Planner.Add(RobotID, finalTarget, angle, PathType.UnSafe, false, false, false, false);
+                //}
+                //else
+                //{
+                //    DrawingObjects.AddObject(new StringDraw("Gol == null,exception", new Position2D(5.3, 2)), "564sdv12ds65f3fdsf63654654");
+                //    Planner.Add(RobotID, GameParameters.OurGoalCenter, angle, PathType.UnSafe, false, false, false, false);
+                //}
             }
             #endregion
 
@@ -511,11 +522,11 @@ namespace MRL.SSL.AIConsole.Roles
                             Planner.ChangeDefaulteParams(RobotID, false);
                             Planner.SetParameter(RobotID, 8, 8);
                             Position2D perp = new Position2D(Math.Min(targetvector.PrependecularPoint(GameParameters.OurGoalCenter, Model.OurRobots[RobotID].Location).X, GameParameters.OurGoalCenter.X - .1), targetvector.PrependecularPoint(GameParameters.OurGoalCenter, Model.OurRobots[RobotID].Location).Y);
-                            ;
                             if (perp.DistanceFrom(Model.OurRobots[RobotID].Location) > .1 && perp.DistanceFrom(GameParameters.OurGoalCenter) < pos.DistanceFrom(GameParameters.OurGoalCenter))
                             {
                                 gotoperp = true;
                             }
+
                             if (gotoperp)
                             {
                                 Planner.Add(RobotID, perp, (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
@@ -585,14 +596,14 @@ namespace MRL.SSL.AIConsole.Roles
             #region Kick To Goal
             else if (CurrentState == (int)GoalieStates.KickToGoal)
             {
-                if (Model.BallState.Speed.InnerProduct(Model.OurRobots[RobotID].Location - Model.BallState.Location) > 0)
-                    GetSkill<GoaliDiveSkill>().Dive(engine, Model, RobotID, true, 200);
-                else
-                {
-                    GetSkill<GetBallSkill>().SetAvoidDangerZone(false, true);
-                    Position2D tar = TargetToKick(Model, RobotID);
-                    GetSkill<GetBallSkill>().OutGoingSideTrack(Model, RobotID, tar);
-                }
+                //if (Model.BallState.Speed.InnerProduct(Model.OurRobots[RobotID].Location - Model.BallState.Location) > 0)
+                GetSkill<GoalieDiveSkill2017>().Dive(engine, Model, RobotID, true, 200);
+                //else
+                //{
+                //GetSkill<GetBallSkill>().SetAvoidDangerZone(false, true);
+                //Position2D tar = TargetToKick(Model, RobotID);
+                //GetSkill<GetBallSkill>().OutGoingSideTrack(Model, RobotID, tar);
+                //}
             }
             #endregion
 
@@ -635,12 +646,12 @@ namespace MRL.SSL.AIConsole.Roles
                     distToBall = 0.5;
                 double acceptable2 = acceptableballRobotSpeed / (3 * distToBall);
 
-                double innerProduct = Vector2D.InnerProduct(Model.BallStateFast.Speed, (Model.OurRobots[RobotID].Location - Model.BallStateFast.Location));
+                double ballSpeedWithBallToRobotInnerProduct = Vector2D.InnerProduct(Model.BallStateFast.Speed, (Model.OurRobots[RobotID].Location - Model.BallStateFast.Location));
                 double difAngle = Vector2D.AngleBetweenInDegrees(Model.BallStateFast.Speed, (Model.BallStateFast.Location - Model.OurRobots[RobotID].Location));
 
-                Circle c = new Circle(Model.OurRobots[RobotID].Location, 0.12);
-                Line l = new Line(Model.BallStateFast.Location, Model.BallStateFast.Location + Model.BallStateFast.Speed);
-                List<Position2D> inters = c.Intersect(l);
+                Circle goalieCircle = new Circle(Model.OurRobots[RobotID].Location, 0.12);
+                Line ballSpeedLine = new Line(Model.BallStateFast.Location, Model.BallStateFast.Location + Model.BallStateFast.Speed);
+                List<Position2D> BallSpeedWithGoalieIntersect = goalieCircle.Intersect(ballSpeedLine);
 
                 #region Normal
                 if (CurrentState == (int)GoalieStates.Normal)
@@ -678,13 +689,18 @@ namespace MRL.SSL.AIConsole.Roles
                             ballinRoll = false;
                         }
                     }
+
                     if (BallKickedToOurGoal(Model))
                         CurrentState = (int)GoalieStates.KickToGoal;
-                    else if (ballSpeed.Size > 2 && !BallKickedToOurGoal(Model) && inters.Count > 0 && innerProduct > 0.1)
-                        CurrentState = (int)GoalieStates.KickToRobot;
+                    else if (ballSpeed.Size > 2 && BallSpeedWithGoalieIntersect.Count > 0 && ballSpeedWithBallToRobotInnerProduct > 0.1)
+                        kick2RobotCounter++;
                     else if (GameParameters.IsInDangerousZone(Model.BallState.Location, false, margin, out dist, out dist2) && (acceptable2 > ballSpeed.Size || ballSpeed.Size < maxSpeedToGet))
                         CurrentState = (int)GoalieStates.InPenaltyArea;
 
+                    if (currentState == (int)GoalieStates.KickToGoal || currentState == (int)GoalieStates.InPenaltyArea)
+                    {
+                        kick2RobotCounter = 0;
+                    }
                 }
                 #endregion
 
@@ -697,10 +713,15 @@ namespace MRL.SSL.AIConsole.Roles
                         (!GameParameters.IsInDangerousZone(Model.BallState.Location, false, margin, out dist, out dist2)
                         || acceptableballRobotSpeed * 1.2 < ballSpeed.Size))
                         CurrentState = (int)GoalieStates.KickToGoal;
-                    else if (ballSpeed.Size > 2 && !BallKickedToOurGoal(Model) && inters.Count > 0 && innerProduct > 0.1)
-                        CurrentState = (int)GoalieStates.KickToRobot;
+                    else if (ballSpeed.Size > 2 && !BallKickedToOurGoal(Model) && BallSpeedWithGoalieIntersect.Count > 0 && ballSpeedWithBallToRobotInnerProduct > 0.1)
+                        kick2RobotCounter++;
                     else if (!GameParameters.IsInDangerousZone(Model.BallState.Location, false, margin, out dist, out dist2) || acceptable2 * 1.2 < ballSpeed.Size)
                         CurrentState = (int)GoalieStates.Normal;
+
+                    if (currentState == (int)GoalieStates.Normal || currentState == (int)GoalieStates.KickToGoal)
+                    {
+                        kick2RobotCounter = 0;
+                    }
                 }
                 #endregion
 
@@ -709,12 +730,17 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     Reset();
                     margin = 0.1;
-                    if (ballSpeed.Size > 2 && !BallKickedToOurGoal(Model) && inters.Count > 0 && innerProduct > 0.1)
-                        CurrentState = (int)GoalieStates.KickToRobot;
+                    if (ballSpeed.Size > 2 && !BallKickedToOurGoal(Model) && BallSpeedWithGoalieIntersect.Count > 0 && ballSpeedWithBallToRobotInnerProduct > 0.1)
+                        kick2RobotCounter++;
                     else if (!BallKickedToOurGoal(Model) && GameParameters.IsInDangerousZone(Model.BallState.Location, false, margin, out dist, out dist2) && (acceptable2 > ballSpeed.Size || ballSpeed.Size < maxSpeedToGet))
                         CurrentState = (int)GoalieStates.InPenaltyArea;
                     else if (!BallKickedToOurGoal(Model))
                         CurrentState = (int)GoalieStates.Normal;
+                    
+                    if (currentState == (int)GoalieStates.Normal || currentState == (int)GoalieStates.InPenaltyArea)
+                    {
+                        kick2RobotCounter = 0;
+                    }
                 }
                 #endregion
 
@@ -722,7 +748,7 @@ namespace MRL.SSL.AIConsole.Roles
                 else if (CurrentState == (int)GoalieStates.KickToRobot)
                 {
                     Reset();
-                    if (ballSpeed.Size < 1.5 || BallKickedToOurGoal(Model) || inters.Count == 0 || innerProduct < -0.1)
+                    if (ballSpeed.Size < 1.5 || BallKickedToOurGoal(Model) || BallSpeedWithGoalieIntersect.Count == 0 || ballSpeedWithBallToRobotInnerProduct < -0.1)
                     {
                         if (BallKickedToOurGoal(Model))
                             CurrentState = (int)GoalieStates.KickToGoal;
@@ -731,6 +757,7 @@ namespace MRL.SSL.AIConsole.Roles
                         else
                             CurrentState = (int)GoalieStates.Normal;
                     }
+                    kick2RobotCounter = 0;
                 }
                 #endregion
 
@@ -744,10 +771,15 @@ namespace MRL.SSL.AIConsole.Roles
                     }
                 }
                 #endregion
+
+                if (kick2RobotCounter > 20)
+                {
+                    CurrentState = (int)GoalieStates.KickToRobot;
+                }
             }
             FreekickDefence.CurrentStates[this] = CurrentState;
             currentState = CurrentState;
-            DrawingObjects.AddObject(new StringDraw(((GoalieStates)CurrentState).ToString(), GameParameters.OurGoalCenter.Extend(0.3, 0)), "gstate");
+            DrawingObjects.AddObject(new StringDraw(((GoalieStates)CurrentState).ToString(), GameParameters.OurGoalCenter.Extend(0.1, 0)), "gstate");
         }
 
         public bool BallKickedToOurGoal(WorldModel Model)
@@ -766,11 +798,15 @@ namespace MRL.SSL.AIConsole.Roles
             BallGoal = line.CalculateY(GameParameters.OurGoalLeft.X);
             double d = BallState.Location.DistanceFrom(GameParameters.OurGoalCenter);
             DrawingObjects.AddObject(new StringDraw((d / BallState.Speed.Size < tresh2).ToString(), new Position2D(-1, 0)));
+            DrawingObjects.AddObject(new StringDraw((d / BallState.Speed.Size).ToString(), Color.Aqua, Model.BallState.Location.Extend(0.40, 0)));
+            DrawingObjects.AddObject(new StringDraw((BallState.Speed.InnerProduct(GameParameters.OurGoalRight - BallState.Location)).ToString(), Color.Aqua, Model.BallState.Location.Extend(0.50, 0)));
             if (BallGoal.Y < GameParameters.OurGoalLeft.Y + tresh && BallGoal.Y > GameParameters.OurGoalRight.Y - tresh)
                 if (BallState.Speed.InnerProduct(GameParameters.OurGoalRight - BallState.Location) > 0)
+                {
                     if (BallState.Speed.Size > 0.1 && d / BallState.Speed.Size < tresh2)
                         return true;
-            return false;
+                }
+                    return false;
         }
 
         public override double CalculateCost(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)

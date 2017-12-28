@@ -275,7 +275,7 @@ namespace MRL.SSL.AIConsole.Strategies
                     Planner.Add(rapist1ID.Value, posList[0].Value, (GameParameters.OppGoalCenter - Model.OurRobots[rapist1ID.Value].Location).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
                 else
                     Planner.Add(rapist1ID.Value, Model.OurRobots[rapist1ID.Value].Location, (GameParameters.OppGoalCenter - Model.OurRobots[rapist3ID.Value].Location).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-                sync.kMotionDirect = 1;
+               // sync.kMotionDirect = 1;
                 var passSpeed = 3.2;//(posList[2].Value.DistanceFrom(firstBallPos) - 1.5) * .93;      
 
                 sync.SyncDirectPass(engine, Model, passerID, 45, goalieID.Value, targetPos.Value, GameParameters.OppGoalCenter, passSpeed, 8, 105);

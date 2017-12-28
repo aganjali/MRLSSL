@@ -35,8 +35,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
             int RobotID = Model.GoalieID.Value;
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(IntelligencePenaltyGoalKeeperRole)))
-                Functions[RobotID] = (eng, wmd) => GetRole<IntelligencePenaltyGoalKeeperRole>(RobotID).Run(engine, Model, RobotID);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(PenaltyGoalieRole)))
+                Functions[RobotID] = (eng, wmd) => GetRole<PenaltyGoalieRole>(RobotID).RunRole(engine, Model, RobotID, PreviouslyAssignedRoles);
             CurrentlyAssignedRoles = Assigner(engine, Model, out Functions);
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             return CurrentlyAssignedRoles;

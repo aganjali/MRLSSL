@@ -101,7 +101,7 @@ namespace MRL.SSL.AIConsole.Strategies
             get { return gotoPoint; }
         }
         //1.12
-        public double kMotionDirect = 1.0,kMotionChip = 1.2, kPassDirect = 1.0, kPassChip = 1.0, kMotionDirectCatch = 1.2, kMotionChipCatch = 1.22, kPassDirectCatch = 1.0, kPassChipCatch = 1.0;
+        double kMotionDirect = 1.2,kMotionChip = 1.3, kPassDirect = 1.0, kPassChip = 1.0, kMotionDirectCatch = 1.3, kMotionChipCatch = 1.30, kPassDirectCatch = 1.0, kPassChipCatch = 1.0;
         Position2D firstBallPos = Position2D.Zero;
         double chipPassOffset = 80;
 

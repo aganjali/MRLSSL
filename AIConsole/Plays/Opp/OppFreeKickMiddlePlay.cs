@@ -153,7 +153,10 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                                 };
 
             int? id = null;
-
+            bool stopRotational = true;
+            //Type StopMode = typeof(RotationalStopCover);
+            //if (stopRotational)
+            //    StopMode=typeof(stoprota)
             ballismoved = FreekickDefence.BallIsMoved;
             if (!oppcathball && engine.GameInfo.OppTeam.BallOwner.HasValue && Model.Opponents[engine.GameInfo.OppTeam.BallOwner.Value].Location.DistanceFrom(ballState.Location) < 0.12)
                 oppcathball = true;
@@ -169,7 +172,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             }
             Type freeRole;
             if (!ballismoved)
-                freeRole = typeof(StopRole1);
+                freeRole = typeof(RotationalStopCover);
             else
                 freeRole = typeof(ActiveRole);
 
@@ -271,9 +274,9 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, gotopoint, freeRole))
                 {
-                    if (freeRole == typeof(StopRole1))
+                    if (freeRole == typeof(RotationalStopCover))
                     {
-                        Functions[gotopoint.Value] = (eng, wmd) => GetRole<StopRole1>(gotopoint.Value).RunRole(eng, wmd, gotopoint.Value);
+                        Functions[gotopoint.Value] = (eng, wmd) => GetRole<RotationalStopCover>(gotopoint.Value).RotateRun(eng, wmd, gotopoint.Value, false, 1);//RunRole(eng, wmd, gotopoint.Value);
                         DefenceTest.StopCover1 = Model.OurRobots[gotopoint.Value].Location;
                     }
                     else
@@ -542,9 +545,9 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, mark2, freeRole))
                 {
 
-                    if (freeRole == typeof(StopRole1))
+                    if (freeRole == typeof(RotationalStopCover))
                     {
-                        Functions[mark2.Value] = (eng, wmd) => GetRole<StopRole1>(mark2.Value).RunRole(eng, wmd, mark2.Value);
+                        Functions[mark2.Value] = (eng, wmd) => GetRole<RotationalStopCover>(mark2.Value).RotateRun(eng, wmd, mark2.Value, false, 1);//RunRole(eng, wmd, mark2.Value);
                         DefenceTest.WeHaveStopCover1 = true;
                         if (mark2.HasValue)
                             DefenceTest.StopCover1 = Model.OurRobots[mark2.Value].Location;
@@ -794,9 +797,9 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                     DefenceTest.GoalieRole = Model.OurRobots[golie.Value].Location;
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, mark2, freeRole))
                 {
-                    if (freeRole == typeof(StopRole1))
+                    if (freeRole == typeof(RotationalStopCover))
                     {
-                        Functions[mark2.Value] = (eng, wmd) => GetRole<StopRole1>(mark2.Value).RunRole(eng, wmd, mark2.Value);
+                        Functions[mark2.Value] = (eng, wmd) => GetRole<RotationalStopCover>(mark2.Value).RotateRun(eng, wmd, mark2.Value, false, 1);//.RunRole(eng, wmd, mark2.Value);
                         DefenceTest.WeHaveStopCover1 = true;
                         if (mark2.HasValue)
                             DefenceTest.StopCover1 = Model.OurRobots[mark2.Value].Location;
@@ -1105,8 +1108,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 DefenceTest.WeHaveGoalie = true;
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, mark2, freeRole))
                 {
-                    if (freeRole == typeof(StopRole1))
-                        Functions[mark2.Value] = (eng, wmd) => GetRole<StopRole1>(mark2.Value).RunRole(eng, wmd, mark2.Value);
+                    if (freeRole == typeof(RotationalStopCover))
+                        Functions[mark2.Value] = (eng, wmd) => GetRole<RotationalStopCover>(mark2.Value).RotateRun(eng, wmd, mark2.Value, false, 1);//.RunRole(eng, wmd, mark2.Value);
                     else
                         Functions[mark2.Value] = (eng, wmd) => GetRole<ActiveRole>(mark2.Value).Perform(eng, wmd, mark2.Value, null);
                 }

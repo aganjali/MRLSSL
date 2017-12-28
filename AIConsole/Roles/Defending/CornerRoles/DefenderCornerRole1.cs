@@ -620,7 +620,7 @@ if (!calculateCost)
             {
                 if (CurrentState == (int)DefenderStates.Cut && Model.BallState.Location.DistanceFrom(Model.OurRobots[RobotID].Location) < .6 && FreekickDefence.WeAreInCorner)
                 {
-                    List<RoleBase> res = new List<RoleBase>() { new ActiveRole(), new DefenderCornerRole1() };
+                    List<RoleBase> res = new List<RoleBase>() { /* new ActiveRole() ,*/ new DefenderCornerRole1() }; //edited 2017 thailand
                     return res;
                 }
                 else
@@ -691,7 +691,7 @@ if (!calculateCost)
                     res.Add(new RegionalDefenderRole2());
                     if (FreekickDefence.DefenderCornerRole1ToActive)
                     {
-                        res.Add(new ActiveRole());
+                        /*res.Add(new ActiveRole());*/
                     }
                     return res;
                 }

@@ -133,11 +133,13 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             //    Functions[id] = (eng, wmd) => GetRole<OneTouchRole>(id).PerformNew(eng, wmd, id, new SingleObjectState(), false, GameParameters.OppGoalCenter, 200, false);
 
             //DrawingObjects.AddObject(new Line(GameParameters.OppGoalCenter, GameParameters.OurGoalCenter), "sfdsfds");
-          //Planner.AddRotate(Model, id, new Position2D(-Model.BallState.Location.X, Model.BallState.Location.Y), 0, kickPowerType.Speed, 8, false);
+            //Planner.AddRotate(Model, id, new Position2D(-Model.BallState.Location.X, Model.BallState.Location.Y), 0, kickPowerType.Speed, 8, false);
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, 2, typeof(TestRole)))
             //    Functions[2] = (eng, wmd) => GetRole<TestRole>(2).GetData(wmd, 2, 0.5, 30);
 
             //Planner.AddRotate(Model, ControlParameters.GoalieID, GameParameters.OppGoalCenter, 0, kickPowerType.Speed, 3, false);
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, 8, typeof(TestRole)))
+            //    Functions[8] = (eng, wmd) => GetRole<TestRole>(8).GetData(Model, 8, 0.5, 30);
 
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             return CurrentlyAssignedRoles;

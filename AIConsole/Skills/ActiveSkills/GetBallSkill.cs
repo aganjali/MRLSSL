@@ -86,6 +86,10 @@ namespace MRL.SSL.AIConsole.Skills
         Position2D? lastInter = null;
         bool inRefrence = false;
         Position2D? lastIncomingPred = null;
+        double incomingGoDist = 0;
+        bool incomingInit = true;
+        bool incomingStopChange = false;
+        Position2D firstPosIncoming = new Position2D();
         double CalculatedPassSpeed = -1;
         public void SetAvoidDangerZone(bool avoidOur, bool avoidOpp)
         {
@@ -264,6 +268,7 @@ namespace MRL.SSL.AIConsole.Skills
             //{
             //    DrawingObjects.AddObject(new StringDraw("Don't KICK", Model.OurRobots[RobotID].Location.Extend(.6, 0)), "54654");
             //}
+
             SingleObjectState robot = Model.OurRobots[RobotID];
             SingleObjectState ball = Model.BallState;
             Vector2D ballRobot = robot.Location - ball.Location;
@@ -416,7 +421,7 @@ namespace MRL.SSL.AIConsole.Skills
         public void OutGoingSideTrack(WorldModel Model, int RobotID, Position2D Target, bool useDefaultBackBall = true, double backB = 0.1)
         {
             double BallSpeedCoef = 0.9;
-            double BallDistanceTresh = 0.6;
+            double BallDistanceTresh = 0.4;
             double AngleTresh = Math.PI / 4;
             double AngleTresh2 = Math.PI / 3;
             double segmentConst = 0.8;
@@ -551,7 +556,7 @@ namespace MRL.SSL.AIConsole.Skills
                 }
                 DrawingObjects.AddObject(new StringDraw("ctr: " + ctr.ToString(), Model.BallState.Location + new Vector2D(1, 1)), "ctrstr");
             }
-            //inRefrence = true;
+            //inRefrence = false;
             if (inRefrence)
             {
                 if (Debug)
@@ -588,7 +593,7 @@ namespace MRL.SSL.AIConsole.Skills
                 DrawingObjects.AddObject(new Circle(finalPosToGo, 0.05, new Pen(Color.Magenta, 0.01f)), "finalPosToGo2");
             firstInref = true;
             double extAng = Math.Sign(Vector2D.AngleBetweenInDegrees(ballTarget, -robotBallVec)) * drbtAng * 30 * 0;
-            DrawingObjects.AddObject(new Line(ballLocation, ballLocation + Vector2D.FromAngleSize((ballTargetVec.AngleInDegrees + extAng).ToRadian(), ballTargetVec.Size), new Pen(Color.Cyan, 0.01f)), "balltargetline2");
+            DrawingObjects.AddObject(new Line(ballLocation, ballLocation + Vector2D.FromAngleSize((ballTargetVec.AngleInRadians + extAng).ToRadian(), ballTargetVec.Size), new Pen(Color.Cyan, 0.01f)), "balltargetline2");
             Planner.Add(RobotID, new SingleObjectState(finalPosToGo, Vector2D.Zero, (float)(ballTargetVec.AngleInDegrees + extAng)), PathType.UnSafe, false, true, AvoidOurDangerZone, AvoidOppDangerZone);
         }
         //public void OutGoingSideTrackNew(WorldModel Model, int RobotID, Position2D Target)
@@ -731,7 +736,7 @@ namespace MRL.SSL.AIConsole.Skills
         public void OutGoingBackTrack(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D Target, bool useDefaultBackBall = true, double backB = 0.1)
         {
             double segmentConst = 0.65;
-            double rearDistance = 0.10;
+            double rearDistance = 0.09;
             double trackBackBall = 0.09;
             double refrenceBackBall = 0.01;
             double BallDistanceTresh = 0.3;
@@ -989,7 +994,7 @@ namespace MRL.SSL.AIConsole.Skills
             double pidout = -pidBackX.Calculate(dX, 0);
 
             double vy = 1.5;
-            double accel = (ActiveParameters.KpTotalVyBack * (1 / (Math.Abs(pidBackY.Calculate(dX, 0)) + ActiveParameters.vyOffsetBack + ActiveParameters.KpxVyBack * Math.Abs(finalSpeed.X))) + Math.Max(ActiveParameters.KpyVyBack * (finalSpeed.Y), 0));
+            double accel =  (ActiveParameters.KpTotalVyBack * (1 / (Math.Abs(pidBackY.Calculate(dX, 0)) + ActiveParameters.vyOffsetBack + ActiveParameters.KpxVyBack * Math.Abs(finalSpeed.X))) + Math.Max(ActiveParameters.KpyVyBack * (finalSpeed.Y), 0));
 
             Vtemp = new Vector2D(pidout + ActiveParameters.KpxVxBack * finalSpeed.X, stat.Speed.Y - accel / 60.0);
 
@@ -1120,9 +1125,18 @@ namespace MRL.SSL.AIConsole.Skills
             Vector2D Vtemp = Vector2D.Zero;
 
 
+            double kx = 1 - Math.Min(Math.Abs(dX), 0.05) / 0.05;
             // double vy = (ActiveParameters.KpTotalVySide * (1 / (-Math.Abs(pidSideY.Calculate(dX, 0)) - ActiveParameters.vyOffsetSide + ActiveParameters.KpxVySide * -Math.Abs(finalSpeed.X))) + Math.Min(ActiveParameters.KpyVySide * (finalSpeed.Y + dY), 0));
-            double extY = (ActiveParameters.KpxVySide * Math.Abs(dX) + ActiveParameters.KpyVySide * finalSpeed.Y) / pidSideY.Coef.Kp;
-            extY = Math.Min(extY, 0.12);
+            double extY = (ActiveParameters.KpxVySide * Math.Abs(dX) + kx * ActiveParameters.KpyVySide * finalSpeed.Y) / pidSideY.Coef.Kp;
+
+            extY = Math.Min(extY, 0.15);
+
+            //double extY = * (ActiveParameters.KpyVySide * finalSpeed.Y) / pidSideY.Coef.Kp;
+
+
+            DrawingObjects.AddObject(new StringDraw("dx: " + dX.ToString(), new Position2D(-4.5, -2)), "42342355551");
+           // DrawingObjects.AddObject(new StringDraw("kx: " + kx.ToString(), new Position2D(-4.7, -2)), "4234235555");
+            DrawingObjects.AddObject(new StringDraw("exty: " + extY.ToString(), new Position2D(-4.9, -2)), "423423555555");
             double vy = -pidSideY.Calculate(dY + extY, 0);
             vy = Math.Min(0, vy);
 
@@ -1226,7 +1240,7 @@ namespace MRL.SSL.AIConsole.Skills
                 DrawingObjects.AddObject(new StringDraw("wout: " + wout, new Position2D(-2, 0)));
                 DrawingObjects.AddObject(new StringDraw("ww: " + ww, new Position2D(-2.2, 0)));
             }
-            double amax = 8;
+            double amax = 6;
             Vector2D A = (VRobotInField - Model.lastVelocity[RobotID]) * StaticVariables.FRAME_RATE;
 
             if (Debug)
@@ -1259,15 +1273,80 @@ namespace MRL.SSL.AIConsole.Skills
             #endregion
         }
 
+        private double CalculateTime(SingleObjectState RobotState, Position2D Target, double maxAccel, double maxSpeed)
+        {
+            Vector2D vec = Target - RobotState.Location;
+            double d = vec.Size;
+            double angle = Vector2D.AngleBetweenInRadians(vec, RobotState.Speed);
+            double SpeedInRefrence = RobotState.Speed.Size * Math.Cos(angle);
+            double time = 0;
+
+            double deccelDX = Math.Min(1, .5 * RobotState.Location.DistanceFrom(Target));
+            double daccel = Math.Min(1, .5 * RobotState.Location.DistanceFrom(Target));
+            double vmax = Math.Sqrt(2 * 3.14 * daccel);
+
+            double rootp = GoalieSkills.GoalieDiveSkill2017.root(2.2, Math.Abs(RobotState.Speed.Size), deccelDX);
+            if (rootp > 0)
+            {
+                time = rootp * 2;
+                return time;
+            }
+            return 0;
+        }
         public void IncomingFar(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D Target)
         {
-
-            Position2D predictedBall = BallPredictedIncomingNew(engine, Model, RobotID, lastIncomingPred);//BallPredictedIncoming(engine, Model, RobotID, lastIncomingPred, 0);
-            lastIncomingPred = predictedBall;
+            if (incomingInit)
+            {
+                incomingInit = false;
+                firstPosIncoming = Model.OurRobots[RobotID].Location;
+            }
+            DrawingObjects.AddObject(new Circle(firstPosIncoming, 0.2, new Pen(Color.Green, 0.03f)));
+            Position2D predictedBall = Model.BallState.Speed.PrependecularPoint(Model.BallState.Location, firstPosIncoming);//BallPredictedIncomingNew(engine, Model, RobotID, lastIncomingPred);//BallPredictedIncoming(engine, Model, RobotID, lastIncomingPred, 0);
             //predictedBall.X = Math.Sign(predictedBall.X) * Math.Min(Math.Abs(predictedBall.X), GameParameters.OurGoalCenter.X - 0.1);
             //predictedBall.Y = Math.Sign(predictedBall.Y) * Math.Min(Math.Abs(predictedBall.Y), GameParameters.OurLeftCorner.Y - 0.1);
             double fieldMargin = -0.1;
             Line BallLine = new Line(Model.BallState.Location, predictedBall);
+            predictedBall += (-Model.BallState.Speed).GetNormalizeToCopy(incomingGoDist - ActiveParameters.IncomingBackBall);
+            double timeR = CalculateTime(Model.OurRobots[RobotID], predictedBall, 2, 3.3);
+            double timeB = (predictedBall.DistanceFrom(Model.BallState.Location) / Model.BallState.Speed.Size);
+
+            int stopRefreshingFrame = 40;
+            int treshDifranceFrame = 10;
+            if (timeB - (treshDifranceFrame / StaticVariables.FRAME_RATE) < timeR && timeB > stopRefreshingFrame / StaticVariables.FRAME_RATE)
+            {
+                incomingGoDist -= Model.BallState.Speed.Size * StaticVariables.FRAME_PERIOD * 2;
+            }
+            else if (timeB - (treshDifranceFrame / StaticVariables.FRAME_RATE) < timeR && timeB < stopRefreshingFrame / StaticVariables.FRAME_RATE)
+            {
+                if (timeB < timeR)
+                {
+                    incomingGoDist -= 0.10;
+                }
+            }
+            if (timeB - (treshDifranceFrame / StaticVariables.FRAME_RATE) > timeR && timeB > stopRefreshingFrame / StaticVariables.FRAME_RATE)
+            {
+                incomingGoDist += Model.BallState.Speed.Size * StaticVariables.FRAME_PERIOD * 3;
+            }
+            if (incomingGoDist != 0)
+                //incomingGoDist = (incomingGoDist > 0) ? Math.Min(2.5, incomingGoDist) : Math.Max(-2.5, incomingGoDist);
+                //if (timeB > 1.2 || incomingFarCounter < 10)
+                //{
+                //    incomingFarCounter++;
+                //    //double tresh = 0.09 * timeB - timeR
+                //    if (lastIncomingPred.HasValue && (timeB - .3 < timeR)) //&& Model.OurRobots[RobotID].Location.DistanceFrom(lastIncomingPred.Value) < 0.10 )
+                //    {
+                //        incomingGoDist -= 0.09;
+                //    }
+                //    else if (lastIncomingPred.HasValue && (timeB - 0.3 > timeR))
+                //    {
+                //        incomingGoDist += 0.09;
+                //    }
+
+                //}
+                DrawingObjects.AddObject(new StringDraw(incomingGoDist.ToString(), Color.Red, new Position2D(+.5, -2)));
+            DrawingObjects.AddObject(new StringDraw("timeB= " + timeB + "     " + "" + timeR, Color.Red, new Position2D(+.6, -2)));
+            lastIncomingPred = predictedBall;
+            DrawingObjects.AddObject(new Circle(predictedBall, 0.2, new Pen(Color.Red, 0.03f)));
             if (!GameParameters.IsInField(predictedBall, fieldMargin))
             {
                 Position2D tmpInt = new Position2D();
@@ -1313,6 +1392,60 @@ namespace MRL.SSL.AIConsole.Skills
             DrawingObjects.AddObject("angleinconmfar", new StringDraw("ang incoming" + (Model.BallState.Location - backBall).AngleInDegrees.ToString(), new Position2D(-2.5, -2.5)));
             Planner.Add(RobotID, new SingleObjectState(backBall, Vector2D.Zero, (float)(Model.BallState.Location - backBall).AngleInDegrees), PathType.UnSafe, false, true, AvoidOurDangerZone, false);
         }
+        //public void IncomingFar(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D Target)
+        //{
+
+        //    Position2D predictedBall = BallPredictedIncomingNew(engine, Model, RobotID, lastIncomingPred);//BallPredictedIncoming(engine, Model, RobotID, lastIncomingPred, 0);
+        //    lastIncomingPred = predictedBall;
+        //    //predictedBall.X = Math.Sign(predictedBall.X) * Math.Min(Math.Abs(predictedBall.X), GameParameters.OurGoalCenter.X - 0.1);
+        //    //predictedBall.Y = Math.Sign(predictedBall.Y) * Math.Min(Math.Abs(predictedBall.Y), GameParameters.OurLeftCorner.Y - 0.1);
+        //    double fieldMargin = -0.1;
+        //    Line BallLine = new Line(Model.BallState.Location, predictedBall);
+        //    if (!GameParameters.IsInField(predictedBall, fieldMargin))
+        //    {
+        //        Position2D tmpInt = new Position2D();
+        //        double minDist = double.MaxValue;
+        //        Position2D NearestIntersect = new Position2D();
+        //        List<Line> field = GameParameters.GetFieldLines(fieldMargin);
+        //        foreach (var item in field)
+        //        {
+        //            if (!item.IntersectWithLine(BallLine, ref tmpInt))
+        //                tmpInt = Model.BallState.Location;
+        //            if ((tmpInt - Model.BallState.Location).InnerProduct(BallLine.Tail - BallLine.Head) > 0)
+        //            {
+        //                double dist = Model.BallState.Location.DistanceFrom(tmpInt);
+        //                if (dist < minDist)
+        //                {
+        //                    NearestIntersect = tmpInt;
+        //                    minDist = dist;
+        //                }
+        //            }
+        //        }
+        //        if (minDist < double.MaxValue)
+        //        {
+        //            predictedBall = NearestIntersect;
+        //        }
+        //        else
+        //            predictedBall = Model.BallState.Location;
+        //    }
+        //    if (Debug)
+        //        DrawingObjects.AddObject(new Circle(predictedBall, 0.03)
+        //        {
+        //            DrawPen = new Pen(Color.Chocolate, 0.01f)
+        //        });
+        //    Position2D backBall = predictedBall+ (predictedBall - Target).GetNormalizeToCopy(ActiveParameters.IncomingBackBall);
+        //    incommingPred = predictedBall;
+        //    if (AvoidOppDangerZone)
+        //    {
+        //        double dist, DistFromBorder;
+        //        if (GameParameters.IsInDangerousZone(backBall, true, 0.1, out dist, out DistFromBorder))
+        //        {
+        //            backBall = GameParameters.OppGoalCenter + (backBall - GameParameters.OppGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(-backBall, Vector2D.Zero, 0), 0));
+        //        }
+        //    }
+        //    DrawingObjects.AddObject("angleinconmfar", new StringDraw("ang incoming" + (Model.BallState.Location - backBall).AngleInDegrees.ToString(), new Position2D(-2.5, -2.5)));
+        //    Planner.Add(RobotID, new SingleObjectState(backBall, Vector2D.Zero, (float)(Model.BallState.Location - backBall).AngleInDegrees), PathType.UnSafe, false, true, AvoidOurDangerZone, false);
+        //}
         public void IncomingFarForStrategy(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D Target)
         {
             Position2D predictedBall = BallPredictedIncoming(engine, Model, RobotID, lastIncomingPred, 1);
@@ -1580,6 +1713,7 @@ namespace MRL.SSL.AIConsole.Skills
             //DrawingObjects.AddObject(new StringDraw("time: " + t, new Position2D(-2,0.3)));
             //return Model.PredictedBall[t].Location;
         }
+
         private Position2D BallPredictedIncomingNew(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D? lastPredict)
         {
             Obstacle obs = new Obstacle();
@@ -1619,7 +1753,7 @@ namespace MRL.SSL.AIConsole.Skills
         private double AngularController(WorldModel Model, int RobotID, double angle)
         {
             //double Kp = 22, Ki = 2/*0.05*/, Kd = 3.95/*0.32*/, lamda = 0.99, PID_Max = 40;
-            double Kp = 10, Ki = 0.0/*0.05*/, Kd = 0.002/*0.008*/, lamda = 0.99, PID_Max = 40;
+            double Kp = 10, Ki = 0.00/*0.05*/, Kd = 0.05/*0.008*/, lamda = 0.99, PID_Max = 40;
             MaxIntegral = 100;
             double err = (angle - Model.OurRobots[RobotID].Angle.Value) * Math.PI / 180;
 
@@ -1662,6 +1796,8 @@ namespace MRL.SSL.AIConsole.Skills
             CalculatedPassSpeed = -1;
             counterAngle = 0;
             counterAngleBack = 0;
+            incomingInit = true;
+            incomingGoDist = 0;
         }
         void ResetIncomingFar()
         {
@@ -1718,7 +1854,7 @@ namespace MRL.SSL.AIConsole.Skills
         {
             //double Kp = 22, Ki = 2/*0.05*/, Kd = 3.9/*0.32*/, lamda = 0.99, PID_Max = 40;
             //double Kp = 10, Ki = 0.0/*0.05*/, Kd = 0.0/*0.008*/, lamda = 0.99, PID_Max = 40;
-            double Kp = 9, Ki = 0.0/*0.05*/, Kd = 0.002/*0.008*/, lamda = 0.99, PID_Max = 40;
+            double Kp = 9, Ki = 0.01/*0.05*/, Kd = 0.002/*0.008*/, lamda = 0.99, PID_Max = 40;
             MaxIntegralBack = 100;
             double err = (TargetTeta - state.Angle.Value) * Math.PI / 180;
 

@@ -209,7 +209,10 @@ namespace MRL.SSL.AIConsole.Strategies
                     }
                 }
 
-
+                if (CurrentState == (int)State.FirstPass && (sync.Finished || sync.Failed))
+                {
+                    CurrentState = (int)State.Finish;
+                }
                 //var tempPos = ;
 
 
@@ -250,13 +253,13 @@ namespace MRL.SSL.AIConsole.Strategies
             Functions = new Dictionary<int, CommonDelegate>();
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
 
-            if (firstBallPos.DistanceFrom(Model.BallState.Location) < 0.10)
-            {
-                double PassSpeed = (firstBallPos.DistanceFrom(Passer2Pos2) - 2.7) * 1.08;
-                Planner.AddRotate(Model, PasserID, Passer2Pos2, 20, kickPowerType.Speed, PassSpeed, isChip, RotateDelay, true);
-            }
-            else
-                Planner.Add(PasserID, PasserPos2, (GameParameters.OppGoalCenter - Passer2Pos2).AngleInDegrees, PathType.Safe, true, true, true, true);
+            //if (firstBallPos.DistanceFrom(Model.BallState.Location) < 0.10)
+            //{
+            //    double PassSpeed = (firstBallPos.DistanceFrom(Passer2Pos2) - 2.7) * 1.08;
+            //    Planner.AddRotate(Model, PasserID, Passer2Pos2, 20, kickPowerType.Speed, PassSpeed, isChip, RotateDelay, true);
+            //}
+            //else
+            //    Planner.Add(PasserID, PasserPos2, (GameParameters.OppGoalCenter - Passer2Pos2).AngleInDegrees, PathType.Safe, true, true, true, true);
             #region states
             if (CurrentState == (int)State.First)
             {
@@ -266,9 +269,28 @@ namespace MRL.SSL.AIConsole.Strategies
 
                 //Planner.Add(PasserID, PasserPos1, (Model.BallState.Location - Poser1Pos1).AngleInDegrees, PathType.Safe, true, true, true, true);
                 Planner.Add(Poser1ID, Poser1Pos1, (Model.BallState.Location - Poser1Pos1).AngleInDegrees, PathType.Safe, true, true, true, true);
-                Planner.Add(PasserID, firstBallPos.Extend(0.20, 0), (GameParameters.OppGoalCenter - firstBallPos.Extend(-0.20, 0)).AngleInDegrees, PathType.Safe, true, true, true, true);
+                //Planner.Add(PasserID, firstBallPos.Extend(0.20, 0), (GameParameters.OppGoalCenter - firstBallPos.Extend(-0.20, 0)).AngleInDegrees, PathType.Safe, true, true, true, true);
+
+                
+                if (Model.OurRobots[PasserID].Location.DistanceFrom(firstBallPos) < 0.30)
+                {
+                    double passSpeed = Model.BallState.Location.DistanceFrom(Passer2Pos1) * 0.65;
+                    sync.SyncChipCatch(engine, Model, PasserID, 40, ShooterID, ShooterPos1, GameParameters.OppGoalCenter, passSpeed, KickSpeed, 20, false);
+                    if (sync.Finished || sync.Failed)
+                    {
+                        CurrentState = (int)State.Finish;
+                    }
+                }
+                else
+                {
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, PasserID, typeof(ActiveRole)))
+                        Functions[PasserID] = (eng, wmd) => GetRole<ActiveRole>(PasserID).PerformWithoutKick(engine, Model, PasserID, Position2D.Zero, false, 0.19);
+
+                }
                 Planner.Add(ShooterID, ShooterPos1, (GameParameters.OppRightCorner - ShootTarget).AngleInDegrees, PathType.Safe, true, true, true, true);
                 Planner.Add(Passer2ID, Passer2Pos1, (GameParameters.OppRightCorner - Passer2Pos1).AngleInDegrees, PathType.Safe, true, true, true, true);
+
+                
             }
             else if (CurrentState == (int)State.FirstPass)
             {
@@ -291,20 +313,12 @@ namespace MRL.SSL.AIConsole.Strategies
                         CurrentState = (int)State.Finish;
                     }
                 }
-                if (starkCatch.currentState != 3 && starkCatch.currentState != 4)
-                {
-                    starkCatch.perform(engine, Model, Passer2ID, true, Passer2Pos2, true, 70);
-                }
-                if (starkCatch.currentState == 2)
-                    passed = true;
-                if (starkCatch.currentState == 4)
-                {
-                    CurrentState = (int)State.Finish;
-                }
+
+
             }
             else if (CurrentState == (int)State.SecondPass)
             {
-                sync.kMotionChip = 1;
+                //sync.kMotionChip = 1;
                 Planner.Add(Poser1ID, Poser1Pos2, (GameParameters.OppGoalCenter - Poser1Pos2).AngleInDegrees, PathType.Safe, true, true, true, true);
                 Planner.Add(PasserID, PasserPos2, (GameParameters.OppGoalCenter - PasserPos2).AngleInDegrees, PathType.Safe, true, true, true, true);
                 double passSpeed = Model.BallState.Location.DistanceFrom(ShooterPos2) - 1.1;

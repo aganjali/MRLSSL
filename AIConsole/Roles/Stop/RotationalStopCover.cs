@@ -16,8 +16,9 @@ namespace MRL.SSL.AIConsole.Roles
         {
             return RoleCategory.Positioner;
         }
-        public void RotateRun(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID, bool useInFar, double distToBall, bool RotateInOppVec = false, bool rotate = true)
+        public void RotateRun(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID, bool useInFar, double distToBall, bool RotateInOppVec = true, bool rotate = true)
         {
+            RotateInOppVec = true;
             bool debug = true;
             Position2D pos = Model.BallState.Location;
             Position2D ballPosInNearLeft = GameParameters.OurLeftCorner + (Position2D.Zero - GameParameters.OurLeftCorner).GetNormalizeToCopy(0.3);
@@ -74,25 +75,7 @@ namespace MRL.SSL.AIConsole.Roles
             Line l6 = new Line(Model.BallState.Location, pos + vecOurLeftCorner);
             Line l7 = new Line(Model.BallState.Location, pos + vecOppLeftCorner);
             Line l8 = new Line(Model.BallState.Location, pos + vecOppRightCorner);
-            if (debug)
-            {
-                //DrawingObjects.AddObject(l1);
-                //DrawingObjects.AddObject(l2);
-                //DrawingObjects.AddObject(l3);
-                //DrawingObjects.AddObject(l4);
-                //DrawingObjects.AddObject(l5);
-                DrawingObjects.AddObject(l6);
-                DrawingObjects.AddObject(l7);
-                //DrawingObjects.AddObject(l8);
-                DrawingObjects.AddObject(new StringDraw(vecOurRightGoal.AngleInDegrees.ToString(), l1.Tail));
-                DrawingObjects.AddObject(new StringDraw(vecOurLeftGoal.AngleInDegrees.ToString(), l2.Tail));
-                DrawingObjects.AddObject(new StringDraw(vecOppLeftGoal.AngleInDegrees.ToString(), l3.Tail));
-                DrawingObjects.AddObject(new StringDraw(vecOppRightGoal.AngleInDegrees.ToString(), l4.Tail));
-                DrawingObjects.AddObject(new StringDraw(vecOurRightCorner.AngleInDegrees.ToString(), l5.Tail));
-                DrawingObjects.AddObject(new StringDraw(vecOurLeftCorner.AngleInDegrees.ToString(), l6.Tail));
-                DrawingObjects.AddObject(new StringDraw(vecOppLeftCorner.AngleInDegrees.ToString(), l7.Tail));
-                DrawingObjects.AddObject(new StringDraw(vecOppRightCorner.AngleInDegrees.ToString(), l8.Tail));
-            }
+
 
             double StopDistFromBall = Math.Min(Math.Max(distToBall, 0.6), 3);
             bool NearOppFromBall = false;
@@ -118,23 +101,34 @@ namespace MRL.SSL.AIConsole.Roles
                 Position2D target = GetTarget(Model, RobotID, StopDistFromBall);
                 int oppid = oppFirstPasser;
 
-                Vector2D r = new Vector2D();
+                Vector2D mainVec = new Vector2D();
+                Vector2D checkMainVec = new Vector2D();
                 if (rotate)
                 {
                     if (RotateInOppVec)
-                        r = Vector2D.FromAngleSize(Model.Opponents[oppid].Angle.Value * Math.PI / 180, 1);
+                        mainVec = Vector2D.FromAngleSize(Model.Opponents[oppid].Angle.Value * Math.PI / 180, 1);
                     else
-                        r = Model.BallState.Location - Model.Opponents[oppid].Location;
+                    {
+                        mainVec = Model.BallState.Location - Model.Opponents[oppid].Location;
+                        checkMainVec = Model.Opponents[oppid].Location - Model.BallState.Location;
+                    }
                 }
                 else
                 {
-                    r = Model.BallState.Location - GameParameters.OurGoalCenter;
+                    mainVec = Model.BallState.Location - GameParameters.OurGoalCenter;
                 }
-                Position2D ret = Model.BallState.Location + r.GetNormalizeToCopy(StopDistFromBall);
+                Position2D ret = Model.BallState.Location + mainVec.GetNormalizeToCopy(StopDistFromBall);
+                Line oppballLine1 = new Line(Model.BallState.Location, Model.Opponents[oppFirstPasser].Location);
+                Line oppballLine2 = new Line(Model.BallState.Location, ret);
+
+                //DrawingObjects.AddObject(oppballLine1);
+                DrawingObjects.AddObject(oppballLine2);
+                DrawingObjects.AddObject(new StringDraw(mainVec.AngleInDegrees.ToString(), oppballLine2.Tail));
+
                 //check and solve fail or error pos    
                 if (CurrentState == (int)BallMode.NearRight)
                 {
-                    double angle = (r.AngleInDegrees > 0 ? r.AngleInDegrees : 180+(180 + r.AngleInDegrees));
+                    double angle = (mainVec.AngleInDegrees > 0 ? mainVec.AngleInDegrees : 180 + (180 + mainVec.AngleInDegrees));
                     if (angle < vecOurRightGoal.AngleInDegrees)
                     {
                         ret = Model.BallState.Location + vecOurRightGoal.GetNormalizeToCopy(StopDistFromBall);
@@ -146,7 +140,7 @@ namespace MRL.SSL.AIConsole.Roles
                 }
                 else if (CurrentState == (int)BallMode.NearLeft)
                 {
-                    double angle = (r.AngleInDegrees > 0 ? r.AngleInDegrees : 180 + (180 + r.AngleInDegrees));
+                    double angle = (mainVec.AngleInDegrees > 0 ? mainVec.AngleInDegrees : 180 + (180 + mainVec.AngleInDegrees));
                     double angleVecOppRightCorner = (vecOppRightCorner.AngleInDegrees > 0 ? vecOppRightCorner.AngleInDegrees : 180 + (180 + vecOppRightCorner.AngleInDegrees));
                     double angleVecOurLeftGoal = (vecOurLeftGoal.AngleInDegrees > 0 ? vecOurLeftGoal.AngleInDegrees : 180 + (180 + vecOurLeftGoal.AngleInDegrees));
                     if (angle > angleVecOurLeftGoal)
@@ -160,46 +154,110 @@ namespace MRL.SSL.AIConsole.Roles
                 }
                 else if (CurrentState == (int)BallMode.MiddleRight)
                 {
-                    double angle = (r.AngleInDegrees > 0 ? r.AngleInDegrees : (360 + r.AngleInDegrees));
-                    if (r.AngleInDegrees < 0)
+                    double angle = (mainVec.AngleInDegrees > 0 ? mainVec.AngleInDegrees : (360 + mainVec.AngleInDegrees));
+                    if (mainVec.AngleInDegrees < 0 && angle>270)
                     {
                         ret = Model.BallState.Location + vecOurRightCorner.GetNormalizeToCopy(StopDistFromBall);
                     }
-                    if (r.AngleInDegrees > vecOppRightCorner.AngleInDegrees)
+                    if (mainVec.AngleInDegrees > vecOppRightCorner.AngleInDegrees || (angle < 270 && angle > vecOppRightCorner.AngleInDegrees))
                     {
                         ret = Model.BallState.Location + vecOppRightCorner.GetNormalizeToCopy(StopDistFromBall);
                     }
                 }
                 else if (CurrentState == (int)BallMode.MiddleLeft)
                 {
-                    double angle = (r.AngleInDegrees > 0 ? r.AngleInDegrees : (180 + r.AngleInDegrees));
-                    double angleVecOppleftCorner = (vecOppLeftCorner.AngleInDegrees > 0 ? vecOppLeftCorner.AngleInDegrees : (360 + vecOppLeftCorner.AngleInDegrees));
-                    double angleVecOurleftCorner = (vecOurLeftCorner.AngleInDegrees > 0 ? vecOurLeftCorner.AngleInDegrees : (360 + vecOurLeftCorner.AngleInDegrees));
-                    if (angle < angleVecOppleftCorner)
+                    vecOppLeftCorner = GameParameters.OppGoalCenter.Extend(0, -(GameParameters.OppGoalCenter.DistanceFrom(GameParameters.OppLeftCorner)) / 1.2) - Model.Opponents[oppFirstPasser].Location;
+                    vecOurLeftCorner = GameParameters.OurGoalCenter.Extend(0, (GameParameters.OurGoalCenter.DistanceFrom(GameParameters.OurLeftCorner)) / 1.2) - Model.Opponents[oppFirstPasser].Location;
+                    double angle = Model.Opponents[oppid].Angle.Value;//mainVec.AngleInDegrees;//(mainVec.AngleInDegrees > 0 ? mainVec.AngleInDegrees : (360 + mainVec.AngleInDegrees));
+                    
+                    if (angle<230 && angle>115)
                     {
                         ret = Model.BallState.Location + vecOppLeftCorner.GetNormalizeToCopy(StopDistFromBall);
                     }
-                    if (angle > angleVecOurleftCorner)
+                    else if (angle > 0 && angle<=115)
+                    {
+                        ret = Model.BallState.Location + vecOurLeftCorner.GetNormalizeToCopy(StopDistFromBall);
+                    }
+                         
+
+                    //double checkangle = (checkMainVec.AngleInDegrees > 0 ? checkMainVec.AngleInDegrees : (360 + checkMainVec.AngleInDegrees));
+                    //if (angle > 180)
+                    //    angle -= 360;
+
+                   
+                    //double angleVecOppleftCorner = vecOppLeftCorner.AngleInDegrees;//(vecOppLeftCorner.AngleInDegrees > 0 ? vecOppLeftCorner.AngleInDegrees : (360 + vecOppLeftCorner.AngleInDegrees));
+                    //double angleVecOurleftCorner = vecOurLeftCorner.AngleInDegrees;//(vecOurLeftCorner.AngleInDegrees > 0 ? vecOurLeftCorner.AngleInDegrees : (360 + vecOurLeftCorner.AngleInDegrees));
+                    //if (angle > angleVecOppleftCorner || angle > angleVecOurleftCorner)
+                    //{
+                    //    //to zavie hastim
+                    //}
+                    //else
+                    //{
+                    //    angleVecOppleftCorner = (vecOppLeftCorner.AngleInDegrees > 0 ? vecOppLeftCorner.AngleInDegrees : (360 + vecOppLeftCorner.AngleInDegrees));
+                    //    angleVecOurleftCorner = (vecOurLeftCorner.AngleInDegrees > 0 ? vecOurLeftCorner.AngleInDegrees : (360 + vecOurLeftCorner.AngleInDegrees));
+                    //    angle = (angle > 0 ? angle : (360 + angle));
+                    //    double p1 = Math.Abs(angle - angleVecOppleftCorner);
+                    //    double p2 = Math.Abs(angle - angleVecOurleftCorner);
+                    //    if (p1 < p2)
+                    //    {
+                    //        ret = Model.BallState.Location + vecOppLeftCorner.GetNormalizeToCopy(StopDistFromBall);
+                    //    }
+                    //    else
+                    //    {
+                    //        ret = Model.BallState.Location + vecOurLeftCorner.GetNormalizeToCopy(StopDistFromBall);
+                    //    }
+                    //}
+                }
+                else if (CurrentState == (int)BallMode.FarRight)
+                {
+                    double angle = Model.Opponents[oppid].Angle.Value;//mainVec.AngleInDegrees;//(mainVec.AngleInDegrees > 0 ? mainVec.AngleInDegrees : (360 + mainVec.AngleInDegrees));
+                    if (angle > 90 && angle <= 270)
+                    {
+                        ret = Model.BallState.Location + vecOppRightCorner.GetNormalizeToCopy(StopDistFromBall);
+                    }
+                    else if ( angle > 270)
                     {
                         ret = Model.BallState.Location + vecOurRightCorner.GetNormalizeToCopy(StopDistFromBall);
                     }
                 }
-                else if (CurrentState == (int)BallMode.FarRight)
-                {
-                }
                 else if (CurrentState == (int)BallMode.FarLeft)
                 {
+                    double angle = Model.Opponents[oppid].Angle.Value;//mainVec.AngleInDegrees;//(mainVec.AngleInDegrees > 0 ? mainVec.AngleInDegrees : (360 + mainVec.AngleInDegrees));
+                    if (angle < 270 && angle > 90)
+                    {
+                        ret = Model.BallState.Location + vecOppRightCorner.GetNormalizeToCopy(StopDistFromBall);
+                    }
+                    else if (angle > 0 && angle <= 90)
+                    {
+                        ret = Model.BallState.Location + vecOurLeftCorner.GetNormalizeToCopy(StopDistFromBall);
+                    }
                 }
                 //if (ret == Position2D.Zero || ret.DistanceFrom(Model.BallState.Location) < StopDistFromBall)
                 //{
                 //    ret = Model.BallState.Location + (Model.BallState.Location - Model.Opponents[oppid].Location).GetNormalizeToCopy(StopDistFromBall);
                 //}
-
+                if (debug)
+                {
+                    //DrawingObjects.AddObject(l1);
+                    //DrawingObjects.AddObject(l2);
+                    //DrawingObjects.AddObject(l3);
+                    //DrawingObjects.AddObject(l4);
+                    //DrawingObjects.AddObject(l5);
+                    DrawingObjects.AddObject(l6);
+                    DrawingObjects.AddObject(l7);
+                    //DrawingObjects.AddObject(l8);
+                    DrawingObjects.AddObject(new StringDraw(vecOurRightGoal.AngleInDegrees.ToString(), l1.Tail));
+                    DrawingObjects.AddObject(new StringDraw(vecOurLeftGoal.AngleInDegrees.ToString(), l2.Tail));
+                    DrawingObjects.AddObject(new StringDraw(vecOppLeftGoal.AngleInDegrees.ToString(), l3.Tail));
+                    DrawingObjects.AddObject(new StringDraw(vecOppRightGoal.AngleInDegrees.ToString(), l4.Tail));
+                    DrawingObjects.AddObject(new StringDraw(vecOurRightCorner.AngleInDegrees.ToString(), l5.Tail));
+                    DrawingObjects.AddObject(new StringDraw(vecOurLeftCorner.AngleInDegrees.ToString(), l6.Tail));
+                    DrawingObjects.AddObject(new StringDraw(vecOppLeftCorner.AngleInDegrees.ToString(), l7.Tail));
+                    DrawingObjects.AddObject(new StringDraw(vecOppRightCorner.AngleInDegrees.ToString(), l8.Tail));
+                }
                 target = ret;
                 GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, target, (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2.5, true);
             }
-
-
         }
 
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
@@ -219,11 +277,11 @@ namespace MRL.SSL.AIConsole.Roles
             else if (Model.BallState.Location.X < -2.5)
             {
                 //far
-                if (Model.BallState.Location.Y < 0)
+                if (Model.BallState.Location.Y > 0)
                 {
                     CurrentState = (int)BallMode.FarLeft;
                 }
-                else if (Model.BallState.Location.Y > 0)
+                else if (Model.BallState.Location.Y < 0)
                 {
                     CurrentState = (int)BallMode.FarRight;
                 }

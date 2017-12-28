@@ -47,7 +47,7 @@ namespace MRL.SSL.AIConsole.Roles
                 //  Planner.SetParameter(RobotID, 1);
                 DrawingObjects.AddObject(new Line(Model.OurRobots[RobotID].Location, Model.OurRobots[RobotID].Location + Vector2D.FromAngleSize(Model.OurRobots[RobotID].Angle.Value * Math.PI / 180, 1),
                 new Pen(Color.LemonChiffon, 0.01f)));
-                Planner.Add(RobotID, new SingleObjectState(RobotComponentsController.Target, Vector2D.Zero, (float)(RobotComponentsController.Target - Last_Target).AngleInDegrees), PathType.UnSafe, true, true, true, true);
+                Planner.Add(RobotID, new SingleObjectState(RobotComponentsController.Target, Vector2D.Zero, /*(float)(RobotComponentsController.Target - Last_Target).AngleInDegrees*/0), PathType.UnSafe, true, true, true, true);
                 Planner.AddKick(RobotID, true);
                 return new SingleWirelessCommand();
                 //   return GetSkill<GotoPointSkill>().GotoPoint(engine, Model, RobotID, RobotComponentsController.Target, 180/*(RobotComponentsController.Target - Model.BallState.Location).AngleInDegrees /*RobotComponentsController.Angle*/, false, true, false, 0, 0, 5);

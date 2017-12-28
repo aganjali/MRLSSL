@@ -40,7 +40,7 @@ namespace MRL.SSL.AIConsole.Strategies
             chip = false;
             failcounter = 0;
             CurrentState = InitialState;
-            RotateTeta = 90;
+            RotateTeta = -30;
             PassSpeed = 2;
             KickPower = 100;
             PasserID = -1;
@@ -212,7 +212,7 @@ namespace MRL.SSL.AIConsole.Strategies
 
         public override Dictionary<int, RoleBase> RunStrategy(GameStrategyEngine engine, WorldModel Model, out Dictionary<int, CommonDelegate> Functions)
         {
-            sync.kMotionChip = 1.2;
+            //sync.kMotionChip = 1.2;
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
             #region first
@@ -230,7 +230,8 @@ namespace MRL.SSL.AIConsole.Strategies
 
             else if (CurrentState == (int)State.Go)
             {
-                PassSpeed = (Model.OurRobots[PasserID].Location.DistanceFrom(ShooterPos22) - 1.3);
+                PassSpeed = engine.GameInfo.CalculateKickSpeed(Model, PasserID, Model.BallState.Location, ShooterPos22, true, true);
+                //PassSpeed = Math.Max(0.8, Model.OurRobots[PasserID].Location.DistanceFrom(ShooterPos22) * 0.6);
 
                 //sync passer and shoter
                 sync.SyncChipPass(engine, Model, PasserID, RotateTeta, shooterID, firstBallPos + (ShooterPos22 - firstBallPos).GetNormalizeToCopy(ShooterPos22.DistanceFrom(firstBallPos) - 0.2), ShootTarget, PassSpeed, KickPower, RotateDelay, backSensor);

@@ -54,10 +54,10 @@ namespace MRL.SSL.AIConsole.Roles
             }
             if (CurrentState == (int)GoallerState.Dive)
                 counter++;
-            if (counter > 2000)
+            if (counter > 280)
                 go = true;
             DrawingObjects.AddObject(new StringDraw("counter: " + counter, GameParameters.OurGoalCenter + new Vector2D(0.5, 0)));
-        }
+        }  
 
         public override RoleCategory QueryCategory()
         {

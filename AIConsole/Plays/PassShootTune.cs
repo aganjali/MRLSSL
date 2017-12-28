@@ -357,7 +357,7 @@ namespace MRL.SSL.AIConsole.Plays
                 if (Model.BallState.Speed.Size > .5)
                 {
                     if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, ShooterID, typeof(OneTouchRole)))
-                        Functions[ShooterID] = (eng, wmd) => GetRole<OneTouchRole>(ShooterID).Perform(eng, wmd, ShooterID, Model.OurRobots[PasserID], false, GameParameters.OppGoalCenter, shootSpeed, false, true, 0.33484161129381196, 0.79767488714666024, passSpeed);
+                        Functions[ShooterID] = (eng, wmd) => GetRole<OneTouchRole>(ShooterID).Perform(eng, wmd, ShooterID, Model.OurRobots[PasserID], false, GameParameters.OppGoalCenter, shootSpeed, false, true, beta, lambda, passSpeed);
                 }
                 Planner.AddRotate(Model, PasserID, RobotPassPoint, 0, kickPowerType.Speed, passSpeed, false);
             }

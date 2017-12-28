@@ -651,7 +651,7 @@ namespace MRL.SSL.AIConsole.Roles
                         {
                             CurrentState = (int)MarkState.goback;
                         }
-                        else if (CurrentState == (int)MarkState.FarFront && new Line(FarTarget, GameParameters.OurGoalCenter).Distance(Model.OurRobots[RobotID].Location) < 0.35 && FarTarget != Position2D.Zero)
+                        else if (CurrentState == (int)MarkState.FarFront && new Line(FarTarget, GameParameters.OurGoalCenter).Distance(Model.OurRobots[RobotID].Location) < 0.6 && FarTarget != Position2D.Zero)
                         {
                             CurrentState = (int)MarkState.NearFront;
                         }

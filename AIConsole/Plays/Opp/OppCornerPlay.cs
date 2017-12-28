@@ -36,7 +36,7 @@ namespace MRL.SSL.AIConsole.Plays
 
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
-            return false;
+            //return false;
             DefenceTest.BallTest = FreekickDefence.testDefenceState;
             DefenceTest.GenerateBallPos();
             if (DefenceTest.BallTest)

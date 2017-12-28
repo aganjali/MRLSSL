@@ -63,10 +63,10 @@ namespace MRL.SSL.AIConsole.Plays
             //if(goalieID.HasValue)
             //    oppIds = engine.GameInfo.OppTeam.Scores.Where(w => w.Key != goalieID).OrderByDescending(w => w.Value).Select(s => s.Key).ToList();
             //else
-            //    oppIds = engine.GameInfo.OppTeam.Scores.OrderByDescending(w => w.Value).Select(s => s.Key).ToList();
-
-            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, 4, typeof(TestRole)))
-            //    Functions[4] = (eng, wmd) => GetRole<TestRole>(4).GetData(Model, 4, 1, 30);
+            ////    oppIds = engine.GameInfo.OppTeam.Scores.OrderByDescending(w => w.Value).Select(s => s.Key).ToList();
+            //int RobotID = 2;
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(TestRole)))
+            //    Functions[RobotID] = (eng, wmd) => GetRole<TestRole>(RobotID).GetData(Model, RobotID, 1, 30);
             //int id = 2;
             //SingleObjectState robot = Model.OurRobots[id];
             //bool isLeft = true;

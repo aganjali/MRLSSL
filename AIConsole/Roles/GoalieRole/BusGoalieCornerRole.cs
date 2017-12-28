@@ -1904,7 +1904,7 @@ namespace MRL.SSL.AIConsole.Roles
             else if (CurrentState == (int)GoalieStates.KickToGoal)
             {
                 if (Model.BallState.Speed.InnerProduct(Model.OurRobots[RobotID].Location - Model.BallState.Location) > 0)
-                    GetSkill<GoaliDiveSkill>().Dive(engine, Model, RobotID, true, 200);
+                    GetSkill<GoalieDiveSkill2017>().Dive(engine, Model, RobotID, true, 200);
                 else
                 {
                     GetSkill<GetBallSkill>().SetAvoidDangerZone(false, true);

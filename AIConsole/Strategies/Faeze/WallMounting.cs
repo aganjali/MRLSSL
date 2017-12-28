@@ -198,7 +198,7 @@ namespace MRL.SSL.AIConsole.Strategies
 
         public override Dictionary<int, RoleBase> RunStrategy(GameStrategyEngine engine, WorldModel Model, out Dictionary<int, CommonDelegate> Functions)
         {
-            sync.kMotionChip = 1.2;
+            //sync.kMotionChip = 1.2;
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
             #region first

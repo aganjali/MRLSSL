@@ -304,16 +304,16 @@ namespace MRL.SSL.AIConsole.Strategies.new_RC2017
 
         public override Dictionary<int, RoleBase> RunStrategy(GameStrategyEngine engine, WorldModel Model, out Dictionary<int, CommonDelegate> Functions)
         {
-            if (chip)
-            {
-                sync.kMotionChipCatch = 1.22;
-                //sync.kMotionChip = 1.2;
-            }
-            else
-            {
-                sync.kMotionDirectCatch = 1.2;
-                //sync.kMotionDirect = 1;
-            }
+            //if (chip)
+            //{
+            //    sync.kMotionChipCatch = 1.22;
+            //    //sync.kMotionChip = 1.2;
+            //}
+            //else
+            //{
+            //    sync.kMotionDirectCatch = 1.2;
+            //    //sync.kMotionDirect = 1;
+            //}
 
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
