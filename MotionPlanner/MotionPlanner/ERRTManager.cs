@@ -100,7 +100,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 Lines[item] = new Line(InitialStates[item].Location, GoalStates[item].Location);
                 intersectsLines[item] = new List<Line>();
             }
-            int Count = Math.Min(errts.Count, RobotIds.Count);
+            int Count =  Math.Min(errts.Count, RobotIds.Count);
             WaitHandle[] waits = new WaitHandle[errts.Count];
             avdBall.Clear();
             avdR.Clear();

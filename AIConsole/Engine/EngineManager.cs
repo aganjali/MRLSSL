@@ -262,7 +262,10 @@ namespace MRL.SSL.AIConsole.Engine
 
                         sslPacket = _gSerializer.DeserializeSSLVisionPacket(sharedVisionStream);
 
-
+                        if (sslPacket != null && sslPacket.detection != null && sslPacket.detection.robots_yellow.Count > 7)
+                        {
+                            
+                        }
                         Model = globalMerger.GenerateWorldModel4Cam(sslPacket, tmpCmd, GameSettings.Default.Engines[0].ReverseColor, GameSettings.Default.Engines[0].ReverseSide, TrackerType.Accurate, /*(RecieveMode == ModelRecieveMode.Simulator) ? TrackerType.Fast :*/ TrackerType.Accurate, true, statusForMerged);
                         if (Model != null)
                         {

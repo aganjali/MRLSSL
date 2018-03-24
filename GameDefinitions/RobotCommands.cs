@@ -284,10 +284,10 @@ namespace MRL.SSL.GameDefinitions
                 roPack[4] |= (byte)((int)robotdata.SRC._omega);
                 int d = (int)((robotdata.SRC._omega - (int)robotdata.SRC._omega) * 2048);
                 roPack[4] |= (byte)((d & 0x3F) << 2);
-                roPack[5] = (byte)(d>>6);
+                roPack[5] = (byte)(d >> 6);
                 roPack[6] = (byte)robotdata.SRC.framecount;
 
-                roPack[7] = (byte)(Math.Min(robotdata.KickPower,255));
+                roPack[7] = (byte)(Math.Min(robotdata.KickPower, 255));
                 roPack[8] = getMode(robotdata);
                 roPack[9] = (robotdata.BackSensor) ? (byte)1 : (byte)0;//getChkSum(robotdata);
 

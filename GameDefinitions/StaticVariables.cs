@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
-
 namespace MRL.SSL.GameDefinitions
 {
     public static class StaticVariables
@@ -40,7 +39,7 @@ namespace MRL.SSL.GameDefinitions
         public static double ROBOT_STUCK_THRESHOLD = 0.81;
         public static bool BALL_PRINT_KALMAN_ERROR = false;
         public static double BALL_VELOCITY_VARIANCE_NEAR_ROBOT = 40000;
-        public static int NUM_TEAMS = 2, /*MAX_TEAM_ROBOTS = 12,*/ MAX_ROBOT_ID = 12;
+        public static int NUM_TEAMS = 2, /*MAX_TEAM_ROBOTS = 12,*/ MAX_ROBOT_ID = 16;
         public static double ROBOT_DEF_WIDTH_H = 90;
         public static double BALL_VELOCITY_VARIANCE_NO_ROBOT = 100;
         public static double CAMERA_HEIGHT, BALL_RADIUS = 0.022;
@@ -61,7 +60,7 @@ namespace MRL.SSL.GameDefinitions
         public static double FIELD_WIDTH_H { get; set; }
         public static double M_SQRT1_2 = Math.Sqrt(2) / 2;
         public static bool BALL_WALLS_OOB = false;
-        public static double MaxRobotCounts = 6.0;
+        public static double MaxRobotCounts = 8.0;
         public static double WALL_WIDTH { get; set; }
         public static double MaxKickSpeed = 8;
         public static bool OldRefbox = true;

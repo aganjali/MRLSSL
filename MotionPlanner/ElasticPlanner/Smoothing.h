@@ -8,7 +8,9 @@
 #include <time.h>
 #include "Types.h"
 
-#define MAX_OBS_COUNT 19
+#define MAX_ROBOT_COUNTS 8
+#define ZONE_OBS_COUNT 3
+#define MAX_OBS_COUNT 2 * MAX_ROBOT_COUNTS + 2 * ZONE_OBS_COUNT + 1
 #define ROBOT_FORCE 0.3
 #define BALL_FORCE 0.2
 #define ZONE_FORCE 1.2		//1

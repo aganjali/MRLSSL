@@ -28,7 +28,7 @@ float _sigmaX, _sigmaY, _RegionCount, _maxSampleCount;
 
 const int threadsPerBlock = 256;
 const int AccelSteps = 31;
-const int maxRobotCount = 6;
+const int maxRobotCount = 8;
 const int maxLengh = 700;
 const int Resoloution = 10;
 const int maxPoints = maxLengh / Resoloution;

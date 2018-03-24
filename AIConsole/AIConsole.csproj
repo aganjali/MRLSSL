@@ -288,6 +288,7 @@
     <Compile Include="Skills\CatchBallSkill.cs" />
     <Compile Include="Skills\CircularMotionSkill.cs" />
     <Compile Include="Skills\GoalieSkills\GoaliDiveSkill.cs" />
+    <Compile Include="Skills\GoalieSkills\GoalieDiveSkill2017.cs" />
     <Compile Include="Skills\GoalieSkills\GoalieInPenaltyAreaSkill.cs" />
     <Compile Include="Skills\GoalieSkills\GoaliePositioningSkill.cs" />
     <Compile Include="Skills\GotoPointSkill.cs">
@@ -297,6 +298,7 @@
     <Compile Include="Skills\RotateWheelsSkill.cs" />
     <Compile Include="Skills\StarkCatchSkill.cs" />
     <Compile Include="Skills\TestSkill\NewCutBallSkill.cs" />
+    <Compile Include="Skills\TestSkill\PreDefinedPath.cs" />
     <Compile Include="Strategies\Faeze\Strategy12.cs" />
     <Compile Include="Strategies\Faeze\PounderStrategy.cs" />
     <Compile Include="Strategies\Faeze\SimpleShootStrategy.cs" />

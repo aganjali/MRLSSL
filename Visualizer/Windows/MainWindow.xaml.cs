@@ -58,6 +58,7 @@ namespace Visualizer.Windows
 
         public MainWindow()
         {
+            new StrategyDesigner().Show();
             InitializeComponent();
             //  var f = GameSettings.Default.Score;
             _averagingQueue = new Queue<AveragingInfo>();
@@ -144,9 +145,9 @@ namespace Visualizer.Windows
                 if (currentRobots != null)
                 {
                     if (currentRobots.Count != 0)
-                        id = new List<int>() { 6, 7, 8, 9, 10, 11 }.FirstOrDefault(s => !currentRobots.Any(a => a.Id == s && a.TeamColor.ToArgb() == System.Drawing.Color.Yellow.ToArgb()));
+                        id = new List<int>() { 8, 9, 10, 11, 12, 13, 14, 15 }.FirstOrDefault(s => !currentRobots.Any(a => a.Id == s && a.TeamColor.ToArgb() == System.Drawing.Color.Yellow.ToArgb()));
                     else
-                        id = 6;
+                        id = 8;
 
                     //System.Drawing.Color color = System.Drawing.Color.Black;
                     //if (DataReciever.CurrentWrapper.Model.OurMarkerISYellow)
@@ -169,7 +170,7 @@ namespace Visualizer.Windows
                 if (currentRobots != null)
                 {
                     if (currentRobots.Count != 0)
-                        id = new List<int>() { 0, 1, 2, 3, 4, 5 }.FirstOrDefault(s => !currentRobots.Any(a => a.Id == s && a.TeamColor.ToArgb() == System.Drawing.Color.Blue.ToArgb()));
+                        id = new List<int>() {  0,1, 2, 3, 4, 5, 6, 7 }.FirstOrDefault(s => !currentRobots.Any(a => a.Id == s && a.TeamColor.ToArgb() == System.Drawing.Color.Blue.ToArgb()));
                     else
                         id = 0;
 
@@ -480,7 +481,7 @@ namespace Visualizer.Windows
                 mainTabControl.Visibility = Visibility.Visible;
             //double width;
             refBoxWindow.ShowAsSingleTab(mainTabControl, "refreebox");
-            
+
             //  mainTabControl.Width = width;
         }
 
@@ -1216,8 +1217,8 @@ namespace Visualizer.Windows
                     DataSender.SendOn.Set();
 
                 }
-                
-                else if (position2dListView.SelectedItem != null )
+
+                else if (position2dListView.SelectedItem != null)
                 {
                     PositionTableFormat p = position2dListView.SelectedItem.As<PositionTableFormat>();
                     Position2D mouseLoc = PixelToMetric(e.Location);
@@ -1243,7 +1244,7 @@ namespace Visualizer.Windows
                     DataSender.CurrentWrapper.RefreeCommand = "B";
                     DataSender.SendOn.Set();
                     refBoxWindow.ballPlacementBlue = false;
-                    
+
                 }
                 else if (refBoxWindow.ballPlacementYellow)
                 {
@@ -1257,7 +1258,7 @@ namespace Visualizer.Windows
                     DataSender.SendOn.Set();
                     refBoxWindow.ballPlacementYellow = false;
                 }
-                
+
             }
 
         }
@@ -1681,43 +1682,43 @@ namespace Visualizer.Windows
             }
         }
 
-        dynamic simulator;
+        MRLSimpleSimulator simulator;
 
         bool simIsInit = false;
 
         private void simstateButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!simIsInit)
-            {
+            //if (!simIsInit)
+            //{
 
-                simulator = new MRLSimulator();
+            //    simulator = new MRLSimulator();
 
-                simulator.AiName = AISettings.Default.SimulatorName;
-                simulator.RecievePort = AISettings.Default.SimulatorRecievePort;
-                simulator.SendPort = AISettings.Default.SimulatorSendPort;
-                simulator.ConnectToAi();
-                simImage.Opacity = 1;
-                simIsInit = true;
-                if (Field.Model != null)
-                {
-                    if (Field.Model.OurRobots != null)
-                        Field.Model.OurRobots.Clear();
-                    if (Field.Model.Opponents != null)
-                        Field.Model.Opponents.Clear();
-                }
-                DrawingObjects.ObjectTree.Clear();
-                DrawingObjects.drawingObject.Clear();
-                Field.Invalidate();
-                simstateLabel.Content = "Visualizer Connected to Simulator";
-            }
-            else
-            {
-                //simulator.
-                simImage.Opacity = 0.6f;
-                simulator.Dispose();
-                simIsInit = false;
-                simstateLabel.Content = "Visualizer Disconnected From Simulator";
-            }
+            //    simulator.AiName = AISettings.Default.SimulatorName;
+            //    simulator.RecievePort = AISettings.Default.SimulatorRecievePort;
+            //    simulator.SendPort = AISettings.Default.SimulatorSendPort;
+            //    simulator.ConnectToAi();
+            //    simImage.Opacity = 1;
+            //    simIsInit = true;
+            //    if (Field.Model != null)
+            //    {
+            //        if (Field.Model.OurRobots != null)
+            //            Field.Model.OurRobots.Clear();
+            //        if (Field.Model.Opponents != null)
+            //            Field.Model.Opponents.Clear();
+            //    }
+            //    DrawingObjects.ObjectTree.Clear();
+            //    DrawingObjects.drawingObject.Clear();
+            //    Field.Invalidate();
+            //    simstateLabel.Content = "Visualizer Connected to Simulator";
+            //}
+            //else
+            //{
+            //    //simulator.
+            //    simImage.Opacity = 0.6f;
+            //    simulator.Dispose();
+            //    simIsInit = false;
+            //    simstateLabel.Content = "Visualizer Disconnected From Simulator";
+            //}
         }
 
         private void simstateButton_MouseDoubleClick(object sender, MouseButtonEventArgs e)

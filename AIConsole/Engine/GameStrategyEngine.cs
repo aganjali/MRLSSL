@@ -205,7 +205,7 @@ namespace MRL.SSL.AIConsole.Engine
             Dictionary<int, CommonDelegate> functions = new Dictionary<int, CommonDelegate>();
             Model.Status = _status;
             bool playChanged = false;
-            if (LastRunningPlay == null || !LastRunningPlay.IsFeasiblel(this, Model, LastRunningPlay, ref Model.Status) || LastRunningPlay.QueryPlayResult() != PlayResult.InPlay/*|| Model.Status != wmbackup.Status*/)
+            if (LastRunningPlay == null || !LastRunningPlay.IsFeasiblel(this, Model, LastRunningPlay, ref Model.Status) ||  LastRunningPlay.QueryPlayResult() != PlayResult.InPlay/*|| Model.Status != wmbackup.Status*/)
             {
                 List<PlayBase> feasibleplays = new List<PlayBase>();
                 foreach (PlayBase p in ImplementedPlays)

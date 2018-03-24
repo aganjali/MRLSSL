@@ -11,7 +11,7 @@ using MRL.SSL.Planning.MotionPlanner;
 using MRL.SSL.AIConsole.Strategies;
 using System.Drawing;
 using MRL.SSL.GameDefinitions.General_Settings;
-
+using MRL.SSL.AIConsole.Skills;
 namespace MRL.SSL.AIConsole.Plays.TestPlays
 {
     public class GoaliTestPlay : PlayBase
@@ -37,12 +37,14 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         }
 
 
-
+        PreDefinedPath Skill = new PreDefinedPath();
+        CircularMotionSkill circleSkill = new CircularMotionSkill();
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-
+            //circleSkill.perform(Model, 2, GameParameters.OppGoalCenter, .2, false);
+            Skill.run(Model);
             //DrawingObjects.AddObject(new StringDraw(Model.BallState.Speed.Size.ToString(), Position2D.Zero), "asds");
             //int id1 = 4;
             //int id2 = 3;

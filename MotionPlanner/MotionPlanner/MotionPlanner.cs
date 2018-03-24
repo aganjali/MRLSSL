@@ -718,7 +718,7 @@ namespace MRL.SSL.Planning.MotionPlanner
 
         public static void initialize()
         {
-            errtManager = new ERRTManager(6, 100, false);
+            errtManager = new ERRTManager(8, 100, false);//TODO: change for eight
             controllers = new Dictionary<int, Controller>();
             //ControlParameters.SetParams(
             //defultParams = 
@@ -768,7 +768,9 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
             Dictionary<int, List<SingleObjectState>> paths = new Dictionary<int, List<SingleObjectState>>();
             //DrawingObjects.AddObject(new Circle(), "c");
+            
             paths = errtManager.Run(Model, CutOtherPaths, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false);
+            //paths.Add(0, new List<SingleObjectState> { new SingleObjectState(new Position2D(1, 1), new Vector2D(), 0), new SingleObjectState(new Position2D(1.0000000000000000001, .999999999999999), new Vector2D(), 0) });
             //Vector2D tmpLastV = Vector2D.Zero;
             foreach (var item in paths.Keys)
             {
