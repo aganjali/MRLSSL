@@ -49,9 +49,9 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
         public void SetParameters(MergerAndTrackerSetting MATS)
         {
-            
-                CorrectErrorAngle = MATS.CorrectAngleError;
-        
+
+            CorrectErrorAngle = MATS.CorrectAngleError;
+
             if (MATS.OnGame != null)
             {
                 OnGame = MATS.OnGame;
@@ -67,21 +67,21 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             tracker.Max_Ball_distance = MATS.MaxBallDist;
             cTracker.Max_to_imagine = MATS.MaxToImagine;
 
-            
-                cDMU.ShowRegion(MATS.CalculateRegion);
-           
+
+            cDMU.ShowRegion(MATS.CalculateRegion);
+
 
             tracker.Max_to_imagine = MATS.MaxToImagine;
             cTracker.Max_to_imagine = MATS.MaxToImagine;
 
-            
-                tracker.MaxNotSeen = MATS.MaxNotSeen;
-                cTracker.MaxNotSeen = MATS.MaxNotSeen;
-           
-          
-                tracker.Max_Opponent_distance = MATS.MaxOpponenetDistance;
-                cTracker.Max_Opponent_distance = MATS.MaxOpponenetDistance;
-            
+
+            tracker.MaxNotSeen = MATS.MaxNotSeen;
+            cTracker.MaxNotSeen = MATS.MaxNotSeen;
+
+
+            tracker.Max_Opponent_distance = MATS.MaxOpponenetDistance;
+            cTracker.Max_Opponent_distance = MATS.MaxOpponenetDistance;
+
             if (MATS.CamState != null)
             {
                 if (MATS.CamState == MergerAndTrackerSetting.CameraState.Cam0)
@@ -860,6 +860,10 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 model.CurrentVisionPacket1 = merger.sslpacketCam1;
                 model.CurrentVisionPacket2 = merger.sslpacketCam2;
                 model.CurrentVisionPacket3 = merger.sslpacketCam3;
+                model.CurrentVisionPacket4 = merger.sslpacketCam4;
+                model.CurrentVisionPacket5 = merger.sslpacketCam5;
+                model.CurrentVisionPacket6 = merger.sslpacketCam6;
+                model.CurrentVisionPacket7 = merger.sslpacketCam7;
 
                 model.TimeElapsed = TimeSpan.FromSeconds(Frame.timeofcapture);
 
