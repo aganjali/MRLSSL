@@ -58,7 +58,7 @@ namespace Visualizer.Windows
 
         public MainWindow()
         {
-            new StrategyDesigner().Show();
+            
             InitializeComponent();
             //  var f = GameSettings.Default.Score;
             _averagingQueue = new Queue<AveragingInfo>();

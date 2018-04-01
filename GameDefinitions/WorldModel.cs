@@ -78,6 +78,11 @@ namespace MRL.SSL.GameDefinitions
         public messages_robocup_ssl_wrapper.SSL_WrapperPacket CurrentVisionPacket1;
         public messages_robocup_ssl_wrapper.SSL_WrapperPacket CurrentVisionPacket2;
         public messages_robocup_ssl_wrapper.SSL_WrapperPacket CurrentVisionPacket3;
+        public messages_robocup_ssl_wrapper.SSL_WrapperPacket CurrentVisionPacket4;
+        public messages_robocup_ssl_wrapper.SSL_WrapperPacket CurrentVisionPacket5;
+        public messages_robocup_ssl_wrapper.SSL_WrapperPacket CurrentVisionPacket6;
+        public messages_robocup_ssl_wrapper.SSL_WrapperPacket CurrentVisionPacket7;
+
         public MRL.SSL.CommonClasses.MathLibrary.Position2D? FirstBallCatchingPoint = null;
         PredictedStates predictedBall = new PredictedStates();
         public Position2D BallFallingPoint;

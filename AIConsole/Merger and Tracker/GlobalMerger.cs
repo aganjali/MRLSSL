@@ -860,6 +860,10 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 model.CurrentVisionPacket1 = merger.sslpacketCam1;
                 model.CurrentVisionPacket2 = merger.sslpacketCam2;
                 model.CurrentVisionPacket3 = merger.sslpacketCam3;
+                model.CurrentVisionPacket4 = merger.sslpacketCam4;
+                model.CurrentVisionPacket5 = merger.sslpacketCam5;
+                model.CurrentVisionPacket6 = merger.sslpacketCam6;
+                model.CurrentVisionPacket7 = merger.sslpacketCam7;
 
                 model.TimeElapsed = TimeSpan.FromSeconds(Frame.timeofcapture);
 

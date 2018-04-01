@@ -21,7 +21,7 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         bool isFirst = true;
         int catcherId = 0;
         int passerId = 0;
-
+        bool flag = true;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
             if (Status == GameStatus.TestOffend)
@@ -38,13 +38,34 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 
 
         PreDefinedPath Skill = new PreDefinedPath();
-        CircularMotionSkill circleSkill = new CircularMotionSkill();
+        //CircularMotionSkill circleSkill = new CircularMotionSkill();
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
+            Position2D dest = new Position2D(-1,2);
+            int robotID = 0;
             //circleSkill.perform(Model, 2, GameParameters.OppGoalCenter, .2, false);
-            Skill.run(Model);
+            Obstacles obs = new Obstacles(Model);
+            obs.AddObstacle(1, 1, 0, 0, new List<int>() { robotID}, new List<int>());
+            bool clear = obs.Meet(new SingleObjectState(Model.OurRobots[robotID].Location, Vector2D.Zero, 0), new SingleObjectState(dest, Vector2D.Zero, 0),0.10);
+            
+            if (!clear)
+            {
+                Planner.Add(robotID, dest, 0);
+            }
+            else
+            {
+                bool collision = Skill.perform(Model, 0, dest, false);
+                if (collision)
+                {
+                    
+                    Planner.Add(0, new Position2D(3, 3), 0, PathType.UnSafe, true, true, false, false);
+                    Skill = new PreDefinedPath();
+                }
+            }
+            
+            
             //DrawingObjects.AddObject(new StringDraw(Model.BallState.Speed.Size.ToString(), Position2D.Zero), "asds");
             //int id1 = 4;
             //int id2 = 3;
@@ -160,7 +181,7 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 
         public override void ResetPlay(WorldModel Model, GameStrategyEngine engine)
         {
-            //GetRole<NewCutBallTestRole>(5).Reset();
+            Skill = new PreDefinedPath();
         }
 
 
