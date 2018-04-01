@@ -158,6 +158,7 @@
     <Compile Include="Plays\Opp\OppNewPenaltyPlay.cs" />
     <Compile Include="Plays\Our\NewPassingNormalPlay.cs" />
     <Compile Include="Plays\Our\NewNormalPlay.cs" />
+    <Compile Include="Plays\Our\NormalPlay.cs" />
     <Compile Include="Plays\Our\OurBallPlacePlay.cs" />
     <Compile Include="Plays\Our\OurNewPenaltyPlay.cs" />
     <Compile Include="Plays\PassShootTune.cs" />
@@ -183,6 +184,10 @@
     <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole5.cs" />
     <Compile Include="Roles\Defending\Normal\CenterBackNormalRole.cs" />
     <Compile Include="Roles\Defending\Normal\LeftBackMarkerNormalRole.cs" />
+    <Compile Include="Roles\Defending\Normal\NormalAttacker.cs" />
+    <Compile Include="Roles\Defending\Normal\NormalAttacker2.cs" />
+    <Compile Include="Roles\Defending\Normal\NormalMarkerRole1.cs" />
+    <Compile Include="Roles\Defending\Normal\NormalMarkerRole2.cs" />
     <Compile Include="Roles\Defending\Normal\RightBackMarkerNormalRole.cs" />
     <Compile Include="Roles\GoalieRole\BusGoalieCornerRole.cs" />
     <Compile Include="Roles\GoalieRole\GoalieCornerRole.cs" />

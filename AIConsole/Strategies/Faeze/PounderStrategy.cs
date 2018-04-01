@@ -177,11 +177,11 @@ namespace MRL.SSL.AIConsole.Strategies
             if (CurrentState == (int)State.First)
             {
                 //if all posers go to position : CurrentState = (int)State.Go
-                if (Model.OurRobots[PasserID].Location.DistanceFrom(PasserPos) < 0.1 &&
-                    Model.OurRobots[shooterID].Location.DistanceFrom(Pos1) < 0.1 &&
-                    Model.OurRobots[Poser2ID].Location.DistanceFrom(Pos2) < 0.1 &&
-                    Model.OurRobots[Poser3ID].Location.DistanceFrom(Pos3) < 0.1 &&
-                    Model.OurRobots[Posser1ID].Location.DistanceFrom(ShooterPos1) < 0.1)
+                if (Model.OurRobots[PasserID].Location.DistanceFrom(PasserPos) < 0.2 &&
+                    Model.OurRobots[shooterID].Location.DistanceFrom(Pos1) < 0.2 &&
+                    Model.OurRobots[Poser2ID].Location.DistanceFrom(Pos2) < 0.2 &&
+                    Model.OurRobots[Poser3ID].Location.DistanceFrom(Pos3) < 0.2 &&
+                    Model.OurRobots[Posser1ID].Location.DistanceFrom(ShooterPos1) < 0.2)
                     CurrentState = (int)State.Go;
                 if (Model.BallState.Location.DistanceFrom(firstBallPos) > 0.07)
                     CurrentState = (int)State.Finish;

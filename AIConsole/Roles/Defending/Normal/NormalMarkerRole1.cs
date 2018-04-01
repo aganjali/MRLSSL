@@ -3,47 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MRL.SSL.AIConsole.Engine;
-using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.Planning.MotionPlanner;
+using MRL.SSL.CommonClasses.MathLibrary;
 using System.Drawing;
+using MRL.SSL.AIConsole.Skills;
 
-namespace MRL.SSL.AIConsole.Roles
+namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 {
-    class MarkerRole5 : RoleBase
+    class NormalMarkerRole1:RoleBase
     {
-        bool ballIsMove = false;
-        public static int? oppMarkID = null;
         double velocity = 0;
         double ballcoeff = 0;
-        double robotCoeff = 0;
-        double robotIntersectTime = 0;
-        private double markDistance = 0.180;
-        private bool firsttimedanger = true;
-        private bool dangerzone = true;
-        bool flagdraw = false;
-        bool InRegional = false;
-        private bool noIntersect = false;
-        private bool firstTime = true;
-        double GetNormalizeBehind = 0.15;
-        Position2D intersect = new Position2D();
-        Position2D firstballpos;
-        Position2D intersectG = new Position2D();
         double treshTime = 0;
-        Position2D? regional = null;
-        Position2D target = new Position2D();
-        Position2D initialpos = new Position2D();
-        double distToMark = 0.5 + RobotParameters.OurRobotParams.Diameter;
+        double robotCoeff = 0;
+        double distNear = 0.18;
+        double robotIntersectTime = 0;
+        double GetNormalizeBehind = 0.15;
+        private double markDistance = 0.180;
         bool cutFlag = false;
         bool testrole = false;
-        double distNear = 0.18;
+        bool flagdraw = false;
+
+        bool InRegional = false;
+        bool ballIsMove = false;
+        private bool firsttimedanger = true;
+        private bool noIntersect = false;
+        private bool dangerzone = true;
+        public static int? oppMarkID;
+        private bool firstTime = true;
+        Position2D? regional = null;
+
+        Position2D intersect = new Position2D();
+        Position2D intersectG = new Position2D();
+        Position2D initialpos = new Position2D();
+        public Position2D target = new Position2D();
         public List<int> oppAttackerIds = new List<int>();
-        Vector2D angle = new Vector2D();
-        Queue<Position2D> lastTarget = new Queue<Position2D>();
-        public override RoleCategory QueryCategory()
-        {
-            return RoleCategory.Defender;
-        }
+        double distToMark = 0.5 + RobotParameters.OurRobotParams.Diameter;
+
         public void Perform(GameStrategyEngine engin, WorldModel Model, int RobotID, int? _oppMarkID, double markRegion, bool _ballIsMoved, List<int> oppAttackerIds)
         {
             if (_oppMarkID.HasValue)
@@ -52,6 +49,15 @@ namespace MRL.SSL.AIConsole.Roles
                 oppMarkID = null;
             ballIsMove = _ballIsMoved;
             Position2D target = CalculateTarget(engin, Model, RobotID);
+            if (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) > Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OppGoalCenter))
+            {
+                target = GameParameters.OurGoalCenter + ((target - GameParameters.OurGoalCenter).GetNormalizeToCopy(1.25));
+            }
+            
+            if (!GameParameters.IsInField(Model.Opponents[oppMarkID.Value].Location, 0.05))
+            {
+                target = GameParameters.OurGoalCenter + ((target - GameParameters.OurGoalCenter).GetNormalizeToCopy(1.25));
+            }
             Planner.Add(RobotID, target, (Model.OurRobots[RobotID].Angle.Value), PathType.UnSafe, false, true, true, false);
             if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2)
             {
@@ -60,6 +66,11 @@ namespace MRL.SSL.AIConsole.Roles
                     p = Model.BallState.Location;
                 Planner.Add(RobotID, target, (p - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, false);
             }
+        }
+
+        public override RoleCategory QueryCategory()
+        {
+            return RoleCategory.Defender;
         }
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
@@ -121,15 +132,15 @@ namespace MRL.SSL.AIConsole.Roles
 
             if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
             {
-                if (((Model.Opponents[oppMarkID.Value].Speed.GetNormnalizedCopy().InnerProduct((GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location).GetNormnalizedCopy()) > 0.70 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.30)
-                              && (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) - Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter) > 0.090
-                              && Math.Abs(Vector2D.AngleBetweenInDegrees(GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location, Model.OurRobots[RobotID].Location - Model.Opponents[oppMarkID.Value].Location)) < 20
-                              && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.OurRobots[RobotID].Location) < 0.30))
-                              )
-                {
-                    CurrentState = (int)State.Stop;
-                }
-                else if (cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) < 0.5)
+                //if (((Model.Opponents[oppMarkID.Value].Speed.GetNormnalizedCopy().InnerProduct((GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location).GetNormnalizedCopy()) > 0.70 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.30)
+                //              && (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) - Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter) > 0.090
+                //              && Math.Abs(Vector2D.AngleBetweenInDegrees(GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location, Model.OurRobots[RobotID].Location - Model.Opponents[oppMarkID.Value].Location)) < 20
+                //              && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.OurRobots[RobotID].Location) < 0.30))
+                //              )
+                //{
+                //    CurrentState = (int)State.Stop;
+                //}
+                if (cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) < 0.5)
                 {
                     CurrentState = (int)State.cutball;
                 }
@@ -164,232 +175,8 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 CurrentState = (int)State.regional;
             }
-            #region comment
-
-            //if (CurrentState == (int)State.cutball)
-            //{
-            //    if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value) && !cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) > 0.5 && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.BallState.Location) > 0.2 && Model.Opponents[oppMarkID.Value].Speed.Size < 0.5)
-            //    {
-            //        CurrentState = (int)State.marknear;
-            //    }
-            //    else if (!oppMarkID.HasValue || oppMarkID.HasValue && !Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        CurrentState = (int)State.regional;
-            //    }
-            //}
-            //else if (CurrentState == (int)State.marknear)
-            //{
-            //    if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        if (oppMarkID.HasValue && cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) < 0.5)
-            //        {
-            //            CurrentState = (int)State.cutball;
-            //        }
-            //        else if (oppMarkID.HasValue && Math.Abs(Vector2D.AngleBetweenInDegrees(Model.Opponents[oppMarkID.Value].Speed, GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location)) > 100 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50 && MarkerDistFromGoal + .1 < OppDistFromGoal)
-            //        {
-            //            CurrentState = (int)State.goback;
-            //        }
-            //        else if (((Model.Opponents[oppMarkID.Value].Speed.GetNormnalizedCopy().InnerProduct(staticVec.GetNormnalizedCopy()) > 0.60 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.5)
-            //            && (((OppSpeedLine.PerpenducilarLineToPoint(Model.OurRobots[RobotID].Location)).IntersectWithLine(OppSpeedLine).Value)
-            //            - Model.Opponents[oppMarkID.Value].Location).InnerProduct((Model.Opponents[oppMarkID.Value].Location + Model.Opponents[oppMarkID.Value].Speed) - Model.Opponents[oppMarkID.Value].Location) > 0.00
-            //            && !cancelInTheWay) && MarkerDistFromGoal < OppDistFromGoal)
-            //        {
-            //            CurrentState = (int)State.IntheWay;
-            //        }
-            //        else if (((oppFirstOwnerId.HasValue && oppMarkID == oppFirstOwnerId) || (Model.Opponents[oppMarkID.Value].Location.X < 0)) || Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.BallState.Location) < 0.2)
-            //        {
-            //            CurrentState = (int)State.markfar;
-            //        }
-            //        //else if (OppDistFromGoal < MarkerDistFromGoal && Model.Opponents[oppMarkID.Value].Speed.Size > 0.5)
-            //        //{
-            //        //    CurrentState = (int)State.behind;
-            //        //}
-            //        else if ((!cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) > 0.5 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50 && OppDistFromGoal < MarkerDistFromGoal) || (OppDistFromGoal < MarkerDistFromGoal) && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50)
-            //        {
-            //            CurrentState = (int)State.behind;
-            //        }
-            //    }
-            //    else if (!oppMarkID.HasValue || oppMarkID.HasValue && !Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        CurrentState = (int)State.regional;
-            //    }
-            //}
-            //else if (CurrentState == (int)State.markfar)
-            //{
-            //    if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        if (oppMarkID.HasValue && cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) < 0.5)
-            //        {
-            //            CurrentState = (int)State.cutball;
-            //        }
-            //        else if (Math.Abs(Vector2D.AngleBetweenInDegrees(Model.Opponents[oppMarkID.Value].Speed, GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location)) > 100 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50 && MarkerDistFromGoal + .1 < OppDistFromGoal)
-            //        {
-            //            CurrentState = (int)State.goback;
-            //        }
-            //        else if (((Model.Opponents[oppMarkID.Value].Speed.GetNormnalizedCopy().InnerProduct(staticVec.GetNormnalizedCopy()) > 0.60 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.5)
-            //            && (((OppSpeedLine.PerpenducilarLineToPoint(Model.OurRobots[RobotID].Location)).IntersectWithLine(OppSpeedLine).Value)
-            //            - Model.Opponents[oppMarkID.Value].Location).InnerProduct((Model.Opponents[oppMarkID.Value].Location + Model.Opponents[oppMarkID.Value].Speed) - Model.Opponents[oppMarkID.Value].Location) > 0.00
-            //            && !cancelInTheWay) && MarkerDistFromGoal < OppDistFromGoal)
-            //        {
-            //            CurrentState = (int)State.IntheWay;
-            //        }
-            //        else if ((!cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) > 0.5 && Model.Opponents[oppMarkID.Value].Location.X > 0 && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.BallState.Location) > 0.2 && Model.Opponents[oppMarkID.Value].Speed.Size < 0.5) || (OppDistFromGoal < MarkerDistFromGoal && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.BallState.Location) > 0.2 && Model.Opponents[oppMarkID.Value].Speed.Size < 0.5))
-            //        {
-            //            CurrentState = (int)State.marknear;
-            //        }
-            //        //else if (OppDistFromGoal < MarkerDistFromGoal && Model.Opponents[oppMarkID.Value].Speed.Size > 0.5)
-            //        //{
-            //        //    CurrentState = (int)State.behind;
-            //        //}
-            //        //else if ((!cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) > 0.5 && Model.Opponents[oppMarkID.Value].Location.X > 0 && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.BallState.Location) > 0.2 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.5 && OppDistFromGoal < MarkerDistFromGoal) || (OppDistFromGoal < MarkerDistFromGoal && Model.Opponents[oppMarkID.Value].Speed.Size > 0.5))
-            //        //{
-            //        //    CurrentState = (int)State.behind;
-            //        //}
-            //        else if ((!cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) > 0.5 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50 && OppDistFromGoal < MarkerDistFromGoal) || (OppDistFromGoal < MarkerDistFromGoal) && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50)
-            //        {
-            //            CurrentState = (int)State.behind;
-            //        }
-            //    }
-            //    else if (!oppMarkID.HasValue || oppMarkID.HasValue && !Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        CurrentState = (int)State.regional;
-            //    }
-            //}
-            //else if (CurrentState == (int)State.goback)
-            //{
-            //    if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        if (oppMarkID.HasValue && cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) < 0.5)
-            //        {
-            //            CurrentState = (int)State.cutball;
-            //        }
-            //        else if (((Model.Opponents[oppMarkID.Value].Speed.GetNormnalizedCopy().InnerProduct(staticVec.GetNormnalizedCopy()) > 0.60 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.5)
-            //            && (((OppSpeedLine.PerpenducilarLineToPoint(Model.OurRobots[RobotID].Location)).IntersectWithLine(OppSpeedLine).Value)
-            //            - Model.Opponents[oppMarkID.Value].Location).InnerProduct((Model.Opponents[oppMarkID.Value].Location + Model.Opponents[oppMarkID.Value].Speed) - Model.Opponents[oppMarkID.Value].Location) > 0.00
-            //            && !cancelInTheWay) && MarkerDistFromGoal < OppDistFromGoal)
-            //        {
-            //            CurrentState = (int)State.IntheWay;
-            //        }
-            //        else if (!cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) > 0.5 && Model.Opponents[oppMarkID.Value].Location.X > 0 && Model.Opponents[oppMarkID.Value].Speed.Size < 0.5 && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.BallState.Location) > 0.2)
-            //        {
-            //            CurrentState = (int)State.marknear;
-            //        }
-            //        else if (((oppFirstOwnerId.HasValue && oppMarkID == oppFirstOwnerId) || (Model.Opponents[oppMarkID.Value].Location.X < 0)) && Model.Opponents[oppMarkID.Value].Speed.Size < 0.5)
-            //        {
-            //            CurrentState = (int)State.markfar;
-            //        }
-            //        else if ((!cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) > 0.5 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50 && OppDistFromGoal < MarkerDistFromGoal) || (OppDistFromGoal < MarkerDistFromGoal) && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50)
-            //        {
-            //            CurrentState = (int)State.behind;
-            //        }
-            //    }
-            //    else if (!oppMarkID.HasValue || oppMarkID.HasValue && !Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        CurrentState = (int)State.regional;
-            //    }
-            //}
-            //else if (CurrentState == (int)State.IntheWay)
-            //{
-            //    if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        if (oppMarkID.HasValue && cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) < 0.5)
-            //        {
-            //            CurrentState = (int)State.cutball;
-            //        }
-            //        else if (Math.Abs(Vector2D.AngleBetweenInDegrees(Model.Opponents[oppMarkID.Value].Speed, GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location)) > 100 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50 && MarkerDistFromGoal + .1 < OppDistFromGoal)
-            //        {
-            //            CurrentState = (int)State.goback;
-            //        }
-            //        else if ((!cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) > 0.5 && Model.Opponents[oppMarkID.Value].Location.X > 0 && Model.Opponents[oppMarkID.Value].Speed.Size < 0.50) || (OppDistFromGoal < MarkerDistFromGoal) && Model.Opponents[oppMarkID.Value].Speed.Size < 0.50)
-            //        {
-            //            CurrentState = (int)State.marknear;
-            //        }
-            //        else if ((oppMarkID.HasValue && (oppFirstOwnerId.HasValue && (oppMarkID == oppFirstOwnerId &&
-            //            Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.BallState.Location) < 0.2) && Model.Opponents[oppMarkID.Value].Speed.Size < 0.50) || oppMarkID.HasValue && (Model.Opponents[oppMarkID.Value].Location.X < 0)) && (OppDistFromGoal > MarkerDistFromGoal) && Model.Opponents[oppMarkID.Value].Speed.Size < 0.50)
-            //        {
-            //            CurrentState = (int)State.markfar;
-            //        }
-            //        else if ((!cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) > 0.5 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50 && OppDistFromGoal < MarkerDistFromGoal) || (OppDistFromGoal < MarkerDistFromGoal) && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50)
-            //        {
-            //            CurrentState = (int)State.behind;
-            //        }
-            //    }
-            //    else if (!oppMarkID.HasValue || oppMarkID.HasValue && !Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        CurrentState = (int)State.regional;
-            //    }
-            //}
-            //else if (CurrentState == (int)State.behind)
-            //{
-            //    if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        if (oppMarkID.HasValue && cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) < 0.5)
-            //        {
-            //            CurrentState = (int)State.cutball;
-            //        }
-            //        else if (Math.Abs(Vector2D.AngleBetweenInDegrees(Model.Opponents[oppMarkID.Value].Speed, GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location)) > 100 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50 && MarkerDistFromGoal + .1 < OppDistFromGoal)
-            //        {
-            //            CurrentState = (int)State.goback;
-            //        }
-            //        else if (((Model.Opponents[oppMarkID.Value].Speed.GetNormnalizedCopy().InnerProduct(staticVec.GetNormnalizedCopy()) > 0.60 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.5)
-            //        && (((OppSpeedLine.PerpenducilarLineToPoint(Model.OurRobots[RobotID].Location)).IntersectWithLine(OppSpeedLine).Value)
-            //        - Model.Opponents[oppMarkID.Value].Location).InnerProduct((Model.Opponents[oppMarkID.Value].Location + Model.Opponents[oppMarkID.Value].Speed) - Model.Opponents[oppMarkID.Value].Location) > 0.00
-            //        && !cancelInTheWay) && MarkerDistFromGoal < OppDistFromGoal)
-            //        {
-            //            CurrentState = (int)State.IntheWay;
-            //        }
-            //        else if ((!cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) > 0.5 && Model.Opponents[oppMarkID.Value].Location.X > 0 && Model.Opponents[oppMarkID.Value].Location.X + 0.3 < Model.OurRobots[RobotID].Location.X && Model.Opponents[oppMarkID.Value].Speed.Size < 0.50) ||(OppDistFromGoal > MarkerDistFromGoal) && Model.Opponents[oppMarkID.Value].Location.X + 0.3 < Model.OurRobots[RobotID].Location.X && Model.Opponents[oppMarkID.Value].Speed.Size < 0.50)
-            //        {
-            //            CurrentState = (int)State.marknear;
-            //        }
-            //        else if ((oppMarkID.HasValue && (oppFirstOwnerId.HasValue && (oppMarkID == oppFirstOwnerId &&
-            //            Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.BallState.Location) < 0.2) && Model.Opponents[oppMarkID.Value].Speed.Size < 0.50 && Model.Opponents[oppMarkID.Value].Location.X + 0.3 < Model.OurRobots[RobotID].Location.X) || oppMarkID.HasValue && (Model.Opponents[oppMarkID.Value].Location.X < 0)) && (OppDistFromGoal > MarkerDistFromGoal) && Model.Opponents[oppMarkID.Value].Speed.Size < 0.50 && Model.Opponents[oppMarkID.Value].Location.X + 0.3 < Model.OurRobots[RobotID].Location.X)
-            //        {
-            //            CurrentState = (int)State.markfar;
-            //        }
-            //    }
-            //    else if (!oppMarkID.HasValue || oppMarkID.HasValue && !Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        CurrentState = (int)State.regional;
-            //    }
-            //}
-            //else if (CurrentState == (int)State.regional)
-            //{
-            //    if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        CurrentState = (int)State.marknear;
-            //    }
-            //}
-
-            //else if (CurrentState == (int)State.Stop)
-            //{
-            //    if (ballIsMove)
-            //    {
-            //        CurrentState = (int)State.marknear;
-            //    }
-            //    else if (!oppMarkID.HasValue || oppMarkID.HasValue && !Model.Opponents.ContainsKey(oppMarkID.Value))
-            //    {
-            //        CurrentState = (int)State.regional;
-            //    }
-            //}
-            //{
-            //    counterInStop++;
-            //    CurrentState = (int)State.Stop;
-            //    if (ballIsMove)
-            //    {
-            //        CurrentState = (int)State.marknear;
-            //        counterInStop = 0;
-            //    }
-            //    if (oppMarkID.HasValue && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(firstballpos) > 0.5 && counterInStop > count)
-            //    {
-            //        CurrentState = (int)State.marknear;
-            //        counterInStop = 0;
-            //    }
-            //}
-            #endregion
         }
-
-        Position2D ppp = new Position2D(0, 3.5);
+        Position2D ppp = new Position2D(0, -3.5);
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
             double cost;
@@ -399,12 +186,8 @@ namespace MRL.SSL.AIConsole.Roles
             }
             else
             {
+                cost = 0;
                 cost = Model.OurRobots[RobotID].Location.DistanceFrom(CalculateTarget(engine, Model, RobotID));
-            }
-            if (CurrentState == (int)State.regional)
-            {
-                cost *= 100;
-
             }
             ppp = ppp.Extend(.1, 0);
             //DrawingObjects.AddObject(new StringDraw("cost " + RobotID.ToString() + " : " + cost.ToString(), ppp), "kasfohfjod" + ppp.ToString());
@@ -413,36 +196,27 @@ namespace MRL.SSL.AIConsole.Roles
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            List<RoleBase> res = new List<RoleBase>() { new MarkerRole1(),
-                new MarkerRole2(),
-                new MarkerRole3(),
-                new MarkerRole4(),
-                new MarkerRole5()
+            List<RoleBase> res = new List<RoleBase>() { new NormalMarkerRole1(),new ActiveRole2017(), new StaticDefender1(),new StaticDefender2()
+                //new MarkerRole2(),
+                //new MarkerRole3(),
+                //new MarkerRole4(),
+                //new MarkerRole5()
             };
+
             if (CurrentState == (int)State.regional)
             {
-                res = new List<RoleBase>() { new MarkerRole5() };
-                if (ballIsMove)
-                {
-                    res.Add(new ActiveRole());
-                    res.Add(new NewAttackerRole());
-                }
+                res = new List<RoleBase>() { new NormalMarkerRole1() };
             }
             return res;
         }
 
         public override bool Evaluate(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return true;
+            throw new NotImplementedException();
         }
 
         public Position2D CalculateTarget(GameStrategyEngine engin, WorldModel Model, int RobotID)
         {
-            if (CurrentState != (int)State.Stop)
-            {
-                firstTime = true;
-                //staticAngle = true;
-            }
             #region marknear
             if (CurrentState == (int)State.marknear)
             {
@@ -453,14 +227,13 @@ namespace MRL.SSL.AIConsole.Roles
                 target = Model.Opponents[oppMarkID.Value].Location + ourGoalOppRobot;
                 target.DrawColor = Color.AliceBlue;
                 // DrawingObjects.AddObject(target);
-
             }
             #endregion
             #region markfar
             if (CurrentState == (int)State.markfar)
             {
                 DrawingObjects.AddObject(new StringDraw("Markfar", Model.OurRobots[RobotID].Location.Extend(0.50, 0.00)), "88467");
-                //DrawingObjects.AddObject(new Circle(Model.Opponents[oppMarkID.Value].Location, 0.02f));
+                // DrawingObjects.AddObject(new Circle(Model.Opponents[oppMarkID.Value].Location, 0.02f));
                 target = new Position2D();
                 Line leftGoalline = new Line(Model.Opponents[oppMarkID.Value].Location, GameParameters.OurGoalLeft);
 
@@ -669,7 +442,7 @@ namespace MRL.SSL.AIConsole.Roles
                     if (Model.Opponents[oppMarkID.Value].Location.X < 1.5 && testrole)
                     {
                         Line l1 = new Line(GameParameters.OurGoalCenter, Model.Opponents[oppMarkID.Value].Location);
-                        //DrawingObjects.AddObject(l1, "as32d4s3a2d321sa432d");
+                        // DrawingObjects.AddObject(l1, "as32d4s3a2d321sa432d");
                         Line l2 = new Line(new Position2D(1.5, -3), new Position2D(1.5, 3));
                         //DrawingObjects.AddObject(l2, "asfdsaf564ds6f4awqwde");
                         Position2D? myIntersect = l1.IntersectWithLine(l2);
@@ -686,7 +459,7 @@ namespace MRL.SSL.AIConsole.Roles
             if (CurrentState == (int)State.behind)
             {
                 DrawingObjects.AddObject(new StringDraw("behind", Model.OurRobots[RobotID].Location.Extend(0.50, 0.00)), "6j1322");
-                Line linebehind = new Line(Model.Opponents[oppMarkID.Value].Location, GameParameters.OurGoalCenter);
+                Line linebehind = new Line(Model.OurRobots[RobotID].Location, GameParameters.OurGoalCenter);
                 List<Position2D> intersectwithdanger = GameParameters.LineIntersectWithDangerZone(linebehind, true);
                 if (intersectwithdanger.Count > 0 && (intersectwithdanger.FirstOrDefault()) != Position2D.Zero)
                     target = intersectwithdanger.OrderBy(o => o.DistanceFrom(GameParameters.OurGoalCenter)).FirstOrDefault();
@@ -700,65 +473,10 @@ namespace MRL.SSL.AIConsole.Roles
             #region regional
             if (CurrentState == (int)State.regional)
             {
-                //    DrawingObjects.AddObject(new StringDraw("regional", Model.OurRobots[RobotID].Location.Extend(0.50, 0.00)), "6322");
-                //    Vector2D vec1 = Position2D.Zero - GameParameters.OurGoalCenter;
-                //    Vector2D vec2 = Vector2D.FromAngleSize(vec1.AngleInRadians + (45 * Math.PI / 180), vec1.Size);
-                //    Line l1 = new Line(GameParameters.OurGoalCenter, GameParameters.OurGoalCenter + vec1);
-                //    Line l2 = new Line(GameParameters.OurGoalCenter, GameParameters.OurGoalCenter + vec2);
-                //    Position2D pos1 = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
-                //    Position2D pos2 = GameParameters.LineIntersectWithDangerZone(l2, true).FirstOrDefault();
-                //    List<Position2D> regionalPos = new List<Position2D>();
-                //    if (regional.HasValue && Model.OurRobots[RobotID].Location.DistanceFrom(regional.Value) < 0.12)
-                //    {
-                //        InRegional = true;
-                //    }
-                //    if (regional.HasValue)
-                //    {
-                //        foreach (var id in Model.OurRobots.Where(w => w.Key != RobotID))
-                //        {
-                //            if (new Circle(regional.Value, 0.12).IsInCircle(id.Value.Location))
-                //            {
-                //                InRegional = false;
-                //            }
-                //        }
-                //    }
-                //    if (!InRegional)
-                //    {
-                //        regionalPos.Add(pos1);
-                //        if (firstballpos.Y > 0)
-                //        {
-                //            regionalPos.Add(new Position2D(pos2.X, -1 * pos2.Y));
-                //            regionalPos.Add(pos2);
-                //        }
-                //        else
-                //        {
-                //            regionalPos.Add(pos2);
-                //            regionalPos.Add(new Position2D(pos2.X, -1 * pos2.Y));
-                //        }
-
-                //        foreach (var item in regionalPos)
-                //        {
-                //            bool IsFull = false;
-                //            foreach (var id in Model.OurRobots.Where(w => w.Key != RobotID))
-                //            {
-                //                if (new Circle(item, 0.12).IsInCircle(id.Value.Location))
-                //                {
-                //                    IsFull = true;
-                //                }
-                //            }
-                //            if (!IsFull)
-                //            {
-                //                regional = item;
-                //                target = item;
-                //            }
-                //        }
-                //    }
-
-                Position2D attackerpos = new Position2D(Model.BallState.Location.X - 0.7, Math.Sign(Model.BallState.Location.Y) * 2.8);
-                if (oppAttackerIds.Count < 5)
-                {
-                    target = attackerpos;
-                }
+                //if (oppAttackerIds.Count < 1)
+                //{
+                //    target = Model.OurRobots[RobotID].Location;
+                //}
             }
             #endregion
 
@@ -770,8 +488,6 @@ namespace MRL.SSL.AIConsole.Roles
                     {
                         if (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.BallState.Location) < 0.5)
                         {
-                            //double deltaDist = 0.5 - target.DistanceFrom(Model.BallState.Location);
-                            //target = Model.Opponents[oppMarkID.Value].Location + (GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location).GetNormalizeToCopy(distToMark + deltaDist);
                             Circle circleStop = new Circle(Model.BallState.Location, 0.6);
                             Line lineStop = new Line(GameParameters.OurGoalCenter, Model.BallState.Location);
                             List<Position2D> intersect = circleStop.Intersect(lineStop);
@@ -780,24 +496,6 @@ namespace MRL.SSL.AIConsole.Roles
                                 target = intersect.OrderBy(u => u.DistanceFrom(GameParameters.OurGoalCenter)).FirstOrDefault();
                             }
                         }
-                        //else
-                        //{
-                        //    Vector2D ourGoalOppRobots = new Vector2D();
-                        //    ourGoalOppRobots = (GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location).GetNormalizeToCopy(0.2);
-                        //    target = Model.Opponents[oppMarkID.Value].Location + ourGoalOppRobots;
-                        //    //target.DrawColor = Color.AliceBlue;
-                        //    //DrawingObjects.AddObject(target);
-                        //    if (target.DistanceFrom(Model.BallState.Location) < 0.6)
-                        //    {
-                        //        Circle circleStop = new Circle(Model.BallState.Location, 0.6);
-                        //        Line lineStop = new Line(GameParameters.OurGoalCenter, target);
-                        //        List<Position2D> intersect = circleStop.Intersect(lineStop);
-                        //        if (intersect.Count > 0 && (intersect.FirstOrDefault()) != Position2D.Zero)
-                        //        {
-                        //            target = intersect.OrderBy(u => u.DistanceFrom(GameParameters.OurGoalCenter)).FirstOrDefault();
-                        //        }
-                        //    }
-                        //}
                     }
                     if (Model.Opponents[oppMarkID.Value].Location.X < 0)
                     {
@@ -827,10 +525,11 @@ namespace MRL.SSL.AIConsole.Roles
             }
             //DrawingObjects.AddObject(new StringDraw(target.toString(), Position2D.Zero.Extend(0.1, 0)));
             return (overlapTarget.HasValue ? overlapTarget.Value : target);
+            //return target;
         }
-
         private bool PointOutOfdangerZone(WorldModel model, int RobotID, int MarkID, Position2D targetreference, out Position2D targetvalue)
         {
+            //TODO: DANGER_ZONE CHECK
             targetvalue = targetreference;
             Obstacles obs = new Obstacles();
             obs.AddDangerZone();
@@ -1150,7 +849,6 @@ namespace MRL.SSL.AIConsole.Roles
                 return -1000;
             return t;
         }
-
         enum State
         {
             regional,

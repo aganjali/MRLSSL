@@ -9,12 +9,12 @@
 #include "Types.h"
 
 #define MAX_ROBOT_COUNTS 8
-#define ZONE_OBS_COUNT 3
+#define ZONE_OBS_COUNT 1
 #define MAX_OBS_COUNT 2 * MAX_ROBOT_COUNTS + 2 * ZONE_OBS_COUNT + 1
 #define ROBOT_FORCE 0.3
 #define BALL_FORCE 0.2
-#define ZONE_FORCE 1.2		//1
-#define OPP_ZONE_FORCE 1.3 //1.1
+#define ZONE_FORCE 0.2		//1
+#define OPP_ZONE_FORCE 0.3 //1.1
 //texture<float, 2, cudaReadModeElementType> texA;
 texture<float, 2, cudaReadModeElementType> texB;
 texture<float, 2, cudaReadModeElementType> texC;

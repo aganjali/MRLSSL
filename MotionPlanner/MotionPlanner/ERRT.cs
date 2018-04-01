@@ -144,7 +144,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                         WayPoints[i] = lastPath[j];
                         WayPoints[i].ParentState = null;
                     }
-                }
+                } 
                 //if (RobotID == 2)
                 //{
                 //    ;

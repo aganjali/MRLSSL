@@ -600,6 +600,32 @@ __device__ GVector2D MeetCircle(float Ox, float Oy, GVector2D F, float Px, float
 	}
 	return F;
 }
+//Zone H = 1.2, W = 2.4
+__device__ GVector2D MeetZone(float Ox, float Oy, GVector2D F, float Px, float Py, float R)
+{
+	float Vx, Vy, tmp, d;
+	
+	Vx = Px + F.X - Ox;
+	Vy = Py + F.Y - Oy;
+	tmp = sqrtf(Vx * Vx + Vy * Vy);
+	if(fabsf(Vx) < 1.2f + R && fabsf(Vy) < 1.2f + R){
+		if(tmp > 1E-5){
+			d = 1.2f * tmp / fmaxf(fabsf(Vx), fabsf(Vy));
+			d = d * (1.2f + R) / 1.2f;
+			Vx *= (d / tmp);
+			Vy *= (d / tmp);
+		}
+		else
+		{
+			Vx = Vy = 0;
+		}
+
+		F.X = Ox + Vx - Px;
+		F.Y = Oy + Vy - Py;
+	}
+	
+	return F;
+}
 __global__ void CalculateForcesKernel(float* DevForce, int* DevEachPathCount, int RobotCount, size_t forcePitch, float kSpring, float kSpring2, int n)
 {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -656,15 +682,15 @@ __global__ void ReCalculatePath(float* DevPath, int* DevEachPathCount, int Robot
 				{
 					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, BALL_FORCE);	
 				}
-				else if(az == 1 && j > 0 && j < 4 )
+				else if(az == 1 && j == 1 )
 				{
-					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, ZONE_FORCE);	
+					F = MeetZone(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, ZONE_FORCE);	
 				}
-				else if(aoz == 1 && j > 3 && j < 7 )
+				else if(aoz == 1 && j == 2 )
 				{
-					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, OPP_ZONE_FORCE);	
+					F = MeetZone(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, OPP_ZONE_FORCE);	
 				}
-				else if(ar == 1 && j > 6 && !(((j - 7) < (RobotCount / 2)) && ((k == (j - 7)) || ((k - (RobotCount / 2)) == (j - 7))))  )
+				else if(ar == 1 && j > 2 && !(((j - 3) < (RobotCount / 2)) && ((k == (j - 3)) || ((k - (RobotCount / 2)) == (j - 3))))  )
 				{
 					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, ROBOT_FORCE);	
 				}

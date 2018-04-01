@@ -145,7 +145,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL1-PC")]
         public string AiName {
             get {
                 return ((string)(this["AiName"]));
@@ -157,7 +157,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL1-PC")]
         public string VisName {
             get {
                 return ((string)(this["VisName"]));
@@ -169,7 +169,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL1-PC")]
         public string SimulatorName {
             get {
                 return ((string)(this["SimulatorName"]));
@@ -181,7 +181,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL1-PC")]
         public string AnalayzerName {
             get {
                 return ((string)(this["AnalayzerName"]));
@@ -193,7 +193,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
         public int SerialPort {
             get {
                 return ((int)(this["SerialPort"]));

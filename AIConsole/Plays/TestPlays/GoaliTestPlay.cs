@@ -43,29 +43,22 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
+
             Position2D dest = new Position2D(-1,2);
-            int robotID = 0;
             //circleSkill.perform(Model, 2, GameParameters.OppGoalCenter, .2, false);
-            Obstacles obs = new Obstacles(Model);
-            obs.AddObstacle(1, 1, 0, 0, new List<int>() { robotID}, new List<int>());
-            bool clear = obs.Meet(new SingleObjectState(Model.OurRobots[robotID].Location, Vector2D.Zero, 0), new SingleObjectState(dest, Vector2D.Zero, 0),0.10);
-            
-            if (!clear)
+            for (int i = 0; i < 180; i++)
             {
-                Planner.Add(robotID, dest, 0);
+                int ang = i + 90;
+                if (ang > 180)
+                    ang -= 360;
+                Vector2D v = Vector2D.FromAngleSize(ang * Math.PI / 180, 0.1);
+                DrawingObjects.AddObject("saferadi_test" + ang.ToString(),
+                    new Line(GameParameters.OurGoalCenter, GameParameters.OurGoalCenter + v.GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(GameParameters.OurGoalCenter + v, Vector2D.Zero, 0), 0))));
+     
             }
-            else
-            {
-                bool collision = Skill.perform(Model, 0, dest, false);
-                if (collision)
-                {
-                    
-                    Planner.Add(0, new Position2D(3, 3), 0, PathType.UnSafe, true, true, false, false);
-                    Skill = new PreDefinedPath();
-                }
-            }
-            
-            
+
+            //circleSkill.perform(Model, 2, GameParameters.OppGoalCenter, .2, false);
+            //Skill.run(Model);
             //DrawingObjects.AddObject(new StringDraw(Model.BallState.Speed.Size.ToString(), Position2D.Zero), "asds");
             //int id1 = 4;
             //int id2 = 3;

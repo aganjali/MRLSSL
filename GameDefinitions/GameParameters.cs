@@ -64,7 +64,7 @@ namespace MRL.SSL.GameDefinitions
             if (pos.X < OppGoalCenter.X - margin || pos.X > OurGoalCenter.X + margin)
                 return false;
             if (pos.Y < OurRightCorner.Y - margin || pos.Y > OurLeftCorner.Y + margin)
-                return false;
+                return false; 
             return true;
         }
         public static bool IsInDangerousZone(Position2D Location, bool oppTeam, double margin, out double dist, out double DistFromBorder)
