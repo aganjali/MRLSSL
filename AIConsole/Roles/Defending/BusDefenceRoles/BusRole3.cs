@@ -52,7 +52,7 @@ namespace MRL.SSL.AIConsole.Roles
 
                 Line l1 = new Line(GameParameters.OurGoalLeft, GameParameters.OurGoalLeft + (Model.Opponents[OppID.Value].Location - GameParameters.OurGoalLeft).GetNormalizeToCopy(3));
                 Line l2 = new Line(GameParameters.OurGoalCenter, GameParameters.OurGoalCenter + (Model.Opponents[OppID.Value].Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(3));
-                Position2D posOnDangerzon = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
+                Position2D posOnDangerzon = GameParameters.LineIntersectWithOurDangerZone(l1).FirstOrDefault();
                 posOnDangerzon = GameParameters.OurGoalLeft + (posOnDangerzon - GameParameters.OurGoalLeft).GetNormalizeToCopy(posOnDangerzon.DistanceFrom(GameParameters.OurGoalLeft) + 0.2);
                 Line l3 = l2.PerpenducilarLineToPoint(posOnDangerzon);
                 Position2D posToGo = l2.IntersectWithLine(l3).Value;
@@ -66,7 +66,7 @@ namespace MRL.SSL.AIConsole.Roles
                 double x, y;
                 Position2D? intersectPos = null;
                 Line oppSpeedLine = new Line(Model.Opponents[OppID.Value].Location, Model.Opponents[OppID.Value].Location + Model.Opponents[OppID.Value].Speed);
-                intersectPos = GameParameters.LineIntersectWithDangerZone(oppSpeedLine, true).FirstOrDefault();
+                intersectPos = GameParameters.LineIntersectWithOurDangerZone(oppSpeedLine).FirstOrDefault();
                 if (GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.05, out x, out y)
                     && OppID.HasValue && Model.Opponents.ContainsKey(OppID.Value) && Model.Opponents[OppID.Value].Location.DistanceFrom(target) < 0.5
                     && Model.OurRobots[RobotID].Location.DistanceFrom(target) > 0.2
@@ -75,7 +75,7 @@ namespace MRL.SSL.AIConsole.Roles
 
                     intersectPos = null;
                     Line ballSpeedLine = new Line(Model.BallState.Location, Model.BallState.Location + Model.BallState.Speed.GetNormalizeToCopy(10));
-                    intersectPos = GameParameters.LineIntersectWithDangerZone(ballSpeedLine, true).FirstOrDefault();
+                    intersectPos = GameParameters.LineIntersectWithOurDangerZone(ballSpeedLine).FirstOrDefault();
                     if (intersectPos.HasValue)
                     {
                         target = intersectPos.Value + (intersectPos.Value - GameParameters.OurGoalLeft).GetNormalizeToCopy(0.12);
@@ -141,7 +141,7 @@ namespace MRL.SSL.AIConsole.Roles
                 double d = (v1.AngleInDegrees >= 0 ? (v1.AngleInDegrees + Math.Abs(Vector2D.AngleBetweenInDegrees(v1, v2)) / 2) : (v1.AngleInDegrees + Math.Abs(Vector2D.AngleBetweenInDegrees(v1, v2)) / 2));
                 v1 = Vector2D.FromAngleSize(d * (Math.PI / 180), 5);
                 Line l1 = new Line(GameParameters.OurGoalCenter, GameParameters.OurGoalCenter + v1);
-                Position2D posOnDangerzon = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
+                Position2D posOnDangerzon = GameParameters.LineIntersectWithOurDangerZone(l1).FirstOrDefault();
                 DrawingObjects.AddObject(posOnDangerzon);
                 if (posOnDangerzon != Position2D.Zero)
                 {
@@ -155,7 +155,7 @@ namespace MRL.SSL.AIConsole.Roles
             if (overlaptarget.HasValue)
             {
                 Line ol = new Line(GameParameters.OurGoalCenter, overlaptarget.Value);
-                Position2D? p = GameParameters.LineIntersectWithDangerZone(ol, true).FirstOrDefault();
+                Position2D? p = GameParameters.LineIntersectWithOurDangerZone(ol).FirstOrDefault();
                 if (p.HasValue && p.Value != Position2D.Zero)
                 {
                     overlaptarget = p.Value + (p.Value - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.2);

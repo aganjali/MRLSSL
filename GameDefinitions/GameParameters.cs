@@ -12,7 +12,7 @@ namespace MRL.SSL.GameDefinitions
     /// </summary>
     public class GameParameters
     {
-        public static double BorderWidth = 0.01, GoalMouth = 1.00, GoalDepth = 0.18, BallDiameter = 0.043, FieldMarkerDiameter = 0.05, FieldCenterCircleDiameter = 1, DefenceAreaFrontWidth = 0.5f, DefenceareaRadii = 1.00f, DefenceAreaHeight = 1.2, DefenceAreaWidth = 2.4;
+        public static double BorderWidth = 0.01, GoalMouth = 1.00, GoalDepth = 0.18, BallDiameter = 0.043, FieldMarkerDiameter = 0.05, FieldCenterCircleDiameter = 1, DefenceAreaHeight = 1.2, DefenceAreaWidth = 2.4;
         public static double RobotFrontLineAngle = Convert.ToSingle(Math.PI * 180 / (Math.PI * 3)), RobotCenterMarkerRadii = 0.025f;
         public static double PenaltyDistanceFromGoalLine = 1.1;
         public static Color FieldColor = Color.Green, BallColor = Color.Orange, TeamMatesCenterColor = Color.Blue, OpponentCenterColor = Color.Yellow;
@@ -416,79 +416,37 @@ namespace MRL.SSL.GameDefinitions
             return v;
         }
         //TODO: DANGER_ZONE CHECK
-        public static List<Position2D> LineIntersectWithDangerZone(Line TargetLine, bool ourZone)
+        public static List<Position2D> LineIntersectWithOurDangerZone(Line TargetLine)
         {
+            List<Position2D> retpos = new List<Position2D>();
             if (TargetLine != null && TargetLine.Head != null)
             {
-                Position2D rightLPos = new Position2D();
-                Position2D rightCPos = new Position2D();
-                Position2D leftLPos = new Position2D();
-                Position2D leftCPos = new Position2D();
-                List<Position2D> retpos = new List<Position2D>();
-                Circle rightC, leftC;
-                Line L;
-                if (ourZone)
-                {
-                    Position2D tmpR = new Position2D(OurGoalCenter.X, -DefenceAreaFrontWidth / 2);
-                    Position2D tmpL = new Position2D(OurGoalCenter.X, DefenceAreaFrontWidth / 2);
-                    rightC = new Circle(tmpR, DefenceareaRadii);
-                    leftC = new Circle(tmpL, DefenceareaRadii);
-                    L = new Line(tmpL + new Vector2D(-DefenceareaRadii, 0), tmpR + new Vector2D(-DefenceareaRadii, 0));
-                    rightLPos = tmpR + new Vector2D(-DefenceareaRadii, 0);
-                    leftLPos = tmpL + new Vector2D(-DefenceareaRadii, 0);
-                    leftCPos = tmpL + new Vector2D(0, DefenceareaRadii);
-                    rightCPos = tmpR + new Vector2D(0, -DefenceareaRadii);
-                }
-                else
-                {
-                    Position2D tmpR = new Position2D(OppGoalCenter.X, DefenceAreaFrontWidth / 2);
-                    Position2D tmpL = new Position2D(OppGoalCenter.X, -DefenceAreaFrontWidth / 2);
-                    rightC = new Circle(tmpR, DefenceareaRadii);
-                    leftC = new Circle(tmpL, DefenceareaRadii);
-                    L = new Line(tmpL + new Vector2D(DefenceareaRadii, 0), tmpR + new Vector2D(DefenceareaRadii, 0));
-                }
+                Line leftBound = new Line(new Position2D(GameParameters.OurGoalCenter.X, GameParameters.DefenceAreaWidth / 2)
+                    , new Position2D(GameParameters.OurGoalCenter.X - (GameParameters.DefenceAreaHeight), GameParameters.DefenceAreaWidth / 2 ));
+                Line rightBound = new Line(new Position2D(GameParameters.OurGoalCenter.X, -(GameParameters.DefenceAreaWidth / 2 ))
+                        , new Position2D(GameParameters.OurGoalCenter.X - (GameParameters.DefenceAreaHeight ), -(GameParameters.DefenceAreaWidth / 2)));
+                Line frontBound = new Line(leftBound.Tail, rightBound.Tail);
+                
+                Position2D? leftIntersect = TargetLine.IntersectWithLine(leftBound);
+                Position2D? rightIntersect = TargetLine.IntersectWithLine(rightBound);
+                Position2D? frontIntersect = TargetLine.IntersectWithLine(frontBound);
+                if (leftIntersect.HasValue 
+                    && Position2D.IsBetween(leftBound.Head, leftBound.Tail, leftIntersect.Value) 
+                    && Position2D.IsBetween(TargetLine.Head, TargetLine.Tail, leftIntersect.Value))
+                    retpos.Add(leftIntersect.Value);
+                
+                else if (rightIntersect.HasValue 
+                    && Position2D.IsBetween(rightBound.Head, rightBound.Tail, rightIntersect.Value)
+                    && Position2D.IsBetween(TargetLine.Head, TargetLine.Tail, rightIntersect.Value))
+                    retpos.Add(rightIntersect.Value);
 
-                List<Position2D> rightIntersects = rightC.Intersect(TargetLine);
-                List<Position2D> LeftIntersects = leftC.Intersect(TargetLine);
-                Position2D? linePos = TargetLine.IntersectWithLine(L);
+                else if (frontIntersect.HasValue 
+                    && Position2D.IsBetween(frontBound.Head, frontBound.Tail, frontIntersect.Value)
+                    && Position2D.IsBetween(TargetLine.Head, TargetLine.Tail, frontIntersect.Value))
+                    retpos.Add(frontIntersect.Value);
 
-                if ((TargetLine.Head.X > leftLPos.X || TargetLine.Tail.X > leftLPos.X))
-                {
-                    foreach (var item in rightIntersects)
-                    {
-
-                        if (IsInField(item, 0) && item.Y > rightCPos.Y && item.Y < rightLPos.Y)
-                        {
-                            retpos.Add(item);
-                        }
-                    }
-                    foreach (var item in LeftIntersects)
-                    {
-                        if (IsInField(item, 0) && item.Y < leftCPos.Y && item.Y > leftLPos.Y)
-                        {
-                            retpos.Add(item);
-                        }
-                    }
-
-                    if (linePos.HasValue && linePos.Value.Y > rightLPos.Y && linePos.Value.Y < leftLPos.Y)
-                    {
-                        retpos.Add(linePos.Value);
-                    }
-                }
-
-                List<Position2D> temp = retpos;
-                retpos = new List<Position2D>();
-                foreach (var item in temp)
-                {
-                    Vector2D vec1 = TargetLine.Head - item;
-                    Vector2D vec2 = TargetLine.Tail - item;
-                    if (vec1.InnerProduct(vec2) < 0)
-                        retpos.Add(item);
-                }
-
-                return retpos;
             }
-            return new List<Position2D>();
+            return retpos;
         }
 
         public static Vector2D InRefrence(Vector2D v, Vector2D refrence)

@@ -460,7 +460,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             {
                 DrawingObjects.AddObject(new StringDraw("behind", Model.OurRobots[RobotID].Location.Extend(0.50, 0.00)), "6j1322");
                 Line linebehind = new Line(Model.OurRobots[RobotID].Location, GameParameters.OurGoalCenter);
-                List<Position2D> intersectwithdanger = GameParameters.LineIntersectWithDangerZone(linebehind, true);
+                List<Position2D> intersectwithdanger = GameParameters.LineIntersectWithOurDangerZone(linebehind);
                 if (intersectwithdanger.Count > 0 && (intersectwithdanger.FirstOrDefault()) != Position2D.Zero)
                     target = intersectwithdanger.OrderBy(o => o.DistanceFrom(GameParameters.OurGoalCenter)).FirstOrDefault();
                 Vector2D ourGoalDangerzone = (target - GameParameters.OurGoalCenter);

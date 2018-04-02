@@ -349,17 +349,17 @@ namespace MRL.SSL.Planning.MotionPlanner
             
             obX.Add((float)GameParameters.OurGoalCenter.X);
             obY.Add((float)GameParameters.OurGoalCenter.Y);
-            obX.Add((float)GameParameters.OurGoalCenter.X);
-            obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
-            obX.Add((float)GameParameters.OurGoalCenter.X);
-            obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OurGoalCenter.X);
+            //obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OurGoalCenter.X);
+            //obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
 
             obX.Add((float)GameParameters.OppGoalCenter.X);
             obY.Add((float)GameParameters.OppGoalCenter.Y);
-            obX.Add((float)GameParameters.OppGoalCenter.X);
-            obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
-            obX.Add((float)GameParameters.OppGoalCenter.X);
-            obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OppGoalCenter.X);
+            //obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OppGoalCenter.X);
+            //obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
 
             List<int> otherIds = Model.OurRobots.Keys.Except(ids).ToList();
             ids.ForEach(f => { obsX.Add((float)Model.OurRobots[f].Location.X); obsY.Add((float)Model.OurRobots[f].Location.Y); });

@@ -130,7 +130,7 @@ namespace MRL.SSL.AIConsole.Roles
                                 Vector2D v = Vector2D.FromAngleSize(newD * (Math.PI / 180), 10);
                                 Position2D newLocation = GameParameters.OurGoalCenter + v;
                                 Line l1 = new Line(GameParameters.OurGoalCenter, newLocation);
-                                Position2D posOnDangerzon = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
+                                Position2D posOnDangerzon = GameParameters.LineIntersectWithOurDangerZone(l1).FirstOrDefault();
                                 posOnDangerzon = GameParameters.OurGoalCenter + (posOnDangerzon - GameParameters.OurGoalCenter).GetNormalizeToCopy(posOnDangerzon.DistanceFrom(GameParameters.OurGoalCenter) + 0.2);
                                 DrawingObjects.AddObject(new Circle(posOnDangerzon, 0.05, new System.Drawing.Pen(System.Drawing.Brushes.Red, 0.02f)));
                                 overlaptarget = posOnDangerzon;
@@ -151,7 +151,7 @@ namespace MRL.SSL.AIConsole.Roles
                                 Vector2D v = Vector2D.FromAngleSize(newD * (Math.PI / 180), 10);
                                 Position2D newLocation = GameParameters.OurGoalCenter + v;
                                 Line l1 = new Line(GameParameters.OurGoalCenter, newLocation);
-                                Position2D posOnDangerzon = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
+                                Position2D posOnDangerzon = GameParameters.LineIntersectWithOurDangerZone(l1).FirstOrDefault();
                                 posOnDangerzon = GameParameters.OurGoalCenter + (posOnDangerzon - GameParameters.OurGoalCenter).GetNormalizeToCopy(posOnDangerzon.DistanceFrom(GameParameters.OurGoalCenter) + 0.2);
                                 DrawingObjects.AddObject(new Circle(posOnDangerzon, 0.05, new System.Drawing.Pen(System.Drawing.Brushes.Red, 0.02f)));
                                 overlaptarget = posOnDangerzon;
@@ -240,7 +240,7 @@ namespace MRL.SSL.AIConsole.Roles
                             Vector2D v = Vector2D.FromAngleSize(newD * (Math.PI / 180), 10);
                             Position2D newLocation = GameParameters.OurGoalCenter + v;
                             Line l1 = new Line(GameParameters.OurGoalCenter, newLocation);
-                            Position2D posOnDangerzon = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
+                            Position2D posOnDangerzon = GameParameters.LineIntersectWithOurDangerZone(l1).FirstOrDefault();
                             posOnDangerzon = GameParameters.OurGoalCenter + (posOnDangerzon - GameParameters.OurGoalCenter).GetNormalizeToCopy(posOnDangerzon.DistanceFrom(GameParameters.OurGoalCenter) + 0.2);
                             DrawingObjects.AddObject(new Circle(posOnDangerzon, 0.05, new System.Drawing.Pen(System.Drawing.Brushes.Red, 0.02f)));
                             if (Math.Abs(Math.Abs(d1) - Math.Abs(d2)) > 20)
@@ -260,7 +260,7 @@ namespace MRL.SSL.AIConsole.Roles
                             Vector2D v = Vector2D.FromAngleSize(newD * (Math.PI / 180), 10);
                             Position2D newLocation = GameParameters.OurGoalCenter + v;
                             Line l1 = new Line(GameParameters.OurGoalCenter, newLocation);
-                            Position2D posOnDangerzon = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
+                            Position2D posOnDangerzon = GameParameters.LineIntersectWithOurDangerZone(l1).FirstOrDefault();
                             posOnDangerzon = GameParameters.OurGoalCenter + (posOnDangerzon - GameParameters.OurGoalCenter).GetNormalizeToCopy(posOnDangerzon.DistanceFrom(GameParameters.OurGoalCenter) + 0.2);
                             DrawingObjects.AddObject(new Circle(posOnDangerzon, 0.05, new System.Drawing.Pen(System.Drawing.Brushes.Red, 0.02f)));
                             if (Math.Abs(Math.Abs(d1) - Math.Abs(d2)) > 20)
@@ -296,7 +296,7 @@ namespace MRL.SSL.AIConsole.Roles
                                         Vector2D v = Vector2D.FromAngleSize(newD * (Math.PI / 180), 10);
                                         Position2D newLocation = GameParameters.OurGoalCenter + v;
                                         Line l1 = new Line(GameParameters.OurGoalCenter, newLocation);
-                                        Position2D posOnDangerzon = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
+                                        Position2D posOnDangerzon = GameParameters.LineIntersectWithOurDangerZone(l1).FirstOrDefault();
                                         posOnDangerzon = GameParameters.OurGoalCenter + (posOnDangerzon - GameParameters.OurGoalCenter).GetNormalizeToCopy(posOnDangerzon.DistanceFrom(GameParameters.OurGoalCenter) + 0.2);
                                         DrawingObjects.AddObject(new Circle(posOnDangerzon, 0.05, new System.Drawing.Pen(System.Drawing.Brushes.Red, 0.02f)));
                                         if (Math.Abs(Math.Abs(d1) - Math.Abs(d2)) > 20)
@@ -316,7 +316,7 @@ namespace MRL.SSL.AIConsole.Roles
                                         Vector2D v = Vector2D.FromAngleSize(newD * (Math.PI / 180), 10);
                                         Position2D newLocation = GameParameters.OurGoalCenter + v;
                                         Line l1 = new Line(GameParameters.OurGoalCenter, newLocation);
-                                        Position2D posOnDangerzon = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
+                                        Position2D posOnDangerzon = GameParameters.LineIntersectWithOurDangerZone(l1).FirstOrDefault();
                                         posOnDangerzon = GameParameters.OurGoalCenter + (posOnDangerzon - GameParameters.OurGoalCenter).GetNormalizeToCopy(posOnDangerzon.DistanceFrom(GameParameters.OurGoalCenter) + 0.2);
                                         DrawingObjects.AddObject(new Circle(posOnDangerzon, 0.05, new System.Drawing.Pen(System.Drawing.Brushes.Red, 0.02f)));
                                         if (Math.Abs(Math.Abs(d1) - Math.Abs(d2)) > 20)
@@ -337,7 +337,7 @@ namespace MRL.SSL.AIConsole.Roles
                                     Vector2D v = Vector2D.FromAngleSize(newD * (Math.PI / 180), 10);
                                     Position2D newLocation = GameParameters.OurGoalCenter + v;
                                     Line l1 = new Line(GameParameters.OurGoalCenter, newLocation);
-                                    Position2D posOnDangerzon = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
+                                    Position2D posOnDangerzon = GameParameters.LineIntersectWithOurDangerZone(l1).FirstOrDefault();
                                     posOnDangerzon = GameParameters.OurGoalCenter + (posOnDangerzon - GameParameters.OurGoalCenter).GetNormalizeToCopy(posOnDangerzon.DistanceFrom(GameParameters.OurGoalCenter) + 0.2);
                                     DrawingObjects.AddObject(new Circle(posOnDangerzon, 0.05, new System.Drawing.Pen(System.Drawing.Brushes.Red, 0.02f)));
                                     if (Math.Abs(Math.Abs(d1) - Math.Abs(d2)) > 20)
@@ -357,7 +357,7 @@ namespace MRL.SSL.AIConsole.Roles
                                     Vector2D v = Vector2D.FromAngleSize(newD * (Math.PI / 180), 10);
                                     Position2D newLocation = GameParameters.OurGoalCenter + v;
                                     Line l1 = new Line(GameParameters.OurGoalCenter, newLocation);
-                                    Position2D posOnDangerzon = GameParameters.LineIntersectWithDangerZone(l1, true).FirstOrDefault();
+                                    Position2D posOnDangerzon = GameParameters.LineIntersectWithOurDangerZone(l1).FirstOrDefault();
                                     posOnDangerzon = GameParameters.OurGoalCenter + (posOnDangerzon - GameParameters.OurGoalCenter).GetNormalizeToCopy(posOnDangerzon.DistanceFrom(GameParameters.OurGoalCenter) + 0.2);
                                     DrawingObjects.AddObject(new Circle(posOnDangerzon, 0.05, new System.Drawing.Pen(System.Drawing.Brushes.Red, 0.02f)));
                                     if (Math.Abs(Math.Abs(d1) - Math.Abs(d2)) > 20)

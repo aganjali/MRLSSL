@@ -314,7 +314,7 @@ namespace MRL.SSL.AIConsole.Roles
                     if (id == null)
                     {
                         Line ballSpeedLine = new Line(Model.BallState.Location, Model.BallState.Location + Model.BallState.Speed.GetNormalizeToCopy(10));
-                        List<Position2D> intersects = GameParameters.LineIntersectWithDangerZone(ballSpeedLine, true);
+                        List<Position2D> intersects = GameParameters.LineIntersectWithOurDangerZone(ballSpeedLine);
                         if (intersects.Count > 0)
                         {
                             Position2D pos = intersects.OrderBy(y => y.DistanceFrom(ballSpeedLine.Tail)).FirstOrDefault();
@@ -394,7 +394,7 @@ namespace MRL.SSL.AIConsole.Roles
                     else if (id != null && id.HasValue && Model.Opponents.ContainsKey(id.Value))
                     {
                         Line ballSpeedLine = new Line(Model.BallState.Location, Model.Opponents[id.Value].Location);
-                        List<Position2D> intersects = GameParameters.LineIntersectWithDangerZone(ballSpeedLine, true);
+                        List<Position2D> intersects = GameParameters.LineIntersectWithOurDangerZone(ballSpeedLine);
                         if (intersects.Count > 0)
                         {
                             Position2D pos = intersects.OrderBy(y => y.DistanceFrom(ballSpeedLine.Tail)).FirstOrDefault();

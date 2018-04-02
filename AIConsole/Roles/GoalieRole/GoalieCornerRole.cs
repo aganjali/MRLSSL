@@ -507,7 +507,7 @@ namespace MRL.SSL.AIConsole.Roles
                 else if (Gointersect)
                 {
                     Line ballSpeedLine = new Line(Model.BallState.Location, Model.BallState.Location + Model.BallState.Speed.GetNormalizeToCopy(10));
-                    List<Position2D> intersects = GameParameters.LineIntersectWithDangerZone(ballSpeedLine, true);
+                    List<Position2D> intersects = GameParameters.LineIntersectWithOurDangerZone(ballSpeedLine);
                     if (intersects.Count > 0)
                     {
                         Position2D pos = intersects.OrderBy(y => y.DistanceFrom(ballSpeedLine.Tail)).FirstOrDefault();

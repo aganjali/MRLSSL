@@ -146,6 +146,7 @@ namespace MRL.SSL.AIConsole.Engine
         bool strategyApplied = false;
         bool getBalls = true;
         Dictionary<int, Position2D> balls2send = new Dictionary<int, Position2D>();
+        HiPerfTimer timer = new HiPerfTimer();
         public EngineManager()
         {
             GPPlanner.Initilize();
@@ -241,7 +242,6 @@ namespace MRL.SSL.AIConsole.Engine
                 #region recieve from simulator or sslvision
                 if (RecieveMode == ModelRecieveMode.SSLVision || RecieveMode == ModelRecieveMode.Simulator)
                 {
-
                     MemoryStream sharedVisionStream = null;
                     if (RecieveMode == ModelRecieveMode.Simulator)
                     {
@@ -270,7 +270,7 @@ namespace MRL.SSL.AIConsole.Engine
                         if (Model != null)
                         {
                             //timer.Stop();
-                            //Console.WriteLine("frameRate: " + 1 / timer.Duration);
+                            //Console.WriteLine("time: " + timer.Duration* 1000);
                             //timer.Start();
                         }
                         if (Model != null)
@@ -728,7 +728,7 @@ namespace MRL.SSL.AIConsole.Engine
                                     //    Logger.Write(LogType.Info, "0 : " + commands.Commands.ContainsKey(0) + "\t1: " + commands.Commands.ContainsKey(1));
                                    // PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
 
-                                    PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
+                                    //PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
 
                                     foreach (var item in commands.Commands.Keys.ToList())
                                     {

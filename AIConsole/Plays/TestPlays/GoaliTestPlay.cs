@@ -43,14 +43,17 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-            for (int i = 0; i < 180; i++)
+            //for (int i = 0; i < 180; i++)
             {
-                int ang = i + 90;
-                if (ang > 180)
-                    ang -= 360;
-                Vector2D v = Vector2D.FromAngleSize(ang * Math.PI / 180, 0.1);
-                DrawingObjects.AddObject("saferadi_test" + ang.ToString(),
-                    new Line(GameParameters.OurGoalCenter, GameParameters.OurGoalCenter + v.GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(GameParameters.OurGoalCenter + v, Vector2D.Zero, 0), 0))));
+                Line l = new Line(new Position2D(5.5, 2.2), new Position2D(5.5, -2.5));
+                var poses = GameParameters.LineIntersectWithOurDangerZone(l); 
+                DrawingObjects.AddObject("line_intersect_line_test", l);
+                for (int i = 0; i < poses.Count; i++)
+                {
+
+                    DrawingObjects.AddObject("line_intersect_test" + i.ToString(),
+                        new Circle(poses[i], 0.02,new Pen(Color.Red, 0.01f)));
+                }
      
             }
 

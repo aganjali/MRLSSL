@@ -419,16 +419,21 @@ namespace MRL.SSL.Visualizer.Windows
         {
             List<char> idList = txt1.Text.ToList();
             List<int> ids = new List<int>();
+            int res;
             foreach (var item in idList)
             {
-                if (item != '0' && item != '1' && item != '2' && item != '3')
+                if (!int.TryParse(item.ToString(), out res) || res < 0 || res >= StaticVariables.CameraCount)
                 {
-                    ids = new List<int>() { 0, 1, 2, 3 };
+                    ids = new List<int>();
+                    for (int i = 0; i < StaticVariables.CameraCount; i++)
+                    {
+                        ids.Add(i);
+                    }
                     txt1.Text = namesToShow;
                     e.Handled = true;
                 }
                 else
-                    ids.Add(int.Parse(item.ToString()));
+                    ids.Add(res);
 
             }
             MergerParameters.AvailableCamIds = ids;
