@@ -210,8 +210,8 @@ namespace MRL.SSL.GameDefinitions
 
         int RobotNum;
         byte[] packet;
-        int[] roAddressStrart = { 5, 15, 25, 37, 47, 57 };
-        int[] roAddressEnd = { 14, 24, 34, 46, 56, 66 };
+        int[] roAddressStrart = { 5, 15, 25, 37, 47, 57, 69, 79, 89 };
+        int[] roAddressEnd = { 14, 24, 34, 46, 56, 66, 78, 88, 98 };
 
 
         public byte[] CreatPacket(byte sequenc)
@@ -219,15 +219,15 @@ namespace MRL.SSL.GameDefinitions
             Dictionary<int, SingleWirelessCommand> listWcommands = Commands;
             var listWcommand = listWcommands.OrderBy(o => o.Key);
             RobotNum = 0;
-            packet = new byte[70];
+            packet = new byte[102];
             packet[0] = 128;
             packet[1] = 128;
             packet[2] = 128;
-            packet[67] = 129;
-            packet[68] = 129;
-            packet[69] = 129;
+            packet[99] = 129;
+            packet[100] = 129;
+            packet[101] = 129;
 
-            if (listWcommand.Count() <= 6)
+            if (listWcommand.Count() <= 8)
             {
                 foreach (var item in listWcommand)
                 {
@@ -245,7 +245,7 @@ namespace MRL.SSL.GameDefinitions
                         }
                         RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
                     }
-                    else                 //sec half packet
+                    else if (RobotNum > 3 && RobotNum <= 6)               //sec half packet
                     {
                         if (item.Key < 8)
                         {
@@ -258,9 +258,23 @@ namespace MRL.SSL.GameDefinitions
                         }
                         RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
                     }
+                    else                 //sec half packet
+                    {
+                        if (item.Key < 8)
+                        {
+                            packet[67] = (byte)(packet[67] | (int)Math.Pow(2, item.Key));
+                        }
+                        else if (item.Key >= 8)
+                        {
+                            int ID = item.Key - 8;
+                            packet[68] = (byte)(packet[68] | (int)Math.Pow(2, ID));
+                        }
+                        RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+                    }
                 }
                 packet[4] = (byte)(packet[4] | (sequenc << 4));
                 packet[36] = (byte)(packet[36] | ((sequenc + 1) << 4));
+                packet[68] = (byte)(packet[68] | ((sequenc + 2) << 4));
             }
 
             return packet;
