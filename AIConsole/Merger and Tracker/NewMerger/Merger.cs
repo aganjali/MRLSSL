@@ -785,9 +785,9 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
         private static bool IsInField(Position2D pos, double margin)
         {
-            if (pos.X < -4500 - margin || pos.X > 4500 + margin)
+            if (pos.X < -GameParameters.OurGoalCenter.X * 1000 - margin || pos.X > GameParameters.OurGoalCenter.X * 1000 + margin)
                 return false;
-            if (pos.Y < -3000 - margin || pos.Y > 3000 + margin)
+            if (pos.Y < -GameParameters.OurLeftCorner.Y * 1000 - margin || pos.Y > GameParameters.OurLeftCorner.Y * 1000 + margin)
                 return false;
             return true;
         }

@@ -10,9 +10,11 @@ namespace MRL.SSL.Planning.MotionPlanner
     {
         public static double RobotRadi = RobotParameters.OurRobotParams.Diameter / 2 + 0.0;
         public static double BallRadi = 0.022;
-        public static double DangerZoneH = GameParameters.DefenceAreaFrontWidth;
-       
-        public static double DangerZoneW = GameParameters.DefenceareaRadii + 0.01;
+
+        //TODO: DANGER_ZONE CHECK
+        public static double DangerZoneH = GameParameters.DefenceAreaHeight;
+        public static double DangerZoneW = GameParameters.DefenceAreaWidth + 0.01;
+        
         public static double LengthMargin = 0.2;
         public static double WidthMargin = 0.2;
         public static double FieldLength = Math.Abs(GameParameters.OurGoalCenter.X - GameParameters.OppGoalCenter.X) + 2*LengthMargin;
@@ -21,6 +23,6 @@ namespace MRL.SSL.Planning.MotionPlanner
         public static double FieldLength_H = FieldLength / 2;
         public static double kSpeedRobot = 0;
         public static double kSpeedBall = 0.0;
-        public static double GoalExtendFromDangerZoneMargin = 0.1 + MotionPlannerParameters.DangerZoneW - GameParameters.DefenceareaRadii + 0.01;
+        public static double GoalExtendFromDangerZoneMargin = 0.11;
     }
 }

@@ -43,8 +43,19 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
+            for (int i = 0; i < 180; i++)
+            {
+                int ang = i + 90;
+                if (ang > 180)
+                    ang -= 360;
+                Vector2D v = Vector2D.FromAngleSize(ang * Math.PI / 180, 0.1);
+                DrawingObjects.AddObject("saferadi_test" + ang.ToString(),
+                    new Line(GameParameters.OurGoalCenter, GameParameters.OurGoalCenter + v.GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(GameParameters.OurGoalCenter + v, Vector2D.Zero, 0), 0))));
+     
+            }
+
             //circleSkill.perform(Model, 2, GameParameters.OppGoalCenter, .2, false);
-            Skill.run(Model);
+            //Skill.run(Model);
             //DrawingObjects.AddObject(new StringDraw(Model.BallState.Speed.Size.ToString(), Position2D.Zero), "asds");
             //int id1 = 4;
             //int id2 = 3;

@@ -15,7 +15,7 @@ namespace Simulator
 {
     public class MRLSimulator : SimulatorBase, System.IDisposable
     {
-        public RectangleF field = new RectangleF(4.52f, 3.025f, 9.05f, 6.05f);
+        public RectangleF field = new RectangleF(6.0f, 4.5f, 12.0f, 9.0f);
         private Scene _scene;
         Thread _sendThread, _reciveThread, _simulatorThread;
         private Dictionary<int, Robot> blueRobots;

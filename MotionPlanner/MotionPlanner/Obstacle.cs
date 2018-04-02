@@ -43,8 +43,11 @@ namespace MRL.SSL.Planning.MotionPlanner
         {
             // TODO: must check for rectangle
             Vector2D v = S1.Location - state.Location;
-            return (v.Size < obstacleRadi + r.X);
-
+            bool c = (type == ObstacleType.Circle || type == ObstacleType.OurRobot || type == ObstacleType.OppRobot || type == ObstacleType.ZoneCircle || type == ObstacleType.Ball);
+            if (c)
+                return (v.Size < obstacleRadi + r.X);
+            else
+                return (Math.Abs(v.X) < r.X + obstacleRadi && Math.Abs(v.Y) < r.Y + obstacleRadi);
         }
 
         private bool MeetRectangle(SingleObjectState From, SingleObjectState To, double obstacleRadi)
