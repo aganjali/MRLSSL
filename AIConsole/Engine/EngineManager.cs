@@ -331,7 +331,7 @@ namespace MRL.SSL.AIConsole.Engine
                     try
                     {
 
-                        sequenceNum++;
+                        //sequenceNum++;
 
                         if (Model.BallState == null || double.IsInfinity(Model.BallState.Location.X) || double.IsNaN(Model.BallState.Location.X))
                             Model.BallState.Location = new MRL.SSL.CommonClasses.MathLibrary.Position2D();
@@ -728,15 +728,17 @@ namespace MRL.SSL.AIConsole.Engine
                                     //    Logger.Write(LogType.Info, "0 : " + commands.Commands.ContainsKey(0) + "\t1: " + commands.Commands.ContainsKey(1));
                                    // PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
 
+                                    PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
+
                                     foreach (var item in commands.Commands.Keys.ToList())
                                     {
                                         DrawingObjects.AddObject(new StringDraw("kick: " + commands.Commands[item].KickPower, Model.OurRobots[item].Location + new Vector2D(-0.3, -0.3)), "kickPower" + item);
                                     }
                                     #endregion
                                     RobotComponentsController.PreviousCommands = commands.Commands;
-                                    if (sequenceNum == 15)
-                                        sequenceNum = 0;
-
+                                    sequenceNum += 3;
+                                    if (sequenceNum > 13)
+                                        sequenceNum = 1;
                                 }
                                 else
                                 {
