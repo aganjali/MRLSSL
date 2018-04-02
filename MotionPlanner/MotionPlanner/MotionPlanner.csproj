@@ -77,18 +77,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Third Party\Assemblies\KDTree.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.4.4.0\lib\net40\MathNet.Numerics.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Meta.Numerics">
       <HintPath>..\..\Third Party\Assemblies\Meta.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -101,7 +95,6 @@
     <Compile Include="Obstacle.cs" />
     <Compile Include="Obstacles.cs" />
     <Compile Include="PIDModule.cs" />
-    <Compile Include="PreDefinedPath.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rotate.cs" />
   </ItemGroup>
@@ -118,9 +111,6 @@
       <Project>{0FF8E98C-5502-444D-B853-61D2036F2C49}</Project>
       <Name>GPUDirect</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

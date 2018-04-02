@@ -247,10 +247,6 @@ namespace MRL.SSL.Planning.MotionPlanner
                 //}
                 compute_motion_1d(0, accuercy, -dX, stat.Speed.X, TargetSpeed.X, axMax, vxMax, afactor, ref finalAx, ref timeX);
                 compute_motion_1d(0, accuercy, -dY, stat.Speed.Y, TargetSpeed.Y, ayMax, vyMax, afactor, ref finalAy, ref timeY);
-                if (finalAx <0)
-                {
-
-                }
 
                 if (timeX - timeY <= 0)
                     u = alpha;
@@ -553,7 +549,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             // We follow OPTION 2 if t_a is less than a FRAME_PERIOD making it
             // difficult to transition to decelerating and stopping exactly.
             if (false && a_to_v1_at_x0 < a_max && a_to_v1_at_x0 > 0.0 &&
-                t_to_v1_at_x0 < 2.0 * StaticVariables.FRAME_PERIOD )
+                t_to_v1_at_x0 < 2.0 * StaticVariables.FRAME_PERIOD && true)
             {
 
                 // OPTION 2

@@ -21,7 +21,7 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         bool isFirst = true;
         int catcherId = 0;
         int passerId = 0;
-        bool flag = true;
+
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
             if (Status == GameStatus.TestOffend)
@@ -38,14 +38,11 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 
 
         PreDefinedPath Skill = new PreDefinedPath();
-        //CircularMotionSkill circleSkill = new CircularMotionSkill();
+        CircularMotionSkill circleSkill = new CircularMotionSkill();
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-
-            Position2D dest = new Position2D(-1,2);
-            //circleSkill.perform(Model, 2, GameParameters.OppGoalCenter, .2, false);
             for (int i = 0; i < 180; i++)
             {
                 int ang = i + 90;
@@ -174,7 +171,7 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 
         public override void ResetPlay(WorldModel Model, GameStrategyEngine engine)
         {
-            Skill = new PreDefinedPath();
+            //GetRole<NewCutBallTestRole>(5).Reset();
         }
 
 

@@ -21,10 +21,6 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         public SSL_WrapperPacket sslpacketCam1 = new SSL_WrapperPacket();
         public SSL_WrapperPacket sslpacketCam2 = new SSL_WrapperPacket();
         public SSL_WrapperPacket sslpacketCam3 = new SSL_WrapperPacket();
-        public SSL_WrapperPacket sslpacketCam4 = new SSL_WrapperPacket();
-        public SSL_WrapperPacket sslpacketCam5 = new SSL_WrapperPacket();
-        public SSL_WrapperPacket sslpacketCam6 = new SSL_WrapperPacket();
-        public SSL_WrapperPacket sslpacketCam7 = new SSL_WrapperPacket();
         private bool oneCamera = false;
         private uint cameraID = 0;
         public uint CameraID
@@ -503,19 +499,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             {
                 sslpacketCam3 = Packet;
             }
-            if (Packet.detection.camera_id == 4)
-            {
-                sslpacketCam4 = Packet;
-            } if (Packet.detection.camera_id == 5)
-            {
-                sslpacketCam5 = Packet;
-            } if (Packet.detection.camera_id == 6)
-            {
-                sslpacketCam6 = Packet;
-            } if (Packet.detection.camera_id == 7)
-            {
-                sslpacketCam7 = Packet;
-            }
+
             if (MergerParameters.AvailableCamIds.Contains((int)Packet.detection.camera_id))
             {
                 if (sslPackets.ContainsKey(Packet.detection.camera_id))
@@ -914,7 +898,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             MathMatrix refMat = MathMatrix.IdentityMatrix(1, 1);
             List<int> camIdList = new List<int>();
             camIdList.Add(camID);
-             coefMat = MergerParameters.GetMatrix(camIdList);
+            coefMat = MergerParameters.GetMatrix(camIdList);
 
             refMat = new MathMatrix(1, 3);
             refMat[0, 0] = selectedPos.X;
