@@ -205,7 +205,7 @@ namespace Simulator
             {
                 int i = c % 2, j = c / 2;
                 float cx = field.Width - (j * widthStep + widthStep / 2.0f), cy =  field.Height - (i * heightStep + heightStep / 2.0f);
-                cams[i] = new Camera(cx, cy, 4.0f, new RectangleF(cx + widthStep / 2 + 0.5f, cy + heightStep / 2 + 0.5f, widthStep + 1.0f, heightStep + 1.0f), c);
+                cams[c] = new Camera(cx, cy, 4.0f, new RectangleF(cx + widthStep / 2 + 0.5f, cy + heightStep / 2 + 0.5f, widthStep + 1.0f, heightStep + 1.0f), c);
             }
             Stopwatch sw = new Stopwatch();
             //    HiPerfTimer t2 = new HiPerfTimer();

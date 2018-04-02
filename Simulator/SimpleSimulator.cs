@@ -75,7 +75,7 @@ namespace Simulator
                 {
                     foreach (var c in cams)
                     {
-                        if (c.IsInCamera(new Vector3((float)yellowRobots[item].Location.X, 0, (float)yellowRobots[item].Location.Y)))
+                        if (c.IsInCamera(new Vector3((float)yellowRobots[item].Location.X, (float)yellowRobots[item].Location.Y, 0)))
                         {
                             packet[c.ID].robots_yellow.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
                             {
@@ -96,7 +96,7 @@ namespace Simulator
                 {
                     foreach (var c in cams)
                     {
-                        if (c.IsInCamera(new Vector3((float)blueRobots[item].Location.X, 0, (float)blueRobots[item].Location.Y)))
+                        if (c.IsInCamera(new Vector3((float)blueRobots[item].Location.X, (float)blueRobots[item].Location.Y, 0)))
                         {
                             packet[c.ID].robots_blue.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
                             {
@@ -118,7 +118,7 @@ namespace Simulator
                 {
                     foreach (var c in cams)
                     {
-                        if (c.IsInCamera(new Vector3((float)balls[item].Location.X, 0, (float)balls[item].Location.Y)))
+                        if (c.IsInCamera(new Vector3((float)balls[item].Location.X, (float)balls[item].Location.Y, 0)))
                         {
                             packet[c.ID].balls.Add(new messages_robocup_ssl_detection.SSL_DetectionBall()
                             {
@@ -183,8 +183,8 @@ namespace Simulator
             for (int c = 0; c < StaticVariables.CameraCount; c++)
             {
                 int i = c % 2, j = c / 2;
-                float cx = field.Width - (j * widthStep + widthStep / 2.0f), cy = field.Height - (i * heightStep + heightStep / 2.0f);
-                cams[i] = new Camera(cx, cy, 4.0f, new RectangleF(cx + widthStep / 2 + 0.5f, cy + heightStep / 2 + 0.5f, widthStep + 1.0f, heightStep + 1.0f), c);
+                float cx = field.Width / 2 - (j * widthStep + widthStep / 2.0f), cy = field.Height / 2 - (i * heightStep + heightStep / 2.0f);
+                cams[c] = new Camera(cx, cy, 4.0f, new RectangleF(cx + widthStep / 2 + 0.5f, cy + heightStep / 2 + 0.5f, widthStep + 1.0f, heightStep + 1.0f), c);
             } 
             Stopwatch sw = new Stopwatch();
         //    HiPerfTimer t2 = new HiPerfTimer();
