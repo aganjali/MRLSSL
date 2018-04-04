@@ -7,6 +7,7 @@ using MRL.SSL.AIConsole.Roles;
 using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using System.Drawing;
+using MRL.SSL.AIConsole.Roles.Stop;
 
 namespace MRL.SSL.AIConsole.Plays
 {
@@ -74,6 +75,12 @@ namespace MRL.SSL.AIConsole.Plays
             rt = typeof(StopRole3).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(rt, 1, 0));
 
+            rt = typeof(StopRole4).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 1, 0));
+
+            rt = typeof(StopRole5).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 1, 0));
+
             Dictionary<int, RoleBase> matched;
 
             if (Model.GoalieID.HasValue)
@@ -105,6 +112,14 @@ namespace MRL.SSL.AIConsole.Plays
             int? stop3 = null;
             if (matched.Any(w => w.Value.GetType() == typeof(StopRole3)))
                 stop3 = matched.Where(w => w.Value.GetType() == typeof(StopRole3)).First().Key;
+
+            int? stop4 = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(StopRole4)))
+                stop4 = matched.Where(w => w.Value.GetType() == typeof(StopRole4)).First().Key;
+
+            int? stop5 = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(StopRole5)))
+                stop5 = matched.Where(w => w.Value.GetType() == typeof(StopRole5)).First().Key;
 
             if (!isInDangerZone)
             {
@@ -158,6 +173,12 @@ namespace MRL.SSL.AIConsole.Plays
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop3, typeof(StopRole3)))
                 Functions[stop3.Value] = (eng, wmd) => GetRole<StopRole3>(stop3.Value).RunRoleStop(eng, wmd, stop3.Value);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop4, typeof(StopRole4)))
+                Functions[stop4.Value] = (eng, wmd) => GetRole<StopRole4>(stop4.Value).RunRoleStop(eng, wmd, stop4.Value);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop5, typeof(StopRole5)))
+                Functions[stop5.Value] = (eng, wmd) => GetRole<StopRole5>(stop5.Value).RunRoleStop(eng, wmd, stop5.Value);
 
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             return CurrentlyAssignedRoles;

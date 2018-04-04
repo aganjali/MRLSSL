@@ -165,6 +165,22 @@ namespace MRL.SSL.Visualizer.Windows
                                             txtCam3X.Text = Packet.detection.balls[0].x.ToString();
                                             txtCam3Y.Text = Packet.detection.balls[0].y.ToString();
                                             break;
+                                        case 4:
+                                            txtCam4X.Text = Packet.detection.balls[0].x.ToString();
+                                            txtCam4Y.Text = Packet.detection.balls[0].y.ToString();
+                                            break;
+                                        case 5:
+                                            txtCam5X.Text = Packet.detection.balls[0].x.ToString();
+                                            txtCam5Y.Text = Packet.detection.balls[0].y.ToString();
+                                            break;
+                                        case 6:
+                                            txtCam6X.Text = Packet.detection.balls[0].x.ToString();
+                                            txtCam6Y.Text = Packet.detection.balls[0].y.ToString();
+                                            break;
+                                        case 7:
+                                            txtCam7X.Text = Packet.detection.balls[0].x.ToString();
+                                            txtCam7Y.Text = Packet.detection.balls[0].y.ToString();
+                                            break;
                                     }
                                 }));
                         mainField.CurrentWrapper = new AiToVisualizerWrapper() { AllBalls = new Dictionary<int, Position2D>() { { 0, new Position2D { X = Packet.detection.balls[0].x / 1000, Y = Packet.detection.balls[0].y / 1000 } } } };
@@ -236,6 +252,26 @@ namespace MRL.SSL.Visualizer.Windows
                 if (txtCam3X.Text != "" && txtCam3Y.Text != "")
                 {
                     tempCam.Add(3, new Position2D(double.Parse(txtCam3X.Text), double.Parse(txtCam3Y.Text)));
+                    flag = true;
+                }
+                if (txtCam4X.Text != "" && txtCam4Y.Text != "")
+                {
+                    tempCam.Add(4, new Position2D(double.Parse(txtCam4X.Text), double.Parse(txtCam4Y.Text)));
+                    flag = true;
+                }
+                if (txtCam5X.Text != "" && txtCam5Y.Text != "")
+                {
+                    tempCam.Add(5, new Position2D(double.Parse(txtCam5X.Text), double.Parse(txtCam5Y.Text)));
+                    flag = true;
+                }
+                if (txtCam6X.Text != "" && txtCam6Y.Text != "")
+                {
+                    tempCam.Add(6, new Position2D(double.Parse(txtCam6X.Text), double.Parse(txtCam6Y.Text)));
+                    flag = true;
+                }
+                if (txtCam7X.Text != "" && txtCam7Y.Text != "")
+                {
+                    tempCam.Add(7, new Position2D(double.Parse(txtCam7X.Text), double.Parse(txtCam7Y.Text)));
                     flag = true;
                 }
                 if (!flag)

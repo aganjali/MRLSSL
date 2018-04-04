@@ -172,7 +172,7 @@ namespace MRL.SSL.AIConsole.Roles
                         if (ball.Y < 0)
                             target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .1, StopDistFromBall);
                         else
-                            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .42, StopDistFromBall);
+                            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .4, StopDistFromBall);
 
                     }
                     else if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.75)//corner

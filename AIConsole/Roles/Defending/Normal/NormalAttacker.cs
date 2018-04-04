@@ -377,7 +377,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return new List<RoleBase>() { new NewAttackerRole(), new ActiveRole2017(), new AttackerRole2017() };
+            return new List<RoleBase>() { new NormalAttacker1(), new NormalAttacker2(), new ActiveRole2017()/*, new AttackerRole2017() */};
         }
 
         public override bool Evaluate(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)

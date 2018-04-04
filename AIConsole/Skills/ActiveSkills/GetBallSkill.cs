@@ -22,7 +22,7 @@ namespace MRL.SSL.AIConsole.Skills
         bool Debug = true;
         bool inNear = false;
 
-        Vector2D FieldSize = new Vector2D(4.6, 3.1);
+        Vector2D FieldSize = new Vector2D(6.1, 4.6);
 
         public bool InNear
         {

@@ -67,7 +67,7 @@ namespace MRL.SSL.GameDefinitions
         public static List<Position2D> BallPositions = new List<Position2D>();
         public static bool FrameHasBall = false;
         public static Position2D ballPlacementPos = new Position2D();
-        public const int CameraCount = 4;
+        public const int CameraCount = 8;
     }
 
 }

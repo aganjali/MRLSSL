@@ -44,8 +44,8 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
         {
             if (_oppMarkID.HasValue)
                 oppMarkID = _oppMarkID;
-            if (!_oppMarkID.HasValue || (_oppMarkID.HasValue && (!Model.Opponents.ContainsKey(_oppMarkID.Value) || (Model.Opponents.ContainsKey(_oppMarkID.Value) && Model.Opponents[_oppMarkID.Value].Location.X < markRegion))))
-                oppMarkID = null;
+            //if (!_oppMarkID.HasValue || (_oppMarkID.HasValue && (!Model.Opponents.ContainsKey(_oppMarkID.Value) || (Model.Opponents.ContainsKey(_oppMarkID.Value) && Model.Opponents[_oppMarkID.Value].Location.X < markRegion))))
+            //    oppMarkID = null;
             ballIsMove = _ballIsMoved;
             Position2D target = CalculateTarget(engin, Model, RobotID);
             if (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) > Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OppGoalCenter))

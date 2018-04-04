@@ -154,6 +154,7 @@ namespace MRL.SSL.AIConsole.Roles
                     foreach (var item in intervals)
                     {
                         Position2D ps = new Position2D(GameParameters.OppGoalCenter.X, item.interval.Start), pe = new Position2D(GameParameters.OppGoalCenter.X, item.interval.End);
+                        //TODO: CHECK FOR HAS VALUE
                         Vector2D v1 = ps - intersectVsGoalLine.Value;
                         Vector2D v2 = pe - intersectVsGoalLine.Value;
                         if (v1.InnerProduct(v2) < 0)

@@ -188,6 +188,8 @@
     <Compile Include="Roles\GoalieRole\NewStaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\StaticGoalieRole.cs" />
     <Compile Include="Roles\Stop\RotationalStopCover.cs" />
+    <Compile Include="Roles\Stop\StopRole4.cs" />
+    <Compile Include="Roles\Stop\StopRole5.cs" />
     <Compile Include="Roles\TestRole\DefenderCornerRole1Test.cs" />
     <Compile Include="Roles\TestRole\DefenderCornerRole2Test.cs" />
     <Compile Include="Roles\ActiveRoles\Actions\ActionDescriptionBase.cs" />

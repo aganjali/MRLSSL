@@ -110,7 +110,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
             r = typeof(ActiveRole2017).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 10, 0.04));
 
-            r = typeof(NewSupporter2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            r = typeof(SupporterRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 10, 0.04));
 
             r = typeof(StaticDefender1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
@@ -128,6 +128,21 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 r = typeof(NormalAttacker2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
                 roles.Add(new RoleInfo(r, 10, 0.04));
             }
+            else if (oppAttackerIds.Count <= 0)
+            {
+                r = typeof(NormalAttacker1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                roles.Add(new RoleInfo(r, 10, 0.04));
+
+                r = typeof(NormalAttacker2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                roles.Add(new RoleInfo(r, 10, 0.04));
+            }
+            else if (oppAttackerIds.Count > 0 && oppAttackerIds.Count <= 1)
+            {
+                r = typeof(NormalMarkerRole1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                roles.Add(new RoleInfo(r, 10, 0.04));
+                r = typeof(NormalAttacker1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                roles.Add(new RoleInfo(r, 10, 0.04));
+            }
             else
             {
                 r = typeof(NormalMarkerRole1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
@@ -136,11 +151,11 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 r = typeof(NormalMarkerRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
                 roles.Add(new RoleInfo(r, 10, 0.04));
             }
-           
+
             //r = typeof(RegionalDefenceUtils).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             //roles.Add(new RoleInfo(r, 10, 0.04));
 
-      
+
 
             Dictionary<int, RoleBase> matched;
 
@@ -156,8 +171,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 ActiveID = matched.Where(w => w.Value.GetType() == typeof(ActiveRole2017)).First().Key;
 
             int? SupporterID = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(NewSupporter2Role)))
-                SupporterID = matched.Where(w => w.Value.GetType() == typeof(NewSupporter2Role)).First().Key;
+            if (matched.Any(w => w.Value.GetType() == typeof(SupporterRole)))
+                SupporterID = matched.Where(w => w.Value.GetType() == typeof(SupporterRole)).First().Key;
 
             int? Defender1ID = null;
             if (matched.Any(w => w.Value.GetType() == typeof(StaticDefender1)))
@@ -183,6 +198,31 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 if (matched.Any(w => w.Value.GetType() == typeof(NormalAttacker2)))
                     AttackerID2 = matched.Where(w => w.Value.GetType() == typeof(NormalAttacker2)).First().Key;
             }
+            //else if ()
+            //{
+            //    if (matched.Any(w => w.Value.GetType() == typeof(NormalAttacker1)))
+            //        AttackerID = matched.Where(w => w.Value.GetType() == typeof(NormalAttacker1)).First().Key;
+
+            //    if (matched.Any(w => w.Value.GetType() == typeof(NormalAttacker2)))
+            //        AttackerID2 = matched.Where(w => w.Value.GetType() == typeof(NormalAttacker2)).First().Key;
+            //}
+            else if (oppAttackerIds.Count > 0 && oppAttackerIds.Count <= 1)
+            {
+
+                if (matched.Any(w => w.Value.GetType() == typeof(NormalMarkerRole1)))
+                    NormalMarkerRoleID1 = matched.Where(w => w.Value.GetType() == typeof(NormalMarkerRole1)).First().Key;
+
+                if (matched.Any(w => w.Value.GetType() == typeof(NormalAttacker1)))
+                    AttackerID = matched.Where(w => w.Value.GetType() == typeof(NormalAttacker1)).First().Key;
+            }
+            else if (oppAttackerIds.Count <= 0)
+            {
+                if (matched.Any(w => w.Value.GetType() == typeof(NormalAttacker1)))
+                    AttackerID = matched.Where(w => w.Value.GetType() == typeof(NormalAttacker1)).First().Key;
+
+                if (matched.Any(w => w.Value.GetType() == typeof(NormalAttacker2)))
+                    AttackerID2 = matched.Where(w => w.Value.GetType() == typeof(NormalAttacker2)).First().Key;
+            }
             else
             {
                 if (matched.Any(w => w.Value.GetType() == typeof(NormalMarkerRole1)))
@@ -194,67 +234,67 @@ namespace MRL.SSL.AIConsole.Plays.Our
             FreekickDefence.Static1ID = Defender1ID;
             FreekickDefence.Static2ID = Defender2ID;
 
-            if (lastOppCount != oppAttackerIds.Count || lastScores != scores)
-            {
-                flagFirst = true;
-            }
-            if (flagFirst)
-            {
-                lastScores = scores;
-                List<int?> tempOppValue = new List<int?>();
-                int? minScore = null; ;
-                foreach (var o in oppValue)
-                {
-                    bool f = false;
-                    foreach (var s in oppAttackerIds)
-                    {
-                        if (o.HasValue && o.Value == s)
-                        {
-                            f = true;
-                        }
-                    }
-                    if (f)
-                        tempOppValue.Add(o);
-                    else
-                        tempOppValue.Add(null);
-                }
-                oppValue = tempOppValue;
-                //oppValue = new List<int?>();
-                if (oppValue.Count < 8)
-                {
-                    for (int i = 0; i < 8; i++)
-                        oppValue.Add(null);
-                }
-                if (firstSetBall)
-                {
-                    firstBallPos = Model.BallState.Location;
-                    firstSetBall = false;
-                }
-                flagFirst = false;
-            }
-            for (int i = 0; i < 8; i++)
-            {
-                if (!oppValue[i].HasValue || (oppValue[i].HasValue && !Model.Opponents.ContainsKey(oppValue[i].Value)))
-                {
-                    oppValue[i] = null;
-                    foreach (var opp in oppAttackerIds)
-                    {
-                        bool oppAdd = true;
-                        foreach (var item in oppValue)
-                        {
-                            if (opp == item)
-                            {
-                                oppAdd = false;
-                            }
-                        }
-                        if (oppAdd)
-                        {
-                            oppValue[i] = opp;
-                        }
-                    }
-                }
-            }
-          
+            //if (lastOppCount != oppAttackerIds.Count || lastScores != scores)
+            //{
+            //    flagFirst = true;
+            //}
+            //if (flagFirst)
+            //{
+            //    lastScores = scores;
+            //    List<int?> tempOppValue = new List<int?>();
+            //    int? minScore = null; ;
+            //    foreach (var o in oppValue)
+            //    {
+            //        bool f = false;
+            //        foreach (var s in oppAttackerIds)
+            //        {
+            //            if (o.HasValue && o.Value == s)
+            //            {
+            //                f = true;
+            //            }
+            //        }
+            //        if (f)
+            //            tempOppValue.Add(o);
+            //        else
+            //            tempOppValue.Add(null);
+            //    }
+            //    oppValue = tempOppValue;
+            //    //oppValue = new List<int?>();
+            //    if (oppValue.Count < 8)
+            //    {
+            //        for (int i = 0; i < 8; i++)
+            //            oppValue.Add(null);
+            //    }
+            //    if (firstSetBall)
+            //    {
+            //        firstBallPos = Model.BallState.Location;
+            //        firstSetBall = false;
+            //    }
+            //    flagFirst = false;
+            //}
+            //for (int i = 0; i < 8; i++)
+            //{
+            //    if (!oppValue[i].HasValue || (oppValue[i].HasValue && !Model.Opponents.ContainsKey(oppValue[i].Value)))
+            //    {
+            //        oppValue[i] = null;
+            //        foreach (var opp in oppAttackerIds)
+            //        {
+            //            bool oppAdd = true;
+            //            foreach (var item in oppValue)
+            //            {
+            //                if (opp == item)
+            //                {
+            //                    oppAdd = false;
+            //                }
+            //            }
+            //            if (oppAdd)
+            //            {
+            //                oppValue[i] = opp;
+            //            }
+            //        }
+            //    }
+            //}
+         
             #endregion
 
             NormalSharedState.CommonInfo.ActiveID = ActiveID;
@@ -296,8 +336,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 Functions[Defender2ID.Value] = (eng, wmd) => GetRole<StaticDefender2>(Defender2ID.Value).Run(engine, Model, Defender2ID.Value, second.DefenderPosition.Value, second.Teta, CurrentlyAssignedRoles);
             }
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, SupporterID, typeof(NewSupporter2Role)))
-                Functions[SupporterID.Value] = (eng, wmd) => GetRole<NewSupporter2Role>(SupporterID.Value).Perform(eng, wmd, SupporterID.Value);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, SupporterID, typeof(SupporterRole)))
+                Functions[SupporterID.Value] = (eng, wmd) => GetRole<SupporterRole>(SupporterID.Value).Perform(eng, wmd, SupporterID.Value);
 
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RegionalID, typeof(RegionalDefenderRole)))
             //    Functions[RegionalID.Value] = (eng, wmd) => GetRole<RegionalDefenderRole>(RegionalID.Value).per;
@@ -311,15 +351,47 @@ namespace MRL.SSL.AIConsole.Plays.Our
             }
             else
             {
-                //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
-                //    Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
-
-                //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
-                //    Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
-
+                if (oppAttackerIds.Count <= 0)
+                {
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AttackerID, typeof(NormalAttacker1)))
+                        Functions[AttackerID.Value] = (eng, wmd) => GetRole<NormalAttacker1>(AttackerID.Value).Perform(eng, wmd, AttackerID.Value);
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AttackerID2, typeof(NormalAttacker2)))
+                        Functions[AttackerID2.Value] = (eng, wmd) => GetRole<NormalAttacker2>(AttackerID2.Value).Perform(eng, wmd, AttackerID2.Value);
+                }
                 if (oppAttackerIds.Count > 0 && oppAttackerIds.Count <= 1)
                 {
-                    OppToMarkID1 = oppValue[0];
+                    OppToMarkID1 = oppAttackerIds[0];
+                   
+                        if (Model.Opponents[OppToMarkID1.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) > Model.Opponents[OppToMarkID1.Value].Location.DistanceFrom(GameParameters.OurGoalCenter))
+                        {
+                            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AttackerID, typeof(NormalAttacker1)))
+                                Functions[AttackerID.Value] = (eng, wmd) => GetRole<NormalAttacker1>(AttackerID.Value).Perform(eng, wmd, AttackerID.Value);
+                        }
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
+                    {
+                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
+                            Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
+                        else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
+                        {
+                            Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
+                        }
+                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AttackerID, typeof(NormalAttacker1)))
+                            Functions[AttackerID.Value] = (eng, wmd) => GetRole<NormalAttacker1>(AttackerID.Value).Perform(eng, wmd, AttackerID.Value);
+                    }
+                    else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
+                    {
+                        Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
+                    }
+                    else if (c.IsInCircle(Model.Opponents[AttackerID.Value].Location))
+                    {
+                        Planner.Add(AttackerID.Value, new Position2D(2, -2), (Model.BallState.Location - new Position2D(2, -2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
+                    }
+                }
+                else if (oppAttackerIds.Count > 1 && oppAttackerIds.Count <= 2)
+                {
+                    OppToMarkID1 = oppAttackerIds[0];
+                    OppToMarkID2 = oppAttackerIds[1];
+                   
                     if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
@@ -329,22 +401,11 @@ namespace MRL.SSL.AIConsole.Plays.Our
                     {
                         Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
                     }
-                }
-                else if (oppAttackerIds.Count > 1 && oppAttackerIds.Count <= 2)
-                {
-                    OppToMarkID1 = oppValue[0];
-                    OppToMarkID2 = oppValue[1];
-                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location) && !c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                    
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
                     {
-                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
-                            Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
-
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
                             Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
-                    }
-                    else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
-                    {
-                        Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
                     {
@@ -356,17 +417,22 @@ namespace MRL.SSL.AIConsole.Plays.Our
                     OppToMarkID1 = oppAttackerIds[0];
                     OppToMarkID2 = oppAttackerIds[1];
                     OppToMarkID3 = oppAttackerIds[2];
-                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location) && !c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                    
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
                             Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
-
-                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
-                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
+                    }
+
+                    
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                    {
+                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
+                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
                     {
@@ -379,25 +445,26 @@ namespace MRL.SSL.AIConsole.Plays.Our
                     OppToMarkID2 = oppAttackerIds[1];
                     OppToMarkID3 = oppAttackerIds[2];
                     OppToMarkID4 = oppAttackerIds[3];
-                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location) && !c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                   
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
                             Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
-
-                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
-                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
-                        //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, SupporterID, typeof(NewSupporter2Role)))
-                        //    Functions[SupporterID.Value] = (eng, wmd) => GetRole<NewSupporter2Role>(SupporterID.Value).Perform(eng, wmd, SupporterID.Value);
+                    }
+
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                    {
+                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
+                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
                     {
                         Planner.Add(NormalMarkerRoleID2.Value, new Position2D(2, -2), (Model.BallState.Location - new Position2D(2, -2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
-                        //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, SupporterID, typeof(NewSupporter2Role)))
-                        //    Functions[SupporterID.Value] = (eng, wmd) => GetRole<NewSupporter2Role>(SupporterID.Value).Perform(eng, wmd, SupporterID.Value);
+                       
                     }
                 }
                 else if (oppAttackerIds.Count > 4 && oppAttackerIds.Count <= 5)
@@ -407,17 +474,21 @@ namespace MRL.SSL.AIConsole.Plays.Our
                     OppToMarkID3 = oppAttackerIds[2];
                     OppToMarkID4 = oppAttackerIds[3];
                     OppToMarkID5 = oppAttackerIds[4];
-                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location) && !c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                   
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
                             Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
-
-                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
-                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
+                    }
+                    
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                    {
+                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
+                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
                     {
@@ -432,17 +503,21 @@ namespace MRL.SSL.AIConsole.Plays.Our
                     OppToMarkID4 = oppAttackerIds[3];
                     OppToMarkID5 = oppAttackerIds[4];
                     OppToMarkID6 = oppAttackerIds[5];
-                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location) && !c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                    
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
                             Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
-
-                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
-                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
+                    }
+                   
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                    {
+                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
+                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
                     {
@@ -458,17 +533,21 @@ namespace MRL.SSL.AIConsole.Plays.Our
                     OppToMarkID5 = oppAttackerIds[4];
                     OppToMarkID6 = oppAttackerIds[5];
                     OppToMarkID7 = oppAttackerIds[6];
-                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location) && !c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                   
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
                             Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
-
-                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
-                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
+                    }
+                   
+                    if ( !c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                    {
+                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
+                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
                     {
@@ -485,18 +564,21 @@ namespace MRL.SSL.AIConsole.Plays.Our
                     OppToMarkID6 = oppAttackerIds[5];
                     OppToMarkID7 = oppAttackerIds[6];
                     OppToMarkID8 = oppAttackerIds[7];
-                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location) && !c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                   
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
                             Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
-
-                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
-                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
-
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
+                    }
+                   
+                    if (!c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
+                    {
+                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID2, typeof(NormalMarkerRole2)))
+                            Functions[NormalMarkerRoleID2.Value] = (eng, wmd) => GetRole<NormalMarkerRole2>(NormalMarkerRoleID2.Value).Perform(engine, Model, NormalMarkerRoleID2.Value, OppToMarkID2, markRegion, ballIsMoved, oppAttackerIds);
                     }
                     else if (c.IsInCircle(Model.Opponents[OppToMarkID2.Value].Location))
                     {

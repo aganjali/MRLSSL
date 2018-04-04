@@ -145,6 +145,17 @@ namespace MRL.SSL.GameDefinitions
             }
             return res;
         }
+        private static List<int> GetCameraIdsFromKey(int key)
+        {
+            List<int> res = new List<int>();
+
+            do
+            {
+                res.Add(key % 10);
+                key = key / 10;
+            } while (key > 0);
+            return res;
+        }
         public static void SetMatrix()
         {
             coefMatrix = new Dictionary<int, MathMatrix>();
@@ -224,13 +235,76 @@ namespace MRL.SSL.GameDefinitions
             {
                 MathMatrix cam = cams[item].Transpose;
                 MathMatrix real = reals[item].Transpose;
-                MathMatrix a = real * cam.Transpose * Inverse.invert(cam * cam.Transpose);
-                coefMatrix.Add(item, a);
+                if (cam.Rows == 0 || cam.Cols == 0)
+                {
+                    MathMatrix ret = new MathMatrix(0, 0);
+                    var ids = GetCameraIdsFromKey(item);
+                    if (ids.Count == 1)
+                    {
+                        ret =  MathMatrix.IdentityMatrix(3, 3);
+                    }
+                    else if (ids.Count == 2)
+                    {
+                        ret = new MathMatrix(3, 5);
+                        ret[0, 0] = 0.5;
+                        ret[0, 2] = 0.5;
+                        ret[1, 1] = 0.5;
+                        ret[1, 3] = 0.5;
+                        ret[2, 4] = 1;
+                    }
+                    else if (ids.Count == 3)
+                    {
+                        ret = new MathMatrix(3, 7);
+                        ret[0, 0] = 0.3333;
+                        ret[0, 2] = 0.3333;
+                        ret[0, 4] = 0.3333;
+                        ret[1, 1] = 0.3333;
+                        ret[1, 3] = 0.3333;
+                        ret[1, 5] = 0.3333;
+
+                        ret[2, 6] = 1;
+                    }
+                    else if (ids.Count == 4)
+                    {
+                        ret = new MathMatrix(3, 9);
+                        ret[0, 0] = 0.25;
+                        ret[0, 2] = 0.25;
+                        ret[0, 4] = 0.25;
+                        ret[0, 6] = 0.25;
+                        ret[1, 1] = 0.25;
+                        ret[1, 3] = 0.25;
+                        ret[1, 5] = 0.25;
+                        ret[1, 7] = 0.25;
+                        ret[2, 8] = 1;
+                    }
+                    coefMatrix.Add(item, ret);
+                }
+                else
+                {
+                    MathMatrix a = real * cam.Transpose * Inverse.invert(cam * cam.Transpose);
+                    coefMatrix.Add(item, a);
+                }
             }
+
+            double widthStep = (GameParameters.OurGoalCenter.X - GameParameters.OppGoalCenter.X) * 2.0 / StaticVariables.CameraCount;
+            double rx = GameParameters.OurGoalCenter.X, ry = 0; ;
             for (int i = 0; i  < StaticVariables.CameraCount - 3; i += 2)
             {
-                Dictionary<int, Position2D> camera = mergerCalibData.Where(t => t.CameraData.Count == 4 
-                    && t.CameraData.ContainsKey(i) &&  t.CameraData.ContainsKey(i + 2)).FirstOrDefault().CameraData;
+                rx -= widthStep;
+                var mergerData = mergerCalibData.Where(t => t.RealData.X == rx && t.RealData.Y == ry).FirstOrDefault();
+                Dictionary<int, Position2D> camera = new Dictionary<int, Position2D>();
+
+                if (mergerData != null)
+                    camera = mergerData.CameraData;
+
+                for (int j = i; j < i + 4; j++)
+                {
+                    if (!camera.ContainsKey(j))
+                    {
+                        camera.Add(j, new Position2D(rx, ry));
+                    }
+                }
+                 
                 List<Position2D> temp = new List<Position2D>();
                 int cameraID = -1;
                 
@@ -332,9 +406,9 @@ namespace MRL.SSL.GameDefinitions
                 ret[1, 0] = 0;
                 ret[1, 1] = 0.3333;
                 ret[1, 2] = 0;
-                ret[1, 3] = 0.333;
+                ret[1, 3] = 0.3333;
                 ret[1, 4] = 0;
-                ret[1, 5] = 0.333;
+                ret[1, 5] = 0.3333;
                 ret[1, 6] = (-cam[0].Y - cam[1].Y - cam[2].Y) / 3;
                 ret[2, 0] = 0;
                 ret[2, 1] = 0;

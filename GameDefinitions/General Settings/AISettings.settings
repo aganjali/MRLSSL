@@ -45,7 +45,7 @@
       <Value Profile="(Default)">MRL-SSL3-PC</Value>
     </Setting>
     <Setting Name="SerialPort" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">5</Value>
+      <Value Profile="(Default)">3</Value>
     </Setting>
   </Settings>
 </SettingsFile>

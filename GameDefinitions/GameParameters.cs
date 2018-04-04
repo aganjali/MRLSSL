@@ -435,12 +435,12 @@ namespace MRL.SSL.GameDefinitions
                     && Position2D.IsBetween(TargetLine.Head, TargetLine.Tail, leftIntersect.Value))
                     retpos.Add(leftIntersect.Value);
                 
-                else if (rightIntersect.HasValue 
+                if (rightIntersect.HasValue 
                     && Position2D.IsBetween(rightBound.Head, rightBound.Tail, rightIntersect.Value)
                     && Position2D.IsBetween(TargetLine.Head, TargetLine.Tail, rightIntersect.Value))
                     retpos.Add(rightIntersect.Value);
 
-                else if (frontIntersect.HasValue 
+                 if (frontIntersect.HasValue 
                     && Position2D.IsBetween(frontBound.Head, frontBound.Tail, frontIntersect.Value)
                     && Position2D.IsBetween(TargetLine.Head, TargetLine.Tail, frontIntersect.Value))
                     retpos.Add(frontIntersect.Value);
