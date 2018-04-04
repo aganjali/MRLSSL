@@ -111,7 +111,7 @@ namespace MRL.SSL.AIConsole.Roles
         public void GetData(WorldModel Model, int RobotID, double Lstep, double TetaStep)
         {
             tetaCount = (int)(180 / TetaStep) + 1;
-            LCount = (int)(5 / Lstep);
+            LCount = (int)(8 / Lstep);
             if (count < LCount)
             {
                 if (tetaCounter <= tetaCount)
