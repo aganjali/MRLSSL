@@ -535,6 +535,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             for (int i = 0; i < sslPackets.Count; i++)
             {
                 Frame.timeofcapture += sslPackets.ElementAt(i).Value.detection.t_capture;
+                Frame.timeList[sslPackets.ElementAt(i).Value.detection.camera_id] = sslPackets.ElementAt(i).Value.detection.t_capture;
             }
             if (sslPackets.Count > 0)
                 Frame.timeofcapture /= (double)sslPackets.Count;

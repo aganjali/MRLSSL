@@ -31,6 +31,8 @@ namespace MRL.SSL.AIConsole.Plays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, 8, typeof(TestRole)))
+            //    Functions[8] = (eng, wmd) => GetRole<TestRole>(8).GetData(Model, 8, 0.5, 30);
             #region ScoreColor
             //if (isFirst)
             //{
@@ -58,7 +60,7 @@ namespace MRL.SSL.AIConsole.Plays
             //}
 
             #endregion
-            //int? goalieID = (engine.GameInfo.OppTeam.GoaliID.HasValue && Model.Opponents.ContainsKey(engine.GameInfo.OppTeam.GoaliID.Value)) ? engine.GameInfo.OppTeam.GoaliID : null;
+            ////int? goalieID = (engine.GameInfo.OppTeam.GoaliID.HasValue && Model.Opponents.ContainsKey(engine.GameInfo.OppTeam.GoaliID.Value)) ? engine.GameInfo.OppTeam.GoaliID : null;
             //List<int> oppIds;
             //if(goalieID.HasValue)
             //    oppIds = engine.GameInfo.OppTeam.Scores.Where(w => w.Key != goalieID).OrderByDescending(w => w.Value).Select(s => s.Key).ToList();

@@ -33,32 +33,32 @@ namespace MRL.SSL.GameDefinitions
   
        //new direct lookup
         private static KickSpeedCoeff[] kickCoeff = new KickSpeedCoeff[12] { 
-            //new KickSpeedCoeff(132.3,0,10.3,0,5.95,1), //0
-            //new KickSpeedCoeff(1.995e+15,120.8,27.79,8.307,3.763,5.228), //1
-            //new KickSpeedCoeff( 153.1,0,12.21,0,7.334,1), //2
-            //new KickSpeedCoeff( 449.2,29.91,14.78,4.588,5.888,3.497), //3
-            //new KickSpeedCoeff(false),//( 873.4,0,20.1,0,9.579,1), //4
-            //new KickSpeedCoeff(717.5,0,22.73,0,11,1), //5
-            //new KickSpeedCoeff(false),//(481.6,0,19.79,0,10.07,1), //6
-            //new KickSpeedCoeff(1.324e+12,-7.928,238.9,1.34,39.54,0.9698), //7
-            //new KickSpeedCoeff(129.1,0,11.22,0,6.811,1), //8
-            //new KickSpeedCoeff(169.7,51.91,8.129,5.163,2.041,3.441), //9
-            //new KickSpeedCoeff(false),//(2.159e+016,165.3,29.09,9.053,3.902,5.161), //10
-            //new KickSpeedCoeff(146.2,0,11.91,0,7.035,1)};//11
+            new KickSpeedCoeff(4.651e+04,658,8.129,20.3,0.3717,10.35), //0
+            new KickSpeedCoeff(false), //1
+            new KickSpeedCoeff(4.177e+16,-595.3,110.2,9.026,18.26,3.093), //2
+            new KickSpeedCoeff(5.393e+16,251.2,18.77,13.71,2.026,7.384), //3
+            new KickSpeedCoeff(1.248e+04,-1.224e+04,8.782,8.739,4.409,4.378),//4
+            new KickSpeedCoeff(false), //5
+            new KickSpeedCoeff(8.46e+14,-7.121e+04,84,18.02,14.87,5.729),//(481.6,0,19.79,0,10.07,1), //6
+            new KickSpeedCoeff(2.136e+16,89.84,41.05,9.034,5.922,6.099), //7
+            new KickSpeedCoeff(0,203.1,23.52,12.61,2.781,7.377), //8
+            new KickSpeedCoeff(0,238.6,12.08,13.59,0.739,7.955), //9
+            new KickSpeedCoeff(0,275.8,12.41,11.91,0.8683,6.971),//(2.159e+016,165.3,29.09,9.053,3.902,5.161), //10
+            new KickSpeedCoeff(146.2,0,11.91,0,7.035,1)};//11
 
 
-            new KickSpeedCoeff(2.076e+16,54.17,97.08,5.231,15.64,3.823), //0
-            new KickSpeedCoeff(8.208e+08,-1.812e+04,59.22,18.68,14.02,6.417), //1
-            new KickSpeedCoeff(139.4,-49.48,6.854,5.44,4.099,2.566), //2
-            new KickSpeedCoeff(1.092e+16,204.1,15.45,11.06,1.508,6.416), //3
-            new KickSpeedCoeff(2.508e+15,180,10.61,9.191,0.7762,5.899), //4
-            new KickSpeedCoeff(1.837e+16,103.3,72.87,6.674,11.46,4.648), //5
-            new KickSpeedCoeff(246.8,4.313,13.34,5.142,7.847,0.2422), //6
-            new KickSpeedCoeff(1.286e+16,161.9,22.11,10,2.558,6.121), //7
-            new KickSpeedCoeff(89.27,-1.304,9.033,3.81,5.909,0.7313), //8
-            new KickSpeedCoeff(244.3,21.38,10.23,3.215,4.691,2.689), //9
-            new KickSpeedCoeff(6.504e+04,-6.921e+04,14.27,14.13,6.076,6.013), //10
-            new KickSpeedCoeff(284.7,-21.43,12.97,6.011,7.851,1.935)};//11
+            //new KickSpeedCoeff(2.076e+16,54.17,97.08,5.231,15.64,3.823), //0
+            //new KickSpeedCoeff(8.208e+08,-1.812e+04,59.22,18.68,14.02,6.417), //1
+            //new KickSpeedCoeff(139.4,-49.48,6.854,5.44,4.099,2.566), //2
+            //new KickSpeedCoeff(1.092e+16,204.1,15.45,11.06,1.508,6.416), //3
+            //new KickSpeedCoeff(2.508e+15,180,10.61,9.191,0.7762,5.899), //4
+            //new KickSpeedCoeff(1.837e+16,103.3,72.87,6.674,11.46,4.648), //5
+            //new KickSpeedCoeff(246.8,4.313,13.34,5.142,7.847,0.2422), //6
+            //new KickSpeedCoeff(1.286e+16,161.9,22.11,10,2.558,6.121), //7
+            //new KickSpeedCoeff(89.27,-1.304,9.033,3.81,5.909,0.7313), //8
+            //new KickSpeedCoeff(244.3,21.38,10.23,3.215,4.691,2.689), //9
+            //new KickSpeedCoeff(6.504e+04,-6.921e+04,14.27,14.13,6.076,6.013), //10
+            //new KickSpeedCoeff(284.7,-21.43,12.97,6.011,7.851,1.935)};//11
        
         public System.Drawing.Color Color
         {
@@ -172,7 +172,7 @@ namespace MRL.SSL.GameDefinitions
                         _kickPower = 0;
                         _kickPowerByte = (byte)_kickPower;
                     }
-                    else
+                    else if (RobotID < kickCoeff.Length)
                     {
                         double a1 = 373.8;
                         double b1 = 19.7;
@@ -194,6 +194,11 @@ namespace MRL.SSL.GameDefinitions
                         kik = (kik >= 255) ? 255 : (kik <= 0) ? 0 : kik;
 
                         _kickPower = kik;//* 0.75;
+                        _kickPowerByte = (byte)_kickPower;
+                    }
+                    else 
+                    {
+                        _kickPower = 0;//* 0.75;
                         _kickPowerByte = (byte)_kickPower;
                     }
                 }

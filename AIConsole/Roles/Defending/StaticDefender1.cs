@@ -568,6 +568,12 @@ namespace MRL.SSL.AIConsole.Roles
                 if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))
                     res.Add(new NewActiveRole());
             }
+            if (FreekickDefence.StaticSecondState == DefenderStates.BallInFront)
+            {
+                if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))
+                    res.Add(new ActiveRole2017());
+            }
+
             return res;
         }
 

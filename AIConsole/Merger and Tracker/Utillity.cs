@@ -297,5 +297,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         public Dictionary<uint, vball> Balls = new Dictionary<uint, vball>();
         public RobotType type = RobotType.Default;
         public double timeofcapture = 0;
+        public Dictionary<uint, double> timeList = new Dictionary<uint,double>();
+
     }
 }

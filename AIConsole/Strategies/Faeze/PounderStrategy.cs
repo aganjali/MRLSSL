@@ -40,7 +40,7 @@ namespace MRL.SSL.AIConsole.Strategies
             chip = false;
             failcounter = 0;
             CurrentState = InitialState;
-            RotateTeta = -30;
+            RotateTeta = 0;
             PassSpeed = 2;
             KickPower = 100;
             PasserID = -1;

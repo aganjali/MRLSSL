@@ -336,8 +336,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 Functions[Defender2ID.Value] = (eng, wmd) => GetRole<StaticDefender2>(Defender2ID.Value).Run(engine, Model, Defender2ID.Value, second.DefenderPosition.Value, second.Teta, CurrentlyAssignedRoles);
             }
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, SupporterID, typeof(SupporterRole)))
-                Functions[SupporterID.Value] = (eng, wmd) => GetRole<SupporterRole>(SupporterID.Value).Perform(eng, wmd, SupporterID.Value);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, SupporterID, typeof(NewSupporter2Role)))
+                Functions[SupporterID.Value] = (eng, wmd) => GetRole<NewSupporter2Role>(SupporterID.Value).Perform(eng, wmd, SupporterID.Value);
 
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RegionalID, typeof(RegionalDefenderRole)))
             //    Functions[RegionalID.Value] = (eng, wmd) => GetRole<RegionalDefenderRole>(RegionalID.Value).per;

@@ -964,7 +964,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                         if (modelHistory[0].ContainsKey(searchKey))
                         {
                             int notseen = Frame.OurRobots[searchKey].vision.notSeen;
-                            Frame.OurRobots[searchKey].vision = new vraw(Frame.timeofcapture, modelHistory[0][searchKey].viewstate.Location, (float)(modelHistory[0][searchKey].viewstate.Angle.Value + Math.PI / 2), 1, Frame.OurRobots[searchKey].vision.camera);
+                            Frame.OurRobots[searchKey].vision = new vraw(Frame.timeList[Frame.OurRobots[searchKey].vision.camera], modelHistory[0][searchKey].viewstate.Location, (float)(modelHistory[0][searchKey].viewstate.Angle.Value + Math.PI / 2), 1, Frame.OurRobots[searchKey].vision.camera);
                             Frame.OurRobots[searchKey].visionProblem = true;
                             //DrawingObjects.AddObject(new Circle(new Position2D(modelHistory[0][searchKey].viewstate.Location.X / 1000, -modelHistory[0][searchKey].viewstate.Location.Y / 1000), 0.09));
                             //DrawingObjects.AddObject(new Line(new Position2D(modelHistory[0][searchKey].viewstate.Location.X / 1000, -modelHistory[0][searchKey].viewstate.Location.Y / 1000), new Position2D(modelHistory[0][searchKey].viewstate.Location.X / 1000, -modelHistory[0][searchKey].viewstate.Location.Y / 1000) + Vector2D.FromAngleSize(-modelHistory[0][searchKey].viewstate.Angle.Value, 1)));
