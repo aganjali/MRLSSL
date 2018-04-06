@@ -7,6 +7,7 @@ using MRL.SSL.AIConsole.Roles;
 using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using System.Drawing;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Plays.Opp
 {
@@ -24,6 +25,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             DataBridge.SetInitialPoses(Model);
             DefenceTest.BallTest = FreekickDefence.testDefenceState;
             DefenceTest.GenerateBallPos();
+           
             if (DefenceTest.BallTest)
             {
                 ballState = DefenceTest.currentBallState;
@@ -82,6 +84,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             FreekickDefence.SwitchToActiveReset();
             DefenceTest.BallTest = FreekickDefence.testDefenceState;
             DefenceTest.GenerateBallPos();
+            Planner.IsStopBall(FreekickDefence.BallIsMoved);
+
             if (DefenceTest.BallTest)
             {
                 ballState = DefenceTest.currentBallState;

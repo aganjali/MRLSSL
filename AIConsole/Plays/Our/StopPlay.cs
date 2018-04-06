@@ -8,6 +8,7 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using System.Drawing;
 using MRL.SSL.AIConsole.Roles.Stop;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Plays
 {
@@ -34,6 +35,7 @@ namespace MRL.SSL.AIConsole.Plays
                 ballState = Model.BallState;
                 ballStateFast = Model.BallStateFast;
             }
+            Planner.IsStopBall(true);
             //if (engine.GameInfo.OurTeam.BallOwner.HasValue)
             //{
             //    DrawingObjects.AddObject(new StringDraw(Model.BallState.Location.DistanceFrom(Model.OurRobots[3].Location).ToString(),new Position2D (2,2)));

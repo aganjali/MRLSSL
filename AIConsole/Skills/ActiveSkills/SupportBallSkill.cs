@@ -872,7 +872,7 @@ namespace MRL.SSL.AIConsole.Skills
             }
             Obstacles obs = new Obstacles(Model);
             //obs.AddRobot(Model.OurRobots[ActiveID].Location, true, ActiveID);
-            obs.AddBall(Model.BallState.Location);
+            obs.AddBall(Model.BallState.Location, false);
             if (obs.Meet(Model.OurRobots[RobotID], new SingleObjectState(Target, Vector2D.Zero, 0), 0.08))
                 return false;
             if (Debug)

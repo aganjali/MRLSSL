@@ -43,7 +43,11 @@ namespace MRL.SSL.Planning.MotionPlanner
         private static Dictionary<int, double> lastWs = new Dictionary<int, double>();
 
         public static Dictionary<int, Vector2D> AlfaList = new Dictionary<int, Vector2D>();
-
+        private static bool stopBall = false;
+        public static void IsStopBall(bool s)
+        {
+            stopBall = s;
+        }
         public static void Add(int RobotID, SingleObjectState finalState, PathType type, bool avoidBall, bool avoidRobots, bool avoidOurDangerZone, bool avoidOppDangerZone)
         {
             goals[RobotID] = finalState;
@@ -769,7 +773,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             Dictionary<int, List<SingleObjectState>> paths = new Dictionary<int, List<SingleObjectState>>();
             //DrawingObjects.AddObject(new Circle(), "c");
             
-            paths = errtManager.Run(Model, CutOtherPaths, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false);
+            paths = errtManager.Run(Model, CutOtherPaths, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false, stopBall);
             //paths.Add(0, new List<SingleObjectState> { new SingleObjectState(new Position2D(1, 1), new Vector2D(), 0), new SingleObjectState(new Position2D(1.0000000000000000001, .999999999999999), new Vector2D(), 0) });
             //Vector2D tmpLastV = Vector2D.Zero;
             foreach (var item in paths.Keys)
@@ -977,7 +981,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                         tmpTypes[id] = types[id];
                     }
                 }
-                Dictionary<int, List<SingleObjectState>> paths = errtManager.Run(model, CutOtherPaths, tmpinits, tmpGoals, tmpinits.Keys.ToList(), tmpTypes, tmpAballs, tmpArobots, tmpAzones, tmpAOppzones, false);
+                Dictionary<int, List<SingleObjectState>> paths = errtManager.Run(model, CutOtherPaths, tmpinits, tmpGoals, tmpinits.Keys.ToList(), tmpTypes, tmpAballs, tmpArobots, tmpAzones, tmpAOppzones, false, stopBall);
 
 
                 foreach (var item in paths.Keys)

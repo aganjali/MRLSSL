@@ -76,7 +76,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             //float[] obsf = new float[2];
             //ForceTree(p, pc, 1, p2, p3, 1, obsf, 1, 0.1f, 0.1f, 1);
         }
-        public Dictionary<int, List<SingleObjectState>> Run(WorldModel Model,Dictionary<int,bool> CutOtherPath, Dictionary<int, SingleObjectState> InitialStates, Dictionary<int, SingleObjectState> GoalStates, List<int> RobotIds, Dictionary<int, PathType> Types, Dictionary<int, int> avoidballs, Dictionary<int, int> avoidrobots, Dictionary<int, int> avoidzones, Dictionary<int, int> avoidOppzones, bool useErrt)
+        public Dictionary<int, List<SingleObjectState>> Run(WorldModel Model,Dictionary<int,bool> CutOtherPath, Dictionary<int, SingleObjectState> InitialStates, Dictionary<int, SingleObjectState> GoalStates, List<int> RobotIds, Dictionary<int, PathType> Types, Dictionary<int, int> avoidballs, Dictionary<int, int> avoidrobots, Dictionary<int, int> avoidzones, Dictionary<int, int> avoidOppzones, bool useErrt, bool StopBall)
         {
             TotalFPath.Clear();
             Dictionary<int, Line> Lines = new Dictionary<int, Line>();
@@ -139,7 +139,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 if (i < Count)
                 {
                     int id = RobotIds[i];
-                    errts[i].Run(new WorldModel(Model), id,intersectsLines[id], InitialStates[id], GoalStates[id], avoidballs[id], avoidzones[id], avoidOppzones[id], avoidrobots[id], (FinalPathes.ContainsKey(id) ? FinalPathes[id] : null), Types[id]);
+                    errts[i].Run(new WorldModel(Model), id, intersectsLines[id], InitialStates[id], GoalStates[id], avoidballs[id], avoidzones[id], avoidOppzones[id], avoidrobots[id], (FinalPathes.ContainsKey(id) ? FinalPathes[id] : null), Types[id], StopBall);
                     avdBall.Add(avoidballs[id]);
                     avdR.Add(avoidrobots[id]);
                     avdZ.Add(avoidzones[id]);
@@ -147,7 +147,7 @@ namespace MRL.SSL.Planning.MotionPlanner
 
                 }
                 else
-                    errts[i].Run(true);
+                    errts[i].Run(true, StopBall);
             }
             avoid.Clear();
             avoid.AddRange(avdBall);
@@ -204,7 +204,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             obs.Clear();
             var o = AddAllObstacles(Model, ref obsX, ref obsY, ref obs, RobotIds, MotionPlannerParameters.kSpeedBall, MotionPlannerParameters.kSpeedRobot);
             
-            GPPlanner.ForceTree(TotalFPath.ToArray(), EachPathCount, 2 * Count, avoid.ToArray(), finalPath, SmoothingCount, o, obsX.Count, Kspring, Kspring2, n);
+            GPPlanner.ForceTree(TotalFPath.ToArray(), EachPathCount, 2 * Count, avoid.ToArray(), finalPath, SmoothingCount, o, obsX.Count, Kspring, Kspring2, n, (StopBall)?1:0);
             FinalPathes.Clear();
             CurrentPathWeightes.Clear();
             LastPathWeightes.Clear();

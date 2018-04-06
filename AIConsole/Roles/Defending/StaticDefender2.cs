@@ -686,7 +686,7 @@ namespace MRL.SSL.AIConsole.Roles
             obstmp3.AddObstacle(1, 0, 0, 0, new List<int>() { pursueID }, new List<int>());// mohavate jarime va robotha bedoone robote taghib shavande
             obstmp2.AddObstacle(1, 0, 1, 0, new List<int>() { pursueID }, new List<int>());
 
-            obstmp.AddObstacle(0, 0, 1, 0, new List<int>(), new List<int>());
+            obstmp.AddObstacle(0, 0, 1, 0, new List<int>(), new List<int>(), false);
             if (deltaxCurrent > Model.OurRobots[pursueID].Location.DistanceFrom(targete) && obstmp.Meet(Model.OurRobots[pursueID], new SingleObjectState(targete, Vector2D.Zero, 0f), .15))
             {
                 tg = targete;
