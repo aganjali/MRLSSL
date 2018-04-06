@@ -4169,10 +4169,10 @@ namespace MRL.SSL.AIConsole.Engine
         class FirstBounds
         {
             public double minGoaliDist = 0.4;
-            public double maxGoaliDist = 0.65;
+            public double maxGoaliDist = 0.85;
             public double minGoalidx = 0.11;
             public double mindefX = 1.1;
-            public double maxdefX = 1.5;
+            public double maxdefX = 1.6;
             public double margin = 0;
             public double prepAng;
             public Position2D FirstGoalCorner = new Position2D();

@@ -604,22 +604,20 @@ __device__ GVector2D MeetCircle(float Ox, float Oy, GVector2D F, float Px, float
 //Zone H = 1.2, W = 2.4
 __device__ GVector2D MeetZone(float Ox, float Oy, GVector2D F, float Px, float Py, float R)
 {
-	float Vx, Vy, tmp, d;
-	
+	float Vx, Vy, d, Vx_a, Vy_a;
 	Vx = Px + F.X - Ox;
 	Vy = Py + F.Y - Oy;
-	tmp = sqrtf(Vx * Vx + Vy * Vy);
-	if(fabsf(Vx) < 1.2f + R && fabsf(Vy) < 1.2f + R){
-		if(tmp > 1E-5){
-			d = 1.2f * tmp / fmaxf(fabsf(Vx), fabsf(Vy));
-			d = d * (1.2f + R) / 1.2f;
-			Vx *= (d / tmp);
-			Vy *= (d / tmp);
-		}
-		else
-		{
-			Vx = Vy = 0;
-		}
+	
+	Vx_a = fabsf(Vx);
+	Vy_a = fabsf(Vy);
+
+	//tmp = sqrtf(Vx * Vx + Vy * Vy);
+	if(Vx_a < 1.2f + R && Vy_a < 1.2f + R){
+		
+		d = (1.2f + R) / fmaxf(Vx_a, Vy_a);
+			
+		Vx *= d;
+		Vy *= d;
 
 		F.X = Ox + Vx - Px;
 		F.Y = Oy + Vy - Py;

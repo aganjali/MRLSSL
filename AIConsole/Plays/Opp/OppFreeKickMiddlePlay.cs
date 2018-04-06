@@ -270,7 +270,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 if (regional2.HasValue)
                     DefenceTest.DefenderRegionalRole2 = Model.OurRobots[regional2.Value].Location;
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, golie, typeof(GoalieCornerRole)))
-                    Functions[golie.Value] = (eng, wmd) => GetRole<GoalieCornerRole>(golie.Value).Run(engine, wmd, golie.Value, gol.DefenderPosition.Value, gol.Teta, gol, normal1.DefenderPosition.Value, n1.Value, true);
+                    Functions[golie.Value] = (eng, wmd) => GetRole<GoalieCornerRole>(golie.Value).Run(engine, wmd, golie.Value, gol.DefenderPosition.Value, gol.Teta, gol, normal1.DefenderPosition.Value, n1, true);
                 DefenceTest.WeHaveGoalie = true;
                 if (golie.HasValue)
                     DefenceTest.GoalieRole = Model.OurRobots[golie.Value].Location;

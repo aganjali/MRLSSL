@@ -198,7 +198,7 @@ namespace MRL.SSL.AIConsole.Strategies
                         Position2D topLeft = new Position2D(Model.BallState.Location.X + width + margin, ((Model.BallState.Location.Y > 0) ? -(1 + heigth) : 1));
 
 
-                        if (Model.BallState.Location.X < -(GameParameters.OurGoalCenter.X - GameParameters.DefenceareaRadii))
+                        if (Model.BallState.Location.X < -(GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight))
                             chipOrigin = true;
                         if (chipOrigin)
                             RotateTeta = 0;

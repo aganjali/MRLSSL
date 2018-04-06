@@ -25,7 +25,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         float[] finalPath;
         float[] tmpfpath;
         
-        public int SmoothingCount = 50;
+        public int SmoothingCount = 25;
         public float Kspring = 0.35f;
         public float Kspring2 = 0;
         public int n = 2;

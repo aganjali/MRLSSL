@@ -362,27 +362,27 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 {
                     OppToMarkID1 = oppAttackerIds[0];
                    
-                        if (Model.Opponents[OppToMarkID1.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) > Model.Opponents[OppToMarkID1.Value].Location.DistanceFrom(GameParameters.OurGoalCenter))
+                        if (Model.Opponents[OppToMarkID1.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) > Model.Opponents[OppToMarkID1.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) && AttackerID.HasValue)
                         {
                             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AttackerID, typeof(NormalAttacker1)))
                                 Functions[AttackerID.Value] = (eng, wmd) => GetRole<NormalAttacker1>(AttackerID.Value).Perform(eng, wmd, AttackerID.Value);
                         }
-                    if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
+                        if (!c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location) && NormalMarkerRoleID1.HasValue)
                     {
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
                             Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
-                        else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
+                        else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location) && NormalMarkerRoleID1.HasValue)
                         {
                             Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
                         }
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AttackerID, typeof(NormalAttacker1)))
                             Functions[AttackerID.Value] = (eng, wmd) => GetRole<NormalAttacker1>(AttackerID.Value).Perform(eng, wmd, AttackerID.Value);
                     }
-                    else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
+                    else if (NormalMarkerRoleID1.HasValue && c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location) )
                     {
                         Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
                     }
-                    else if (c.IsInCircle(Model.Opponents[AttackerID.Value].Location))
+                    else if (AttackerID.HasValue && c.IsInCircle(Model.Opponents[AttackerID.Value].Location))
                     {
                         Planner.Add(AttackerID.Value, new Position2D(2, -2), (Model.BallState.Location - new Position2D(2, -2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
                     }
@@ -397,7 +397,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, NormalMarkerRoleID1, typeof(NormalMarkerRole1)))
                             Functions[NormalMarkerRoleID1.Value] = (eng, wmd) => GetRole<NormalMarkerRole1>(NormalMarkerRoleID1.Value).Perform(engine, Model, NormalMarkerRoleID1.Value, OppToMarkID1, markRegion, ballIsMoved, oppAttackerIds);
                     }
-                    else if (c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
+                    else if (NormalMarkerRoleID1.HasValue && c.IsInCircle(Model.Opponents[OppToMarkID1.Value].Location))
                     {
                         Planner.Add(NormalMarkerRoleID1.Value, new Position2D(2, 2), (Model.BallState.Location - new Position2D(2, 2)).AngleInDegrees, PathType.UnSafe, true, true, true, false);
                     }
