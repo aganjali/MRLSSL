@@ -381,7 +381,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 new ActiveRole2017(),
             new NewSupporter2Role(),
             new NormalAttacker1(), new NormalAttacker2(), 
-            new NormalMarkerRole1(), new NormalMarkerRole2()};
+            new NormalMarkerRole1(), new NormalMarkerRole2(),new NewRegionalRole(),};
         }
 
         public override bool Evaluate(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)

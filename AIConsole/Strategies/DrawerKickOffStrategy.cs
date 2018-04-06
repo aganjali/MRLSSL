@@ -282,7 +282,7 @@ namespace MRL.SSL.AIConsole.Strategies
                         SingleWirelessCommand swc=new SingleWirelessCommand(new Vector2D(0, 0.1), 0, true, 0, 0, true, false);
                         swc.RobotID = PasserID;
                         swc.isChipKick = true;
-                        swc.KickSpeed = 1.5;
+                        swc.KickSpeed = 1.2;
                         //swc.KickSpeed = 255;//PassSpeed;
                         Planner.Add(PasserID, swc);
                     }

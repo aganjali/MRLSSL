@@ -381,6 +381,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 new ActiveRole2017(),
             new NewSupporter2Role(),
             new NormalAttacker1(), new NormalAttacker2(), 
+            new NewRegionalRole(),
             new NormalMarkerRole1(), new NormalMarkerRole2()/*, new AttackerRole2017() */
             };
         }

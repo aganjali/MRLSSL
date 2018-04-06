@@ -178,6 +178,7 @@
     <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole5.cs" />
     <Compile Include="Roles\Defending\Normal\CenterBackNormalRole.cs" />
     <Compile Include="Roles\Defending\Normal\LeftBackMarkerNormalRole.cs" />
+    <Compile Include="Roles\Defending\Normal\NewRegionalRole.cs" />
     <Compile Include="Roles\Defending\Normal\NormalAttacker.cs" />
     <Compile Include="Roles\Defending\Normal\NormalAttacker2.cs" />
     <Compile Include="Roles\Defending\Normal\NormalMarkerRole1.cs" />
@@ -323,7 +324,9 @@
     <Compile Include="Strategies\PassAndShootStrategy.cs" />
     <Compile Include="Strategies\PassShootCornerStrategy.cs" />
     <Compile Include="Strategies\Syncronizer.cs" />
+    <Compile Include="Strategies\Vahid\Abdullah_Rear.cs" />
     <Compile Include="Strategies\Vahid\CrazyRobots.cs" />
+    <Compile Include="Strategies\Vahid\IMSimpleCornerChip.cs" />
     <Compile Include="Strategies\Vahid\RushingAttackers.cs" />
     <Compile Include="Strategies\Vahid\RearChipAndConfuse.cs" />
     <Compile Include="Strategies\Vahid\RearDirectTwoPass.cs" />

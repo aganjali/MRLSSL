@@ -179,7 +179,7 @@ namespace MRL.SSL.AIConsole.Engine
                 {
                     int robotID = robotIDs[i/*bestMatch[i]*/];
                     RoleBase last, newrole;
-                    if (previouslyAssignedRoles.TryGetValue(robotID, out last) && last == rolesToBeAssigned[bestMatch[i]/*i*/].Role)
+                    if (previouslyAssignedRoles.TryGetValue(robotID, out last) && last.GetType() == rolesToBeAssigned[bestMatch[i]/*i*/].Role.GetType())
                         newrole = last;
                     else
                     {

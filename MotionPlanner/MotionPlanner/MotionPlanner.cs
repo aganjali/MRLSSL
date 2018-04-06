@@ -783,7 +783,16 @@ namespace MRL.SSL.Planning.MotionPlanner
                 //if (item == 2)
                 //    tmpLastV = lastV;
                 double lastWW = lastW;
-                commands[item] = controllers[item].CalculateTargetSpeed(Model, item, paths[item][paths[item].Count - 2].Location, (double)goals[item].Angle, paths[item], (UseDefultParams.ContainsKey(item)) ? UseDefultParams[item] : false, ref lastV, ref lastW);
+               // try
+                {
+                    commands[item] = controllers[item].CalculateTargetSpeed(Model, item, paths[item][paths[item].Count - 2].Location, (double)goals[item].Angle, paths[item], (UseDefultParams.ContainsKey(item)) ? UseDefultParams[item] : false, ref lastV, ref lastW);
+                }
+                //catch (Exception e)
+                //{
+                    
+                //    throw;
+                //}
+                
                 //    Vector2D v = GameParameters.RotateCoordinates(new Vector2D(commands[item].Vx, commands[item].Vy), Model.OurRobots[item].Angle.Value + 100 * lastW.ToDegree() * StaticVariables.FRAME_PERIOD);
                 //    v = GameParameters.RotateCoordinates(v, Model.OurRobots[item].Angle.Value);
                 //    commands[item].Vx = v.X;

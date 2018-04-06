@@ -85,7 +85,7 @@ namespace Simulator
                                 robot_id = (uint)item,
                                 orientation = (float)(Math.PI * (yellowRobots[item].Angle.Value + 90) / 180.0)
                             });
-                            break;
+                            //break;
                         }
                     }
                 }
@@ -106,7 +106,7 @@ namespace Simulator
                                 robot_id = (uint)item,
                                 orientation = (float)(Math.PI * (blueRobots[item].Angle.Value + 90) / 180.0)
                             });
-                            break;
+                            //break;
                         }
                     }
 

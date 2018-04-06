@@ -49,15 +49,15 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             //    oppMarkID = null;
             ballIsMove = _ballIsMoved;
             Position2D target = CalculateTarget(engin, Model, RobotID);
-            if (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) > Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OppGoalCenter))
-            {
-                target = GameParameters.OurGoalCenter + ((target - GameParameters.OurGoalCenter).GetNormalizeToCopy(1.25));
-            }
-            
-            if (!GameParameters.IsInField(Model.Opponents[oppMarkID.Value].Location, 0.05))
-            {
-                target = GameParameters.OurGoalCenter + ((target - GameParameters.OurGoalCenter).GetNormalizeToCopy(1.25));
-            }
+            //if (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) > Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OppGoalCenter))
+            //{
+            //    target = GameParameters.OurGoalCenter + ((target - GameParameters.OurGoalCenter).GetNormalizeToCopy(1.25));
+            //}
+
+            //if (!GameParameters.IsInField(Model.Opponents[oppMarkID.Value].Location, 0.05))
+            //{
+            //    target = GameParameters.OurGoalCenter + ((target - GameParameters.OurGoalCenter).GetNormalizeToCopy(1.25));
+            //}
             Planner.Add(RobotID, target, (Model.OurRobots[RobotID].Angle.Value), PathType.UnSafe, false, true, true, false);
             if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2)
             {
@@ -67,7 +67,6 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 Planner.Add(RobotID, target, (p - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, false);
             }
         }
-
         public override RoleCategory QueryCategory()
         {
             return RoleCategory.Defender;
@@ -200,7 +199,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 new ActiveRole2017(),
                 new NewSupporter2Role(),
                 new NormalAttacker1(), new NormalAttacker2(), 
-                new NormalMarkerRole1(), 
+                new NormalMarkerRole1(), new NewRegionalRole(),
                 new StaticDefender1(),new StaticDefender2()
                 //new MarkerRole2(),
                 //new MarkerRole3(),

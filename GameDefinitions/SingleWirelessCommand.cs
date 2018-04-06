@@ -34,11 +34,11 @@ namespace MRL.SSL.GameDefinitions
        //new direct lookup
         private static KickSpeedCoeff[] kickCoeff = new KickSpeedCoeff[12] { 
             new KickSpeedCoeff(4.651e+04,658,8.129,20.3,0.3717,10.35), //0
-            new KickSpeedCoeff(false), //1
+            new KickSpeedCoeff(8.208e+08,-1.812e+04,59.22,18.68,14.02,6.417), //1
             new KickSpeedCoeff(4.177e+16,-595.3,110.2,9.026,18.26,3.093), //2
             new KickSpeedCoeff(5.393e+16,251.2,18.77,13.71,2.026,7.384), //3
             new KickSpeedCoeff(1.248e+04,-1.224e+04,8.782,8.739,4.409,4.378),//4
-            new KickSpeedCoeff(false), //5
+            new KickSpeedCoeff(1.837e+16,103.3,72.87,6.674,11.46,4.648), //5
             new KickSpeedCoeff(8.46e+14,-7.121e+04,84,18.02,14.87,5.729),//(481.6,0,19.79,0,10.07,1), //6
             new KickSpeedCoeff(2.136e+16,89.84,41.05,9.034,5.922,6.099), //7
             new KickSpeedCoeff(0,203.1,23.52,12.61,2.781,7.377), //8

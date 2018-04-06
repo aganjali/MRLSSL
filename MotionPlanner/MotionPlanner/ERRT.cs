@@ -273,6 +273,10 @@ namespace MRL.SSL.Planning.MotionPlanner
                 }
                 obstacles = obs;
                 Finished = true;
+                if (PathCount == 0)
+                {
+                    ;
+                }
                 eventFinish.Set();
                 eventR.WaitOne();
             }

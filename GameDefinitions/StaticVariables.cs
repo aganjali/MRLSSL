@@ -62,12 +62,13 @@ namespace MRL.SSL.GameDefinitions
         public static bool BALL_WALLS_OOB = false;
         public static double MaxRobotCounts = 8.0;
         public static double WALL_WIDTH { get; set; }
-        public static double MaxKickSpeed = 6.5;
+        public static double MaxKickSpeed = 7;
         public static bool OldRefbox = true;
         public static List<Position2D> BallPositions = new List<Position2D>();
         public static bool FrameHasBall = false;
         public static Position2D ballPlacementPos = new Position2D();
         public const int CameraCount = 8;
+        public const int VisionPcCounts = 2;
     }
 
 }

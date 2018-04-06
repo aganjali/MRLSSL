@@ -171,7 +171,10 @@ namespace MRL.SSL.Planning.MotionPlanner
                 {
                     EachPathCount[i] = errts[i].PathCount;
                     TotalFPath.AddRange(errts[i].FPath);
-
+                    if (errts[i].PathCount < 2)
+                    {
+                        ;
+                    }
                     //List<Position2D> ppat = new List<Position2D>();
                     //errts[i].Path.ForEach(f => ppat.Add(new Position2D(f.Location.X, f.Location.Y)));
                     //DrawingObjects.AddObject(new DrawRegion(ppat, false, true, System.Drawing.Color.YellowGreen, System.Drawing.Color.YellowGreen), "kksksss" + i.ToString());

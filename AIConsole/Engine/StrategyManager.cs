@@ -47,7 +47,7 @@ namespace MRL.SSL.AIConsole.Engine
                 && ((Model.GoalieID.HasValue && Model.OurRobots.ContainsKey(Model.GoalieID.Value) && c.AttendanceSize <= Model.OurRobots.Count) || ((!Model.GoalieID.HasValue || !Model.OurRobots.ContainsKey(Model.GoalieID.Value)) && c.AttendanceSize <= Model.OurRobots.Count + 1))) ||c.AttendanceSize < StaticVariables.MaxRobotCounts))) 
                 && c.zone != null && c.zone.Any(p => p.X > ball.X && p.Y < ball.X) 
                 && c.status != null && c.status.Any(g => g == engine.Status)
-                && ((Math.Abs(ball.Y) > 1.3 && !c.UseOnlyInMiddle) || (c.UseInMiddle && Math.Abs(ball.Y) <= 1.3))
+                && ((Math.Abs(ball.Y) > 2 && !c.UseOnlyInMiddle) || (c.UseInMiddle && Math.Abs(ball.Y) <= 2))
                 ).ToList();
 
 

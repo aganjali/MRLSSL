@@ -226,8 +226,7 @@ namespace MRL.SSL.AIConsole.Roles
             new NewActiveRole(),
             new ActiveRole2017(),
             new NewSupporter2Role(),
-            new NormalAttacker1(), new NormalAttacker2(), 
-            new NormalMarkerRole1(), new NormalMarkerRole2(),
+            new NewRegionalRole(),
             new StaticDefender1(),new StaticDefender2()};
             if (NormalSharedState.CommonInfo.PickIsFeasible && !NormalSharedState.CommonInfo.IsPicking)
             {
@@ -240,7 +239,7 @@ namespace MRL.SSL.AIConsole.Roles
             }
             if (!NormalSharedState.CommonInfo.AttackerMode)
             {
-                res.Add(new AttackerRole2017());
+                //res.Add(new AttackerRole2017());
                 res.Add(new NewAttackerRole());
             }
             else

@@ -61,7 +61,7 @@ namespace MRL.SSL.AIConsole.Roles
                     actInfo.Target = GameParameters.OppGoalCenter;
                     v = (actInfo.Target - Model.BallState.Location).GetNormalizeToCopy(1.5);
                     bool b = obs.Meet(Model.BallState, new SingleObjectState(Model.BallState.Location + v, Vector2D.Zero, 0), 0.03);
-                    actInfo.kick = (!b) ? 4 : Model.BallState.Location.DistanceFrom(actInfo.Target) * 0.7;
+                    actInfo.kick = (!b) ? Program.MaxKickSpeed : Model.BallState.Location.DistanceFrom(actInfo.Target) * 0.7;
                     if (Model.BallState.Location.X < 0)
                     {
                         actInfo.kick = (!b) ? Program.MaxKickSpeed : Model.BallState.Location.DistanceFrom(actInfo.Target) * 0.7;

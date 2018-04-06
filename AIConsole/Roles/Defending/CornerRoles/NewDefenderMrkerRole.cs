@@ -44,8 +44,24 @@ namespace MRL.SSL.AIConsole.Roles
         private static Position2D FarTarget = new Position2D();
         public SingleObjectState ballState = new SingleObjectState();
         public SingleObjectState ballStateFast = new SingleObjectState();
+        Position2D firstBallPos;
+        bool flag = true;
         public void mark(GameStrategyEngine engine, WorldModel model, int RobotID, int? MarkID)
         {
+
+            //if (flag)
+            //{
+            //    firstBallPos = model.BallState.Location;
+            //    flag = false;
+            //}
+            if (!FreekickDefence.BallIsMoved)
+            {
+                markDistance = 0.65;
+            }
+            else
+            {
+                markDistance = 0.18;
+            }
             if (DefenceTest.BallTest)
             {
                 ballState = DefenceTest.currentBallState;

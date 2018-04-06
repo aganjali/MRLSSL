@@ -15,7 +15,7 @@ namespace MRL.SSL.AIConsole.Plays
         bool Debug = true;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
-            return false;
+            //return false;
             return Status == GameDefinitions.GameStatus.Normal;
         }
         public SingleObjectState ballState = new SingleObjectState();
@@ -124,7 +124,8 @@ namespace MRL.SSL.AIConsole.Plays
                 r = typeof(NewAttacker2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
                 roles.Add(new RoleInfo(r, 0.1, 0));
             }
-
+            r = typeof(NewRegionalRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 0.1, 0.1));
             //      GameParameters.SafeRadi(new SingleObjectState(new Position2D(2.5, 0), Vector2D.Zero, 0), 0);
 
             Dictionary<int, RoleBase> matched;
@@ -175,7 +176,9 @@ namespace MRL.SSL.AIConsole.Plays
             if (matched.Any(w => w.Value.GetType() == typeof(StaticDefender2)))
                 st2 = matched.Where(w => w.Value.GetType() == typeof(StaticDefender2)).First().Key;
 
-
+            int? nrg = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(NewRegionalRole)))
+                nrg = matched.Where(w => w.Value.GetType() == typeof(NewRegionalRole)).First().Key;
 
             FreekickDefence.Static1ID = st1;
             FreekickDefence.Static2ID = st2;
@@ -239,6 +242,8 @@ namespace MRL.SSL.AIConsole.Plays
             //    Functions[attacke2ID.Value] = (eng, wmd) => GetRole<NewAttacker2Role>(attacke2ID.Value).Perform(eng, wmd, attacke2ID.Value);
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacker3ID, typeof(NewAttacker3Role)))
                 Functions[attacker3ID.Value] = (eng, wmd) => GetRole<NewAttacker3Role>(attacker3ID.Value).Perform(eng, wmd, attacker3ID.Value);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, nrg, typeof(NewRegionalRole)))
+                Functions[ nrg.Value] = (eng, wmd) => GetRole<NewRegionalRole>( nrg.Value).Perform(engine,Model,FreekickDefence.Static1ID.Value,FreekickDefence.Static2ID.Value,nrg.Value);
             #endregion
             FreekickDefence.CalculateStaticPos(engine, Model, CurrentlyAssignedRoles);
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;

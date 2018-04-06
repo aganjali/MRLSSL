@@ -49,6 +49,10 @@ namespace MRL.SSL.AIConsole.Engine
         #region Info Classes
         public static class CommonInfo
         {
+            //new 
+            public static Position2D RegionalDefenderTarget = new Position2D();
+            //new
+
             public static bool AttackerMode = false;
             static Position2D? OneTouchPassPoint = null;
             static Position2D? CatchPassPoint = null;

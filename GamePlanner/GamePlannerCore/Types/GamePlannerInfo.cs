@@ -21,7 +21,7 @@ namespace MRL.SSL.Planning.GamePlanner.Types
         double xStep, yStep;
         float[,] directGoodness, chipGoodness;
 
-        static double minPassOneTouchSpeed = 3, maxPassOneTouchSpeed = 7, minPassCatchSpeed = 4,
+        static double minPassOneTouchSpeed = 3, maxPassOneTouchSpeed = 6, minPassCatchSpeed = 4,
             maxPassCatchSpeed = 5, minPassDist = 1, maxPassDist = 5.2, minChipCatchCoef = 0.2,
             maxChipCatchCoef = 0.6, minChipOneTouchCoef = 0.5, maxChipOneTouchCoef = 0.55;
         public double[] DriblePower = { 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80 };

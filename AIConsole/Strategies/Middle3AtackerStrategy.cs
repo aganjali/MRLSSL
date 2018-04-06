@@ -37,7 +37,7 @@ namespace MRL.SSL.AIConsole.Strategies
             chipOrigin = false;
             isChip = false;
             backSensor = true;
-            RotateDelay = 60;
+            RotateDelay = 320;
             sync = new Syncronizer();
         }
 
@@ -76,7 +76,7 @@ namespace MRL.SSL.AIConsole.Strategies
             {
                 firstBallPos = Model.BallState.Location;
                 sgn = Math.Sign(firstBallPos.Y);
-                KickSpeed = StaticVariables.MaxKickSpeed;
+                KickSpeed = 5;
                 ShootTarget = GameParameters.OppGoalCenter;
                 PassTarget = new Position2D(-2.5, -sgn * 2.2);
                 PasserPos = Model.BallState.Location + (Model.BallState.Location - ShootTarget).GetNormalizeToCopy(initDist);
@@ -256,7 +256,11 @@ namespace MRL.SSL.AIConsole.Strategies
                 //Planner.Add(ShooterID, new Position2D(1, -sgn * 0.5), 180, PathType.UnSafe, true, true, true, true);
 
                 if (isChip)
+                {
+                    KickSpeed = 3;
                     sync.SyncChipCatch(engine, Model, PasserID, PasserPos, ShooterID, PassTarget, ShootTarget, PassSpeed, KickSpeed, RotateDelay, false, kickPowerType.Speed, backSensor);
+
+                }
                 else
                     sync.SyncDirectCatch(engine, Model, PasserID, PasserPos, ShooterID, PassTarget, ShootTarget, PassSpeed, KickSpeed, false, kickPowerType.Speed, RotateDelay);
                 if (sync.InPassState)
