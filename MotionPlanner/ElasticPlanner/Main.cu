@@ -6,7 +6,7 @@ using namespace std;
 extern "C" __declspec(dllexport) void __cdecl Start(float ,float ,float , int , int , int , float * , float* , float* , int , int, float, float);
 extern "C" __declspec(dllexport) void __cdecl GPlannerBallState(float* , int , int , float* , float* , float* , float* , float* , int*);
 extern "C" __declspec(dllexport) void __cdecl GPlannerScore(float*, int, float*, float*, float*);
-extern "C" __declspec(dllexport) float __cdecl ForceTree(float* ,int* , int, float* , float*,int, float*, int, float, float, int);
+extern "C" __declspec(dllexport) float __cdecl ForceTree(float* ,int* , int, float* , float*,int, float*, int, float, float, int, int);
 extern "C" __declspec(dllexport) void __cdecl ShutDown();
 
 
@@ -69,11 +69,12 @@ extern void GPlannerScore(float* Robots,int RobotCount, float* Phi, float* Kdx, 
 		//cout << "memcpyKdy: "<< error << "\n";
 	}
 }
-extern float ForceTree(float* Path,int* eachPathCount, int RobotCount, float* avoid, float* finalPath, int SmoothingCount, float* Obstacles,int ObstacleCount, float Kspring, float Kspring2, int n)
+extern float ForceTree(float* Path,int* eachPathCount, int RobotCount, float* avoid, float* finalPath, int SmoothingCount, float* Obstacles,int ObstacleCount, float Kspring, float Kspring2, int n, int stopBall)
 {
 	_kSpring = Kspring;
 	_kSpring2 = Kspring2;
 	N = n;
+	StopBall = stopBall;
 	cudaError_t error;
 	int maxP = -MaxPathCount;
 
@@ -112,7 +113,7 @@ extern float ForceTree(float* Path,int* eachPathCount, int RobotCount, float* av
 			CalculateForcesKernel<<<Grid, Block>>>(DevForce, DevEachPathCount, RobotCount, ForcePitch, _kSpring, _kSpring2, N);
 		//	error = cudaGetLastError();
 		//	cout << "CalculateForceKernell iter " << i << ": " << error << "\n";
-			ReCalculatePath<<<Grid2, Block2>>>(DevPath, DevEachPathCount, RobotCount, PathPitch, ObstacleCount);
+			ReCalculatePath<<<Grid2, Block2>>>(DevPath, DevEachPathCount, RobotCount, PathPitch, ObstacleCount, StopBall);
 		//	error = cudaGetLastError();
 		//	cout << "ReCalcPathKernell iter " << i << ": " << error << "\n";
 		}
@@ -654,7 +655,7 @@ __global__ void CalculateForcesKernel(float* DevForce, int* DevEachPathCount, in
 			DevForce[k * forcePitch + i * 2 + j] = kSpring * ((tmpNext - tmpCurr) + (tmpPrev - tmpCurr));// + kSpring2 * ((tmpNnext - tmpCurr) + (tmpNprev - tmpCurr)) ;
 	}
 }
-__global__ void ReCalculatePath(float* DevPath, int* DevEachPathCount, int RobotCount, size_t PathPitch, int ObstacleCount)
+__global__ void ReCalculatePath(float* DevPath, int* DevEachPathCount, int RobotCount, size_t PathPitch, int ObstacleCount, int stopBall)
 {
 	int i = blockIdx.x*blockDim.x + threadIdx.x;
 	int k = blockIdx.y; 
@@ -678,7 +679,7 @@ __global__ void ReCalculatePath(float* DevPath, int* DevEachPathCount, int Robot
 			{
 				if(ab == 1 && j == 0)
 				{
-					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, BALL_FORCE);	
+					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, BALL_FORCE * (1 - stopBall) + stopBall * BALL_STOP_FORCE );	
 				}
 				else if(az == 1 && j == 1 )
 				{

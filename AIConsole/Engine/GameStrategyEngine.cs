@@ -14,6 +14,7 @@ using MRL.SSL.AIConsole.Plays;
 using System.Linq;
 using MRL.SSL.Planning.GamePlanner.Types;
 using MRL.SSL.Planning.GamePlanner;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Engine
 {
@@ -219,6 +220,7 @@ namespace MRL.SSL.AIConsole.Engine
                     throw new Exception("No Plays are feasible");
                 PlayBase selectedplay = feasibleplays[rnd.Next(0, feasibleplays.Count)];
                 selectedplay.ResetPlay(Model, this);
+                Planner.IsStopBall(false);
                 LastRunningPlay = selectedplay;
                 playChanged = true;
             }

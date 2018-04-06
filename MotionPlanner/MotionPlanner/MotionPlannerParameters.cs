@@ -9,7 +9,7 @@ namespace MRL.SSL.Planning.MotionPlanner
     public static class MotionPlannerParameters
     {
         public static double RobotRadi = RobotParameters.OurRobotParams.Diameter / 2 + 0.0;
-        public static double BallRadi = 0.022;
+        public static double BallRadi = 0.022, StopBallRadi = 0.4;
 
         //TODO: DANGER_ZONE CHECK
         public static double DangerZoneH = GameParameters.DefenceAreaHeight;

@@ -41,6 +41,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         List<Line> Lines = new List<Line>(); 
         SingleObjectState Goal = new SingleObjectState();
         List<SingleObjectState> lastPath = null;
+        bool StopBall = false;
         PathType pathType = PathType.Safe;
         public bool Start = false;
         public float Time = 0;
@@ -103,7 +104,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 return res;
         }
 
-        public void Run(WorldModel model, int robotID,List<Line> lines, SingleObjectState InitileState, SingleObjectState GoalState,int avoidBall, int avoidZone, int avoidOppZone, int avoidRobot,List<SingleObjectState> LastPath, PathType Type)
+        public void Run(WorldModel model, int robotID, List<Line> lines, SingleObjectState InitileState, SingleObjectState GoalState, int avoidBall, int avoidZone, int avoidOppZone, int avoidRobot, List<SingleObjectState> LastPath, PathType Type, bool stopBall)
         {
 
             Model = model;
@@ -117,10 +118,12 @@ namespace MRL.SSL.Planning.MotionPlanner
             AvoidZone = avoidZone;
             AvoidOppZone = avoidOppZone;
             lastPath = LastPath;
+            StopBall = stopBall;
             eventR.Set();
         }
-        public void Run(bool Set)
+        public void Run(bool Set, bool stopBall)
         {
+            StopBall = stopBall;
             if (Set)
                 eventFinish.Set();
         }
@@ -157,7 +160,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 tree = new KDTree(2);
                 Obstacles obs = new Obstacles(Model);
 
-                obs.AddObstacle(AvoidRobot, AvoidBall, AvoidZone, AvoidOppZone, new List<int>() { RobotID }, null, MotionPlannerParameters.kSpeedBall, MotionPlannerParameters.kSpeedRobot);
+                obs.AddObstacle(AvoidRobot, AvoidBall, AvoidZone, AvoidOppZone, new List<int>() { RobotID }, null, MotionPlannerParameters.kSpeedBall, MotionPlannerParameters.kSpeedRobot, StopBall);
                 List<SingleObjectState> res = new List<SingleObjectState>();
                 Init.ParentState = null;
 
@@ -213,7 +216,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                             tree = new KDTree(2);
                             NearestState = new SingleObjectState(init);
                             obs.Clear();
-                            obs.AddObstacle(0, 0, 1, 0, null, null);
+                            obs.AddObstacle(0, 0, 1, 0, null, null, StopBall);
                         }
                         tree.insert(d, init);
                         nodes2try = 0;

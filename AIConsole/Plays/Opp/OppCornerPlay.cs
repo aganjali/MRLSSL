@@ -8,6 +8,7 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.GameDefinitions.General_Settings;
 using System.Drawing;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Plays
 {
@@ -98,6 +99,8 @@ namespace MRL.SSL.AIConsole.Plays
             FreekickDefence.weAreInKickoff = false;
             FreekickDefence.SwitchToActiveReset();
             DataBridge.SetInitialPoses(Model);
+            
+            Planner.IsStopBall(FreekickDefence.BallIsMoved);
 
             DefenceTest.BallTest = FreekickDefence.testDefenceState;
             DefenceTest.GenerateBallPos();

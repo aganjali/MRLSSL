@@ -21,7 +21,7 @@ namespace MRL.SSL.Planning.GPUDirect
         [DllImport("GPUPlanner.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern float ForceTree([MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.R4)]float[] Path, [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4)]int[] eachPathCount,
             int RobotCount, [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.R4)]float[] avoid, [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.R4)]float[] finalPath, int SmoothingCount,
-            [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.R4)]float[] Obstacles, int ObstacleCount, float Kspring, float Kspring2, int n);
+            [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.R4)]float[] Obstacles, int ObstacleCount, float Kspring, float Kspring2, int n, int stopBall);
 
         [DllImport("GPUPlanner.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void GPlannerBallState([MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.R4)]float[] robots, int RobotCounts, int N, [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.R4)]float[] ball, [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.R4)]float[] Heads, [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4)]float[] Tails, [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.R4)]float[] TimeHeads, [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.R4)]float[] TimeTails, [MarshalAsAttribute(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4)]int[] histo);
