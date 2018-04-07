@@ -285,6 +285,7 @@
     <Compile Include="Roles\TestRole\CutTestRole.cs" />
     <Compile Include="Roles\TestRole\NewCutBallTestRole.cs" />
     <Compile Include="Roles\TestRole\OneTouchTestRole.cs" />
+    <Compile Include="Roles\TestRole\StaticPositionerRole.cs" />
     <Compile Include="Roles\TestRole\TestRole.cs" />
     <Compile Include="Skills\ActiveSkills\CutBallSkill.cs" />
     <Compile Include="Skills\ActiveSkills\GetBallSkill.cs" />

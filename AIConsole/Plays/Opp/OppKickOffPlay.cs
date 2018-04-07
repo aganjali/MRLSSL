@@ -642,6 +642,21 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 }
             }
             #endregion
+
+            if (Model.OurRobots.Count > 6)
+            {
+                List<int> ids = new List<int>();
+                if (Model.GoalieID.HasValue)
+                    ids = Model.OurRobots.Where(w => w.Key != Model.GoalieID.Value).Select(s => s.Key).ToList();
+                else
+                    ids = Model.OurRobots.Select(s => s.Key).ToList();
+                AddRoleInfo(roles, typeof(StaticPositionerRole), 1, 0);
+                var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+                int? SPR = null;
+                SPR = getID(assigenroles, typeof(StaticPositionerRole));
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, SPR, typeof(StaticPositionerRole)))
+                    Functions[SPR.Value] = (eng, wmd) => GetRole<StaticPositionerRole>(SPR.Value).perform(engine, Model, SPR.Value,new Position2D(1,3)); 
+            }
             ControlParameters.BallIsMoved = ballismoved;
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             DefenceTest.MakeOutPut();
