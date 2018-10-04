@@ -364,6 +364,10 @@ namespace MRL.SSL.Planning.MotionPlanner
                 double alfa = (ww - stat.AngularSpeed.Value) * StaticVariables.FRAME_RATE;
                 if (Math.Abs(alfa) > alfamax)
                     ww = (stat.AngularSpeed.Value) + Math.Sign(alfa) * alfamax * StaticVariables.FRAME_PERIOD;
+                //if (RobotID == 5)
+                //{
+                //    aTunner.Drawings(PIDType.W, RobotID);
+                //}
             }
             else
             {
@@ -371,6 +375,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                     aTunner.Check4CollisionReset(PIDType.W);
 
                 inEndPhaseW = false;
+                //aTunner.Reset(PIDType.W);
                 wTunner.Reset();
             }
             //if (RobotID == 4||RobotID == 2)

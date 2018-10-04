@@ -2582,5 +2582,15 @@ namespace Visualizer.Windows
 
         }
 
+        private void windowsFormsHost_ChildChanged(object sender, System.Windows.Forms.Integration.ChildChangedEventArgs e)
+        {
+
+        }
+
+        private void recieveImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+
+        }
+
     }
 }

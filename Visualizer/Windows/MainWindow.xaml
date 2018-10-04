@@ -67,7 +67,7 @@
                         <RowDefinition Height="465.317*" />
                     </Grid.RowDefinitions>
                     <WindowsFormsHost  Name="windowsFormsHost"
-                                       Grid.Row="1">
+                                       Grid.Row="1" ChildChanged="windowsFormsHost_ChildChanged">
                         <field:NewFieldVisualizer x:Name="Field" />
                     </WindowsFormsHost>
                     <Label Visibility="Collapsed"
@@ -147,7 +147,7 @@
                         ToolTip="Recieve Start/Pause"
                         Click="recieveButton_Click">
                     <Image Name="recieveImage"
-                           Source="/Visualizer;component/Images/display-off-48x48.png"></Image>
+                           Source="/Visualizer;component/Images/display-off-48x48.png" ImageFailed="recieveImage_ImageFailed"></Image>
                 </Button>
                 <Button MouseLeftButtonDown="startLog_MouseLeftButtonDown"
                         MouseRightButtonDown="startLog_MouseRightButtonDown"

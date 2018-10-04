@@ -1125,7 +1125,7 @@ namespace MRL.SSL.AIConsole.Skills
             Vector2D Vtemp = Vector2D.Zero;
 
 
-            double kx = 1 - Math.Min(Math.Abs(dX), 0.05) / 0.05;
+            double kx = 1;// -Math.Min(Math.Abs(dX), 0.1) / 0.1;
             // double vy = (ActiveParameters.KpTotalVySide * (1 / (-Math.Abs(pidSideY.Calculate(dX, 0)) - ActiveParameters.vyOffsetSide + ActiveParameters.KpxVySide * -Math.Abs(finalSpeed.X))) + Math.Min(ActiveParameters.KpyVySide * (finalSpeed.Y + dY), 0));
             double extY = (ActiveParameters.KpxVySide * Math.Abs(dX) + kx * ActiveParameters.KpyVySide * finalSpeed.Y) / pidSideY.Coef.Kp;
 

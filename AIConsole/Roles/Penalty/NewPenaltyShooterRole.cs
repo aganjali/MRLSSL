@@ -28,37 +28,46 @@ namespace MRL.SSL.AIConsole.Roles
 
         double lastM = double.MinValue;
         Position2D target2Kick;
-
+        double backBall = 0.1;
         public void Perform(GameStrategyEngine engine, WorldModel Model, int RobotID)
         {
             if (CurrentState == (int)PenaltyStates.findball)
             {
                 Position2D intit = new Position2D(GameParameters.OppGoalLeft.X, GameParameters.OppGoalLeft.Y + 0.15);
-                Position2D backball = Model.BallState.Location - (intit - Model.BallState.Location).GetNormalizeToCopy(0.3);
+                Position2D backball = Model.BallState.Location - (intit - Model.BallState.Location).GetNormalizeToCopy(0.6);
                 double teta = (GameParameters.OppGoalCenter - Model.BallState.Location).AngleInDegrees;
+                Planner.IsStopBall(true);
                 GetSkill<GotoPointSkill>().GotoPoint(engine, Model, RobotID, backball, teta, false, true, true, 0, 0, 3);
             }
             else
             {
-
-                GetSkill<GetBallSkill>().SetAvoidDangerZone(true, true);
-                GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, target2Kick);
+                Planner.IsStopBall(false);
+                
                 if (Model.BallState.Location.DistanceFrom(Model.OurRobots[RobotID].Location) < 0.15)
                 {
+                    backBall = 0.08;
                     if (CurrentState == (int)PenaltyStates.Shoot)
                     {
+                        
                         //TODO: use speed good boy ;)
-                        Planner.AddKick(RobotID, kickPowerType.Power, 120, false, false);
+                        Planner.AddKick(RobotID, kickPowerType.Speed, Program.MaxKickSpeed, false, false);
                     }
                     else if (CurrentState == (int)PenaltyStates.dribble)
                     {
-                        Planner.AddKick(RobotID, kickPowerType.Power, 40, true, false);
+                        Planner.AddKick(RobotID, kickPowerType.Power, 60, true, false);
+                    }
+                    else if (CurrentState == (int)PenaltyStates.Accuracy)
+                    {
+                        backBall = 0.15;
+                        Planner.AddKick(RobotID, kickPowerType.Power, 0, false, false);
                     }
                     else if (CurrentState == (int)PenaltyStates.isChip)
                     {
-                        Planner.AddKick(RobotID, kickPowerType.Power, 110, true, false);
+                        Planner.AddKick(RobotID, kickPowerType.Speed, 1.2, true, false);
                     }
                 }
+                GetSkill<GetBallSkill>().SetAvoidDangerZone(true, true);
+                GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, target2Kick, false, backBall);
             }
         }
 
@@ -86,14 +95,18 @@ namespace MRL.SSL.AIConsole.Roles
             if (Model.Status == GameStatus.Penalty_OurTeam_Go)
             {
                 bool Suitable4Kick = IsSuitable4Kick(engine, Model, RobotID, true, 10, 10, Program.MaxKickSpeed, out target2Kick);
-                if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.4)
+                if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.7)
                     counter++;
                 if (counter > 60)
                 {
                     if (OppGoalerID.HasValue && Model.Opponents[OppGoalerID.Value].Location.DistanceFrom(Model.OurRobots[RobotID].Location) < 1 && Model.BallState.Location.X > -1.5)
                         CurrentState = (int)PenaltyStates.isChip;
-                    else if (Model.BallState.Location.X < -1.5 && Model.BallState.Location.DistanceFrom(Model.OurRobots[RobotID].Location) < 0.2)// && Suitable4Kick)
+                    else if (Model.BallState.Location.X < -1.5 && Suitable4Kick)
                         CurrentState = (int)PenaltyStates.Shoot;
+                    else if (Model.BallState.Location.X < -1.5)
+                    {  CurrentState = (int)PenaltyStates.Accuracy;
+                        
+                    }
                     else
                         CurrentState = (int)PenaltyStates.dribble;
                 }
@@ -219,6 +232,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             findball,
             Shoot,
+            Accuracy,
             isChip,
             dribble
         }

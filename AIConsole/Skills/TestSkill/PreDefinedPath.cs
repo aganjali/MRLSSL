@@ -22,22 +22,7 @@ namespace MRL.SSL.AIConsole.Skills
         {
             double robotX = model.OurRobots[robotID].Location.X;
             double robotY = model.OurRobots[robotID].Location.Y;
-            //if (model.OurRobots[robotID].Location.DistanceFrom(new Position2D(-1, 1)) > 0.05 && flag)
-            //{
-            //    Planner.Add(robotID, new Position2D(-1, 1), 270);
-            //    if (model.OurRobots[robotID].Location.DistanceFrom(new Position2D(-1, 1)) < 0.05)
-            //    {
-            //        flag = false;
-            //    }
 
-            //}
-            //else
-            //{
-
-            //}
-
-            //
-            //controller.compute_motion_1d(0);
             double trajAccel = 0, trajTime = 0;
 
             TheoricalVx = calculateVx(Vmax, robotX);
@@ -47,21 +32,21 @@ namespace MRL.SSL.AIConsole.Skills
             dist = getParabolicLenght(robotX, x1);
             controller.compute_motion_1d(1, 1, dist, Math.Sqrt(Math.Pow(Vy, 2) + Math.Pow(Vx, 2)) , 0, Amax, Vmax, 1, ref trajAccel, ref trajTime);
             int accelerationSign = Math.Sign(trajAccel) * -1;
-            if (true)//Math.Sqrt(Math.Pow(Vy,2) + Math.Pow(Vx,2)) < Vmax )
-            {
+            //if (true)//Math.Sqrt(Math.Pow(Vy,2) + Math.Pow(Vx,2)) < Vmax )
+            //{
                 Vx = Vx + (Ax / 60);
                 Vy = Vy + (Ay / 60); 
-            }
+            //}
             
             Vector2D inFieldRefrence = new Vector2D(Vx, Vy);
             Vector2D robotRefrence = Vector2D.FromAngleSize(model.OurRobots[robotID].Angle.Value * Math.PI / 180, 1);
             inFieldRefrence = GameParameters.InRefrence(inFieldRefrence, robotRefrence);
 
             
-            DrawingObjects.AddObject(new StringDraw("Vx = " + Vx.ToString(), new Position2D(robotX + 0.10, robotY)));
-            DrawingObjects.AddObject(new StringDraw("Vy = " + Vy.ToString(), new Position2D(robotX + 0.20, robotY)));
-            DrawingObjects.AddObject(new StringDraw("sqrt(Vy ^ 2 + Vx ^ 2) = " + (Math.Sqrt((Math.Pow(Vy, 2) + Math.Pow(Vx, 2)))).ToString(), new Position2D(robotX + 0.30, robotY)));
-            DrawingObjects.AddObject(new StringDraw("accelerationSign " + accelerationSign, new Position2D(robotX + 0.40, robotY)));
+            //DrawingObjects.AddObject(new StringDraw("Vx = " + Vx.ToString(), new Position2D(robotX + 0.10, robotY)));
+            //DrawingObjects.AddObject(new StringDraw("Vy = " + Vy.ToString(), new Position2D(robotX + 0.20, robotY)));
+            //DrawingObjects.AddObject(new StringDraw("sqrt(Vy ^ 2 + Vx ^ 2) = " + (Math.Sqrt((Math.Pow(Vy, 2) + Math.Pow(Vx, 2)))).ToString(), new Position2D(robotX + 0.30, robotY)));
+            //DrawingObjects.AddObject(new StringDraw("accelerationSign " + accelerationSign, new Position2D(robotX + 0.40, robotY)));
             SWC.Vy = inFieldRefrence.Y;
             SWC.Vx = inFieldRefrence.X;
             SWC.W = 0;
@@ -131,59 +116,6 @@ namespace MRL.SSL.AIConsole.Skills
                 x = (-b + System.Math.Sqrt(sqrtpart)) / (2 * a);
                 return new List<double> { x };
             }
-
-        }
-        double Trajectory_1D(double deltaS, double startVel, double finalVel, double aMax, double vMax, ref double time)
-        {
-
-            double SamplingTime = 1.0 / (double)StaticVariables.FRAME_RATE;
-            if (deltaS == 0 && startVel == finalVel)
-            {
-                time = 0;
-                return 0;
-            }
-            double timeToFinalVel = Math.Abs(startVel - finalVel) / aMax;
-            // - ya + finalVel - startVel
-            double distanceToFinalVel = Math.Abs(finalVel - startVel) / 2 * timeToFinalVel;
-            double timeTemp, timeAcc, timeDec;
-            if (Math.Abs(startVel) > Math.Abs(finalVel))
-            {
-                timeTemp = (Math.Sqrt((startVel * startVel + finalVel * finalVel) / 2 + Math.Abs(deltaS) * aMax) - Math.Abs(startVel)) / aMax;
-
-                if (timeTemp < 0)
-                    timeTemp = 0;
-                timeAcc = timeTemp;
-                timeDec = timeTemp + timeToFinalVel;
-            }
-            else if (distanceToFinalVel > Math.Abs(deltaS))
-            {
-                timeTemp = (Math.Sqrt(startVel * startVel + 2 * aMax * Math.Abs(deltaS)) - Math.Abs(startVel)) / aMax;
-                timeAcc = timeTemp;
-                timeDec = 0;
-            }
-            else
-            {
-                timeTemp = (Math.Sqrt((startVel * startVel + finalVel * finalVel) / 2 + Math.Abs(deltaS) * aMax) - Math.Abs(finalVel)) / aMax;
-                if (timeTemp < 0)
-                    timeTemp = 0;
-                timeAcc = timeTemp + timeToFinalVel;
-                timeDec = timeTemp;
-            }
-
-            double trajTime = timeAcc + timeDec;
-            if (timeAcc * aMax + Math.Abs(startVel) > vMax)
-                trajTime += (vMax - (aMax * timeAcc + Math.Abs(startVel))) * (vMax - (aMax * timeAcc + Math.Abs(startVel))) / (aMax * vMax);
-
-            double trajAcc = 0;
-            if (timeAcc < SamplingTime && timeDec < 0.1)
-                trajAcc = (finalVel - startVel) * (SamplingTime);
-            else if (timeAcc < SamplingTime && timeDec > 0)
-                trajAcc = Math.Sign(finalVel - startVel) * (aMax * timeAcc + (double)StaticVariables.FRAME_RATE * (aMax * (SamplingTime - timeAcc))); /* trajAcc = (aMax * timeAcc) + (-aMax * (SamplingTime - timeAcc))*/
-            else
-                trajAcc = aMax * Math.Sign(deltaS);
-
-            time = trajTime;
-            return trajAcc;
 
         }
     }

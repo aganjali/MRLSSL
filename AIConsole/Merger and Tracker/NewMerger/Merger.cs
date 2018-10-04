@@ -475,6 +475,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         //}
         int firstRunCounter = 0;
         Dictionary<int, double> diffTimes = new Dictionary<int, double>();
+        List<int> lastAvailableCameras = new List<int>();
         public bool Merge(SSL_WrapperPacket Packet, ref frame Frame, ref frame newFrame, bool isYellow)
         {
             //DrawingObjects.AddObject(new Circle(Vision2AI(new Position2D(-1994, -487), false), StaticVariables.BALL_RADIUS, new Pen(Color.Red, 0.01f)), "badssdddscdsll");
@@ -529,10 +530,16 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             if (sslPackets.Count < MergerParameters.AvailableCamIds.Count)
                 return false;
 
+            if (!lastAvailableCameras.All(a=>MergerParameters.AvailableCamIds.Contains(a)) 
+                || !MergerParameters.AvailableCamIds.All(a=>lastAvailableCameras.Contains(a)))
+            {
+                firstRunCounter = 0;
+            }
             if (firstRunCounter++ < 10)
             {
                 if (firstRunCounter == 1)
                 {
+                    diffTimes.Clear();
                     for (int i = 0; i < StaticVariables.VisionPcCounts; i++)
                     {
                         diffTimes.Add(i, 0);
@@ -541,8 +548,16 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 Dictionary<int, double> minTime = new Dictionary<int, double>();
                 for (int i = 0; i < StaticVariables.VisionPcCounts; i++)
                 {
+                    
                     int cameraPerPc = StaticVariables.CameraCount / StaticVariables.VisionPcCounts;
-                    minTime[i] = sslPackets.Where(w => w.Value.detection.camera_id >= i * cameraPerPc && w.Value.detection.camera_id < (i + 1) * cameraPerPc).Min(m => m.Value.detection.t_capture);
+                    var packs = sslPackets.Where(w => w.Value.detection.camera_id >= i * cameraPerPc && w.Value.detection.camera_id < (i + 1) * cameraPerPc);
+                    if (packs.Count() > 0)
+                    {
+
+                        minTime[i] = packs.Min(m => m.Value.detection.t_capture);
+                    }
+                    else
+                        minTime[i] = 0;
                 }
                 double maxTime = minTime.Max(m => m.Value);
                 for (int i = 0; i < StaticVariables.VisionPcCounts; i++)
@@ -833,6 +848,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
             sslPackets = new Dictionary<uint, SSL_WrapperPacket>();
             lastColorIsYellow = isYellow;
+            lastAvailableCameras = MergerParameters.AvailableCamIds.ToList();
             return true;
         }
 

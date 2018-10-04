@@ -344,7 +344,7 @@ namespace MRL.SSL.AIConsole.Roles
                 CurrentState = (int)ActiveRoleState.Sweep;
             else if (ball.Location.X < NewActiveParameters.kickAnyWayRegion/* || ballFirstPos.DistanceFrom(ball.Location) > 0.4*/)
                 CurrentState = (int)ActiveRoleState.KickAnyway;
-            else if (GoodPointInGoal.HasValue && goodness > NewActiveParameters.minGoodness)
+            else if (GoodPointInGoal.HasValue && goodness >= NewActiveParameters.minGoodness)
                 CurrentState = (int)ActiveRoleState.Open2Kick;
             else
             {
