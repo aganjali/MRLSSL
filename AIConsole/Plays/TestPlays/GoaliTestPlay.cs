@@ -12,6 +12,7 @@ using MRL.SSL.AIConsole.Strategies;
 using System.Drawing;
 using MRL.SSL.GameDefinitions.General_Settings;
 using MRL.SSL.AIConsole.Skills;
+
 namespace MRL.SSL.AIConsole.Plays.TestPlays
 {
     public class GoaliTestPlay : PlayBase
@@ -24,14 +25,15 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
+           
             if (Status == GameStatus.TestOffend)
             {
                 return true;
             }
             else
             {
-                isFirst = true;
-                isGo = false;
+                //isFirst = true;
+                //isGo = false;
                 return false;
             }
         }
@@ -43,8 +45,27 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
+            int id = 6;
+            double r = 1;
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, id, typeof(Test)))
+                Functions[id] = (eng, wmd) => GetRole<Test>(id).Perform(engine, Model, id , r);
+            DrawingObjects.AddObject(new StringDraw("O",new Position2D(2,2)));
+            //for (int i = 0; i < 180; i++)
+            //{
+            //    Line l = new Line(new Position2D(5.5, 2.2), new Position2D(5.5, -2.5));
+            //    var poses = GameParameters.LineIntersectWithOurDangerZone(l); 
+            //    DrawingObjects.AddObject("line_intersect_line_test", l);
+            //    for (int i = 0; i < poses.Count; i++)
+            //    {
+
+            //        DrawingObjects.AddObject("line_intersect_test" + i.ToString(),
+            //            new Circle(poses[i], 0.02,new Pen(Color.Red, 0.01f)));
+            //    }
+                    
+            //}
+
             //circleSkill.perform(Model, 2, GameParameters.OppGoalCenter, .2, false);
-            Skill.run(Model);
+            //Skill.run(Model);
             //DrawingObjects.AddObject(new StringDraw(Model.BallState.Speed.Size.ToString(), Position2D.Zero), "asds");
             //int id1 = 4;
             //int id2 = 3;

@@ -286,7 +286,7 @@ namespace MRL.SSL.GameDefinitions
             List<Position2D> temp = new List<Position2D>();
 
             temp.Add(camera[2]);
-            temp.Add(camera[1]);
+        //    temp.Add(camera[1]);
             coefMatrix.Add(21, centerMat(temp));
             temp = new List<Position2D>();
             temp.Add(camera[3]);
