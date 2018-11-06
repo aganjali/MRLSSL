@@ -1036,31 +1036,31 @@ namespace MRL.SSL.AIConsole.Roles
         bool jh = true;
         public void RrtTest(WorldModel model, GameStrategyEngine engine, int robotid)
         {
-            int AvoidRobot = 1, AvoidBall = 1, AvoidZone = 1, AvoidOppZone = 1;
-            Obstacles obs = new Obstacles(model);
-            obs.AddObstacle(AvoidRobot, AvoidBall, AvoidZone, AvoidOppZone, new List<int>() { robotid }, null, MotionPlannerParameters.kSpeedBall, MotionPlannerParameters.kSpeedRobot);
+            //int AvoidRobot = 1, AvoidBall = 1, AvoidZone = 1, AvoidOppZone = 1;
+            //Obstacles obs = new Obstacles(model);
+            //obs.AddObstacle(AvoidRobot, AvoidBall, AvoidZone, AvoidOppZone, new List<int>() { robotid }, null, MotionPlannerParameters.kSpeedBall, MotionPlannerParameters.kSpeedRobot);
 
-            if (rrt == null)
-                rrt = new ERRT(false);
-            rrt.Run(model, robotid, new List<Line>(), new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0), new SingleObjectState(new Position2D(2, 2), Vector2D.Zero, 0), AvoidBall, AvoidZone, AvoidOppZone, AvoidRobot, null, PathType.UnSafe);
-            rrt.eventFinish.WaitOne();
-            List<Position2D> path = new List<Position2D>();
-            List<Position2D> li = new List<Position2D>();
-            Position2D F = new Position2D();
+            //if (rrt == null)
+            //    rrt = new ERRT(false);
+            //rrt.Run(model, robotid, new List<Line>(), new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0), new SingleObjectState(new Position2D(2, 2), Vector2D.Zero, 0), AvoidBall, AvoidZone, AvoidOppZone, AvoidRobot, null, PathType.UnSafe);
+            //rrt.eventFinish.WaitOne();
+            //List<Position2D> path = new List<Position2D>();
+            //List<Position2D> li = new List<Position2D>();
+            //Position2D F = new Position2D();
+            ////for (int i = 0; i < rrt.PathCount; i++)
+            ////{
+            ////    path.Add(new Position2D(rrt.FPath[2 * i], rrt.FPath[2 * i + 1]));
+            ////}
             //for (int i = 0; i < rrt.PathCount; i++)
             //{
-            //    path.Add(new Position2D(rrt.FPath[2 * i], rrt.FPath[2 * i + 1]));
-            //}
-            for (int i = 0; i < rrt.PathCount; i++)
-            {
-                if (!obs.Meet(new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0), new SingleObjectState(new Position2D(rrt.FPath[2 * i], rrt.FPath[2 * i + 1]), Vector2D.Zero, 0), MotionPlannerParameters.RobotRadi))
-                {
+            //    if (!obs.Meet(new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0), new SingleObjectState(new Position2D(rrt.FPath[2 * i], rrt.FPath[2 * i + 1]), Vector2D.Zero, 0), MotionPlannerParameters.RobotRadi))
+            //    {
                  
-                    path.Add(new Position2D(rrt.FPath[2 * i], rrt.FPath[2 * i + 1]));
-                }
-            }
+            //        path.Add(new Position2D(rrt.FPath[2 * i], rrt.FPath[2 * i + 1]));
+            //    }
+            //}
 
-            DrawingObjects.AddObject("pathnode", new DrawRegion(path, false, false, Color.Red));
+            //DrawingObjects.AddObject("pathnode", new DrawRegion(path, false, false, Color.Red));
         }
     }
     public struct ActiveData

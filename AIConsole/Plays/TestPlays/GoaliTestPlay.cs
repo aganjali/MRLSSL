@@ -12,6 +12,7 @@ using MRL.SSL.AIConsole.Strategies;
 using System.Drawing;
 using MRL.SSL.GameDefinitions.General_Settings;
 using MRL.SSL.AIConsole.Skills;
+
 namespace MRL.SSL.AIConsole.Plays.TestPlays
 {
     public class GoaliTestPlay : PlayBase
@@ -24,14 +25,15 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
+           
             if (Status == GameStatus.TestOffend)
             {
                 return true;
             }
             else
             {
-                isFirst = true;
-                isGo = false;
+                //isFirst = true;
+                //isGo = false;
                 return false;
             }
         }
@@ -43,9 +45,11 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-            int id = 4;
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, id, typeof(TestRole)))
-                Functions[id] = (eng, wmd) => GetRole<TestRole>(id).GetData(wmd, id, 1, 30);
+            int id = 6;
+            int r = 1;
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, id, typeof(CircleTestRole)))
+                Functions[id] = (eng, wmd) => GetRole<CircleTestRole>(id).Perform(engine, Model, id, r);
+            DrawingObjects.AddObject(new StringDraw("O",new Position2D(2,2)));
             //for (int i = 0; i < 180; i++)
             //{
             //    Line l = new Line(new Position2D(5.5, 2.2), new Position2D(5.5, -2.5));
@@ -57,7 +61,7 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             //        DrawingObjects.AddObject("line_intersect_test" + i.ToString(),
             //            new Circle(poses[i], 0.02,new Pen(Color.Red, 0.01f)));
             //    }
-     
+                    
             //}
 
             //circleSkill.perform(Model, 2, GameParameters.OppGoalCenter, .2, false);
