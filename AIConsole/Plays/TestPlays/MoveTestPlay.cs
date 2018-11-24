@@ -9,9 +9,33 @@ using MRL.SSL.GameDefinitions;
 using MRL.SSL.Planning.MotionPlanner;
 using System.Drawing;
 using MRL.SSL.GameDefinitions.General_Settings;
+using Newtonsoft.Json;
 
 namespace MRL.SSL.AIConsole.Plays
 {
+    public class jWrapper
+    {
+        public jWrapper(int f, double x, double y)
+        {
+            Frame = f;
+            X = x;
+            Y = y;
+        }
+        public int Frame { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Vx { get; set; }
+        public double Vy { get; set; }
+        
+    }
+    public static class testInfo
+    {
+        public static double Vx = 0;
+        public static double Vy = 0;
+        public static int robotId = 9;
+
+    
+    }
     public class MoveTestPlay : PlayBase
     {
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
@@ -26,11 +50,57 @@ namespace MRL.SSL.AIConsole.Plays
             }
 
         }
-
+        int counter = 0;
+        string path = "";
+        bool flag = true;
+        int robotId = testInfo.robotId;
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
+            
+            jWrapper jw = new jWrapper(counter, Model.OurRobots[robotId].Location.X, Model.OurRobots[robotId].Location.Y);
+
+            
+            //double theta = Model.OurRobots[robotId].Angle.Value;
+            float Angle = Model.OurRobots[robotId].Angle.Value;
+            Position2D targetPos = new Position2D(5.9, 4.32);
+            Position2D targetPos2 = new Position2D(0.1,-4.3);
+
+            if (Model.OurRobots[robotId].Location.DistanceFrom(targetPos) < 0.3)
+            {
+                flag = false;
+            }
+            if (flag)
+            {
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(GotoPointRole)))
+                    Functions[robotId] = (eng, wmd) => GetRole<GotoPointRole>(robotId).GotoPoint(Model, robotId, targetPos, Angle, true, true);
+            }
+            else
+            {
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(GotoPointRole)))
+                    Functions[robotId] = (eng, wmd) => GetRole<GotoPointRole>(robotId).GotoPoint(Model, robotId, targetPos2, Angle, true, true);
+            }
+
+            if (path == "")
+            {
+                string time = DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString();
+                string temp = "visionData" + "-" + time + ".txt";
+                path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), temp);
+            }
+            string textStr;
+            JsonSerializer jSerializer = new JsonSerializer();
+            textStr = jw.Frame.ToString("0000") + "  ";
+            textStr += jw.X.ToString("0.000000") + "  ";
+            textStr += jw.Y.ToString("0.000000") + "  ";
+            textStr += testInfo.Vx.ToString("0.000000") + "  ";
+            textStr += testInfo.Vy.ToString("0.000000");
+            
+            //textStr = JsonConvert.SerializeObject(jw, Formatting.None);
+            System.IO.File.AppendAllLines(path, new List<string>() { textStr }) ;
+
+
+            counter++;
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, 8, typeof(TestRole)))
             //    Functions[8] = (eng, wmd) => GetRole<TestRole>(8).GetData(Model, 8, 0.5, 30);
             #region ScoreColor
@@ -133,7 +203,9 @@ namespace MRL.SSL.AIConsole.Plays
 
         public override void ResetPlay(WorldModel Model, GameStrategyEngine engine)
         {
-
+            counter = 0;
+            path = "";
+            flag = true;
         }
     }
 }

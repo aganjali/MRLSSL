@@ -108,10 +108,13 @@ namespace MRL.SSL.Planning.GPUDirect
                     counter++;
                 }
                 file.Close();
+                
             }
             if (scoreList.Count > 0)
             {
                 RegionScore.Default.Data = scoreList;
+                RegionScore.Save("ALL.txt");
+
             }
             #endregion
 

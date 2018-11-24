@@ -96,6 +96,10 @@
     <Reference Include="Meta.Numerics">
       <HintPath>..\Third Party\Assemblies\Meta.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\Third Party\Assemblies\protobuf-net.dll</HintPath>
     </Reference>

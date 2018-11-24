@@ -267,6 +267,7 @@ namespace MRL.SSL.AIConsole.Engine
                             
                         }
                         Model = globalMerger.GenerateWorldModel4Cam(sslPacket, tmpCmd, GameSettings.Default.Engines[0].ReverseColor, GameSettings.Default.Engines[0].ReverseSide, TrackerType.Accurate, /*(RecieveMode == ModelRecieveMode.Simulator) ? TrackerType.Fast :*/ TrackerType.Accurate, true, statusForMerged);
+                        
                         if (Model != null)
                         {
                             //timer.Stop();
@@ -825,7 +826,8 @@ namespace MRL.SSL.AIConsole.Engine
                         commands = new RobotCommands();
                     if (commands.Commands == null)
                         commands.Commands = new Dictionary<int, SingleWirelessCommand>();
-                    rettovis = commands.Commands;
+                    rettovis = 
+                        commands.Commands;
                     if (getBalls)
                         balls2send = globalMerger.ballsViwed.ToDictionary(k => k.Key, v => v.Value);
                     reciveFinished.Set();

@@ -1129,7 +1129,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             }
             for (int i = 0; i < StaticVariables.MAX_ROBOT_ID; i++)
             {
-                if (index2id[0, i] >= 0)
+                if (index2id[0, i] >= 0) 
                     robots[0, i].observe(Frame.OurRobots[(uint)index2id[0, i]].visionProblem,Frame.OurRobots[(uint)index2id[0, i]].vision, Frame.OurRobots[(uint)index2id[0, i]].vision.timestamp);
             }
             for (int i = 0; i < StaticVariables.MAX_ROBOT_ID; i++)

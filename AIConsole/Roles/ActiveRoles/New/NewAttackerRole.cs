@@ -311,6 +311,7 @@ namespace MRL.SSL.AIConsole.Roles
                         else
                         {
                             GetSkill<CatchBallSkill>().Catch(engine, Model, RobotID, passIsChip, new SingleObjectState(Pos2go, Vector2D.Zero, 0), true, gotoPoint);
+                            DrawingObjects.AddObject(new StringDraw("Catch Skill is running",GameParameters.OppGoalCenter.Extend(0.1,0.15)));
                         }
 
                     }

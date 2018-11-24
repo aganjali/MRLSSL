@@ -7,6 +7,7 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using System.Drawing;
 using System.Diagnostics;
 using messages_robocup_ssl_wrapper;
+using MRL.SSL.AIConsole.Plays;
 
 namespace MRL.SSL.AIConsole.Merger_and_Tracker
 {
@@ -753,6 +754,12 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
         public WorldModel GenerateWorldModel4Cam(SSL_WrapperPacket Packet, RobotCommands Commands, bool isYellow, bool isReverseSide, TrackerType RobotType, TrackerType BallType, bool newCordinate, GameStatus status = GameStatus.Normal)
         {
+            //vahid for test
+            if (Commands != null && Commands.Commands.ContainsKey(testInfo.robotId))
+            {
+                testInfo.Vx = Commands.Commands[testInfo.robotId].Vx;
+                testInfo.Vy = Commands.Commands[testInfo.robotId].Vy; 
+            }
             //RobotType = TrackerType.Fast;
             WorldModel model = null;
             //   BallType = TrackerType.Fast;

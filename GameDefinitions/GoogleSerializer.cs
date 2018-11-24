@@ -3242,7 +3242,7 @@ namespace MRL.SSL.GameDefinitions
                 ret.PosScore = DeserializeDouble();
                 ret.Region = DeserializeInt();
                 Position2D p = DeserializePosition2D();
-                ret.Robot = new Position2D(p.X * (/*1.0 + 1.0 / 3.0*/1.5), p.Y * 1.5);
+                ret.Robot = new Position2D(p.X , p.Y);
                 return ret;
             }
             return null;

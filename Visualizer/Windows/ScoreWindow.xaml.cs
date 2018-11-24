@@ -878,6 +878,7 @@ namespace MRL.SSL.Visualizer.Windows
             };
             if (dlg.ShowDialog() == true)
             {
+
                 RegionScore.Load(dlg.FileName);
                 dataListView.ItemsSource = RegionScore.Default.Data.ToList();
                 Data = RegionScore.Default.Data;

@@ -16,7 +16,6 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 {
     public class GoaliTestPlay : PlayBase
     {
-        ReflectStatus RStatus = ReflectStatus.Waiting;
         bool isGo = false;
         bool isFirst = true;
         int catcherId = 0;
@@ -39,13 +38,34 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 
         PreDefinedPath Skill = new PreDefinedPath();
         CircularMotionSkill circleSkill = new CircularMotionSkill();
+        private void findPoints(out List<Position2D> squarePoints, Position2D center, double lenght)
+        {
+            squarePoints = new List<Position2D>();
+            squarePoints.Add(new Position2D(center.X + lenght, center.Y + lenght));
+            squarePoints.Add(new Position2D(center.X + lenght, center.Y - lenght));
+            squarePoints.Add(new Position2D(center.X - lenght, center.Y - lenght));
+            squarePoints.Add(new Position2D(center.X - lenght, center.Y + lenght));
+        }
+        int i = 0;
+
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-            int id = 4;
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, id, typeof(TestRole)))
-                Functions[id] = (eng, wmd) => GetRole<TestRole>(id).GetData(wmd, id, 1, 30);
+            int robotId = 10;
+
+            List<Position2D> points = new List<Position2D>();
+            findPoints(out points, new Position2D(3, 0), 1.3 );
+            if (Model.OurRobots[robotId].Location.DistanceFrom(points[i]) < 0.03)
+            {
+                i++;
+                if (i == 4)
+                {
+                    i = 0;
+                }
+            }
+            Planner.Add(robotId, points[i], 0);
+
             //for (int i = 0; i < 180; i++)
             //{
             //    Line l = new Line(new Position2D(5.5, 2.2), new Position2D(5.5, -2.5));
@@ -57,7 +77,7 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             //        DrawingObjects.AddObject("line_intersect_test" + i.ToString(),
             //            new Circle(poses[i], 0.02,new Pen(Color.Red, 0.01f)));
             //    }
-     
+
             //}
 
             //circleSkill.perform(Model, 2, GameParameters.OppGoalCenter, .2, false);
@@ -180,6 +200,9 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             //GetRole<NewCutBallTestRole>(5).Reset();
         }
 
+        enum state
+        {
 
+        }
     }
 }
