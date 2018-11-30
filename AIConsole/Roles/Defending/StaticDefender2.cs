@@ -9,6 +9,7 @@ using MRL.SSL.AIConsole.Skills;
 using System.Drawing;
 using MRL.SSL.Planning.MotionPlanner;
 using MRL.SSL.AIConsole.Plays;
+using MRL.SSL.AIConsole.Roles.Defending.Normal;
 
 namespace MRL.SSL.AIConsole.Roles
 {
@@ -541,7 +542,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             Position2D tempball = ballState.Location + ballState.Speed * 0.16;
             double d1, d2;
-            List<RoleBase> res = new List<RoleBase>() { new StaticDefender1(), new StaticDefender2() };
+            List<RoleBase> res = new List<RoleBase>() { new StaticDefender1(), new StaticDefender2()};
             if (FreekickDefence.StaticSecondState == DefenderStates.BallInFront)
             {
                 if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))
@@ -558,7 +559,7 @@ namespace MRL.SSL.AIConsole.Roles
                 if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))
                     res.Add(new ActiveRole2017());
             }
-
+           
             return res;
         }
 
