@@ -15,6 +15,7 @@ namespace MRL.SSL.AIConsole.Engine
         {
             public Position2D Target;
             public Position2D PassTarget;
+            public Position2D PassTargetSecond;
             public ActivePassKind pKind;
             public ActiveDribleKind dKind;
 
@@ -31,6 +32,7 @@ namespace MRL.SSL.AIConsole.Engine
             {
                 Target = GameParameters.OppGoalCenter;
                 PassTarget = Position2D.Zero;
+                PassTargetSecond = Position2D.Zero;
                 pKind = ActivePassKind.OneTouch;
                 dKind = ActiveDribleKind.SpaceDrible;
 
@@ -75,7 +77,7 @@ namespace MRL.SSL.AIConsole.Engine
 
             public static bool IsPicking = false;
             public static int? PickerID = null;
-            public static int? ActiveID = null, AttackerID = null, SupporterID = null, lastActiveID = null;
+            public static int? ActiveID = null, AttackerID = null,SecondAttackerID = null, SupporterID = null, lastActiveID = null;
             public static int OppConfID = -1;
 
             public static bool PickIsFeasible = false;
@@ -731,6 +733,7 @@ namespace MRL.SSL.AIConsole.Engine
             public static int? OppMarkID = null;
             public static AttacekrState CurrentState = AttacekrState.WaitForPass;
             public static Position2D MarkPoint = Position2D.Zero;
+            public static Position2D MarkPointSecond = Position2D.Zero;
         }
         public static class PickerInfo
         {
