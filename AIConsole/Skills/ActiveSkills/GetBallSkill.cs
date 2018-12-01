@@ -421,7 +421,7 @@ namespace MRL.SSL.AIConsole.Skills
         public void OutGoingSideTrack(WorldModel Model, int RobotID, Position2D Target, bool useDefaultBackBall = true, double backB = 0.1)
         {
             double BallSpeedCoef = 0.9;
-            double BallDistanceTresh = 0.4;
+            double BallDistanceTresh = 0.5;
             double AngleTresh = Math.PI / 4;
             double AngleTresh2 = Math.PI / 3;
             double segmentConst = 0.8;
@@ -994,7 +994,7 @@ namespace MRL.SSL.AIConsole.Skills
             double pidout = -pidBackX.Calculate(dX, 0);
 
             double vy = 1.5;
-            double accel =  (ActiveParameters.KpTotalVyBack * (1 / (Math.Abs(pidBackY.Calculate(dX, 0)) + ActiveParameters.vyOffsetBack + ActiveParameters.KpxVyBack * Math.Abs(finalSpeed.X))) + Math.Max(ActiveParameters.KpyVyBack * (finalSpeed.Y), 0));
+            double accel = (ActiveParameters.KpTotalVyBack * (1 / (Math.Abs(pidBackY.Calculate(dX, 0)) + ActiveParameters.vyOffsetBack + ActiveParameters.KpxVyBack * Math.Abs(finalSpeed.X))) + Math.Max(ActiveParameters.KpyVyBack * (finalSpeed.Y), 0));
 
             Vtemp = new Vector2D(pidout + ActiveParameters.KpxVxBack * finalSpeed.X, stat.Speed.Y - accel / 60.0);
 
@@ -1127,15 +1127,18 @@ namespace MRL.SSL.AIConsole.Skills
 
             double kx = 1;// -Math.Min(Math.Abs(dX), 0.1) / 0.1;
             // double vy = (ActiveParameters.KpTotalVySide * (1 / (-Math.Abs(pidSideY.Calculate(dX, 0)) - ActiveParameters.vyOffsetSide + ActiveParameters.KpxVySide * -Math.Abs(finalSpeed.X))) + Math.Min(ActiveParameters.KpyVySide * (finalSpeed.Y + dY), 0));
-            double extY = (ActiveParameters.KpxVySide * Math.Abs(dX) + kx * ActiveParameters.KpyVySide * finalSpeed.Y) / pidSideY.Coef.Kp;
 
+            //double extY = (- ActiveParameters.KpxVySide / Math.Min(0.15, Math.Max(Math.Abs(dX), 0.008)) + kx * ActiveParameters.KpyVySide * finalSpeed.Y) / pidSideY.Coef.Kp;
+            double TempdX = Math.Max( Math.Abs( dX) , 0.02);
+            TempdX = Math.Exp(-(TempdX - 0.02) * (TempdX - 0.02) / (ActiveParameters.KpxVySide * ActiveParameters.KpxVySide));
+            double extY = ((TempdX) * kx * ActiveParameters.KpyVySide * finalSpeed.Y) / pidSideY.Coef.Kp;
             extY = Math.Min(extY, 0.15);
 
             //double extY = * (ActiveParameters.KpyVySide * finalSpeed.Y) / pidSideY.Coef.Kp;
 
 
             DrawingObjects.AddObject(new StringDraw("dx: " + dX.ToString(), new Position2D(-4.5, -2)), "42342355551");
-           // DrawingObjects.AddObject(new StringDraw("kx: " + kx.ToString(), new Position2D(-4.7, -2)), "4234235555");
+            // DrawingObjects.AddObject(new StringDraw("kx: " + kx.ToString(), new Position2D(-4.7, -2)), "4234235555");
             DrawingObjects.AddObject(new StringDraw("exty: " + extY.ToString(), new Position2D(-4.9, -2)), "423423555555");
             double vy = -pidSideY.Calculate(dY + extY, 0);
             vy = Math.Min(0, vy);
@@ -1157,11 +1160,11 @@ namespace MRL.SSL.AIConsole.Skills
 
             DrawingObjects.AddObject(new StringDraw("ddx: " + ddx.ToString(), new Position2D(-4.5, -1)), "423423");
             DrawingObjects.AddObject(new StringDraw("VxBall: " + finalSpeed.X.ToString(), new Position2D(-4.7, -1)), "4234233");
-            //if (Debug)
-            //    CharterData.AddData("dX", -(dX));
+            if (Debug)
+                CharterData.AddData("dX", -(dX));
             double pidout = -pidSideX.Calculate(dX + extX, 0);
             MaxSpeed.Y = 3;
-            Vtemp = new Vector2D(pidout, Math.Min(Math.Abs(vy), MaxSpeed.Y) * Math.Sign(vy));
+            Vtemp = new Vector2D(pidout, Math.Min(Math.Abs(vy), MaxSpeed.Y) * Math.Sign(vy)); //todo: V OUT
 
             Vector2D p = new Vector2D(Target2GO.X + extX, Target2GO.Y + extY);
             p = GameParameters.InRefrence(p, Reference);

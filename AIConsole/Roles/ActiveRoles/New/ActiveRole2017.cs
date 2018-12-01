@@ -281,7 +281,7 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 costs = costs.OrderBy(o => o.Value).ToDictionary(k => k.Key, v => v.Value);
                 type = engine.ImplementedActions.ElementAt(costs.First().Key).Key;
-                return engine.ImplementedActions.ElementAt(costs.First().Key).Value;
+                return engine.ImplementedActions.ElementAt(costs.First().Key).Value;//1).Value;
             }
             else
                 throw new Exception("No action feasible!");
@@ -328,6 +328,7 @@ namespace MRL.SSL.AIConsole.Roles
 
         void DetermineActiveState(WorldModel Model, int RobotID, SingleObjectState ball, double minDist)
         {
+
             if (firstNearBallFlag)
                 ballFirstPos = ball.Location;
             double ballRobotDist = ball.Location.DistanceFrom(Model.OurRobots[RobotID].Location);
