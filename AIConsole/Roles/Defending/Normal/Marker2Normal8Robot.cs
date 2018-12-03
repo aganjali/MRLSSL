@@ -7,6 +7,7 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.Planning.MotionPlanner;
 using System.Drawing;
+using MRL.SSL.Planning.GamePlanner.Types;
 
 namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 {
@@ -46,12 +47,14 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
         List<int> oppValue1 = new List<int>();
         List<int> oppValue2 = new List<int>();
         Queue<Position2D> lastTarget = new Queue<Position2D>();
+        HiPerfTimer timer = new HiPerfTimer();
         public override RoleCategory QueryCategory()
         {
             return RoleCategory.Defender;
         }
         public void Perform(GameStrategyEngine engin, WorldModel Model, int RobotID, double markRegion, int? _oppMarkID, List<int> oppAttackerIds, List<int> oppValue1, List<int> oppValue2, int? field)
         {
+            timer.Start();
             if (_oppMarkID.HasValue)
                 oppMarkID = _oppMarkID;
             //if (!_oppMarkID.HasValue || (_oppMarkID.HasValue && (!Model.Opponents.ContainsKey(_oppMarkID.Value) || (Model.Opponents.ContainsKey(_oppMarkID.Value) && Model.Opponents[_oppMarkID.Value].Location.X < markRegion))))
@@ -61,6 +64,42 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             if (CurrentState == (int)State.Attack)
             {
                 #region Attack
+                List<PassPointData> poses = new List<PassPointData>();
+                double regionX = 0;
+                if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H / 2)
+                {
+                    regionX = Model.BallState.Location.X;
+                }
+                else if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H)
+                {
+                    regionX = -(StaticVariables.FIELD_LENGTH_H - 2 * (StaticVariables.FIELD_LENGTH_H) / 3);
+                }
+                Position2D topLeft = new Position2D(regionX, GameParameters.OurRightCorner.Y);
+                double passSpeed = 4, shootSpeed = Program.MaxKickSpeed;
+                int Rows = 5, column = 10;
+
+                int sgn;
+                sgn = Math.Sign(NormalSharedState.CommonInfo.PassTarget.Y);
+
+
+                topLeft = new Position2D(regionX, sgn < 0 ? 0 : GameParameters.OurRightCorner.Y);
+                double width = (GameParameters.OurGoalCenter.X - 0.5 - 0.25);
+                double heigth = GameParameters.OurLeftCorner.Y;
+
+                poses = engin.GameInfo.CalculateAttackerPassScore(Model, NormalSharedState.CommonInfo.ActiveID.Value, RobotID/*, attackerPos*/, topLeft, passSpeed, shootSpeed, width, heigth, Rows, column);
+
+                double maxSc = double.MinValue;
+                foreach (var item in poses)
+                {
+                    if (item.score > maxSc)
+                    {
+                        maxSc = item.score;
+                        target = item.pos;
+                    }
+                }
+                target.DrawColor = Color.DarkGreen;
+                DrawingObjects.AddObject(target);
+
 
                 #endregion
             }
@@ -70,7 +109,6 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 
                 if ((oppValue1.Count == 1 && oppValue2.Count == 0) || (oppValue1.Count == 0 && oppValue2.Count == 0))
                 {
-                    // ino dorost kon
                     if (Model.BallState.Location.X > -0.3 &&/* Model.BallState.Location.Y < 0*/field == 2)
                     {
                         target = new Position2D(3, 2.25);
@@ -104,16 +142,19 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 }
                 #endregion
             }
-            DrawingObjects.AddObject(new Circle(target, 0.09, new Pen(Color.DarkBlue,0.01f)));
+            DrawingObjects.AddObject(new Circle(target, 0.09, new Pen(Color.DarkBlue, 0.01f)));
             NormalSharedState.CommonInfo.NormalAttackerMarker2Target = target;
+            
             Planner.Add(RobotID, target, (Model.OurRobots[RobotID].Angle.Value), PathType.UnSafe, false, true, true, false);
-            if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2)
+            if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2 && CurrentState != (int)State.Attack)
             {
                 Position2D p = (oppMarkID.HasValue ? Model.Opponents[oppMarkID.Value].Location : Model.BallState.Location);
                 if (CurrentState == (int)State.cutball)
                     p = Model.BallState.Location;
                 Planner.Add(RobotID, target, (p - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, false);
             }
+            timer.Stop();
+            Console.WriteLine( timer.Duration);
         }
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
@@ -239,7 +280,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
         }
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            List<RoleBase> res = new List<RoleBase>() { new Marker1Normal8Robot(), new Marker2Normal8Robot(),new ActiveRole2017() };
+            List<RoleBase> res = new List<RoleBase>() { new Marker1Normal8Robot(), new Marker2Normal8Robot(), new ActiveRole2017() };
             //if (CurrentState == (int)State.regional)
             //{
             //    res = new List<RoleBase>() { new Marker2Normal8Robot() };

@@ -14,6 +14,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
     {
 
         int? placerID = null;
+        int? catcherID = null;
         bool firstFlag = true;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
@@ -36,6 +37,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             if (firstFlag)
             {
                 placerID = null;
+                catcherID = null;
                 double min = double.MaxValue;
                 foreach (var item in Model.OurRobots.Keys)
                 {
@@ -48,15 +50,28 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                         }
                     }
                 }
+                min = double.MaxValue;
+                foreach (var item in Model.OurRobots.Keys)
+                {
+                    if (!(Model.GoalieID.HasValue && item == Model.GoalieID.Value) && !(placerID.HasValue && item == placerID.Value))
+                    {
+                        if (Model.OurRobots[item].Location.DistanceFrom(StaticVariables.ballPlacementPos) < min)
+                        {
+                            min = Model.OurRobots[item].Location.DistanceFrom(StaticVariables.ballPlacementPos);
+                            catcherID = item;
+                        }
+                    }
+                }
                 firstFlag = false;
             }
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, placerID, typeof(BallPlacerRole)))
                 Functions[placerID.Value] = (eng, wmd) => GetRole<BallPlacerRole>(placerID.Value).Perform(eng, wmd, placerID.Value);
-
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, catcherID, typeof(BallPalcementCatcher)))
+                Functions[ catcherID.Value] = (eng, wmd) => GetRole<BallPalcementCatcher>(catcherID.Value).Perform(engine,Model,catcherID.Value);
             foreach (var item in Model.OurRobots.Keys)
             {
-                if (!(placerID.HasValue && item == placerID.Value))
+                if (!(placerID.HasValue && item == placerID.Value ) && !(catcherID.HasValue && item == catcherID.Value ))
                 {
                     int index = item; // Warning: Very Important to use "item" like here
                     if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, index, typeof(HaltRole)))
@@ -82,6 +97,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
         {
             if (placerID.HasValue)
                 GetRole<BallPlacerRole>(placerID.Value).Reset();
+            if (catcherID.HasValue)
+                GetRole<BallPalcementCatcher>(placerID.Value).Reset();
         }
     }
 }

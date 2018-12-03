@@ -103,10 +103,7 @@ namespace MRL.SSL.AIConsole.Roles
                     double width = GameParameters.OurGoalCenter.X - 0.5 - 0.25, heigth = 2 * GameParameters.OurLeftCorner.Y, passSpeed = 4, shootSpeed = Program.MaxKickSpeed;
                     int Rows = 5, column = 10;
                     poses = engine.GameInfo.CalculatePassScore(Model, RobotID, NormalSharedState.CommonInfo.AttackerID, topLeft, passSpeed, shootSpeed, width, heigth, Rows, column);
-                    lastPassPoints = poses;
-                    lastPassPointsSecond = posesSecond;
-                    lastBall = Model.BallState.Location;
-
+                    #endregion
                     double mScore = double.MinValue;
                     int sgn = 0;
                     foreach (var item in poses)
@@ -124,18 +121,9 @@ namespace MRL.SSL.AIConsole.Roles
 
                     posesSecond = engine.GameInfo.CalculateAttackerPassScore(Model, RobotID, RobotID/*, attackerPos*/, topLeft, passSpeed, shootSpeed, width, heigth, Rows, column);
 
-                    //double maxSc = double.MinValue;
-                    //foreach (var item in poses)
-                    //{
-                    //    if (item.score > maxSc)
-                    //    {
-                    //        maxSc = item.score;
-                    //        passPointSecond = item.pos;
-                    //    }
-                    //}
-
-                    #endregion
-
+                    lastPassPoints = poses;
+                    lastPassPointsSecond = posesSecond;
+                    lastBall = Model.BallState.Location;
                 }
                 double maxSc = double.MinValue;
                 foreach (var item in poses)

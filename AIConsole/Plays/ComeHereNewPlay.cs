@@ -41,7 +41,7 @@ namespace MRL.SSL.AIConsole.Plays
 
             if (modes == comeHereMode.linear)
             {
-                List<Position2D> targets = new List<Position2D>(); // { new Position2D(2, 2), new Position2D(2, 1), new Position2D(2, 0) };
+                List<Position2D> targets = new List<Position2D>();
                 int j = 0;
                 if (j < ours.Count)
                 {
@@ -49,14 +49,7 @@ namespace MRL.SSL.AIConsole.Plays
                     targets.Add(center);
                     for (int i = 0; i < ours.Count - 1; i++)
                     {
-                        //if (GameParameters.IsInField(targets.Last().Extend(0, robotRadius), 0.1) )
-                        //{
-                        //    targets.Add(targets.Last().Extend(0, robotRadius));
-                        //}
-                        //else
-                        //{
-                        //    targets.Add(targets.Last().Extend(0, targets.Count * -robotRadius));
-                        //}
+
                         if (GameParameters.OurLeftCorner.Y - center.Y > 2.20)
                         {
                             targets.Add(targets.Last().Extend(0, +robotRadius));
@@ -66,7 +59,7 @@ namespace MRL.SSL.AIConsole.Plays
                             targets.Add(targets.Last().Extend(0, -robotRadius));
                         }
                     }
-                    //fill targets with points
+                    
                     int k = 0;
                     foreach (var item in ours)
                     {

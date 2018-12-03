@@ -56,6 +56,7 @@ namespace MRL.SSL.AIConsole.Skills
                 isSpinBack = true;
                 angle = (finalPassVec).AngleInDegrees;
                 target = PredictedBallPos;
+                Math.Exp(-(Model.BallState.Speed.Size - 0.02) * (Model.BallState.Speed.Size - 0.02) / (ActiveParameters.KpxVySide * ActiveParameters.KpxVySide));
                 roleBackVec = (Model.BallState.Speed.Size < 2.2  || PassIsChip ) ? (-finalPassVec).GetNormalizeToCopy(-0.05) : (-finalPassVec).GetNormalizeToCopy(rollBackLength);
 
                 if (Model.BallState.Location.DistanceFrom(Model.OurRobots[catcherID].Location) < distanceToStartRollBack)

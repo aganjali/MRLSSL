@@ -7,6 +7,7 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.Planning.MotionPlanner;
 using System.Drawing;
+using MRL.SSL.Planning.GamePlanner.Types;
 
 namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 {
@@ -58,11 +59,48 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             if (CurrentState == (int)State.Attack)
             {
                 #region Attack
+
+                NormalSharedState.CommonInfo.AttackerID = RobotID;
+                if (NormalSharedState.ActiveInfo.CurrentAction != NormalSharedState.ActiveActionMode.Pass)
+                {
+                    List<PassPointData> poses = new List<PassPointData>();
+                    double regionX = 0;
+                    if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H / 2)
+                    {
+                        regionX = Model.BallState.Location.X;
+                    }
+                    else if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H)
+                    {
+                        regionX = -(StaticVariables.FIELD_LENGTH_H - 2 * (StaticVariables.FIELD_LENGTH_H) / 3);
+                    }
+                    Position2D topLeft = new Position2D(regionX, GameParameters.OurRightCorner.Y);
+                    double width = GameParameters.OurGoalCenter.X - 0.5 - 0.25, heigth = 2 * GameParameters.OurLeftCorner.Y, passSpeed = 4, shootSpeed = Program.MaxKickSpeed;
+                    int Rows = 5, column = 10;
+                    poses = engin.GameInfo.CalculatePassScore(Model, NormalSharedState.CommonInfo.ActiveID.Value, RobotID, topLeft, passSpeed, shootSpeed, width, heigth, Rows, column);
+
+                    double maxSc = double.MinValue;
+                    foreach (var item in poses)
+                    {
+                        if (item.score > maxSc)
+                        {
+                            maxSc = item.score;
+                            target = item.pos;
+                        }
+                    }
+                    NormalSharedState.CommonInfo.PassTarget = target;
+                }
+                else
+                {
+                    target = NormalSharedState.CommonInfo.PassTarget;
+                }
                 #endregion
+
             }
             else
             {
                 #region Defenc
+                //reSet for attack State
+                NormalSharedState.CommonInfo.AttackerID = RobotID;
 
                 //if (oppValue1.Count == 0 && oppValue2.Count == 0 || oppValue2.Count == 1 || oppValue2.Count == 2))
                 //{
@@ -121,9 +159,9 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 
             }
             NormalSharedState.CommonInfo.NormalAttackerMarker1Target = target;
-            DrawingObjects.AddObject(new Circle(target,0.09,new Pen(Color.DarkBlue,0.01f)));
+            DrawingObjects.AddObject(new Circle(target, 0.09, new Pen(Color.DarkBlue, 0.01f)));
             Planner.Add(RobotID, target, (Model.OurRobots[RobotID].Angle.Value), PathType.UnSafe, false, true, true, false);
-            if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2)
+            if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2 && CurrentState != (int)State.Attack)
             {
                 Position2D p = (oppMarkID.HasValue ? Model.Opponents[oppMarkID.Value].Location : Model.BallState.Location);
                 if (CurrentState == (int)State.cutball)
@@ -134,7 +172,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            if (Model.BallState.Location.X < -0.6 && !oppBallOwner)
+            if ((Model.BallState.Location.X < -0.6 && !oppBallOwner) || NormalSharedState.CommonInfo.Ready2Pass == true)
             {
                 CurrentState = (int)State.Attack;
             }
@@ -259,7 +297,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            List<RoleBase> res = new List<RoleBase>() { new Marker2Normal8Robot(), new Marker1Normal8Robot(),new ActiveRole2017() };
+            List<RoleBase> res = new List<RoleBase>() { new Marker2Normal8Robot(), new Marker1Normal8Robot(), new ActiveRole2017() };
             //if (CurrentState == (int)State.regional)
             //{
             //    res = new List<RoleBase>() { new Marker1Normal8Robot() };

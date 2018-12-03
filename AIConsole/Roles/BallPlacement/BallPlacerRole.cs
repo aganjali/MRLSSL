@@ -12,7 +12,7 @@ namespace MRL.SSL.AIConsole.Roles
     class BallPlacerRole : RoleBase
     {
         int counter = 0;
-
+        modes currentMode = modes.Pass;
         public override RoleCategory QueryCategory()
         {
             return RoleCategory.Test;
@@ -20,15 +20,30 @@ namespace MRL.SSL.AIConsole.Roles
 
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            if (CurrentState == (int)state.GoBehind)
+            if (currentMode == modes.OneRobot)
             {
-                if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.1)
-                    CurrentState = (int)state.GoPlace;
+                if (CurrentState == (int)state.GoBehind)
+                {
+                    if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.1)
+                        CurrentState = (int)state.GoPlace;
+                }
+                else if (CurrentState == (int)state.GoPlace)
+                {
+                    if (Model.OurRobots[RobotID].Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
+                        CurrentState = (int)state.Place;
+                }
             }
-            else if (CurrentState == (int)state.GoPlace)
+            else if (currentMode == modes.Pass)
             {
-                if (Model.OurRobots[RobotID].Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
-                    CurrentState = (int)state.Place;
+                if (CurrentState == (int)state.GoBehind)
+                {
+                    if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.1)
+                        CurrentState = (int)state.Pass;
+                }
+                if (Model.BallState.Speed.Size > 0.6)
+                {
+                    CurrentState = (int)state.Halt;
+                }
             }
         }
 
@@ -49,25 +64,45 @@ namespace MRL.SSL.AIConsole.Roles
 
         public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID)
         {
-            if (CurrentState == (int)state.GoBehind)
+            if (currentMode == modes.OneRobot)
             {
-                GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos);
-                Planner.AddKick(RobotID, true);
-            }
-            else if (CurrentState == (int)state.GoPlace)
-            {
-                Planner.ChangeDefaulteParams(RobotID, false);
-                Planner.SetParameter(RobotID, 1.5);
-                Planner.Add(RobotID, StaticVariables.ballPlacementPos , (StaticVariables.ballPlacementPos - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, true);
-                Planner.AddKick(RobotID, true);
-            }
-            else
-            {
-                Planner.Add(RobotID, Model.OurRobots[RobotID].Location, Model.OurRobots[RobotID].Angle.Value, PathType.UnSafe, false, false, false, false);
-                if (counter++ > 30)
-                    Planner.AddKick(RobotID, false);
-                else
+                if (CurrentState == (int)state.GoBehind)
+                {
+                    GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos);
                     Planner.AddKick(RobotID, true);
+                }
+                else if (CurrentState == (int)state.GoPlace)
+                {
+                    Planner.ChangeDefaulteParams(RobotID, false);
+                    Planner.SetParameter(RobotID, 1.5);
+                    Planner.Add(RobotID, StaticVariables.ballPlacementPos, (StaticVariables.ballPlacementPos - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, true);
+                    Planner.AddKick(RobotID, true);
+                }
+                else
+                {
+                    Planner.Add(RobotID, Model.OurRobots[RobotID].Location, Model.OurRobots[RobotID].Angle.Value, PathType.UnSafe, false, false, false, false);
+                    if (counter++ > 30)
+                        Planner.AddKick(RobotID, false);
+                    else
+                        Planner.AddKick(RobotID, true);
+                } 
+            }
+            else if (currentMode == modes.Pass)
+            {
+                if (CurrentState == (int)state.GoBehind)
+                {
+                    GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos);
+                    Planner.AddKick(RobotID, true);
+                }
+                else if (CurrentState == (int)state.Pass )
+                {
+                    Planner.AddRotate(Model,RobotID,StaticVariables.ballPlacementPos,0,kickPowerType.Speed,4,false);
+                }
+                else if (CurrentState == (int)state.Halt)
+                {
+                    Planner.Add(RobotID,Model.OurRobots[RobotID]);
+                }
+
             }
         }
 
@@ -81,7 +116,14 @@ namespace MRL.SSL.AIConsole.Roles
         {
             GoBehind,
             GoPlace,
-            Place
+            Place,
+            Pass,
+            Halt
+        }
+        enum modes
+        { 
+            OneRobot,
+            Pass
         }
     }
 }
