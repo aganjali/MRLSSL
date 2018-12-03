@@ -18,8 +18,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
         bool flagFirst = true;
         bool firstSetBall = true;
         int? goalie = null;
-        bool target_zone1 = false, target_zone2 = false;
-        int? OppToMarkID1 = null, OppToMarkID2 = null, OppToSt3 = null, attackerID = null, attackerID2=null;
+        int field = 1, Robotfield;
+        int? OppToMarkID1 = null, OppToMarkID2 = null, OppToSt3 = null, attackerID = null, attackerID2 = null;
         int? oppID1, oppID2;
         int lastOppCount = 0;
         int? oppBallOwnerId;
@@ -35,8 +35,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
         Dictionary<double, int> lastScores;
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
-            // return false;
-
+            //return false;
             return Status == GameDefinitions.GameStatus.Normal;
         }
 
@@ -49,8 +48,9 @@ namespace MRL.SSL.AIConsole.Plays.Our
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
 
-            List<int> oppAttackerIds = new List<int>();
             List<DefenderCommand> defence = new List<DefenderCommand>();
+
+            List<int> oppAttackerIds = new List<int>();
             DefenceTest.BallTest = FreekickDefence.testDefenceState;
             DefenceTest.GenerateBallPos();
             if (DefenceTest.BallTest)
@@ -210,6 +210,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 Functions[goalie.Value] = (eng, wmd) => GetRole<StaticGoalieRole>(goalie.Value).perform(eng, wmd, goalie.Value, (st1.HasValue) ? first.TargetState : Model.BallState, st1, st2);
             DefenceTest.WeHaveGoalie = true;
 
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, goalie, typeof(StaticGoalieRole)))
+            //    Functions[goalie.Value] = (eng, wmd) => GetRole<StaticGoalieRole>(goalie.Value).perform(eng, wmd, goalie.Value, (st1.HasValue) ? first.TargetState : Model.BallState, st1, st2);
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, ActiveID, typeof(ActiveRole2017)))
             {
@@ -227,21 +229,52 @@ namespace MRL.SSL.AIConsole.Plays.Our
             {
                 Functions[st2.Value] = (eng, wmd) => GetRole<StaticDefender2>(st2.Value).Run(engine, Model, st2.Value, second.DefenderPosition.Value, second.Teta, CurrentlyAssignedRoles);
             }
-            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, st1, typeof(StaticDefender1)))
-            //    Functions[st1.Value] = (eng, wmd) => GetRole<StaticDefender1>(st1.Value).Run(engine, Model, st1.Value, first.DefenderPosition.Value, first.Teta, CurrentlyAssignedRoles);
-            //if (st1.HasValue && Model.OurRobots.ContainsKey(st1.Value))
-            //    DefenceTest.DefenderStaticRole1 = Model.OurRobots[st1.Value].Location;
-            //DefenceTest.WeHaveDefenderStaticRole1 = true;
+            if (Model.BallState.Location.Y > 0.18)
+            {
+                field = 1;
+            }
+            if (Model.BallState.Location.Y < -0.18)
+            {
+                field = 2;
+            }
+            if (Model.BallState.Location.Y >= -0.18 && Model.BallState.Location.Y <= 0.18)
+            {
+                if (field == 1)
+                {
+                    field = 1;
+                }
+                if (field == 2)
+                {
+                    field = 2;
+                }
+            }
 
 
-            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, st2, typeof(StaticDefender2)))
-            //    Functions[st2.Value] = (eng, wmd) => GetRole<StaticDefender2>(st2.Value).Run(engine, Model, st2.Value, second.DefenderPosition.Value, second.Teta, CurrentlyAssignedRoles);
-            //if (st2.HasValue && Model.OurRobots.ContainsKey(st2.Value))
-            //    DefenceTest.DefenderStaticRole2 = Model.OurRobots[st2.Value].Location;
-            //DefenceTest.WeHaveDefenderStaticRole2 = true;
-
-
-            if (Model.BallState.Location.X > 0.6 && Model.BallState.Location.Y > 0.6)
+            for (int i = 0; i < oppAttackerIds.Count; i++)
+            {
+                if (Model.Opponents[oppAttackerIds[i]].Location.Y > 0.18)
+                {
+                    Robotfield = 1;
+                }
+                if (Model.Opponents[oppAttackerIds[i]].Location.Y < -0.18)
+                {
+                    Robotfield = 2;
+                }
+                if (Model.Opponents[oppAttackerIds[i]].Location.Y >= -0.18 && Model.Opponents[oppAttackerIds[i]].Location.Y <= 0.18)
+                {
+                    if (Robotfield == 1)
+                    {
+                        Robotfield = 1;
+                    }
+                    if (Robotfield == 2)
+                    {
+                        Robotfield = 2;
+                    }
+                }
+            }
+            //if (field.HasValue && Robotfield.HasValue)
+            //{
+            if (Model.BallState.Location.X > -0.6 && field == 1)
             {
                 opp = new List<int>();
                 oppValue1 = new List<int>();
@@ -253,25 +286,51 @@ namespace MRL.SSL.AIConsole.Plays.Our
                         opp.Add(oppAttackerIds[i]);
                     }
                 }
-                for (int j = 0; j < opp.Count; j++)
-                {
-                    if (Model.Opponents[opp[j]].Location.Y > 0 && Model.Opponents[opp[j]].Location.X > -0.3
-                        && Model.Opponents[opp[j]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
-                    {
-                        oppValue1.Add(opp[j]);
-                    }
-                }
-                for (int k = 0; k < opp.Count; k++)
+                if (Robotfield == 1)
                 {
 
-                    if (Model.Opponents[opp[k]].Location.Y < 0 && Model.Opponents[opp[k]].Location.X > -0.3
-                        && Model.Opponents[opp[k]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+                    for (int j = 0; j < opp.Count; j++)
                     {
-                        oppValue2.Add(opp[k]);
+                        if (Model.Opponents[opp[j]].Location.Y > 0.18 && Model.Opponents[opp[j]].Location.X > -0.3
+                            && Model.Opponents[opp[j]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+                        {
+                            oppValue1.Add(opp[j]);
+                        }
+                    }
+                    for (int k = 0; k < opp.Count; k++)
+                    {
+
+                        if (Model.Opponents[opp[k]].Location.Y < -0.18 && Model.Opponents[opp[k]].Location.X > -0.3
+                            && Model.Opponents[opp[k]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+                        {
+                            oppValue2.Add(opp[k]);
+                        }
+                    }
+                }
+                if (Robotfield == 2)
+                {
+                    for (int j = 0; j < opp.Count; j++)
+                    {
+                        if (Model.Opponents[opp[j]].Location.Y > 0.18 && Model.Opponents[opp[j]].Location.X > -0.3
+                            && Model.Opponents[opp[j]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+                        {
+                            oppValue1.Add(opp[j]);
+                        }
+                    }
+                    for (int k = 0; k < opp.Count; k++)
+                    {
+                        if (Model.Opponents[opp[k]].Location.Y < -0.18 && Model.Opponents[opp[k]].Location.X > -0.3
+                            && Model.Opponents[opp[k]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+                        {
+                            oppValue2.Add(opp[k]);
+                        }
                     }
                 }
             }
-            else if (Model.BallState.Location.X > 0.6 && Model.BallState.Location.Y < 0.6)
+            //}
+            //if (field.HasValue && Robotfield.HasValue)
+            //{
+            if (Model.BallState.Location.X > -0.6 && field == 2)
             {
                 // oppAttackerIds = new List<int>();
                 opp = new List<int>();
@@ -284,29 +343,53 @@ namespace MRL.SSL.AIConsole.Plays.Our
                         opp.Add(oppAttackerIds[i]);
                     }
                 }
-                for (int j = 0; j < opp.Count; j++)
+                if (Robotfield == 1)
                 {
-                    if (Model.Opponents[opp[j]].Location.Y < 0 && Model.Opponents[opp[j]].Location.X > -0.3
-                        && Model.Opponents[opp[j]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+
+                    for (int j = 0; j < opp.Count; j++)
                     {
-                        oppValue1.Add(opp[j]);
+                        if (Model.Opponents[opp[j]].Location.Y < -0.18 && Model.Opponents[opp[j]].Location.X > -0.3
+                            && Model.Opponents[opp[j]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+                        {
+                            oppValue1.Add(opp[j]);
+                        }
+                    }
+                    for (int k = 0; k < opp.Count; k++)
+                    {
+
+                        if (Model.Opponents[opp[k]].Location.Y > 0.18 && Model.Opponents[opp[k]].Location.X > -0.3
+                            && Model.Opponents[opp[k]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+                        {
+                            oppValue2.Add(opp[k]);
+                        }
                     }
                 }
-                for (int k = 0; k < opp.Count; k++)
+                if (Robotfield == 2)
                 {
-                    if (Model.Opponents[opp[k]].Location.Y > 0 && Model.Opponents[opp[k]].Location.X > -0.3
-                        && Model.Opponents[opp[k]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+                    for (int j = 0; j < opp.Count; j++)
                     {
-                        oppValue2.Add(opp[k]);
+                        if (Model.Opponents[opp[j]].Location.Y < -0.18 && Model.Opponents[opp[j]].Location.X > -0.3
+                            && Model.Opponents[opp[j]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+                        {
+                            oppValue1.Add(opp[j]);
+                        }
+                    }
+                    for (int k = 0; k < opp.Count; k++)
+                    {
+                        if (Model.Opponents[opp[k]].Location.Y > 0.18 && Model.Opponents[opp[k]].Location.X > -0.3
+                            && Model.Opponents[opp[k]].Location.DistanceFrom(Model.BallState.Location) > 0.8)
+                        {
+                            oppValue2.Add(opp[k]);
+                        }
                     }
                 }
             }
-          
+            //}
             if (oppValue1.Count == 0 && oppValue2.Count == 0)
             {
                 OppToMarkID1 = oppAttackerIds[0];
-                OppToMarkID2 = oppAttackerIds[1];
-                OppToSt3 = oppAttackerIds[2];
+                OppToMarkID2 = oppAttackerIds[0];
+                OppToSt3 = oppAttackerIds[0];
             }
             if (oppValue1.Count == 1 && oppValue2.Count == 0)
             {
@@ -376,21 +459,13 @@ namespace MRL.SSL.AIConsole.Plays.Our
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, st3.Value, typeof(staticDefender3)))
                 Functions[st3.Value] = (eng, wmd) => GetRole<staticDefender3>(st3.Value).Run(engine, Model, st3.Value, markRegion, OppToSt3, oppAttackerIds, oppValue1, oppValue2);
 
-            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker1, typeof(Marker1Normal8Robot)))
-            //    Functions[Marker1.Value] = (eng, wmd) => GetRole<Marker1Normal8Robot>(Marker1.Value).Perform(engine, Model, Marker1.Value, markRegion, OppToMarkID1, oppAttackerIds, oppValue1, oppValue2);
 
-            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker2, typeof(Marker2Normal8Robot)))
-            //    Functions[Marker2.Value] = (eng, wmd) => GetRole<Marker2Normal8Robot>(Marker2.Value).Perform(engine, Model, Marker2.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker1, typeof(Marker1Normal8Robot)))
+                Functions[Marker1.Value] = (eng, wmd) => GetRole<Marker1Normal8Robot>(Marker1.Value).Perform(engine, Model, Marker1.Value, markRegion, OppToMarkID1, oppAttackerIds, oppValue1, oppValue2, field);
 
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker2, typeof(Marker2Normal8Robot)))
+                Functions[Marker2.Value] = (eng, wmd) => GetRole<Marker2Normal8Robot>(Marker2.Value).Perform(engine, Model, Marker2.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2, field);
 
-            if (Model.BallState.Location.X > 0.6 && oppBallOwner)
-            {
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker1, typeof(Marker1Normal8Robot)))
-                    Functions[Marker1.Value] = (eng, wmd) => GetRole<Marker1Normal8Robot>(Marker1.Value).Perform(engine, Model, Marker1.Value, markRegion, OppToMarkID1, oppAttackerIds, oppValue1, oppValue2);
-
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker2, typeof(Marker2Normal8Robot)))
-                    Functions[Marker2.Value] = (eng, wmd) => GetRole<Marker2Normal8Robot>(Marker2.Value).Perform(engine, Model, Marker2.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2);
-            }
             //else if (Model.BallState.Location.X > 0.6 && !oppBallOwner)
             //{
             //    OppToMarkID1 = attackerID;
@@ -400,43 +475,28 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
             //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attackerID2, typeof(NewAttacker2Role)))
             //        Functions[attackerID2.Value] = (eng, wmd) => GetRole<NewAttacker2Role>(attackerID2.Value).Perform(engine, Model, attackerID2.Value);
-                //if (opp.Count <= 3)
-                //{
-                //    //attacker
-                //    OppToMarkID1 = attackerID;
-                //    OppToMarkID2 = attackerID2;
-                //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attackerID, typeof(NewAttackerRole)))
-                //        Functions[attackerID.Value] = (eng, wmd) => GetRole<NewAttackerRole>(attackerID.Value).Perform(engine, Model, attackerID.Value);
+            //if (opp.Count <= 3)
+            //{
+            //    //attacker
+            //    OppToMarkID1 = attackerID;
+            //    OppToMarkID2 = attackerID2;
+            //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attackerID, typeof(NewAttackerRole)))
+            //        Functions[attackerID.Value] = (eng, wmd) => GetRole<NewAttackerRole>(attackerID.Value).Perform(engine, Model, attackerID.Value);
 
-                //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attackerID2, typeof(NewAttacker2Role)))
-                //        Functions[attackerID2.Value] = (eng, wmd) => GetRole<NewAttacker2Role>(attackerID2.Value).Perform(engine, Model, attackerID2.Value);
+            //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attackerID2, typeof(NewAttacker2Role)))
+            //        Functions[attackerID2.Value] = (eng, wmd) => GetRole<NewAttacker2Role>(attackerID2.Value).Perform(engine, Model, attackerID2.Value);
 
-                //}
-                //else if (opp.Count > 3)
-                //{
-                //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker1, typeof(Marker1Normal8Robot)))
-                //        Functions[Marker1.Value] = (eng, wmd) => GetRole<Marker1Normal8Robot>(Marker1.Value).Perform(engine, Model, Marker1.Value, markRegion, OppToMarkID1, oppAttackerIds, oppValue1, oppValue2);
-
-                //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker2, typeof(Marker2Normal8Robot)))
-                //        Functions[Marker2.Value] = (eng, wmd) => GetRole<Marker2Normal8Robot>(Marker2.Value).Perform(engine, Model, Marker2.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2);
-                //}
             //}
-            else
-            {
-                //attacker
-                OppToMarkID1 = attackerID;
-                OppToMarkID2 = attackerID2;
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attackerID, typeof(NewAttackerRole)))
-                    Functions[attackerID.Value] = (eng, wmd) => GetRole<NewAttackerRole>(attackerID.Value).Perform(engine, Model, attackerID.Value);
+            //else if (opp.Count > 3)
+            //{
+            //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker1, typeof(Marker1Normal8Robot)))
+            //        Functions[Marker1.Value] = (eng, wmd) => GetRole<Marker1Normal8Robot>(Marker1.Value).Perform(engine, Model, Marker1.Value, markRegion, OppToMarkID1, oppAttackerIds, oppValue1, oppValue2);
 
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attackerID2, typeof(NewAttacker2Role)))
-                    Functions[attackerID2.Value] = (eng, wmd) => GetRole<NewAttacker2Role>(attackerID2.Value).Perform(engine, Model, attackerID2.Value);
-            
-            
-            
-            
-            
-            }
+            //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker2, typeof(Marker2Normal8Robot)))
+            //        Functions[Marker2.Value] = (eng, wmd) => GetRole<Marker2Normal8Robot>(Marker2.Value).Perform(engine, Model, Marker2.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2);
+            //}
+            //}
+
             #endregion
             FreekickDefence.CalculateStaticPos(engine, Model, CurrentlyAssignedRoles);
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
@@ -455,8 +515,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
         public override void ResetPlay(WorldModel Model, GameStrategyEngine engine)
         {
-            target_zone1 = false;
-            target_zone2 = false;
+            field = 1;
+            //Robotfield = null;
             lastOppCount = 0;
             firstSetBall = true;
             flagFirst = true;

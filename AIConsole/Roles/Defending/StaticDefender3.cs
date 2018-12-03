@@ -9,33 +9,16 @@ using MRL.SSL.AIConsole.Skills;
 using MRL.SSL.Planning.MotionPlanner;
 using MRL.SSL.AIConsole.Plays;
 using System.Drawing;
-namespace MRL.SSL.AIConsole.Roles.Defending
+namespace MRL.SSL.AIConsole.Roles
 {
-    class staticDefender3 : RoleBase
+    class  staticDefender3 : RoleBase
     {
         public List<int> oppAttackerIds = new List<int>();
         public Position2D target = new Position2D();
-        Position2D intersectG = new Position2D();
-        Position2D intersect = new Position2D();
-        Position2D initialpos = new Position2D();
-        Position2D? regional = null;
         public static int? oppMarkID;
         double angle;
-        double velocity = 0;
-        double treshTime = 0;
-        double ballcoeff = 0;
-        double robotCoeff = 0;
-        double distNear = 0.18;
-        double robotIntersectTime = 0;
         double GetNormalizeBehind = 0.15;
         double distToMark = 0.5 + RobotParameters.OurRobotParams.Diameter;
-        private double markDistance = 0.180;
-        bool cutFlag = false;
-        bool testrole = false;
-        bool ballIsMove = false;
-        private bool firstTime = true;
-        private bool noIntersect = false;
-        private bool firsttimedanger = true;
         public SingleObjectState ballState = new SingleObjectState();
         public void Run(GameStrategyEngine engine, WorldModel Model, int RobotID, double markRegion, int? _oppMarkID, List<int> oppAttackerIds, List<int> oppValue1, List<int> oppValue2)
         {
@@ -88,25 +71,49 @@ namespace MRL.SSL.AIConsole.Roles.Defending
             }
 
             Position2D? overlapTarget = null;
-            foreach (var item in Model.OurRobots.Where(w => w.Key != RobotID))
+            Circle c = new Circle(target, 0.22);
+
+            var firstCondition = FreekickDefence.Static1ID.HasValue && c.IsInCircle(Model.OurRobots[FreekickDefence.Static1ID.Value].Location);
+            var secondCondition = FreekickDefence.Static2ID.HasValue && c.IsInCircle(Model.OurRobots[FreekickDefence.Static2ID.Value].Location);
+            if (firstCondition && secondCondition)
             {
-                Circle c = new Circle(target, 0.22);
-                if (c.IsInCircle(item.Value.Location))
+                if (Model.OurRobots[FreekickDefence.Static1ID.Value].Location.DistanceFrom(target) < Model.OurRobots[FreekickDefence.Static2ID.Value].Location.DistanceFrom(target))
                 {
-                    double d = 0.1 + (0.1 - (target.DistanceFrom(item.Value.Location)));
-                    overlapTarget = target + (target - item.Value.Location).GetNormalizeToCopy(d);
+                    target = target + ((target) - (Model.OurRobots[FreekickDefence.Static1ID.Value].Location)).GetNormalizeToCopy(Model.OurRobots[FreekickDefence.Static1ID.Value].Location.DistanceFrom(target) + 0.09);
+                }
+                else
+                {
+                    target = target + ((target) - (Model.OurRobots[FreekickDefence.Static2ID.Value].Location)).GetNormalizeToCopy(Model.OurRobots[FreekickDefence.Static2ID.Value].Location.DistanceFrom(target) + 0.09);
                 }
             }
+            else
+            {
+                foreach (var item in Model.OurRobots.Where(w => w.Key != RobotID))
+                {
+                    double DY = (item.Value.Location.Y - target.Y);
+                    
+                    if (item.Value.Location.DistanceFrom(target) < 0.22)//Math.Abs( DY) < .22)
+                    {
+                        //int sign = Math.Sign(target.Y);
+                        Vector2D vec = (target - item.Value.Location );
+                          target = target.Extend(0, (0.22 - Math.Abs(DY)) * Math.Sign(vec.Y));
+
+                    }
+                    
+                }
+            }
+            DrawingObjects.AddObject(new Circle(target, 0.10, new Pen(Brushes.Red, 0.01f))); 
             //DrawingObjects.AddObject(new StringDraw(target.toString(), Position2D.Zero.Extend(0.1, 0)));
-           // return (overlapTarget.HasValue ? overlapTarget.Value : target);
+            // return (overlapTarget.HasValue ? overlapTarget.Value : target);
             if (overlapTarget.HasValue)
             {
                 target = overlapTarget.Value;
             }
 
-             Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 10, 10);
-            Planner.Add(RobotID, target, angle, PathType.UnSafe, false, false, true, true);
+            //Planner.ChangeDefaulteParams(RobotID, false);
+            //Planner.SetParameter(RobotID, 10, 10);
+            NormalSharedState.CommonInfo.ST3Cost = target.DistanceFrom(Model.OurRobots[RobotID].Location);
+            Planner.Add(RobotID, target, angle, PathType.UnSafe, false, true, true, true);
         }
         public override RoleCategory QueryCategory()
         {
@@ -120,25 +127,26 @@ namespace MRL.SSL.AIConsole.Roles.Defending
 
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location);
+            return NormalSharedState.CommonInfo.ST3Cost;
         }
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
             Position2D tempball = ballState.Location + ballState.Speed * 0.16;
             double d1, d2;
-            List<RoleBase> res = new List<RoleBase>() { new StaticDefender1(), new StaticDefender2()};
-            if (FreekickDefence.StaticFirstState == DefenderStates.BallInFront)
+            List<RoleBase> res = new List<RoleBase>() { new StaticDefender1(), new StaticDefender2(), new staticDefender3() };
+            if (FreekickDefence.StaticSecondState == DefenderStates.BallInFront)
             {
                 if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))
                     res.Add(new ActiveRole());
             }
-            if (FreekickDefence.StaticFirstState == DefenderStates.BallInFront)
+            if (FreekickDefence.StaticSecondState == DefenderStates.BallInFront)
             {
                 if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))
                     res.Add(new NewActiveRole());
             }
-            if (FreekickDefence.StaticFirstState == DefenderStates.BallInFront)
+
+            if (FreekickDefence.StaticSecondState == DefenderStates.BallInFront)
             {
                 if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))
                     res.Add(new ActiveRole2017());

@@ -50,26 +50,33 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
         {
             return RoleCategory.Defender;
         }
-        public void Perform(GameStrategyEngine engin, WorldModel Model, int RobotID, double markRegion, int? _oppMarkID, List<int> oppAttackerIds, List<int> oppValue1, List<int> oppValue2)
+        public void Perform(GameStrategyEngine engin, WorldModel Model, int RobotID, double markRegion, int? _oppMarkID, List<int> oppAttackerIds, List<int> oppValue1, List<int> oppValue2, int? field)
         {
             if (_oppMarkID.HasValue)
                 oppMarkID = _oppMarkID;
-            if (!_oppMarkID.HasValue || (_oppMarkID.HasValue && (!Model.Opponents.ContainsKey(_oppMarkID.Value) || (Model.Opponents.ContainsKey(_oppMarkID.Value) && Model.Opponents[_oppMarkID.Value].Location.X < markRegion))))
-                oppMarkID = null;
+            //if (!_oppMarkID.HasValue || (_oppMarkID.HasValue && (!Model.Opponents.ContainsKey(_oppMarkID.Value) || (Model.Opponents.ContainsKey(_oppMarkID.Value) && Model.Opponents[_oppMarkID.Value].Location.X < markRegion))))
+            //    oppMarkID = null;
 
             target = CalculateTarget(engin, Model, RobotID);
-            #region Defenc
-            if (CurrentState == (int)DefencandAttack.Defenc)
+            if (CurrentState == (int)State.Attack)
             {
+                #region Attack
+
+                #endregion
+            }
+            else
+            {
+                #region Defenc
+
                 if ((oppValue1.Count == 1 && oppValue2.Count == 0) || (oppValue1.Count == 0 && oppValue2.Count == 0))
                 {
                     // ino dorost kon
-                    if (Model.BallState.Location.X > -0.3 && Model.BallState.Location.Y < 0)
+                    if (Model.BallState.Location.X > -0.3 &&/* Model.BallState.Location.Y < 0*/field == 2)
                     {
                         target = new Position2D(3, 2.25);
                     }
                     //ok
-                    if (Model.BallState.Location.X > -0.3 && Model.BallState.Location.Y > 0)
+                    if (Model.BallState.Location.X > -0.3 &&/* Model.BallState.Location.Y > 0*/field == 1)
                     {
                         target = new Position2D(3, -2.25);
                     }
@@ -85,20 +92,20 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 if (Model.Opponents[oppMarkID.Value].Location.X < -0.3)
                 {
                     // ino dorost kon
-                    if (Model.BallState.Location.X < -0.3 && Model.BallState.Location.Y < 0)
+                    if (Model.BallState.Location.X < -0.3 &&/* Model.BallState.Location.Y < 0*/field == 2)
                     {
                         target = new Position2D(3, 2.25);
                     }
                     //ok
-                    if (Model.BallState.Location.X < -0.3 && Model.BallState.Location.Y > 0)
+                    if (Model.BallState.Location.X < -0.3 &&/* Model.BallState.Location.Y > 0*/field == 1)
                     {
                         target = new Position2D(3, -2.25);
                     }
                 }
+                #endregion
             }
-            #endregion Defenc
-            #region Attack
-            #endregion
+            DrawingObjects.AddObject(new Circle(target, 0.09, new Pen(Color.DarkBlue,0.01f)));
+            NormalSharedState.CommonInfo.NormalAttackerMarker2Target = target;
             Planner.Add(RobotID, target, (Model.OurRobots[RobotID].Angle.Value), PathType.UnSafe, false, true, true, false);
             if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2)
             {
@@ -111,16 +118,11 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            if (Model.BallState.Location.X > 0.6 && oppBallOwner)
+            if (Model.BallState.Location.X < -0.6 && !oppBallOwner)
             {
-                CurrentState = (int)DefencandAttack.Defenc;
+                CurrentState = (int)State.Attack;
             }
-            else /*if (Model.BallState.Location.X > 0.6 && !oppBallOwner)*/
-            {
-
-                CurrentState = (int)DefencandAttack.Attack;
-            }
-            if (CurrentState == (int)DefencandAttack.Defenc)
+            else
             {
                 Vector2D staticVec = new Vector2D(1, 0);
                 Line OppSpeedLine = new Line();
@@ -227,44 +229,21 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                     CurrentState = (int)State.regional;
                 }
             }
-            else if (CurrentState == (int)DefencandAttack.Attack)
-            {
-
-            }
         }
 
-        Position2D ppp = new Position2D(0, 3.5);
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
             double cost;
-            if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
-            {
-                cost = Model.OurRobots[RobotID].Location.DistanceFrom(Model.Opponents[oppMarkID.Value].Location);
-            }
-            else
-            {
-                cost = Model.OurRobots[RobotID].Location.DistanceFrom(CalculateTarget(engine, Model, RobotID));
-            }
-            ppp = ppp.Extend(.1, 0);
-            // DrawingObjects.AddObject(new StringDraw("cost " + RobotID.ToString() + " : " + cost.ToString(), ppp), "kasfohfjod" + ppp.ToString());
+            cost = Model.OurRobots[RobotID].Location.DistanceFrom(NormalSharedState.CommonInfo.NormalAttackerMarker2Target);
             return cost;
         }
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            List<RoleBase> res = new List<RoleBase>() { new Marker1Normal8Robot(),
-                //new MarkerRole2(),
-                //new MarkerRole3(),
-                //new MarkerRole4(),
-                //new MarkerRole5()
-            };
-            if (CurrentState == (int)State.regional)
-            {
-                res = new List<RoleBase>() { new Marker2Normal8Robot() };
-            }
-            if (Model.OurRobots[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.5)
-            {
-                res = new List<RoleBase>() { new StaticDefender1(), new StaticDefender2(), new staticDefender3() };
-            }
+            List<RoleBase> res = new List<RoleBase>() { new Marker1Normal8Robot(), new Marker2Normal8Robot() };
+            //if (CurrentState == (int)State.regional)
+            //{
+            //    res = new List<RoleBase>() { new Marker2Normal8Robot() };
+            //}
             return res;
         }
 
@@ -273,13 +252,20 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             return true;
         }
 
-        public Position2D CalculateTarget(GameStrategyEngine engin, WorldModel Model, int RobotID)
+        public Position2D CalculateTarget(GameStrategyEngine engine, WorldModel Model, int RobotID)
         {
-            if (!oppBallOwner && engin.GameInfo.OppTeam.BallOwner.HasValue && Model.Opponents[engin.GameInfo.OppTeam.BallOwner.Value].Location.DistanceFrom(Model.BallState.Location) < 0.15)
+            if (!oppBallOwner && engine.GameInfo.OppTeam.BallOwner.HasValue && Model.Opponents[engine.GameInfo.OppTeam.BallOwner.Value].Location.DistanceFrom(Model.BallState.Location) < 0.15)
                 oppBallOwner = true;
-            #region defenc
-            if (CurrentState == (int)DefencandAttack.Defenc)
+
+            if (CurrentState == (int)State.Attack)
             {
+                #region Attack
+
+                #endregion
+            }
+            else
+            {
+                #region defenc
                 if (CurrentState != (int)State.Stop)
                 {
                     firstTime = true;
@@ -638,11 +624,9 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                         }
                     }
                 }
+                #endregion
             }
-            #endregion
-            #region Attack
 
-            #endregion
             Position2D? overlapTarget = null;
             foreach (var item in Model.OurRobots.Where(w => w.Key != RobotID))
             {
@@ -983,17 +967,12 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
         {
             regional,
             Stop,
-            StopBallIsMoved,
             marknear,
             markfar,
             cutball,
             IntheWay,
             goback,
-            behind
-        }
-        enum DefencandAttack
-        {
-            Defenc,
+            behind,
             Attack
         }
     }

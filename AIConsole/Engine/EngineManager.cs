@@ -727,10 +727,10 @@ namespace MRL.SSL.AIConsole.Engine
                                     //  commands.Commands = new Dictionary<int, SingleWirelessCommand>();
                                     //if ((Model4Run0.OurRobots.ContainsKey(0) && !commands.Commands.ContainsKey(0)) || (Model4Run0.OurRobots.ContainsKey(1) && !commands.Commands.ContainsKey(1)))
                                     //    Logger.Write(LogType.Info, "0 : " + commands.Commands.ContainsKey(0) + "\t1: " + commands.Commands.ContainsKey(1));
-                                   // PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
+                                   
 
                                     PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
-
+                                  
                                     foreach (var item in commands.Commands.Keys.ToList())
                                     {
                                         DrawingObjects.AddObject(new StringDraw("kick: " + commands.Commands[item].KickPower, Model.OurRobots[item].Location + new Vector2D(-0.3, -0.3)), "kickPower" + item);

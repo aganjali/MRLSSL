@@ -53,6 +53,9 @@ namespace MRL.SSL.AIConsole.Engine
         {
             //new 
             public static Position2D RegionalDefenderTarget = new Position2D();
+            public static Position2D NormalAttackerMarker1Target = Position2D.Zero;
+            public static Position2D NormalAttackerMarker2Target = Position2D.Zero;
+            public static double ST3Cost = 100;
             //new
 
             public static bool AttackerMode = false;

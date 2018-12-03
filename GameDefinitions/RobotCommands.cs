@@ -213,6 +213,35 @@ namespace MRL.SSL.GameDefinitions
         int[] roAddressStrart = { 5, 15, 25, 37, 47, 57, 69, 79, 89 };
         int[] roAddressEnd = { 14, 24, 34, 46, 56, 66, 78, 88, 98 };
 
+        public byte[] SendrobotPacket(byte sequenc, SingleWirelessCommand Rwc, int RobotID)
+        {
+            Dictionary<int, SingleWirelessCommand> listWcommands = Commands;
+            var listWcommand = listWcommands.OrderBy(o => o.Key);
+            RobotNum = 0;
+            packet = new byte[12];
+
+            packet[0] = (byte)RobotID;
+            packet[1] = sequenc;
+            packet[2] = Rwc.Kind;
+
+            byte[] Vx = getV(Rwc.Vx);
+            packet[3] = Vx[0];
+            packet[4] = Vx[1];
+
+            byte[] Vy = getV(Rwc.Vy);
+            packet[5] = Vy[0];
+            packet[6] = Vy[1];
+
+            byte[] W = getW(Rwc.W);
+            packet[7] = W[0];
+            packet[8] = W[1];
+
+            packet[9] = (byte)(Math.Min(Rwc.KickPower, 255));
+            packet[10] = getMode(Rwc);
+            packet[11] = (Rwc.BackSensor) ? (byte)1 : (byte)0;//getChkSum(robotdata);
+            return packet;
+        }
+
 
         public byte[] CreatPacket(byte sequenc)
         {
