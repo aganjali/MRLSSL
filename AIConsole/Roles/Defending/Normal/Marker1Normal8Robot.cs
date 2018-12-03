@@ -259,7 +259,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            List<RoleBase> res = new List<RoleBase>() { new Marker2Normal8Robot(), new Marker1Normal8Robot() };
+            List<RoleBase> res = new List<RoleBase>() { new Marker2Normal8Robot(), new Marker1Normal8Robot(),new ActiveRole2017() };
             //if (CurrentState == (int)State.regional)
             //{
             //    res = new List<RoleBase>() { new Marker1Normal8Robot() };
