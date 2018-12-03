@@ -169,6 +169,7 @@
     <Compile Include="Roles\ActiveRoles\New\AttackerRole2017.cs" />
     <Compile Include="Roles\ActiveRoles\New\NewAttacker2.cs" />
     <Compile Include="Roles\ActiveRoles\New\NewAttacker3Role.cs" />
+    <Compile Include="Roles\BallPlacement\BallPalcementCatcher.cs" />
     <Compile Include="Roles\BallPlacement\BallPlacerRole.cs" />
     <Compile Include="Roles\Defending\BusDefenceRoles\BusBase.cs" />
     <Compile Include="Roles\Defending\BusDefenceRoles\BusRole1.cs" />
