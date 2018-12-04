@@ -40,6 +40,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
         bool testrole = false;
         double distNear = 0.18;
         public List<int> oppAttackerIds = new List<int>();
+        List<Position2D> ballHistory = new List<Position2D>();
         List<int> opp = new List<int>();
         Queue<Position2D> lastTarget = new Queue<Position2D>();
         public override RoleCategory QueryCategory()
@@ -59,40 +60,46 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             if (CurrentState == (int)State.Attack)
             {
                 #region Attack
-
                 NormalSharedState.CommonInfo.AttackerID = RobotID;
                 if (NormalSharedState.ActiveInfo.CurrentAction != NormalSharedState.ActiveActionMode.Pass)
                 {
-                    List<PassPointData> poses = new List<PassPointData>();
-                    double regionX = 0;
-                    if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H / 2)
+                    if (ballHistory.Count > 1 && ballHistory.First().DistanceFrom(ballHistory.Last()) > 0.5)
+                        ballHistory.Clear();
+                    if (ballHistory.Count == 0)
                     {
-                        regionX = Model.BallState.Location.X;
-                    }
-                    else if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H)
-                    {
-                        regionX = -(StaticVariables.FIELD_LENGTH_H - 2 * (StaticVariables.FIELD_LENGTH_H) / 3);
-                    }
-                    Position2D topLeft = new Position2D(regionX, GameParameters.OurRightCorner.Y);
-                    double width = GameParameters.OurGoalCenter.X - 0.5 - 0.25, heigth = 2 * GameParameters.OurLeftCorner.Y, passSpeed = 4, shootSpeed = Program.MaxKickSpeed;
-                    int Rows = 5, column = 10;
-                    poses = engin.GameInfo.CalculatePassScore(Model, NormalSharedState.CommonInfo.ActiveID.Value, RobotID, topLeft, passSpeed, shootSpeed, width, heigth, Rows, column);
-
-                    double maxSc = double.MinValue;
-                    foreach (var item in poses)
-                    {
-                        if (item.score > maxSc)
+                        
+                        List<PassPointData> poses = new List<PassPointData>();
+                        double regionX = 0;
+                        if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H / 2)
                         {
-                            maxSc = item.score;
-                            target = item.pos;
+                            regionX = Model.BallState.Location.X;
                         }
+                        else if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H)
+                        {
+                            regionX = -(StaticVariables.FIELD_LENGTH_H - 2 * (StaticVariables.FIELD_LENGTH_H) / 3);
+                        }
+                        Position2D topLeft = new Position2D(regionX, GameParameters.OurRightCorner.Y);
+                        double width = GameParameters.OurGoalCenter.X - 0.5 - 0.25, heigth = 2 * GameParameters.OurLeftCorner.Y, passSpeed = 4, shootSpeed = Program.MaxKickSpeed;
+                        int Rows = 5, column = 10;
+                        poses = engin.GameInfo.CalculatePassScore(Model, NormalSharedState.CommonInfo.ActiveID.Value, RobotID, topLeft, passSpeed, shootSpeed, width, heigth, Rows, column);
+
+                        double maxSc = double.MinValue;
+                        foreach (var item in poses)
+                        {
+                            if (item.score > maxSc)
+                            {
+                                maxSc = item.score;
+                                target = item.pos;
+                            }
+                        }
+                        NormalSharedState.CommonInfo.PassTarget = target;
                     }
-                    NormalSharedState.CommonInfo.PassTarget = target;
                 }
                 else
                 {
                     target = NormalSharedState.CommonInfo.PassTarget;
                 }
+
                 #endregion
 
             }
@@ -160,7 +167,8 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             }
             NormalSharedState.CommonInfo.NormalAttackerMarker1Target = target;
             DrawingObjects.AddObject(new Circle(target, 0.09, new Pen(Color.DarkBlue, 0.01f)));
-            Planner.Add(RobotID, target, (Model.OurRobots[RobotID].Angle.Value), PathType.UnSafe, false, true, true, false);
+            var angle = (CurrentState == (int)State.Attack) ? (Model.BallState.Location - target).AngleInDegrees : (Model.OurRobots[RobotID].Angle.Value);
+            Planner.Add(RobotID, target, angle, PathType.UnSafe, false, true, true, false);
             if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2 && CurrentState != (int)State.Attack)
             {
                 Position2D p = (oppMarkID.HasValue ? Model.Opponents[oppMarkID.Value].Location : Model.BallState.Location);
@@ -172,7 +180,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            if ((Model.BallState.Location.X < -0.6 && !oppBallOwner) || NormalSharedState.CommonInfo.Ready2Pass == true)
+            if ((Model.BallState.Location.X < -0.6 || !oppBallOwner) || NormalSharedState.ActiveInfo.CurrentAction == NormalSharedState.ActiveActionMode.Pass)
             {
                 CurrentState = (int)State.Attack;
             }
