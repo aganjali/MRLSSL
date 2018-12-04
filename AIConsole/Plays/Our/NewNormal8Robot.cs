@@ -385,7 +385,13 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 }
             }
             //}
-            if (oppValue1.Count == 0 && oppValue2.Count == 0)
+            if (oppAttackerIds.Count == 0)
+            {
+                OppToMarkID1=0;
+                OppToMarkID2=0;
+                OppToSt3 = 0;
+            }
+            if (oppAttackerIds.Count !=0 && oppValue1.Count == 0 && oppValue2.Count == 0)
             {
                 OppToMarkID1 = oppAttackerIds[0];
                 OppToMarkID2 = oppAttackerIds[0];

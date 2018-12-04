@@ -114,7 +114,51 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 //        target = new Position2D(3, 2.25);
                 //    }
                 //}
-                if (oppValue1.Count == 0 && oppValue2.Count == 0)
+                if (oppAttackerIds.Count != 0)
+                {
+                    if (oppValue1.Count == 0 && oppValue2.Count == 0)
+                    {
+                        if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y < 0*/field == 2)
+                        {
+                            target = new Position2D(3, -2.25);
+                        }
+                        //OK
+                        if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y > 0*/field == 1)
+                        {
+                            target = new Position2D(3, 2.25);
+                        }
+                    }
+                    if (oppValue1.Count == 0 && oppValue2.Count == 1)
+                    {
+                        if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y < 0*/field == 2)
+                        {
+                            target = new Position2D(3, -2.25);
+                        }
+                        //OK
+                        if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y > 0*/field == 1)
+                        {
+                            target = new Position2D(3, 2.25);
+                        }
+                    }
+                    if (oppValue1.Count == 0 && oppValue2.Count == 2)
+                    {
+                        if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y < 0*/field == 2)
+                        {
+                            target = new Position2D(3, -2.25);
+                        }
+                        //OK
+                        if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y > 0*/field == 1)
+                        {
+                            target = new Position2D(3, 2.25);
+                        }
+                    }
+                    //moshkel dare (1shanbe)
+                    if (oppValue1.Count == 0 && oppValue2.Count >= 3)
+                    {
+                        oppMarkID = oppValue2[1];
+                    }
+                }
+                if (oppAttackerIds.Count == 0)
                 {
                     if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y < 0*/field == 2)
                     {
@@ -125,35 +169,6 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                     {
                         target = new Position2D(3, 2.25);
                     }
-                }
-                if (oppValue1.Count == 0 && oppValue2.Count == 1)
-                {
-                    if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y < 0*/field == 2)
-                    {
-                        target = new Position2D(3, -2.25);
-                    }
-                    //OK
-                    if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y > 0*/field == 1)
-                    {
-                        target = new Position2D(3, 2.25);
-                    }
-                }
-                if (oppValue1.Count == 0 && oppValue2.Count == 2)
-                {
-                    if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y < 0*/field == 2)
-                    {
-                        target = new Position2D(3, -2.25);
-                    }
-                    //OK
-                    if (/*Model.BallState.Location.X > 0 && Model.BallState.Location.Y > 0*/field == 1)
-                    {
-                        target = new Position2D(3, 2.25);
-                    }
-                }
-                //moshkel dare (1shanbe)
-                if (oppValue1.Count == 0 && oppValue2.Count >= 3)
-                {
-                    oppMarkID = oppValue2[1];
                 }
                 #endregion
 
@@ -161,19 +176,22 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             NormalSharedState.CommonInfo.NormalAttackerMarker1Target = target;
             DrawingObjects.AddObject(new Circle(target, 0.09, new Pen(Color.DarkBlue, 0.01f)));
 
-            if (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.8)
+            if (oppAttackerIds.Count != 0 && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.8)
             {
-                Vector2D vec = (Model.Opponents[oppMarkID.Value].Location-Model.BallState.Location).GetNormalizeToCopy(-0.3);
+                Vector2D vec = (Model.Opponents[oppMarkID.Value].Location - Model.BallState.Location).GetNormalizeToCopy(-0.3);
                 target = (vec + Model.Opponents[oppMarkID.Value].Location);
 
             }
             Planner.Add(RobotID, target, (Model.OurRobots[RobotID].Angle.Value), PathType.UnSafe, false, true, true, false);
             if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2 && CurrentState != (int)State.Attack)
             {
-                Position2D p = (oppMarkID.HasValue ? Model.Opponents[oppMarkID.Value].Location : Model.BallState.Location);
-                if (CurrentState == (int)State.cutball)
-                    p = Model.BallState.Location;
-                Planner.Add(RobotID, target, (p - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, false);
+                if (oppAttackerIds.Count != 0)
+                {
+                    Position2D p = (oppMarkID.HasValue ? Model.Opponents[oppMarkID.Value].Location : Model.BallState.Location);
+                    if (CurrentState == (int)State.cutball)
+                        p = Model.BallState.Location;
+                    Planner.Add(RobotID, target, (p - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, false);
+                }
             }
         }
 
