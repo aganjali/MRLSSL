@@ -101,8 +101,7 @@ namespace MRL.SSL.AIConsole.Plays
 
 
             counter++;
-            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, 8, typeof(TestRole)))
-            //    Functions[8] = (eng, wmd) => GetRole<TestRole>(8).GetData(Model, 8, 0.5, 30);
+
             #region ScoreColor
             //if (isFirst)
             //{
