@@ -160,6 +160,13 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             }
             NormalSharedState.CommonInfo.NormalAttackerMarker1Target = target;
             DrawingObjects.AddObject(new Circle(target, 0.09, new Pen(Color.DarkBlue, 0.01f)));
+
+            if (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.8)
+            {
+                Vector2D vec = (Model.Opponents[oppMarkID.Value].Location-Model.BallState.Location).GetNormalizeToCopy(-0.3);
+                target = (vec + Model.Opponents[oppMarkID.Value].Location);
+
+            }
             Planner.Add(RobotID, target, (Model.OurRobots[RobotID].Angle.Value), PathType.UnSafe, false, true, true, false);
             if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2 && CurrentState != (int)State.Attack)
             {

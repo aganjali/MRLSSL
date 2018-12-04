@@ -144,7 +144,12 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             }
             DrawingObjects.AddObject(new Circle(target, 0.09, new Pen(Color.DarkBlue, 0.01f)));
             NormalSharedState.CommonInfo.NormalAttackerMarker2Target = target;
-            
+            if (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.8)
+            {
+                Vector2D vec = (Model.Opponents[oppMarkID.Value].Location - Model.BallState.Location).GetNormalizeToCopy(-0.3);
+                target = (vec + Model.Opponents[oppMarkID.Value].Location);
+
+            }
             Planner.Add(RobotID, target, (Model.OurRobots[RobotID].Angle.Value), PathType.UnSafe, false, true, true, false);
             if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2 && CurrentState != (int)State.Attack)
             {
@@ -154,7 +159,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 Planner.Add(RobotID, target, (p - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, false);
             }
             timer.Stop();
-            Console.WriteLine( timer.Duration);
+            Console.WriteLine(timer.Duration);
         }
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
