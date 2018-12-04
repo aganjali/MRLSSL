@@ -16,6 +16,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
         int? placerID = null;
         int? catcherID = null;
         bool firstFlag = true;
+        Position2D firstBallPos = new Position2D();
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
             if (Status == GameDefinitions.GameStatus.BallPlace_OurTeam)
@@ -62,23 +63,30 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                         }
                     }
                 }
+                firstBallPos = Model.BallState.Location;
                 firstFlag = false;
             }
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, placerID, typeof(BallPlacerRole)))
-                Functions[placerID.Value] = (eng, wmd) => GetRole<BallPlacerRole>(placerID.Value).Perform(eng, wmd, placerID.Value);
+                Functions[placerID.Value] = (eng, wmd) => GetRole<BallPlacerRole>(placerID.Value).Perform(eng, wmd, placerID.Value, catcherID.Value);
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, catcherID, typeof(BallPalcementCatcher)))
                 Functions[ catcherID.Value] = (eng, wmd) => GetRole<BallPalcementCatcher>(catcherID.Value).Perform(engine,Model,catcherID.Value);
             foreach (var item in Model.OurRobots.Keys)
             {
-                if (!(placerID.HasValue && item == placerID.Value ) && !(catcherID.HasValue && item == catcherID.Value ))
+                if ((!(placerID.HasValue && item == placerID.Value) && !(catcherID.HasValue && item == catcherID.Value)) || Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.5)
                 {
                     int index = item; // Warning: Very Important to use "item" like here
                     if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, index, typeof(HaltRole)))
                         Functions[index] = (eng, wmd) => GetRole<HaltRole>(index).Halt(Model, index);
                 }
             }
-
+            if (Model.BallState.Location.DistanceFrom(firstBallPos) > 0.10 && Model.BallState.Speed.Size < 0.25)
+            {
+                if (placerID.HasValue)
+                    GetRole<BallPlacerRole>(placerID.Value).Reset();
+                if (catcherID.HasValue)
+                    GetRole<BallPalcementCatcher>(catcherID.Value).Reset(); 
+            }
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             return CurrentlyAssignedRoles;
         }
@@ -99,6 +107,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 GetRole<BallPlacerRole>(placerID.Value).Reset();
             if (catcherID.HasValue)
                 GetRole<BallPalcementCatcher>(placerID.Value).Reset();
+            firstFlag = true;
         }
     }
 }

@@ -52,19 +52,11 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-            int robotId = 10;
+            int robotId = 0;
 
-            List<Position2D> points = new List<Position2D>();
-            findPoints(out points, new Position2D(3, 0), 1.3 );
-            if (Model.OurRobots[robotId].Location.DistanceFrom(points[i]) < 0.03)
-            {
-                i++;
-                if (i == 4)
-                {
-                    i = 0;
-                }
-            }
-            Planner.Add(robotId, points[i], 0);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(TestRole)))
+                Functions[robotId] = (eng, wmd) => GetRole<TestRole>(robotId).GetData(Model, robotId, 0.5, 30);
+
 
             //for (int i = 0; i < 180; i++)
             //{

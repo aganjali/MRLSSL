@@ -6,7 +6,8 @@ using MRL.SSL.AIConsole.Engine;
 using MRL.SSL.Planning.MotionPlanner;
 using MRL.SSL.AIConsole.Skills;
 using MRL.SSL.GameDefinitions;
-
+using MRL.SSL.CommonClasses.MathLibrary;
+using MRL.SSL.AIConsole.Roles;
 namespace MRL.SSL.AIConsole.Roles
 {
     class BallPlacerRole : RoleBase
@@ -17,7 +18,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             return RoleCategory.Test;
         }
-
+        int? catcherID = null;
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
             if (currentMode == modes.OneRobot)
@@ -37,7 +38,8 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 if (CurrentState == (int)state.GoBehind)
                 {
-                    if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.1)
+
+                    if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.21 && catcherID.HasValue && Model.OurRobots[catcherID.Value].Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.10)
                         CurrentState = (int)state.Pass;
                 }
                 if (Model.BallState.Speed.Size > 0.6)
@@ -62,8 +64,9 @@ namespace MRL.SSL.AIConsole.Roles
             return true;
         }
 
-        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID)
+        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID,int catcherId)
         {
+            catcherID = catcherId;
             if (currentMode == modes.OneRobot)
             {
                 if (CurrentState == (int)state.GoBehind)
@@ -91,12 +94,16 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 if (CurrentState == (int)state.GoBehind)
                 {
-                    GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos);
+                    GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos,false,0.2);
                     Planner.AddKick(RobotID, true);
                 }
-                else if (CurrentState == (int)state.Pass )
+                else if (CurrentState == (int)state.Pass)
                 {
-                    Planner.AddRotate(Model,RobotID,StaticVariables.ballPlacementPos,0,kickPowerType.Speed,4,false);
+                    //Planner.AddRotate(Model,RobotID,StaticVariables.ballPlacementPos,0,kickPowerType.Speed,4,false);
+
+                    var speed = Math.Min( Math.Max(0.9, 0.7 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)),6.5);
+                    GetSkill<GetBallSkill>().PerformStatic(engine,Model,RobotID,StaticVariables.ballPlacementPos);
+                    Planner.AddKick(RobotID,kickPowerType.Speed,false,speed);
                 }
                 else if (CurrentState == (int)state.Halt)
                 {

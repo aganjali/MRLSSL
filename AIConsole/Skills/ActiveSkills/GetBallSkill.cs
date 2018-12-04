@@ -1310,7 +1310,7 @@ namespace MRL.SSL.AIConsole.Skills
             double fieldMargin = -0.1;
             Line BallLine = new Line(Model.BallState.Location, predictedBall);
             predictedBall += (-Model.BallState.Speed).GetNormalizeToCopy(incomingGoDist - ActiveParameters.IncomingBackBall);
-            double timeR = CalculateTime(Model.OurRobots[RobotID], predictedBall, 2, 3.3);
+            double timeR = CalculateTime(Model.OurRobots[RobotID], predictedBall, 4, 3.7);
             double timeB = (predictedBall.DistanceFrom(Model.BallState.Location) / Model.BallState.Speed.Size);
 
             int stopRefreshingFrame = 40;
@@ -1347,9 +1347,8 @@ namespace MRL.SSL.AIConsole.Skills
 
                 //}
                 DrawingObjects.AddObject(new StringDraw(incomingGoDist.ToString(), Color.Red, new Position2D(+.5, -2)));
-            DrawingObjects.AddObject(new StringDraw("timeB= " + timeB + "     " + "" + timeR, Color.Red, new Position2D(+.6, -2)));
+            DrawingObjects.AddObject(new StringDraw("timeB= " + timeB + "     " + "TimeR" + timeR, Color.Red, new Position2D(+.6, -2)));
             lastIncomingPred = predictedBall;
-            DrawingObjects.AddObject(new Circle(predictedBall, 0.2, new Pen(Color.Red, 0.03f)));
             if (!GameParameters.IsInField(predictedBall, fieldMargin))
             {
                 Position2D tmpInt = new Position2D();
@@ -1376,6 +1375,8 @@ namespace MRL.SSL.AIConsole.Skills
                 }
                 else
                     predictedBall = Model.BallState.Location;
+                DrawingObjects.AddObject(new Circle(predictedBall, 0.2, new Pen(Color.Red, 0.03f)));
+
             }
             if (Debug)
                 DrawingObjects.AddObject(new Circle(predictedBall, 0.03)

@@ -84,7 +84,7 @@ namespace MRL.SSL.AIConsole.Roles
             }
             if (NormalSharedState.ActiveInfo.CurrentAction == NormalSharedState.ActiveActionMode.Pass)
             {
-                sgn = Math.Sign(NormalSharedState.AttackerInfo.MarkPoint.Y);
+                sgn = Math.Sign(NormalSharedState.CommonInfo.PassTarget.Y);
             }
             #endregion 
 
