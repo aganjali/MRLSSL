@@ -88,6 +88,14 @@ namespace MRL.SSL.Visualizer.Windows
             txtCam2YStat.Text = "";
             txtCam3XStat.Text = "";
             txtCam3YStat.Text = "";
+            txtCam4XStat.Text = "";
+            txtCam4YStat.Text = "";
+            txtCam5XStat.Text = "";
+            txtCam5YStat.Text = "";
+            txtCam6XStat.Text = "";
+            txtCam6YStat.Text = "";
+            txtCam7XStat.Text = "";
+            txtCam7YStat.Text = "";
             if (selectedPosKey.HasValue)
             {
                 txtRealX.Text = points[selectedPosKey.Value].RealData.X.ToString();
@@ -111,6 +119,22 @@ namespace MRL.SSL.Visualizer.Windows
                         case 3:
                             txtCam3XStat.Text = item.Value.X.ToString();
                             txtCam3YStat.Text = item.Value.Y.ToString();
+                            break;
+                        case 4:
+                            txtCam4XStat.Text = item.Value.X.ToString();
+                            txtCam4YStat.Text = item.Value.Y.ToString();
+                            break;
+                        case 5:
+                            txtCam5XStat.Text = item.Value.X.ToString();
+                            txtCam5YStat.Text = item.Value.Y.ToString();
+                            break;
+                        case 6:
+                            txtCam6XStat.Text = item.Value.X.ToString();
+                            txtCam6YStat.Text = item.Value.Y.ToString();
+                            break;
+                        case 7:
+                            txtCam7XStat.Text = item.Value.X.ToString();
+                            txtCam7YStat.Text = item.Value.Y.ToString();
                             break;
                     }
                 }
@@ -358,18 +382,34 @@ namespace MRL.SSL.Visualizer.Windows
             txtCam1X.Text = "";
             txtCam2X.Text = "";
             txtCam3X.Text = "";
+            txtCam4X.Text = "";
+            txtCam5X.Text = "";
+            txtCam6X.Text = "";
+            txtCam7X.Text = "";
             txtCam0Y.Text = "";
             txtCam1Y.Text = "";
             txtCam2Y.Text = "";
             txtCam3Y.Text = "";
+            txtCam4Y.Text = "";
+            txtCam5Y.Text = "";
+            txtCam6Y.Text = "";
+            txtCam7Y.Text = "";
             txtCam0XStat.Text = "";
             txtCam1XStat.Text = "";
             txtCam2XStat.Text = "";
             txtCam3XStat.Text = "";
+            txtCam4XStat.Text = "";
+            txtCam5XStat.Text = "";
+            txtCam6XStat.Text = "";
+            txtCam7XStat.Text = "";
             txtCam0YStat.Text = "";
             txtCam1YStat.Text = "";
             txtCam2YStat.Text = "";
             txtCam3YStat.Text = "";
+            txtCam4YStat.Text = "";
+            txtCam5YStat.Text = "";
+            txtCam6YStat.Text = "";
+            txtCam7YStat.Text = "";
             selectedPosKey = null;
             UIRefresh();
         }
