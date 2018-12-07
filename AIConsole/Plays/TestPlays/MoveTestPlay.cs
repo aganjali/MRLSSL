@@ -9,7 +9,7 @@ using MRL.SSL.GameDefinitions;
 using MRL.SSL.Planning.MotionPlanner;
 using System.Drawing;
 using MRL.SSL.GameDefinitions.General_Settings;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 
 namespace MRL.SSL.AIConsole.Plays
 {
@@ -89,7 +89,7 @@ namespace MRL.SSL.AIConsole.Plays
                 path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), temp);
             }
             string textStr;
-            JsonSerializer jSerializer = new JsonSerializer();
+            //JsonSerializer jSerializer = new JsonSerializer();
             textStr = jw.Frame.ToString("0000") + "  ";
             textStr += jw.X.ToString("0.000000") + "  ";
             textStr += jw.Y.ToString("0.000000") + "  ";
