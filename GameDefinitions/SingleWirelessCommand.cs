@@ -33,18 +33,18 @@ namespace MRL.SSL.GameDefinitions
   
        //new direct lookup
         private static KickSpeedCoeff[] kickCoeff = new KickSpeedCoeff[12] { 
-            new KickSpeedCoeff(4.651e+04,658,8.129,20.3,0.3717,10.35), //0
-            new KickSpeedCoeff(8.208e+08,-1.812e+04,59.22,18.68,14.02,6.417), //1
-            new KickSpeedCoeff(4.177e+16,-595.3,110.2,9.026,18.26,3.093), //2
-            new KickSpeedCoeff(5.393e+16,251.2,18.77,13.71,2.026,7.384), //3
-            new KickSpeedCoeff(1.248e+04,-1.224e+04,8.782,8.739,4.409,4.378),//4
-            new KickSpeedCoeff(1.837e+16,103.3,72.87,6.674,11.46,4.648), //5
-            new KickSpeedCoeff(8.46e+14,-7.121e+04,84,18.02,14.87,5.729),//(481.6,0,19.79,0,10.07,1), //6
-            new KickSpeedCoeff(2.136e+16,89.84,41.05,9.034,5.922,6.099), //7
-            new KickSpeedCoeff(0,203.1,23.52,12.61,2.781,7.377), //8
-            new KickSpeedCoeff(0,238.6,12.08,13.59,0.739,7.955), //9
-            new KickSpeedCoeff(0,275.8,12.41,11.91,0.8683,6.971),//(2.159e+016,165.3,29.09,9.053,3.902,5.161), //10
-            new KickSpeedCoeff(146.2,0,11.91,0,7.035,1)};//11
+            new KickSpeedCoeff(5.875,0,89.16,0,57.66,1), //0
+            new KickSpeedCoeff(/*8.208e+08,-1.812e+04,59.22,18.68,14.02,6.417*/), //1
+            new KickSpeedCoeff(6.637,2.245,91.69,39.87,42.89,25.04), //2
+            new KickSpeedCoeff(6.36,2.219,110.2,43,58.38,33.24), //3
+            new KickSpeedCoeff(/*1.248e+04,-1.224e+04,8.782,8.739,4.409,4.378*/),//4
+            new KickSpeedCoeff(6.399,2.273,94.78,42.06,45.58,28.97), //5
+            new KickSpeedCoeff(6.274,0,134.6,0,89.38,1),//(481.6,0,19.79,0,10.07,1), //6
+            new KickSpeedCoeff(7.855,2.923,111.5,46.55,49.07,29.72), //7
+            new KickSpeedCoeff(6.517,1.568,84.04,33.49,45.43,20.72), //8
+            new KickSpeedCoeff(6.388,1.763,108.7,46.08,55.3,28.95), //9
+            new KickSpeedCoeff(-4309,4315,67.84,67.85,33.32,33.34),//(2.159e+016,165.3,29.09,9.053,3.902,5.161), //10
+            new KickSpeedCoeff(/*146.2,0,11.91,0,7.035,1*/)};//11
 
 
             //new KickSpeedCoeff(2.076e+16,54.17,97.08,5.231,15.64,3.823), //0
