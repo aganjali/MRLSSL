@@ -18,7 +18,7 @@ namespace MRL.SSL.AIConsole.Strategies
         const double initDist = 0.15, tresh = 0.01, waitTresh = 20, finishTresh = 500, maxWaitTresh = 300, faildMaxCounter = 6, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.3, faildFarPassSpeedTresh = 0.3, faildBallDistSecondPass = 0.3, faildNearPassSpeedTresh = -0.03;
         bool first = true, inPassState = false, Debug = true;
         bool passed, passerFirsFlag, chipOrigin;
-        int PasserID, ShooterID, PositionerID0, PositionerID1;
+        int PasserID, ShooterID, PositionerID0, PositionerID1, PositionerID2;
         int counter;
         double passerAngle, PassSpeed, shooterAngle, RotateTeta, GoalieAng, DefenderAng, DefenderAng2;
         int timeLimitCounter, finishCounter, faildCounter;
@@ -37,6 +37,7 @@ namespace MRL.SSL.AIConsole.Strategies
             ShooterID = -1;
             PositionerID0 = -1;
             PositionerID1 = -1;
+            PositionerID2 = -1;
             passerAngle = 0;
             RotateTeta = 90;
             shooterAngle = 0;
@@ -90,7 +91,7 @@ namespace MRL.SSL.AIConsole.Strategies
             UseInMiddle = false;
             UseOnlyInMiddle = false;
             StrategyName = "CP Middle";
-            AttendanceSize = 4;
+            AttendanceSize = 5;
         }
 
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, ref GameStatus Status)
@@ -195,6 +196,23 @@ namespace MRL.SSL.AIConsole.Strategies
                 if (minIdx == -1)
                     return;
                 PositionerID1 = minIdx;
+
+
+                minDist = double.MaxValue;
+                minIdx = -1;
+                foreach (var item in Attendance.Keys.ToList())
+                {
+                    if (item != PasserID && item != ShooterID && item != PositionerID0 && item != PositionerID1 && Math.Abs(Model.OurRobots[item].Location.Y - Model.BallState.Location.Y) < minDist)
+                    {
+                        minDist = Math.Abs(Model.OurRobots[item].Location.Y - Model.BallState.Location.Y);
+                        minIdx = item;
+                    }
+                }
+                if (minIdx == -1)
+                    return;
+                PositionerID2 = minIdx;
+
+
 
 
                 first = false;
@@ -546,8 +564,8 @@ namespace MRL.SSL.AIConsole.Strategies
             }
             if (mode == 2)
             {
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, PositionerID1, typeof(DefenderCornerRole2)))
-                    Functions[PositionerID1] = (eng, wmd) => GetRole<DefenderCornerRole2>(PasserID).Run(eng, wmd, PositionerID1, DefenderPos, DefenderAng);
+                //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, PositionerID1, typeof(DefenderCornerRole2)))
+                //    Functions[PositionerID1] = (eng, wmd) => GetRole<DefenderCornerRole2>(PasserID).Run(eng, wmd, PositionerID1, DefenderPos, DefenderAng);
 
                 if (CurrentState == (int)State.First)
                 {
@@ -555,6 +573,14 @@ namespace MRL.SSL.AIConsole.Strategies
                         Functions[PasserID] = (eng, wmd) => GetRole<ActiveRole>(PasserID).PerformWithoutKick(eng, wmd, PasserID, shootTarget, false, initDist);
                     Planner.Add(PositionerID0, Positioner0Pos, (Model.OurRobots[PasserID].Location - Model.OurRobots[PositionerID0].Location).AngleInDegrees, PathType.Safe, true, true, true, true);
                     Planner.Add(ShooterID, shooterPos, (GameParameters.OppGoalCenter - Model.OurRobots[ShooterID].Location).AngleInDegrees, PathType.Safe, true, true, true, true);
+                    if (Model.BallState.Location.Y < 0)
+                    {
+                        Planner.Add(PositionerID2, new Position2D(4.80, 1.20), (Model.BallState.Location - Model.OurRobots[PositionerID2].Location).AngleInDegrees, PathType.Safe, true, true, true, true);
+                    }
+                    else if (Model.BallState.Location.Y > 0)
+                    {
+                        Planner.Add(PositionerID2, new Position2D(4.80, -1.20), (Model.BallState.Location - Model.OurRobots[PositionerID2].Location).AngleInDegrees, PathType.Safe, true, true, true, true);
+                    }
                 }
                 else if (CurrentState == (int)State.Go)
                 {
