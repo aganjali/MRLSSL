@@ -20,7 +20,7 @@ namespace MRL.SSL.AIConsole.Roles
         const int haltCount = 60;
         bool first = true;
         int count = 0;
-        Position2D center = new Position2D(-3, 0);
+        Position2D center = new Position2D(0, 0);
         Position2D randomPoint = Position2D.Zero;
         int haltCounter = haltCount;
         bool newRand = false;

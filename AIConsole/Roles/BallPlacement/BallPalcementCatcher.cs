@@ -6,6 +6,7 @@ using MRL.SSL.AIConsole.Engine;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.AIConsole.Skills;
 using MRL.SSL.Planning.MotionPlanner;
+using MRL.SSL.CommonClasses.MathLibrary;
 namespace MRL.SSL.AIConsole.Roles
 {
     class BallPalcementCatcher : RoleBase
@@ -40,7 +41,11 @@ namespace MRL.SSL.AIConsole.Roles
             }
             else if (CurrentState == (int)states.GoCatch)
             {
-                
+                if (catchSkill.currentState == 3)
+                {
+                    Vector2D vec = Vector2D.FromAngleSize((StaticVariables.ballPlacementPos - GameParameters.OppGoalCenter).AngleInRadians + 1 * 3 * Math.PI / 180, 0.7);
+                    Planner.Add(RobotID, StaticVariables.ballPlacementPos + vec, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees);
+                }
             }
         }
 

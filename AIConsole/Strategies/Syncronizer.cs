@@ -101,7 +101,7 @@ namespace MRL.SSL.AIConsole.Strategies
             get { return gotoPoint; }
         }
         //1.12
-        double kMotionDirect = 1.2,kMotionChip = 1.3, kPassDirect = 1.0, kPassChip = 1.0, kMotionDirectCatch = 1.3, kMotionChipCatch = 1.30, kPassDirectCatch = 1.0, kPassChipCatch = 1.0;
+        double kMotionDirect = 1.2, kMotionChip = 1.3, kPassDirect = 1.0, kPassChip = 1.0, kMotionDirectCatch = 1.3, kMotionChipCatch = 1.30, kPassDirectCatch = 1.0, kPassChipCatch = 1.0;
         Position2D firstBallPos = Position2D.Zero;
         double chipPassOffset = 80;
 
@@ -812,6 +812,7 @@ namespace MRL.SSL.AIConsole.Strategies
 
         public void SyncChipPass(GameStrategyEngine engine, WorldModel Model, int PasserID, Position2D InitialPos, int ShooterID, Position2D PassTarget, Position2D ShootTarget, double PassSpeed, double KickPower, int RotateDelay, bool backSensor, int rotateDelayOffset = 0)
         {
+
             Vector2D BallTarget = PassTarget - Model.BallState.Location;
             Vector2D InitBall = Model.BallState.Location - InitialPos;
             double Teta = Math.Abs(Vector2D.AngleBetweenInDegrees(BallTarget, InitBall));
@@ -819,6 +820,7 @@ namespace MRL.SSL.AIConsole.Strategies
         }
         public void SyncChipPass(GameStrategyEngine engine, WorldModel Model, int PasserID, double Teta, int ShooterID, Position2D PassTarget, Position2D ShootTarget, double PassSpeed, double KickPower, int RotateDelay, bool backSensor, int rotateDelayOffset = 0)
         {
+            KickPower = Math.Min(KickPower, 4.5);
             Position2D Pos2go = (PassTarget - ShootTarget).GetNormalizeToCopy(distBehindBallTresh) + PassTarget;
             #region First
             if (first)
@@ -984,6 +986,11 @@ namespace MRL.SSL.AIConsole.Strategies
 
         public void SyncChipPass(GameStrategyEngine engine, WorldModel Model, int PasserID, double Teta, int ShooterID, Position2D RealPassTarget, Position2D PassTarget, Position2D ShootTarget, kickPowerType kickType, double PassSpeed, double KickPower, int RotateDelay, bool goOt, bool backSensor, int rotateDelayOffset = 0)
         {
+            if (kickPowerType.Speed == kickType)
+            {
+                KickPower = Math.Min(KickPower, 4.5);
+            }
+
             Position2D Pos2go = (PassTarget - ShootTarget).GetNormalizeToCopy(distBehindBallTresh) + PassTarget;
             #region First
             if (first)
@@ -1152,6 +1159,11 @@ namespace MRL.SSL.AIConsole.Strategies
         }
         public void SyncChipPass(GameStrategyEngine engine, WorldModel Model, Position2D InitPos, int PasserID, int ShooterID, Position2D RealPassTarget, Position2D PassTarget, Position2D ShootTarget, kickPowerType kickType, double PassSpeed, double KickPower, int RotateDelay, bool goOt, bool backSensor, int rotateDelayOffset = 0)
         {
+            if (kickPowerType.Speed == kickType)
+            {
+                KickPower = Math.Min(KickPower, 4.5);
+            }
+
             Position2D Pos2go = (PassTarget - ShootTarget).GetNormalizeToCopy(distBehindBallTresh) + PassTarget;
             #region First
             if (first)
@@ -1328,6 +1340,8 @@ namespace MRL.SSL.AIConsole.Strategies
         }
         public void SyncChipPass(GameStrategyEngine engine, WorldModel Model, int PasserID, double Teta, Position2D firstPos, int ShooterID, Position2D PassTarget, Position2D ShootTarget, double PassSpeed, double KickPower, int RotateDelay, bool backSensor, int rotateDelayOffset = 0)
         {
+            KickPower = Math.Min(KickPower, 4.5);
+
             Position2D Pos2go = (PassTarget - ShootTarget).GetNormalizeToCopy(distBehindBallTresh) + PassTarget;
             #region First
             if (first)
@@ -1692,6 +1706,7 @@ namespace MRL.SSL.AIConsole.Strategies
 
         public void SyncChipCatch(GameStrategyEngine engine, WorldModel Model, int PasserID, Position2D InitialPos, int ShooterID, Position2D PassTarget, Position2D ShootTarget, double PassSpeed, double KickPower, int RotateDelay, bool kickIsChip, kickPowerType kType, bool backSensor, int rotateDelayOffset = 0)
         {
+
             Vector2D BallTarget = PassTarget - Model.BallState.Location;
             Vector2D InitBall = Model.BallState.Location - InitialPos;
             double Teta = Math.Abs(Vector2D.AngleBetweenInDegrees(BallTarget, InitBall));
@@ -1706,6 +1721,7 @@ namespace MRL.SSL.AIConsole.Strategies
         }
         public void SyncChipCatch(GameStrategyEngine engine, WorldModel Model, int PasserID, double Teta, int ShooterID, Position2D PassTarget, Position2D ShootTarget, double PassSpeed, double KickPower, int RotateDelay, bool kickIsChip, kickPowerType kType, bool backSensor, int rotateDelayOffset = 0)
         {
+            KickPower = Math.Min(KickPower, 4.5);
             Position2D Pos2go = PassTarget;
             #region First
             if (first)

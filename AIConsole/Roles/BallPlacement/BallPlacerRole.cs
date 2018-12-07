@@ -107,7 +107,9 @@ namespace MRL.SSL.AIConsole.Roles
                 }
                 else if (CurrentState == (int)state.Halt)
                 {
-                    Planner.Add(RobotID,Model.OurRobots[RobotID]);
+
+                    Vector2D vec = Vector2D.FromAngleSize((StaticVariables.ballPlacementPos - GameParameters.OppGoalCenter).AngleInRadians + 2 * 3 * Math.PI / 180, 0.7);
+                    Planner.Add(RobotID, StaticVariables.ballPlacementPos + vec, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees);
                 }
 
             }

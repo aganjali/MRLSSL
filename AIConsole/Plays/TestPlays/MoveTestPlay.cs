@@ -59,48 +59,52 @@ namespace MRL.SSL.AIConsole.Plays
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
             
-            jWrapper jw = new jWrapper(counter, Model.OurRobots[robotId].Location.X, Model.OurRobots[robotId].Location.Y);
+            //jWrapper jw = new jWrapper(counter, Model.OurRobots[robotId].Location.X, Model.OurRobots[robotId].Location.Y);
 
+            var time = Planner.GetMotionTime(Model, 6, Position2D.Zero, new Position2D(2, 2), ActiveParameters.RobotMotionCoefs);
+            DrawingObjects.AddObject(new StringDraw(time.ToString(), new Position2D(2.1, 2)));
+            Planner.Add(6, new Position2D(2, 2),0);
             
+            //Planner.AddKick(0,4,kickPowerType.Speed);
             //double theta = Model.OurRobots[robotId].Angle.Value;
-            float Angle = Model.OurRobots[robotId].Angle.Value;
-            Position2D targetPos = new Position2D(5.9, 4.32);
-            Position2D targetPos2 = new Position2D(0.1,-4.3);
+            //float Angle = Model.OurRobots[robotId].Angle.Value;
+            //Position2D targetPos = new Position2D(5.9, 4.32);
+            //Position2D targetPos2 = new Position2D(0.1,-4.3);
 
-            if (Model.OurRobots[robotId].Location.DistanceFrom(targetPos) < 0.3)
-            {
-                flag = false;
-            }
-            if (flag)
-            {
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(GotoPointRole)))
-                    Functions[robotId] = (eng, wmd) => GetRole<GotoPointRole>(robotId).GotoPoint(Model, robotId, targetPos, Angle, true, true);
-            }
-            else
-            {
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(GotoPointRole)))
-                    Functions[robotId] = (eng, wmd) => GetRole<GotoPointRole>(robotId).GotoPoint(Model, robotId, targetPos2, Angle, true, true);
-            }
+            //if (Model.OurRobots[robotId].Location.DistanceFrom(targetPos) < 0.3)
+            //{
+            //    flag = false;
+            //}
+            //if (flag)
+            //{
+            //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(GotoPointRole)))
+            //        Functions[robotId] = (eng, wmd) => GetRole<GotoPointRole>(robotId).GotoPoint(Model, robotId, targetPos, Angle, true, true);
+            //}
+            //else
+            //{
+            //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(GotoPointRole)))
+            //        Functions[robotId] = (eng, wmd) => GetRole<GotoPointRole>(robotId).GotoPoint(Model, robotId, targetPos2, Angle, true, true);
+            //}
 
-            if (path == "")
-            {
-                string time = DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString();
-                string temp = "visionData" + "-" + time + ".txt";
-                path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), temp);
-            }
-            string textStr;
-            JsonSerializer jSerializer = new JsonSerializer();
-            textStr = jw.Frame.ToString("0000") + "  ";
-            textStr += jw.X.ToString("0.000000") + "  ";
-            textStr += jw.Y.ToString("0.000000") + "  ";
-            textStr += testInfo.Vx.ToString("0.000000") + "  ";
-            textStr += testInfo.Vy.ToString("0.000000");
+            //if (path == "")
+            //{
+            //    string time = DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString();
+            //    string temp = "visionData" + "-" + time + ".txt";
+            //    path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), temp);
+            //}
+            //string textStr;
+            //JsonSerializer jSerializer = new JsonSerializer();
+            //textStr = jw.Frame.ToString("0000") + "  ";
+            //textStr += jw.X.ToString("0.000000") + "  ";
+            //textStr += jw.Y.ToString("0.000000") + "  ";
+            //textStr += testInfo.Vx.ToString("0.000000") + "  ";
+            //textStr += testInfo.Vy.ToString("0.000000");
             
-            //textStr = JsonConvert.SerializeObject(jw, Formatting.None);
-            System.IO.File.AppendAllLines(path, new List<string>() { textStr }) ;
+            ////textStr = JsonConvert.SerializeObject(jw, Formatting.None);
+            //System.IO.File.AppendAllLines(path, new List<string>() { textStr }) ;
 
 
-            counter++;
+            //counter++;
 
             #region ScoreColor
             //if (isFirst)

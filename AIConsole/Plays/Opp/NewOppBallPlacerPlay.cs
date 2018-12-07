@@ -105,6 +105,8 @@ namespace MRL.SSL.AIConsole.Plays
                 for (int j = 0; j < robotCount; j++)
                 {
                     int item = list[j];
+                    Planner.ChangeDefaulteParams(item,false);
+                    Planner.SetParameter(item, 2, 1.5);
                     if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, item, typeof(GotoPointRole)))
                         Functions[item] = (eng, wmd) => GetRole<GotoPointRole>(item).GotoPoint(wmd, item, firstPoses[item], (Target - firstPoses[item]).AngleInDegrees, true, true);
                 }
@@ -116,6 +118,8 @@ namespace MRL.SSL.AIConsole.Plays
                 for (int j = 0; j < robotCount; j++)
                 {
                     int item = list[j];
+                    Planner.ChangeDefaulteParams(item, false);
+                    Planner.SetParameter(item, 2, 1.5);
                     if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, item, typeof(GotoPointRole)))
                         Functions[item] = (eng, wmd) => GetRole<GotoPointRole>(item).GotoPoint(wmd, item, secondPoses[item], (Target - secondPoses[item]).AngleInDegrees, true, true);
                 }
