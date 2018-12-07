@@ -9,7 +9,7 @@ using MRL.SSL.GameDefinitions;
 using MRL.SSL.Planning.MotionPlanner;
 using System.Drawing;
 using MRL.SSL.GameDefinitions.General_Settings;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 
 namespace MRL.SSL.AIConsole.Plays
 {
@@ -86,6 +86,7 @@ namespace MRL.SSL.AIConsole.Plays
             //        Functions[robotId] = (eng, wmd) => GetRole<GotoPointRole>(robotId).GotoPoint(Model, robotId, targetPos2, Angle, true, true);
             //}
 
+<<<<<<< HEAD
             //if (path == "")
             //{
             //    string time = DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString();
@@ -99,6 +100,21 @@ namespace MRL.SSL.AIConsole.Plays
             //textStr += jw.Y.ToString("0.000000") + "  ";
             //textStr += testInfo.Vx.ToString("0.000000") + "  ";
             //textStr += testInfo.Vy.ToString("0.000000");
+=======
+            if (path == "")
+            {
+                string time = DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString();
+                string temp = "visionData" + "-" + time + ".txt";
+                path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), temp);
+            }
+            string textStr;
+            //JsonSerializer jSerializer = new JsonSerializer();
+            textStr = jw.Frame.ToString("0000") + "  ";
+            textStr += jw.X.ToString("0.000000") + "  ";
+            textStr += jw.Y.ToString("0.000000") + "  ";
+            textStr += testInfo.Vx.ToString("0.000000") + "  ";
+            textStr += testInfo.Vy.ToString("0.000000");
+>>>>>>> f6fd42996cd989a1b83c471d800888370d8eeffa
             
             ////textStr = JsonConvert.SerializeObject(jw, Formatting.None);
             //System.IO.File.AppendAllLines(path, new List<string>() { textStr }) ;

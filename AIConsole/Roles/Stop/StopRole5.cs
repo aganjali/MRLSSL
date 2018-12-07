@@ -10,7 +10,7 @@ using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Roles.Stop
 {
-    class StopRole5:RoleBase
+    class StopRole5 : RoleBase
     {
         public SingleObjectState ballState = new SingleObjectState();
         public SingleObjectState ballStateFast = new SingleObjectState();
@@ -97,74 +97,82 @@ namespace MRL.SSL.AIConsole.Roles.Stop
             {
                 target = new Position2D(1.8, .5);
             }
-          
             else
             {
-                //if (ballState.Location.DistanceFrom(Position2D.Zero)<0.5)
+                target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - 1, StopDistFromBall);
+                //if (ball.X > 2.5 && ball.Y > 1.5)
                 //{
-                //    target = Position2D.Zero + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - Position2D.Zero).AngleInRadians - .9, StopDistFromBall).GetNormalizeToCopy(3);
+                //    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - 0.8, StopDistFromBall);
                 //}
-                if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.85)
-                {
-                    if (ball.Y < 0)
-                        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .7, StopDistFromBall);
-                    else
-                        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .67, StopDistFromBall);
-
-                }
-                else if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.75)
-                {
-                    if (ball.Y < 0)
-                        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .82, StopDistFromBall);
-                    else
-                        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .5, StopDistFromBall);
-
-                }
-
-                else if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.15)
-                {
-                    if (ball.Y < 0)
-                        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * 1, StopDistFromBall);
-                    else
-                        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .6, StopDistFromBall);
-
-                }
-                else if (ball.X > 1.5 && Math.Abs(ball.Y) > 1.15 && ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.8)
-                {
-                    if (ball.Y > 0)
-                        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + Math.Sign(ball.Y) * -.5, StopDistFromBall);
-                    else
-                        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + Math.Sign(ball.Y) * -.9, StopDistFromBall);
-                }
-                else if (ball.X > 1.5 && Math.Abs(ball.Y) > 1.15 && ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) > 1.8)
-                {
-                    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + .7, StopDistFromBall);
-                }
-                else if (ball.X > 2.2 && Math.Abs(ball.Y) > 1.15)
-                {
-                    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - .7, StopDistFromBall);
-                }
-                else if (Math.Abs(ball.X) <= 1.5 && Math.Abs(ball.Y) > 1.15)
-                {
-                    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + .7, StopDistFromBall);
-                }
-                else if (ball.X < -1.5 && Math.Abs(ball.Y) > 1.15)
-                {
-                    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + .7, StopDistFromBall);
-                }
-                else if (Math.Abs(ball.Y) <= 1.15 && ball.X < .95)
-                {
-                    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + .38, StopDistFromBall);
-                }
-                else if (Math.Abs(ball.Y) <= 1.15 && ball.X < 1.5 && ball.X >= .95)
-                {
-                    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 0.7, StopDistFromBall);
-                }
-                else
-                {
-                    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 1.3, StopDistFromBall);
-                }
             }
+            //else
+            //{
+            //    //if (ballState.Location.DistanceFrom(Position2D.Zero)<0.5)
+            //    //{
+            //    //    target = Position2D.Zero + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - Position2D.Zero).AngleInRadians - .9, StopDistFromBall).GetNormalizeToCopy(3);
+            //    //}
+            //    if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.85)
+            //    {
+            //        if (ball.Y < 0)
+            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .7, StopDistFromBall);
+            //        else
+            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .67, StopDistFromBall);
+
+            //    }
+            //    else if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.75)
+            //    {
+            //        if (ball.Y < 0)
+            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .82, StopDistFromBall);
+            //        else
+            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .5, StopDistFromBall);
+
+            //    }
+
+            //    else if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.15)
+            //    {
+            //        if (ball.Y < 0)
+            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * 1, StopDistFromBall);
+            //        else
+            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .6, StopDistFromBall);
+
+            //    }
+            //    else if (ball.X > 1.5 && Math.Abs(ball.Y) > 1.15 && ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.8)
+            //    {
+            //        if (ball.Y > 0)
+            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + Math.Sign(ball.Y) * -.5, StopDistFromBall);
+            //        else
+            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + Math.Sign(ball.Y) * -.9, StopDistFromBall);
+            //    }
+            //    else if (ball.X > 1.5 && Math.Abs(ball.Y) > 1.15 && ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) > 1.8)
+            //    {
+            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + .7, StopDistFromBall);
+            //    }
+            //    else if (ball.X > 2.2 && Math.Abs(ball.Y) > 1.15)
+            //    {
+            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - .7, StopDistFromBall);
+            //    }
+            //    else if (Math.Abs(ball.X) <= 1.5 && Math.Abs(ball.Y) > 1.15)
+            //    {
+            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + .7, StopDistFromBall);
+            //    }
+            //    else if (ball.X < -1.5 && Math.Abs(ball.Y) > 1.15)
+            //    {
+            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + .7, StopDistFromBall);
+            //    }
+            //    else if (Math.Abs(ball.Y) <= 1.15 && ball.X < .95)
+            //    {
+            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 1.3, StopDistFromBall);
+            //        //target = Position2D.Zero;
+            //    }
+            //    else if (Math.Abs(ball.Y) <= 1.15 && ball.X < 1.5 && ball.X >= .95)
+            //    {
+            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 0.7, StopDistFromBall);
+            //    }
+            //    else
+            //    {
+            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 1.3, StopDistFromBall);
+            //    }
+            //}
             //if (ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) > 1.3)
             //{
             //    if (Math.Abs(ballState.Location.X) - Math.Abs(MRL.SSL.GameDefinitions.GameParameters.OurLeftCorner.X) < 0.15)
