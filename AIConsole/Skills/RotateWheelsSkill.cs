@@ -28,7 +28,7 @@ namespace MRL.SSL.AIConsole.Skills
         }
         Position2D initializeTarget = new Position2D(GameParameters.OppGoalLeft.X, GameParameters.OppGoalLeft.Y + 0.15);
 
-        public SingleWirelessCommand Rotate(GameStrategyEngine engine, WorldModel Model, int RobotID, double kickPower, SingleObjectState lastoppState)
+        public SingleWirelessCommand Rotate(GameStrategyEngine engine, WorldModel Model, int RobotID, double kickSpeed, SingleObjectState lastoppState)
         {
             //return new SingleWirelessCommand() { Kind = 3, isDelayedKick = true, BackSensor = true, SpinBack = 0, KickSpeed = kickPower, spinBackward = true };
             OppGoallerState state = CalculateGoallerState(engine, Model , lastoppState);
@@ -89,7 +89,8 @@ namespace MRL.SSL.AIConsole.Skills
             //    SWC.spinBackward = true;
             //}
 
-            SWC.KickPower = kickPower;
+            //SWC.KickPower = kickPower;
+            SWC.KickSpeed = kickSpeed;
             Planner.Add(RobotID, SWC);
             return new SingleWirelessCommand();
         }
