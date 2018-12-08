@@ -150,10 +150,21 @@ namespace MRL.SSL.AIConsole.Plays
                     Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<GoalieNormalRole>(Model.GoalieID.Value).RunStop(eng, wmd, Model.GoalieID.Value, GoaliPos, gteta);
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender1ID, typeof(DefenderNormalRole1)))
+                {
+
+                    Planner.ChangeDefaulteParams(Defender1ID.Value, false);
+                    Planner.SetParameter(Defender1ID.Value, 1.2);
                     Functions[Defender1ID.Value] = (eng, wmd) => GetRole<DefenderNormalRole1>(Defender1ID.Value).RunStop(eng, wmd, Defender1ID.Value, Def1Pos, d1teta);
 
+                }
+
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender2ID, typeof(DefenderNormalRole2)))
+                {
+                    Planner.ChangeDefaulteParams(Defender2ID.Value, false);
+                    Planner.SetParameter(Defender2ID.Value, 1.2);
                     Functions[Defender2ID.Value] = (eng, wmd) => GetRole<DefenderNormalRole2>(Defender2ID.Value).RunStop(eng, wmd, Defender2ID.Value, Def2Pos, d2teta);
+
+                }
             }
             else
             {
@@ -166,7 +177,7 @@ namespace MRL.SSL.AIConsole.Plays
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender2ID, typeof(DefenderStopRole2)))
                     Functions[Defender2ID.Value] = (eng, wmd) => GetRole<DefenderStopRole2>(Defender2ID.Value).PositioningStop(engine, Model, Defender2ID.Value, true, 150);
             }
-
+            
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop1, typeof(StopRole1)))
                 Functions[stop1.Value] = (eng, wmd) => GetRole<StopRole1>(stop1.Value).RunRoleStop(eng, wmd, stop1.Value);
 

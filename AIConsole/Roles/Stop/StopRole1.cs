@@ -27,8 +27,8 @@ namespace MRL.SSL.AIConsole.Roles
                 ballStateFast = Model.BallStateFast;
             }
             Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 1);
-            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2.5, true);
+            Planner.SetParameter(RobotID, 1,1);
+            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, true);
         }
 
         public SingleWirelessCommand RotateRun(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID)
@@ -60,7 +60,7 @@ namespace MRL.SSL.AIConsole.Roles
 
             if (!isOppNear)
             {
-                return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2.5, true);
+                return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, true);
             }
             else
             {
@@ -68,8 +68,8 @@ namespace MRL.SSL.AIConsole.Roles
                 ballOppVec.NormalizeTo(StopDistFromBall);
                 Position2D target = Model.BallState.Location + ballOppVec;
                 if (!GameParameters.IsInField(target, 0.01))
-                    return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, Model.OurRobots[RobotID].Location, (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2.5, true);
-                return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, target, (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2.5, true);
+                    return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, Model.OurRobots[RobotID].Location, (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, true);
+                return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, target, (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, true);
             }
 
         }
@@ -87,8 +87,8 @@ namespace MRL.SSL.AIConsole.Roles
                 ballStateFast = Model.BallStateFast;
             }
             Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 2);
-            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1.9, false);
+            Planner.SetParameter(RobotID, 1);
+            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, false);
         }
 
         public SingleWirelessCommand LongStop(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID)
@@ -96,7 +96,7 @@ namespace MRL.SSL.AIConsole.Roles
 
             Planner.ChangeDefaulteParams(RobotID, false);
             Planner.SetParameter(RobotID, 1);
-            return GetSkill<GotoPointSkill>().GotoPoint(engine, Model, RobotID, ballState.Location + (GameParameters.OurGoalCenter - ballState.Location).GetNormalizeToCopy(1), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, false, true, true, 0, 0, 2);
+            return GetSkill<GotoPointSkill>().GotoPoint(engine, Model, RobotID, ballState.Location + (GameParameters.OurGoalCenter - ballState.Location).GetNormalizeToCopy(1), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, false, true, true, 0, 0, 1);
         }
 
         public override RoleCategory QueryCategory()

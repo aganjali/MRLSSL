@@ -30,7 +30,7 @@ namespace MRL.SSL.AIConsole.Skills
         public void perform(GameStrategyEngine engine, WorldModel Model, int catcherID, bool PassIsChip, Position2D incomingBallTarget, bool IsSpin,int finishDelay = 60,double distanceToStartRollBack = 0.5, double rollBackLength = 0.15 )
         {
             Planner.ChangeDefaulteParams(catcherID, false);
-            Planner.SetParameter(catcherID, 4, 6);
+            Planner.SetParameter(catcherID, 3, 1.5);
             counter++;
             if (startFlag)
                 processOnce(Model, incomingBallTarget);

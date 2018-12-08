@@ -56,7 +56,7 @@ namespace MRL.SSL.AIConsole.Roles
             //Line l = new Line(GameParameters.OurGoalLeft.Extend(-0.15, 0), GameParameters.OurGoalRight.Extend(-0.15, 0));
             double margin = 0.14;
             Target.X = Math.Min(GameParameters.OurGoalLeft.X - margin, Target.X);
-            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, Target, (ballState.Location - Target).AngleInDegrees, false, false, 1.9, false);
+            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, Target, (ballState.Location - Target).AngleInDegrees, false, false, 1, false);
         }
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
