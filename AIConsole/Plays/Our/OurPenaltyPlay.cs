@@ -195,7 +195,7 @@ namespace MRL.SSL.AIConsole.Plays
             //{
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop1, typeof(PenaltyShooterRole)))
-                Functions[stop1.Value] = (eng, wmd) => GetRole<PenaltyShooterRole>(stop1.Value).Perform(eng, wmd, stop1.Value, 6, PreviouslyAssignedRoles);
+                Functions[stop1.Value] = (eng, wmd) => GetRole<PenaltyShooterRole>(stop1.Value).Perform(eng, wmd, stop1.Value, 255, PreviouslyAssignedRoles);
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop2, typeof(PenaltyPositionningRole1)))
                 Functions[stop2.Value] = (eng, wmd) => GetRole<PenaltyPositionningRole1>(stop2.Value).RunRole(eng, wmd, stop2.Value, PreviouslyAssignedRoles);

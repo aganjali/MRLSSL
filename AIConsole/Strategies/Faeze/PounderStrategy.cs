@@ -17,7 +17,7 @@ namespace MRL.SSL.AIConsole.Strategies
         double PassSpeed = 2;
         const double tresh = 0.01;
         int PasserID, Posser1ID, shooterID, Poser2ID, Poser3ID;
-        Position2D PasserPos, ShooterPos1, ShootTarget, Pos, Pos1, Pos2, Pos3, ShooterPos22;
+        Position2D PasserPos, ShooterPos1, ShootTarget, Pos1, Pos2, Pos3, ShooterPos22;
         double PasserAngle, ShooterAngle, RotateTeta, KickPower = Program.MaxKickSpeed;
         int RotateDelay, failcounter;
         Syncronizer sync;
@@ -41,8 +41,8 @@ namespace MRL.SSL.AIConsole.Strategies
             failcounter = 0;
             CurrentState = InitialState;
             RotateTeta = 0;
-            PassSpeed = 3;
-            KickPower = 150;
+            PassSpeed = 2;
+            KickPower = 100;
             PasserID = -1;
             Posser1ID = -1;
             shooterID = -1;
@@ -98,33 +98,32 @@ namespace MRL.SSL.AIConsole.Strategies
                 firstBallPos = Model.BallState.Location;
                 //first positioning : pos1,pos2,pos3,pos4,pos5 
                 PasserPos = GameParameters.OppGoalCenter + (Model.BallState.Location - GameParameters.OppGoalCenter).GetNormalizeToCopy(Model.BallState.Location.DistanceFrom(GameParameters.OppGoalCenter) + 0.3);
-                Pos = Position2D.Zero;
-                Pos1 = new Position2D(Pos.X,(Pos.Y+1.3));
+                Pos1 = Position2D.Zero;
                 Pos2 = GameParameters.OppGoalCenter + (Position2D.Zero - GameParameters.OppGoalCenter).GetNormalizeToCopy(2);
                 if (firstBallPos.Y < 0)
                 {
                     Pos3 = new Position2D(Pos2.X, Pos2.Y + 1.5);
-                    ShooterPos1 = new Position2D(Pos.X, Pos.Y + 2.5);
+                    ShooterPos1 = new Position2D(Pos1.X, Pos1.Y + 2.5);
 
-                    ShooterPos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((GameParameters.OppRightCorner - GameParameters.OppGoalCenter).AngleInRadians - 30 * Math.PI / 180, (1.9));
+                    ShooterPos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((GameParameters.OppRightCorner - GameParameters.OppGoalCenter).AngleInRadians - 30 * Math.PI / 180, (1.7));
                 }
                 if (firstBallPos.Y > 0)
                 {
                     Pos3 = new Position2D(Pos2.X, Pos2.Y - 1.5);
-                    ShooterPos1 = new Position2D(Pos.X, Pos.Y - 2.5);
-                    ShooterPos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((GameParameters.OppLeftCorner - GameParameters.OppGoalCenter).AngleInRadians + 30 * Math.PI / 180, (1.9));
+                    ShooterPos1 = new Position2D(Pos1.X, Pos1.Y - 2.5);
+                    ShooterPos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((GameParameters.OppLeftCorner - GameParameters.OppGoalCenter).AngleInRadians + 30 * Math.PI / 180, (1.7));
                 }
                 //second positioning : pos11,pos22,pos33,pos44,pos55
                 double d = 1;
-                Vector2D firstvec = (Position2D.Zero - GameParameters.OppGoalCenter).GetNormalizeToCopy(1.3);
-                pos33 = GameParameters.OppGoalCenter + firstvec.GetNormalizeToCopy(1.5); ;
-                pos333 = GameParameters.OppGoalCenter + firstvec.GetNormalizeToCopy(1.5 + d);
+                Vector2D firstvec = (Position2D.Zero - GameParameters.OppGoalCenter).GetNormalizeToCopy(1.2);
+                pos33 = GameParameters.OppGoalCenter + firstvec;
+                pos333 = GameParameters.OppGoalCenter + firstvec.GetNormalizeToCopy(1.2 + d);
 
-                pos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (20 * Math.PI / 180), 1.7);
-                pos222 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (20 * Math.PI / 180), 1.7 + d);
+                pos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (20 * Math.PI / 180), 1.3);
+                pos222 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (20 * Math.PI / 180), 1.3 + d);
 
-                pos11 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (40 * Math.PI / 180), 2.1);
-                pos111 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (40 * Math.PI / 180), 2.1+ d);
+                pos11 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (40 * Math.PI / 180), 1.4);
+                pos111 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (40 * Math.PI / 180), 1.4 + d);
                 if (firstBallPos.Y < 0)
                 {
                     pos11 = new Position2D(pos11.X, -1 * pos11.Y);
