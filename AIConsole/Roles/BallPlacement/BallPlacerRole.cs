@@ -64,8 +64,9 @@ namespace MRL.SSL.AIConsole.Roles
             return true;
         }
 
-        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID,int catcherId , PlacementModes mode)
+        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, int catcherId, PlacementModes mode)
         {
+            currentMode = mode;
             catcherID = catcherId;
             if (currentMode == PlacementModes.OneRobot)
             {
@@ -77,7 +78,7 @@ namespace MRL.SSL.AIConsole.Roles
                 else if (CurrentState == (int)state.GoPlace)
                 {
                     Planner.ChangeDefaulteParams(RobotID, false);
-                    Planner.SetParameter(RobotID, 1.5);
+                    Planner.SetParameter(RobotID,1, 1);
                     Planner.Add(RobotID, StaticVariables.ballPlacementPos, (StaticVariables.ballPlacementPos - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, true);
                     Planner.AddKick(RobotID, true);
                 }
@@ -88,28 +89,33 @@ namespace MRL.SSL.AIConsole.Roles
                         Planner.AddKick(RobotID, false);
                     else
                         Planner.AddKick(RobotID, true);
-                } 
+                }
             }
             else if (currentMode == PlacementModes.Pass)
             {
                 if (CurrentState == (int)state.GoBehind)
                 {
-                    GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos,false,0.2);
+                    GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos, false, 0.2);
                     Planner.AddKick(RobotID, true);
                 }
                 else if (CurrentState == (int)state.Pass)
                 {
                     //Planner.AddRotate(Model,RobotID,StaticVariables.ballPlacementPos,0,kickPowerType.Speed,4,false);
 
-                    var speed = Math.Min( Math.Max(0.9, 0.5 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)),5);
-                    GetSkill<GetBallSkill>().PerformStatic(engine,Model,RobotID,StaticVariables.ballPlacementPos);
-                    Planner.AddKick(RobotID,kickPowerType.Speed,false,speed);
+                    var speed = Math.Min(Math.Max(0.9, 0.5 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)), 5);
+                    GetSkill<GetBallSkill>().PerformStatic(engine, Model, RobotID, StaticVariables.ballPlacementPos);
+                    Planner.AddKick(RobotID, kickPowerType.Speed, false, speed);
+                    double dist, boarder;
+                    if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder))
+                    {
+                        Planner.AddRotate(Model, RobotID, StaticVariables.ballPlacementPos,0,kickPowerType.Speed,speed,false);
+                    }
                 }
                 else if (CurrentState == (int)state.Halt)
                 {
 
                     Vector2D vec = Vector2D.FromAngleSize((StaticVariables.ballPlacementPos - GameParameters.OppGoalCenter).AngleInRadians + 2 * 3 * Math.PI / 180, 0.7);
-                    Planner.Add(RobotID, StaticVariables.ballPlacementPos + vec, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees);
+                    Planner.Add(RobotID, Model.OurRobots[RobotID].Location, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees);
                 }
 
             }
@@ -130,7 +136,7 @@ namespace MRL.SSL.AIConsole.Roles
             Halt
         }
         public enum PlacementModes
-        { 
+        {
             OneRobot,
             Pass
         }

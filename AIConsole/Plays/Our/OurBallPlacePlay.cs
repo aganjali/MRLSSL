@@ -8,7 +8,6 @@ using MRL.SSL.AIConsole.Roles;
 using MRL.SSL.GameDefinitions;
 using System.Drawing;
 using MRL.SSL.Planning.MotionPlanner;
-using MRL.SSL.AIConsole.Roles.BallPlacerRole;
 namespace MRL.SSL.AIConsole.Plays.Opp
 {
     class OurBallPlacePlay : PlayBase
@@ -29,7 +28,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
         List<Position2D> ballConf = new List<Position2D>();
         List<Position2D> targetConf = new List<Position2D>();
         Position2D firstBallPos = new Position2D();
-
+        bool catchBool = true;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
             //return false;
@@ -166,22 +165,34 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 }
                 firstFlag = false;
             }
-            //if (Model.BallState.Speed.Size < 0.10)
-            //{
-            //    firstBallPos = Model.BallState.Location;
-            //}
-            if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) > 0.5 && catcherID.HasValue && placerID.HasValue)//&& Model.BallState.Location.DistanceFrom(firstBallPos) > 0.08 )
+            if (Model.BallState.Speed.Size < 0.05)
             {
-                Planner.ChangeDefaulteParams(catcherID.Value, false);
-                Planner.SetParameter(catcherID.Value, 3, 1.5);
+                firstBallPos = Model.BallState.Location;
+            }
+            if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) > 0.5)//Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) > 0.3 && Model.BallState.Speed.Size < 0.1 && catcherID.HasValue && placerID.HasValue)//&& Model.BallState.Location.DistanceFrom(firstBallPos) > 0.08 )
+            {
+                
                 Planner.ChangeDefaulteParams(placerID.Value, false);
                 Planner.SetParameter(placerID.Value, 3, 1.5);
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, placerID, typeof(BallPlacerRole)))
                     Functions[placerID.Value] = (eng, wmd) => GetRole<BallPlacerRole>(placerID.Value).Perform(eng, wmd, placerID.Value, catcherID.Value, BallPlacerRole.PlacementModes.Pass);
+                
+            }
+            if ((Model.BallState.Speed.Size > 0.09 && 
+                Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.5)  || Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) > 0.5)
+            {
+                if (Model.BallState.Location.Size < 0.09 && Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.5)
+                {
+                    catchBool = false;
+                }
+                Planner.ChangeDefaulteParams(catcherID.Value, false);
+                Planner.SetParameter(catcherID.Value, 3, 1.5);
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, catcherID, typeof(BallPalcementCatcher)))
                     Functions[catcherID.Value] = (eng, wmd) => GetRole<BallPalcementCatcher>(catcherID.Value).Perform(engine, Model, catcherID.Value);
             }
-            List<int> tempDick = new List<int>();
+
+            List<int> tempDick = new List<int>(); 
+
             tempDick.Add(catcherID.Value);
             tempDick.Add(placerID.Value);
             //foreach (var item in Model.OurRobots.Keys)
@@ -202,17 +213,27 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             //        //    Functions[index] = (eng, wmd) => GetRole<HaltRole>(index).Halt(Model, index);
             //    }
             //}
-            if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < .52 && Model.BallState.Speed.Size < 0.1
-                    )
+            if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) > .10 && Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < .5 && Model.BallState.Speed.Size < 0.07)
             {
                 Planner.ChangeDefaulteParams(placerID.Value, false);
                 Planner.SetParameter(placerID.Value, 1);
                 int index = placerID.Value; // Warning: Very Important to use "item" like here
-                Vector2D vec = Vector2D.FromAngleSize((GameParameters.OppGoalCenter - StaticVariables.ballPlacementPos).AngleInRadians + 25 * Math.PI / 180, 0.7);
-                Planner.Add(index, StaticVariables.ballPlacementPos + vec, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
+                Vector2D vec = Vector2D.FromAngleSize((GameParameters.OppGoalCenter - StaticVariables.ballPlacementPos).AngleInRadians + 1 * Math.PI / 180, 0.7);
+                //Vector2D vec = Vector2D.FromAngleSize((GameParameters.OppGoalCenter - StaticVariables.ballPlacementPos).AngleInRadians + 1 * Math.PI / 180, 0.7);
+                Vector2D vec2 = Vector2D.FromAngleSize((GameParameters.OppGoalCenter - StaticVariables.ballPlacementPos).AngleInRadians + 25 * Math.PI / 180, 0.7);
+                //Planner.Add(index, StaticVariables.ballPlacementPos + vec, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, placerID, typeof(BallPlacerRole)))
+                    Functions[placerID.Value] = (eng, wmd) => GetRole<BallPlacerRole>(placerID.Value).Perform(eng, wmd, placerID.Value, catcherID.Value, BallPlacerRole.PlacementModes.OneRobot);
                 index = catcherID.Value;
-                Planner.Add(index, StaticVariables.ballPlacementPos + vec, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-            
+                Planner.Add(index, StaticVariables.ballPlacementPos + vec, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);            
+            }
+            else
+            {
+                Vector2D vec = Vector2D.FromAngleSize((GameParameters.OppGoalCenter - StaticVariables.ballPlacementPos).AngleInRadians + 1 * Math.PI / 180, 0.7);
+                Vector2D vec2 = Vector2D.FromAngleSize((GameParameters.OppGoalCenter - StaticVariables.ballPlacementPos).AngleInRadians + 25 * Math.PI / 180, 0.7);
+
+                Planner.Add(placerID.Value, StaticVariables.ballPlacementPos + vec, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
+                Planner.Add(catcherID.Value, StaticVariables.ballPlacementPos + vec2, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
             }
             foreach (var item in Model.OurRobots.Keys)
             {
@@ -258,6 +279,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             if (catcherID.HasValue)
                 GetRole<BallPalcementCatcher>(placerID.Value).Reset();
             firstFlag = true;
+            catchBool = true;
 
         }
     }
