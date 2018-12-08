@@ -101,7 +101,7 @@ namespace MRL.SSL.AIConsole.Roles
         public SingleWirelessCommand RunStop(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D TargetPos, double Teta)
         {
             Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 2);
+            Planner.SetParameter(RobotID, 1);
             if (DefenceTest.BallTest)
             {
                 ballState = DefenceTest.currentBallState;
@@ -171,9 +171,9 @@ namespace MRL.SSL.AIConsole.Roles
             FreekickDefence.PreviousPositions[typeof(DefenderMarkerNormalRole2)] = Target;
             SingleWirelessCommand SWC = new SingleWirelessCommand();
             if (Model.Status == GameStatus.Stop)
-                SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, Target, teta, false, false, 1.9, false);
+                SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, Target, teta, false, false, 1, false);
             else
-                SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, Target, teta, false, false, 1.9, true);
+                SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, Target, teta, false, false, 1, true);
 
             ////////////////Planner.AddKick(RobotID, kickPowerType.Power, true, 255);
             SWC.isChipKick = true;

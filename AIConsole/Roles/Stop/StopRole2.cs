@@ -30,7 +30,7 @@ namespace MRL.SSL.AIConsole.Roles
             }
             Planner.ChangeDefaulteParams(RobotID, false);
             Planner.SetParameter(RobotID, 1);
-            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID, ballState), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2.5, true);
+            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID, ballState), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, true);
         }
 
         public SingleWirelessCommand RunRoleStop(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID)
@@ -46,8 +46,8 @@ namespace MRL.SSL.AIConsole.Roles
                 ballStateFast = Model.BallStateFast;
             }
             Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 2);
-            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID, ballState), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1.9, false);
+            Planner.SetParameter(RobotID, 2, 1);
+            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID, ballState), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, false);
         }
 
         private Position2D GetTarget(WorldModel Model, int RobotID, SingleObjectState ballfakepos)

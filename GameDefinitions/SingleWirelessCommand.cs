@@ -33,17 +33,17 @@ namespace MRL.SSL.GameDefinitions
   
        //new direct lookup
         private static KickSpeedCoeff[] kickCoeff = new KickSpeedCoeff[12] { 
-            new KickSpeedCoeff(5.875,0,89.16,0,57.66,1), //0
+            new KickSpeedCoeff(24.3,20.29,12.02,3.79,5.725,3.5), //0
             new KickSpeedCoeff(/*8.208e+08,-1.812e+04,59.22,18.68,14.02,6.417*/), //1
-            new KickSpeedCoeff(6.637,2.245,91.69,39.87,42.89,25.04), //2
-            new KickSpeedCoeff(6.36,2.219,110.2,43,58.38,33.24), //3
+            new KickSpeedCoeff(95.11,0,8.618,0,5.511,1), //2
+            new KickSpeedCoeff(482.3,0,16.93,0,8.505,1), //3
             new KickSpeedCoeff(/*1.248e+04,-1.224e+04,8.782,8.739,4.409,4.378*/),//4
-            new KickSpeedCoeff(6.399,2.273,94.78,42.06,45.58,28.97), //5
-            new KickSpeedCoeff(6.274,0,134.6,0,89.38,1),//(481.6,0,19.79,0,10.07,1), //6
-            new KickSpeedCoeff(7.855,2.923,111.5,46.55,49.07,29.72), //7
-            new KickSpeedCoeff(6.517,1.568,84.04,33.49,45.43,20.72), //8
-            new KickSpeedCoeff(6.388,1.763,108.7,46.08,55.3,28.95), //9
-            new KickSpeedCoeff(-4309,4315,67.84,67.85,33.32,33.34),//(2.159e+016,165.3,29.09,9.053,3.902,5.161), //10
+            new KickSpeedCoeff(51.77,48.41,7.255,5.467,1.737,3.944), //5
+            new KickSpeedCoeff(290.6,0,13.13,0,7.704,1),//(481.6,0,19.79,0,10.07,1), //6
+            new KickSpeedCoeff(133.2,0,10.88,0,6.677,1), //7
+            new KickSpeedCoeff(107,0,9.631,0,5.841,1), //8
+            new KickSpeedCoeff(144,0,3.26,0,3.542,1), //9
+            new KickSpeedCoeff(19.4,67.79,6.47,7.313,0.6389,4.794),//(2.159e+016,165.3,29.09,9.053,3.902,5.161), //10
             new KickSpeedCoeff(/*146.2,0,11.91,0,7.035,1*/)};//11
 
 

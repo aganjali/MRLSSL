@@ -111,11 +111,12 @@ namespace MRL.SSL.AIConsole.Roles
             if (CurrentState == (int)GoalieStates.Normal)
             {
                 //GetSkill<GotoPointSkill>().SetController(false);
-                SWc = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, TargetPos, Teta, false, false, 1.9, false);
+                SWc = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, TargetPos, Teta, false, false, 1, false);
             }
             else if (CurrentState == (int)GoalieStates.InPenaltyArea)
             {
                 //SWc = GetSkill<GoalieInPenaltyAreaSkill>().GoGetBall(engine, model, robotID, true, 200);
+                
                 GetSkill<GetBallSkill>().SetAvoidDangerZone(false, true);
                 Position2D tar = TargetToKick(Model, RobotID);
                 GetSkill<GetBallSkill>().OutGoingSideTrack(Model, RobotID, tar);
