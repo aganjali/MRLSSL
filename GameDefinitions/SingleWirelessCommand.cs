@@ -40,8 +40,8 @@ namespace MRL.SSL.GameDefinitions
             new KickSpeedCoeff(/*1.248e+04,-1.224e+04,8.782,8.739,4.409,4.378*/),//4
             new KickSpeedCoeff(51.77,48.41,7.255,5.467,1.737,3.944), //5
             new KickSpeedCoeff(290.6,0,13.13,0,7.704,1),//(481.6,0,19.79,0,10.07,1), //6
-            new KickSpeedCoeff(133.2,0,3.732,0,3.294,1), //7
-            new KickSpeedCoeff(6.09,92.32,-1.012,2.341,0.9672,2.392), //8
+            new KickSpeedCoeff(133.2,0,10.88,0,6.677,1), //7
+            new KickSpeedCoeff(107,0,9.631,0,5.841,1), //8
             new KickSpeedCoeff(144,0,3.26,0,3.542,1), //9
             new KickSpeedCoeff(19.4,67.79,6.47,7.313,0.6389,4.794),//(2.159e+016,165.3,29.09,9.053,3.902,5.161), //10
             new KickSpeedCoeff(/*146.2,0,11.91,0,7.035,1*/)};//11

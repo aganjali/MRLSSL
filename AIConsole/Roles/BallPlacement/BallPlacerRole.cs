@@ -72,14 +72,16 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 if (CurrentState == (int)state.GoBehind)
                 {
+                    Planner.ChangeDefaulteParams(RobotID, false);
+                    Planner.SetParameter(RobotID, 1, 1);
                     GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos);
                     Planner.AddKick(RobotID, true);
                 }
                 else if (CurrentState == (int)state.GoPlace)
                 {
                     Planner.ChangeDefaulteParams(RobotID, false);
-                    Planner.SetParameter(RobotID,1, 1);
-                    Planner.Add(RobotID, StaticVariables.ballPlacementPos, (StaticVariables.ballPlacementPos - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, true);
+                    Planner.SetParameter(RobotID,1, 0.1);
+                    Planner.Add(RobotID, StaticVariables.ballPlacementPos, (StaticVariables.ballPlacementPos - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, false, false);
                     Planner.AddKick(RobotID, true);
                 }
                 else

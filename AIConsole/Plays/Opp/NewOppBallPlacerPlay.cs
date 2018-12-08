@@ -31,7 +31,7 @@ namespace MRL.SSL.AIConsole.Plays
         Dictionary<int, Position2D> noneRobotTargets = new Dictionary<int, Position2D>();
         List<Position2D> ballConf = new List<Position2D>();
         List<Position2D> targetConf = new List<Position2D>();
-
+        int c1 = 0, c2 = 0, c3 = 0;
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
@@ -40,10 +40,16 @@ namespace MRL.SSL.AIConsole.Plays
 
             if (FirstBall)
             {
-                //if (Model.FieldIsInverted)
-                //StaticVariables.ballPlacementPos = new Position2D(-StaticVariables.ballPlacementPos.X / 1000, StaticVariables.ballPlacementPos.Y / 1000);
-                //else
-                //StaticVariables.ballPlacementPos = new Position2D(StaticVariables.ballPlacementPos.X / 1000, -StaticVariables.ballPlacementPos.Y / 1000);
+                if (Model.FieldIsInverted)
+                    StaticVariables.ballPlacementPos = new Position2D(-StaticVariables.ballPlacementPos.X / 1000, StaticVariables.ballPlacementPos.Y / 1000);
+                else
+                    StaticVariables.ballPlacementPos = new Position2D(StaticVariables.ballPlacementPos.X / 1000, -StaticVariables.ballPlacementPos.Y / 1000);
+                c1 = 0;
+                c2 = 0;
+                c3 = 0;
+                FirstBall = false;
+
+            }
                 FirstBallPos = Model.BallState.Location;
                 ballToAvoid = new Circle(Model.BallState.Location, 0.5);
                 targetToAvoid = new Circle(StaticVariables.ballPlacementPos, 0.5);
@@ -67,7 +73,7 @@ namespace MRL.SSL.AIConsole.Plays
                 {
                     ours.Add(item, Model.OurRobots[item]);
                 }
-                int c1 = 0, c2 = 0, c3 = 0;
+                
                 foreach (var item in ours)
                 {
                     Position2D intersect = new Position2D();
@@ -138,9 +144,7 @@ namespace MRL.SSL.AIConsole.Plays
                 //    }
 
                 //}
-                FirstBall = false;
-
-            }
+                
             Position2D Target = new Position2D();
             double firstRadi = 0.5, finalRadi = 0.1;
             int k = 0;
