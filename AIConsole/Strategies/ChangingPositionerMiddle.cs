@@ -422,7 +422,7 @@ namespace MRL.SSL.AIConsole.Strategies
                             PassSpeed = Model.BallState.Location.DistanceFrom(passTarget) * 0.65;
                             shooterPos = Model.BallState.Location.Extend(2, 0);
                             Positioner0Pos = Model.BallState.Location.Extend(2, 4);
-                            passTarget = Model.BallState.Location.Extend(-2, 4);
+                            passTarget = GameParameters.OppGoalCenter + (new Position2D(GameParameters.OurLeftCorner.X, Math.Abs(GameParameters.OurLeftCorner.Y)) - GameParameters.OppGoalCenter).GetNormalizeToCopy(1.80)  ;//Model.BallState.Location.Extend(-2, 4);
                         }
                     }
                     else
@@ -584,7 +584,7 @@ namespace MRL.SSL.AIConsole.Strategies
                 }
                 else if (CurrentState == (int)State.Go)
                 {
-                    sync.SyncChipPass(engine, Model, PasserID, 60, ShooterID, passTarget, shootTarget, PassSpeed, 8, 60, false);
+                    sync.SyncChipPass(engine, Model, PasserID, 60, ShooterID, passTarget, Model.BallState.Location, PassSpeed, Program.MaxKickSpeed, 60, false);
                     if (Model.OurRobots[ShooterID].Location.DistanceFrom(shooterPos) > 0.1)
                     {
                         Planner.Add(PositionerID0, Positioner0SecPos, (GameParameters.OppGoalCenter - Model.OurRobots[PositionerID0].Location).AngleInDegrees, PathType.Safe, true, true, true, true);

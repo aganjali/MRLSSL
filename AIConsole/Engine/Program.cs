@@ -16,7 +16,7 @@ namespace MRL.SSL.AIConsole.Engine
         public static bool withMatrix = false;
         public static bool Simulating = false;
         public static double MaxKickSpeed = StaticVariables.MaxKickSpeed;
-        public static double OurKickSpeed = 3;
+        public static double OurKickSpeed = 2;
         static void Main(string[] args)
         {
 

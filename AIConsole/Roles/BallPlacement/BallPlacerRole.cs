@@ -18,6 +18,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             return RoleCategory.Test;
         }
+        GetBallSkill activeSkill = new GetBallSkill();
         int? catcherID = null;
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
@@ -74,7 +75,13 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     Planner.ChangeDefaulteParams(RobotID, false);
                     Planner.SetParameter(RobotID, 1, 1);
-                    GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos);
+                    double dist, boarder;
+                    if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder)
+                        || GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.20, out dist, out boarder))
+                    {
+                        activeSkill.SetAvoidDangerZone(false,false);
+                    }
+                    activeSkill.PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos);
                     Planner.AddKick(RobotID, true);
                 }
                 else if (CurrentState == (int)state.GoPlace)
@@ -97,7 +104,13 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 if (CurrentState == (int)state.GoBehind)
                 {
-                    GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos, false, 0.2);
+                    double dist, boarder;
+                    if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder)
+                        || GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.20, out dist, out boarder))
+                    {
+                        activeSkill.SetAvoidDangerZone(false, false);
+                    }
+                    activeSkill.PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos, false, 0.2);
                     Planner.AddKick(RobotID, true);
                 }
                 else if (CurrentState == (int)state.Pass)
@@ -105,13 +118,16 @@ namespace MRL.SSL.AIConsole.Roles
                     //Planner.AddRotate(Model,RobotID,StaticVariables.ballPlacementPos,0,kickPowerType.Speed,4,false);
 
                     var speed = Math.Min(Math.Max(0.9, 0.5 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)), 5);
-                    GetSkill<GetBallSkill>().PerformStatic(engine, Model, RobotID, StaticVariables.ballPlacementPos);
-                    Planner.AddKick(RobotID, kickPowerType.Speed, false, speed);
+                    
                     double dist, boarder;
-                    if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder))
+                    if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder)
+                        || GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.20, out dist, out boarder))
                     {
-                        Planner.AddRotate(Model, RobotID, StaticVariables.ballPlacementPos,0,kickPowerType.Speed,speed,false);
+                        activeSkill.SetAvoidDangerZone(false, false);
                     }
+                        activeSkill.PerformStatic(engine, Model, RobotID, StaticVariables.ballPlacementPos);
+                        Planner.AddKick(RobotID, kickPowerType.Speed, false, speed);
+                    
                 }
                 else if (CurrentState == (int)state.Halt)
                 {

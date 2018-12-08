@@ -31,7 +31,7 @@ namespace MRL.SSL.AIConsole.Plays
         Dictionary<int, Position2D> noneRobotTargets = new Dictionary<int, Position2D>();
         List<Position2D> ballConf = new List<Position2D>();
         List<Position2D> targetConf = new List<Position2D>();
-        int c1 = 0, c2 = 0, c3 = 0;
+        
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
@@ -44,12 +44,6 @@ namespace MRL.SSL.AIConsole.Plays
                     StaticVariables.ballPlacementPos = new Position2D(-StaticVariables.ballPlacementPos.X / 1000, StaticVariables.ballPlacementPos.Y / 1000);
                 else
                     StaticVariables.ballPlacementPos = new Position2D(StaticVariables.ballPlacementPos.X / 1000, -StaticVariables.ballPlacementPos.Y / 1000);
-                c1 = 0;
-                c2 = 0;
-                c3 = 0;
-                FirstBall = false;
-
-            }
                 FirstBallPos = Model.BallState.Location;
                 ballToAvoid = new Circle(Model.BallState.Location, 0.5);
                 targetToAvoid = new Circle(StaticVariables.ballPlacementPos, 0.5);
@@ -63,7 +57,7 @@ namespace MRL.SSL.AIConsole.Plays
                 Vector2D ballConfVec2 = (ballToAvoid.Intersect(line2).FirstOrDefault() - ballToAvoid.Center);
                 Vector2D targetConfVec1 = (targetToAvoid.Intersect(line1).FirstOrDefault() - targetToAvoid.Center);
                 Vector2D targetConfVec2 = (targetToAvoid.Intersect(line2).FirstOrDefault() - targetToAvoid.Center);
-                
+
                 Dictionary<int, SingleObjectState> ours = new Dictionary<int, SingleObjectState>();
                 var list = Model.OurRobots.Keys.ToList();
                 list.Sort();
@@ -73,7 +67,7 @@ namespace MRL.SSL.AIConsole.Plays
                 {
                     ours.Add(item, Model.OurRobots[item]);
                 }
-                
+                int c1 = 0, c2 = 0, c3 = 0;
                 foreach (var item in ours)
                 {
                     Position2D intersect = new Position2D();
@@ -87,7 +81,7 @@ namespace MRL.SSL.AIConsole.Plays
                         if (targetToAvoid.IsInCircle(item.Value.Location))
                         {
                             Vector2D extend = Vector2D.FromAngleSize(20 * Math.PI / 180 + 20 * c1 * Math.PI / 180, 0.60);
-                            if(true)//Vector2D.IsBetweenWithDirection(targetConfVec1,targetConfVec2,extend))
+                            if (true)//Vector2D.IsBetweenWithDirection(targetConfVec1,targetConfVec2,extend))
                             {
                                 noneRobotTargets.Add(item.Key, StaticVariables.ballPlacementPos + extend);
                                 c1++;
@@ -105,11 +99,11 @@ namespace MRL.SSL.AIConsole.Plays
                         }
 
                     }
-                     exLine = (FirstBallPos - StaticVariables.ballPlacementPos);
-                     pointHead = StaticVariables.ballPlacementPos + exLine.GetNormalizeToCopy(0.5);
-                     pointTail = FirstBallPos - exLine.GetNormalizeToCopy(0.5);
+                    exLine = (FirstBallPos - StaticVariables.ballPlacementPos);
+                    pointHead = StaticVariables.ballPlacementPos + exLine.GetNormalizeToCopy(0.5);
+                    pointTail = FirstBallPos - exLine.GetNormalizeToCopy(0.5);
 
-                    
+
 
                     if (intersect.DistanceFrom(item.Value.Location) < 0.50 && Position2D.IsBetween(pointHead, pointTail, intersect))
                     {
@@ -120,13 +114,17 @@ namespace MRL.SSL.AIConsole.Plays
                         }
                         else
                         {
-                            noneRobotTargets.Add(item.Key,line1.Head + (line1.Tail - line1.Head ).GetNormalizeToCopy(1 + 0.18 * c3));//(intersect - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.50);
+                            noneRobotTargets.Add(item.Key, line1.Head + (line1.Tail - line1.Head).GetNormalizeToCopy(1 + 0.18 * c3));//(intersect - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.50);
                             c3++;
                         }
                         //else
                         //    noneRobotTargets.Add(item.Key, intersect + (intersect - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.50));
                     }
                 }
+                FirstBall = false;
+
+            }
+                
                 //foreach (var item in noneRobotTargets)
                 //{
                 //    foreach (var ourRobot in ours)
