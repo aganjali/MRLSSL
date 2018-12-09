@@ -16,7 +16,7 @@ namespace MRL.SSL.AIConsole.Plays
 
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
-            return false;
+            //return false;
             return Status == GameStatus.Penalty_Opponent_Go || Status == GameStatus.Penalty_Opponent_Waiting;
         }
         bool activeBool = false;
@@ -62,8 +62,8 @@ namespace MRL.SSL.AIConsole.Plays
             }
             else
             {
-                //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, goalie, typeof(Goali12p)))
-                //    Functions[goalie.Value] = (eng, wmd) => GetRole<Goali12p>(goalie.Value).perform(eng, wmd, goalie.Value);
+                //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, goalie, typeof(GoalieNormalRole)))
+                //    Functions[goalie.Value] = (eng, wmd) => GetRole<GoalieNormalRole>(goalie.Value).Run(engine,Model,Model.GoalieID.Value,new Position2D(5,0),180);
                 //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, goalie, typeof(IntelligencePenaltyGoalKeeperRole)))
                 //    Functions[goalie.Value] = (eng, wmd) => GetRole<IntelligencePenaltyGoalKeeperRole>(goalie.Value).Run(engine,Model,goalie.Value);
 

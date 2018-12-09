@@ -245,8 +245,8 @@ namespace MRL.SSL.AIConsole.Strategies
                 if (!flag1)
                 {
                     Planner.Add(Poser2ID, pos11, (ShootTarget - pos11).AngleInDegrees, PathType.UnSafe, true, true, true, true);
-                    if (Model.OurRobots[Poser2ID].Location.DistanceFrom(pos11) < 0.15)
-                        flag1 = true;
+                   // if (Model.OurRobots[Poser2ID].Location.DistanceFrom(pos11) < 0.15)
+                        //flag1 = true;
                 }
                 else if (flag1)
                 {
@@ -258,8 +258,8 @@ namespace MRL.SSL.AIConsole.Strategies
                 if (!flag2)
                 {
                     Planner.Add(Poser3ID, pos22, (ShootTarget - Pos1).AngleInDegrees, PathType.UnSafe, true, true, true, true);
-                    if (Model.OurRobots[Poser3ID].Location.DistanceFrom(pos22) < 0.15)
-                        flag2 = true;
+                   // if (Model.OurRobots[Poser3ID].Location.DistanceFrom(pos22) < 0.15)
+                        //flag2 = true;
                 }
                 else if (flag2)
                 {
@@ -271,8 +271,8 @@ namespace MRL.SSL.AIConsole.Strategies
                 if (!flag3)
                 {
                     Planner.Add(Posser1ID, pos33, (ShootTarget - pos11).AngleInDegrees, PathType.UnSafe, true, true, true, true);
-                    if (Model.OurRobots[Posser1ID].Location.DistanceFrom(pos33) < 0.1)
-                        flag3 = true;
+                    //if (Model.OurRobots[Posser1ID].Location.DistanceFrom(pos33) < 0.1)
+                        //flag3 = true;
                 }
                 else if (flag3)
                 {
