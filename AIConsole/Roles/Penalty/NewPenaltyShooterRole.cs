@@ -28,7 +28,10 @@ namespace MRL.SSL.AIConsole.Roles
 
         double lastM = double.MinValue;
         Position2D target2Kick;
+        Position2D target;
         double backBall = 0.1;
+        Position2D chipTarget = new Position2D();
+
         public void Perform(GameStrategyEngine engine, WorldModel Model, int RobotID)
         {
             if (CurrentState == (int)PenaltyStates.findball)
@@ -42,13 +45,13 @@ namespace MRL.SSL.AIConsole.Roles
             else
             {
                 Planner.IsStopBall(false);
-                
+
                 if (Model.BallState.Location.DistanceFrom(Model.OurRobots[RobotID].Location) < 0.15)
                 {
                     backBall = 0.08;
                     if (CurrentState == (int)PenaltyStates.Shoot)
                     {
-                        
+
                         //TODO: use speed good boy ;)
                         Planner.AddKick(RobotID, kickPowerType.Speed, Program.MaxKickSpeed, false, false);
                     }
@@ -63,10 +66,25 @@ namespace MRL.SSL.AIConsole.Roles
                     }
                     else if (CurrentState == (int)PenaltyStates.isChip)
                     {
-                        Planner.AddKick(RobotID, kickPowerType.Speed, 1.2, true, false);
+                        if (Model.BallState.Location.Y > 0)
+                        {
+                            chipTarget = GameParameters.OppLeftCorner;
+                        }
+                        else if (Model.BallState.Location.Y < 0)
+                        {
+                            chipTarget = GameParameters.OppRightCorner;
+                        }
+                        Planner.AddKick(RobotID, kickPowerType.Speed, 0.7, true, false);
+                        //backBall = 0.08;
                     }
                 }
                 GetSkill<GetBallSkill>().SetAvoidDangerZone(true, true);
+                if (CurrentState == (int)PenaltyStates.isChip)
+                {
+                    GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, chipTarget, false, backBall);
+                    
+                }
+                else
                 GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, target2Kick, false, backBall);
             }
         }
@@ -94,22 +112,26 @@ namespace MRL.SSL.AIConsole.Roles
             }
             if (Model.Status == GameStatus.Penalty_OurTeam_Go)
             {
+                DrawingObjects.AddObject(new StringDraw("is go ", new Position2D(-1,0)));
                 bool Suitable4Kick = IsSuitable4Kick(engine, Model, RobotID, true, 10, 10, Program.MaxKickSpeed, out target2Kick);
-                if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.7)
-                    counter++;
-                if (counter > 60)
+                //if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.7)
+                //    counter++;
+                //if (counter > 60)
+                //{
+                if (OppGoalerID.HasValue && Model.Opponents[OppGoalerID.Value].Location.DistanceFrom(Model.BallState.Location) < 1 && Model.BallState.Location.X > -1.5
+                    && (((Model.BallState.Location - GameParameters.OppGoalCenter).GetNormnalizedCopy()).InnerProduct((Model.BallState.Location - Model.Opponents[OppGoalerID.Value].Location).GetNormnalizedCopy()) > 0))
+
+                    CurrentState = (int)PenaltyStates.isChip;
+                else if (Model.BallState.Location.X < -1.5 && Suitable4Kick)
+                    CurrentState = (int)PenaltyStates.Shoot;
+                else if (Model.BallState.Location.X < -1.5)
                 {
-                    if (OppGoalerID.HasValue && Model.Opponents[OppGoalerID.Value].Location.DistanceFrom(Model.OurRobots[RobotID].Location) < 1 && Model.BallState.Location.X > -1.5)
-                        CurrentState = (int)PenaltyStates.isChip;
-                    else if (Model.BallState.Location.X < -1.5 && Suitable4Kick)
-                        CurrentState = (int)PenaltyStates.Shoot;
-                    else if (Model.BallState.Location.X < -1.5)
-                    {  CurrentState = (int)PenaltyStates.Accuracy;
-                        
-                    }
-                    else
-                        CurrentState = (int)PenaltyStates.dribble;
+                    CurrentState = (int)PenaltyStates.Accuracy;
+
                 }
+                else
+                    CurrentState = (int)PenaltyStates.dribble;
+                //}
             }
 
             DrawingObjects.AddObject(new StringDraw(((PenaltyStates)CurrentState).ToString(), Model.OurRobots[RobotID].Location.Extend(0.15, 0)), "starteemds");
