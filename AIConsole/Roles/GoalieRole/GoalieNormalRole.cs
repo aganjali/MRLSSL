@@ -80,6 +80,8 @@ namespace MRL.SSL.AIConsole.Roles
 
         public SingleWirelessCommand RunStop(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D TargetPos, double Teta)
         {
+            Planner.ChangeDefaulteParams(RobotID,false);
+            Planner.SetParameter(RobotID, 1);
             if (DefenceTest.BallTest)
             {
                 ballState = DefenceTest.currentBallState;

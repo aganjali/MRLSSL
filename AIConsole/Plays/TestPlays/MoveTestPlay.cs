@@ -61,9 +61,9 @@ namespace MRL.SSL.AIConsole.Plays
             
             //jWrapper jw = new jWrapper(counter, Model.OurRobots[robotId].Location.X, Model.OurRobots[robotId].Location.Y);
 
-            var time = Planner.GetMotionTime(Model, 6, Position2D.Zero, new Position2D(2, 2), ActiveParameters.RobotMotionCoefs);
-            DrawingObjects.AddObject(new StringDraw(time.ToString(), new Position2D(2.1, 2)));
-            Planner.Add(6, new Position2D(2, 2),0);
+            //var time = Planner.GetMotionTime(Model, 6, Position2D.Zero, new Position2D(2, 2), ActiveParameters.RobotMotionCoefs);
+            //DrawingObjects.AddObject(new StringDraw(time.ToString(), new Position2D(2.1, 2)));
+            //Planner.Add(6, new Position2D(2, 2),0);
             
             //Planner.AddKick(0,4,kickPowerType.Speed);
             //double theta = Model.OurRobots[robotId].Angle.Value;

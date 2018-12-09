@@ -415,7 +415,8 @@ namespace MRL.SSL.AIConsole.Strategies
                             PassSpeed = Model.BallState.Location.DistanceFrom(passTarget) * 0.75;
                             shooterPos = Model.BallState.Location.Extend(2, 0);
                             Positioner0Pos = Model.BallState.Location.Extend(2, 4);
-                            passTarget = Model.BallState.Location.Extend(-3, 4);
+                            passTarget = passTarget = GameParameters.OppGoalCenter + (new Position2D(GameParameters.OurLeftCorner.X, Math.Abs(GameParameters.OurLeftCorner.Y)) - GameParameters.OppGoalCenter).GetNormalizeToCopy(1.80);//Model.BallState.Location.Extend(-2, 4);
+
                         }
                         else
                         {
@@ -432,14 +433,16 @@ namespace MRL.SSL.AIConsole.Strategies
                             PassSpeed = Model.BallState.Location.DistanceFrom(passTarget) * 0.65;
                             shooterPos = Model.BallState.Location.Extend(2, 0);
                             Positioner0Pos = Model.BallState.Location.Extend(2, -4);
-                            passTarget = Model.BallState.Location.Extend(-3, -4);
+                            passTarget = GameParameters.OppGoalCenter + (new Position2D(GameParameters.OurLeftCorner.X, Math.Abs(GameParameters.OurLeftCorner.Y)) - GameParameters.OppGoalCenter).GetNormalizeToCopy(1.80);//Model.BallState.Location.Extend(-2, 4);
+                            passTarget.Y = -passTarget.Y;
                         }
                         else
                         {
                             PassSpeed = Model.BallState.Location.DistanceFrom(passTarget) * 0.6;
                             shooterPos = Model.BallState.Location.Extend(2, 0);
                             Positioner0Pos = Model.BallState.Location.Extend(2, -4);
-                            passTarget = Model.BallState.Location.Extend(-2, -4);
+                            passTarget = passTarget = GameParameters.OppGoalCenter + (new Position2D(GameParameters.OurLeftCorner.X, Math.Abs(GameParameters.OurLeftCorner.Y)) - GameParameters.OppGoalCenter).GetNormalizeToCopy(1.80);//Model.BallState.Location.Extend(-2, 4);
+                            passTarget.Y = -passTarget.Y;
                         }
                     }
                 }

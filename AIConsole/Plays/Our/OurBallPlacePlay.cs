@@ -55,10 +55,10 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
             if (firstFlag)
             {
-                //if (Model.FieldIsInverted)
-                //    StaticVariables.ballPlacementPos = new Position2D(-StaticVariables.ballPlacementPos.X / 1000, StaticVariables.ballPlacementPos.Y / 1000);
-                //else
-                //    StaticVariables.ballPlacementPos = new Position2D(StaticVariables.ballPlacementPos.X / 1000, -StaticVariables.ballPlacementPos.Y / 1000); 
+                if (Model.FieldIsInverted)
+                    StaticVariables.ballPlacementPos = new Position2D(-StaticVariables.ballPlacementPos.X / 1000, StaticVariables.ballPlacementPos.Y / 1000);
+                else
+                    StaticVariables.ballPlacementPos = new Position2D(StaticVariables.ballPlacementPos.X / 1000, -StaticVariables.ballPlacementPos.Y / 1000); 
                 placerID = null;
                 catcherID = null;
                 double min = double.MaxValue;
