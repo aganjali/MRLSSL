@@ -18,7 +18,7 @@
       <Value Profile="(Default)">224.5.23.2</Value>
     </Setting>
     <Setting Name="SSLVisionPort" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">10006</Value>
+      <Value Profile="(Default)">10002</Value>
     </Setting>
     <Setting Name="AnalayzerPort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10016</Value>
@@ -33,16 +33,16 @@
       <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="AiName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">MRL-SSL1-PC</Value>
+      <Value Profile="(Default)">MRL-SSL3-PC</Value>
     </Setting>
     <Setting Name="VisName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">MRL-SSL1-PC</Value>
+      <Value Profile="(Default)">MRL-SSL3-PC</Value>
     </Setting>
     <Setting Name="SimulatorName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">MRL-SSL1-PC</Value>
+      <Value Profile="(Default)">MRL-SSL3-PC</Value>
     </Setting>
     <Setting Name="AnalayzerName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">MRL-SSL1-PC</Value>
+      <Value Profile="(Default)">MRL-SSL3-PC</Value>
     </Setting>
     <Setting Name="SerialPort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>

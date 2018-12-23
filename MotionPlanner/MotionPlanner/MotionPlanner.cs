@@ -21,7 +21,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         private static Dictionary<int, int> arobots = new Dictionary<int, int>();
         private static Dictionary<int, int> azones = new Dictionary<int, int>();
         private static Dictionary<int, int> aOppzones = new Dictionary<int, int>();
-    
+
         private static Dictionary<int, PathType> types = new Dictionary<int, PathType>();
         private static Dictionary<int, CommandType> CommandTypes = new Dictionary<int, CommandType>();
         private static Dictionary<int, CommandType> LastCommandTypes = new Dictionary<int, CommandType>();
@@ -725,7 +725,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             errtManager = new ERRTManager(8, 100, false);//TODO: change for eight
             controllers = new Dictionary<int, Controller>();
             //ControlParameters.SetParams(
-            //defultParams = 
+            //defultParams =
         }
 
         static SaveModelData smd = new SaveModelData(2, true);
@@ -772,7 +772,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
             Dictionary<int, List<SingleObjectState>> paths = new Dictionary<int, List<SingleObjectState>>();
             //DrawingObjects.AddObject(new Circle(), "c");
-            
+
             paths = errtManager.Run(Model, CutOtherPaths, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false, stopBall);
             //paths.Add(0, new List<SingleObjectState> { new SingleObjectState(new Position2D(1, 1), new Vector2D(), 0), new SingleObjectState(new Position2D(1.0000000000000000001, .999999999999999), new Vector2D(), 0) });
             //Vector2D tmpLastV = Vector2D.Zero;
@@ -787,16 +787,16 @@ namespace MRL.SSL.Planning.MotionPlanner
                 //if (item == 2)
                 //    tmpLastV = lastV;
                 double lastWW = lastW;
-               // try
-                {
+                //try
+                //{
                     commands[item] = controllers[item].CalculateTargetSpeed(Model, item, paths[item][paths[item].Count - 2].Location, (double)goals[item].Angle, paths[item], (UseDefultParams.ContainsKey(item)) ? UseDefultParams[item] : false, ref lastV, ref lastW);
-                }
+                //}
                 //catch (Exception e)
                 //{
-                    
+
                 //    throw;
                 //}
-                
+
                 //    Vector2D v = GameParameters.RotateCoordinates(new Vector2D(commands[item].Vx, commands[item].Vy), Model.OurRobots[item].Angle.Value + 100 * lastW.ToDegree() * StaticVariables.FRAME_PERIOD);
                 //    v = GameParameters.RotateCoordinates(v, Model.OurRobots[item].Angle.Value);
                 //    commands[item].Vx = v.X;

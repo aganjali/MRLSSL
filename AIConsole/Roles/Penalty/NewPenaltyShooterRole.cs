@@ -57,7 +57,7 @@ namespace MRL.SSL.AIConsole.Roles
                     }
                     else if (CurrentState == (int)PenaltyStates.dribble)
                     {
-                        Planner.AddKick(RobotID, kickPowerType.Power, 60, false, false);
+                        Planner.AddKick(RobotID, kickPowerType.Speed, 2, false, false);
                     }
                     else if (CurrentState == (int)PenaltyStates.Accuracy)
                     {
