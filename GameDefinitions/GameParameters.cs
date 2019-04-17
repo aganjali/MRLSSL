@@ -46,6 +46,19 @@ namespace MRL.SSL.GameDefinitions
             }
             return FieldLines;
         }
+        public static Position2D? SegmentIntersect(Line l1, Line l2) {
+
+            Position2D? intersect = l1.IntersectWithLine(l2);
+            if (!intersect.HasValue)
+            {
+                return null;
+            }
+            if (Position2D.IsBetween(l1.Head, l1.Tail, intersect.Value) && Position2D.IsBetween(l2.Head, l2.Tail, intersect.Value))
+            {
+                return intersect.Value;
+            }
+            return null;
+        }
         public static List<Line> GetFieldLines(double margin)
         {
 
