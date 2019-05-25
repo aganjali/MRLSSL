@@ -32,7 +32,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
         double speedTresh = 0.20;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
-            //return false;
+            return false;
             if (Status == GameDefinitions.GameStatus.BallPlace_OurTeam)
                 return true;
             firstFlag = true;

@@ -57,48 +57,14 @@ namespace MRL.SSL.AIConsole.Roles
             Line line2 = new Line();
             Line line11 = new Line();
             Line line22 = new Line();
-            //return ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - 0.35, 0.6);
+            Line ll = new Line();
+            Position2D Target = new Position2D();
+            Position2D tar = new Position2D();
             Position2D target = new Position2D();
             double StopDistFromBall = .65;
 
 
             Position2D ball = ballState.Location;
-            ////if (ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.3)
-            ////{
-            ////    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 1 * Math.Sign(ball.Y) * 1 * Math.PI / 3, .6);
-            ////    if (ballState.Location.X > 2.4)
-            ////    {
-            ////        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - 1 * Math.Sign(ball.Y) * 1.9 * Math.PI / 3, .6);
-            ////    }
-            ////}
-            ////else if (ballState.Location.X > 2.4)
-            ////{
-            ////    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - 1 * Math.Sign(ball.Y) * 1.8 * Math.PI / 5, .6);
-            ////}
-            ////else if (Math.Abs(ball.Y) > 1.5 && ball.X > 2.45)//Our Corner
-            ////{
-            ////    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * 0.6, 2);
-            ////}
-            ////else if (Math.Abs(ball.Y) > 1.5 && ball.X < 2.45 && ball.X > -2.45)//side
-            ////{
-            ////    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 0.33, 0.6);
-            ////}
-            ////else if (Math.Abs(ball.Y) > 1.5 && ball.X < -2.45)//opp corner
-            ////{
-            ////    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 0.33, 0.6);
-            ////}
-            ////else//other
-            ////{
-            ////    if (ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) < GameParameters.SafeRadi(ballState, 1.4)) // reverse
-            ////    {
-            ////        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - .66, 0.6);
-            ////    }
-            ////    else
-            ////    {
-            ////        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 0.33, 0.6);
-            ////    }
-
-            ////}
             if (ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.4)
             {
                 target = new Position2D(1.8, .5);
@@ -111,118 +77,7 @@ namespace MRL.SSL.AIConsole.Roles
                 //    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - 0.8, StopDistFromBall);
                 //}
             }
-            DrawingObjects.AddObject(new Circle(target, 0.04, new Pen(Color.Red, 0.01f)), "ballcirc");
-            //else
-            //{
-            //    //if (ballState.Location.DistanceFrom(Position2D.Zero)<0.5)
-            //    //{
-            //    //    target = Position2D.Zero + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - Position2D.Zero).AngleInRadians - .9, StopDistFromBall).GetNormalizeToCopy(3);
-            //    //}
-            //    if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.85)
-            //    {
-            //        if (ball.Y < 0)
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .7, StopDistFromBall);
-            //        else
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .67, StopDistFromBall);
 
-            //    }
-            //    else if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.75)
-            //    {
-            //        if (ball.Y < 0)
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .82, StopDistFromBall);
-            //        else
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .5, StopDistFromBall);
-
-            //    }
-
-            //    else if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.15)
-            //    {
-            //        if (ball.Y < 0)
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * 1, StopDistFromBall);
-            //        else
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + -1 * Math.Sign(ball.Y) * .6, StopDistFromBall);
-
-            //    }
-            //    else if (ball.X > 1.5 && Math.Abs(ball.Y) > 1.15 && ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.8)
-            //    {
-            //        if (ball.Y > 0)
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + Math.Sign(ball.Y) * -.5, StopDistFromBall);
-            //        else
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + Math.Sign(ball.Y) * -.9, StopDistFromBall);
-            //    }
-            //    else if (ball.X > 1.5 && Math.Abs(ball.Y) > 1.15 && ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) > 1.8)
-            //    {
-            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + .7, StopDistFromBall);
-            //    }
-            //    else if (ball.X > 2.2 && Math.Abs(ball.Y) > 1.15)
-            //    {
-            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - .7, StopDistFromBall);
-            //    }
-            //    else if (Math.Abs(ball.X) <= 1.5 && Math.Abs(ball.Y) > 1.15)
-            //    {
-            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + .7, StopDistFromBall);
-            //    }
-            //    else if (ball.X < -1.5 && Math.Abs(ball.Y) > 1.15)
-            //    {
-            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + .7, StopDistFromBall);
-            //    }
-            //    else if (Math.Abs(ball.Y) <= 1.15 && ball.X < .95)
-            //    {
-            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 1.3, StopDistFromBall);
-            //        //target = Position2D.Zero;
-            //    }
-            //    else if (Math.Abs(ball.Y) <= 1.15 && ball.X < 1.5 && ball.X >= .95)
-            //    {
-            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 0.7, StopDistFromBall);
-            //    }
-            //    else
-            //    {
-            //        target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 1.3, StopDistFromBall);
-            //    }
-            //}
-            //if (ballState.Location.DistanceFrom(GameParameters.OurGoalCenter) > 1.3)
-            //{
-            //    if (Math.Abs(ballState.Location.X) - Math.Abs(MRL.SSL.GameDefinitions.GameParameters.OurLeftCorner.X) < 0.15)
-            //    {
-
-            //        if (ballState.Location.DistanceFrom(GameParameters.OurLeftCorner) < 0.3)
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - 0.31, 2);
-            //        else if (ballState.Location.DistanceFrom(GameParameters.OurRightCorner) < 0.3)
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 0.31, 2);
-
-            //        else if (ballState.Location.DistanceFrom(GameParameters.OppLeftCorner) < 0.3)
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OppGoalCenter - ballState.Location).AngleInRadians + 0.55, 2.2);
-            //        else if (ballState.Location.DistanceFrom(GameParameters.OppRightCorner) < 0.3)
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OppGoalCenter - ballState.Location).AngleInRadians - 0.55, 2.2);
-            //        else if (Math.Abs(ballState.Location.Y) > 1.6 && ballState.Location.X < -1.1)
-            //            target = Position2D.Zero;
-            //        else if (Math.Abs(ballState.Location.Y) > 1.6 && ballState.Location.X >= -1.1 && ballState.Location.X < 0)
-            //            target = new Position2D(1.1 - Math.Abs(ballState.Location.X), 0);
-            //        else
-            //            target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - 0.35, 0.6);
-
-            //    }
-            //    DrawingObjects.AddObject(new Circle(target, 0.02, new System.Drawing.Pen(System.Drawing.Brushes.Blue, 0.01f)), "tar2");
-            //    return target;
-            //}
-            //if ((ballState.Location.Y <= -0.175 && ballState.Location.Y >= -0.676 && ballState.Location.X < GameParameters.OurGoalCenter.X && ballState.Location.DistanceFrom(new Position2D(GameParameters.OurGoalRight.X, -0.175)) <= GameParameters.DefenceareaRadii) || (ballState.Location.Y >= 0.175 && ballState.Location.Y <= 0.676 && ballState.Location.X < GameParameters.OurGoalCenter.X && ballState.Location.DistanceFrom(new Position2D(GameParameters.OurGoalLeft.X, 0.175)) <= GameParameters.DefenceareaRadii) || (ballState.Location.Y <= 0.175 && ballState.Location.Y >= -0.175 && (GameParameters.OurGoalCenter.X - ballState.Location.X) <= 0.5 && (GameParameters.OurGoalCenter.X - ballState.Location.X) >= 0))
-            //{
-            //    if (Math.Abs(ballState.Location.Y) < 0.5)
-            //        target = new Position2D(ballState.Location.X, 0.5 * Math.Sign(ballState.Location.Y)) + Vector2D.FromAngleSize((new Position2D(ballState.Location.X, 0.5 * Math.Sign(ballState.Location.Y)) - GameParameters.OurGoalCenter).AngleInRadians - 0.35, 0.6);
-            //    else
-            //        target = ballState.Location + Vector2D.FromAngleSize((ballState.Location - GameParameters.OurGoalCenter).AngleInRadians - 0.35, 0.6);
-            //    DrawingObjects.AddObject(new Circle(target, 0.02, new System.Drawing.Pen(System.Drawing.Brushes.Blue, 0.01f)), "tar2");
-            //    return target;
-            //}
-            //if (ballState.Location.Y >= 0.76)
-            //    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalLeft - ballState.Location).AngleInRadians - 1.3, 0.6);
-            //else if (ballState.Location.Y < 0.76 && ballState.Location.Y > 0)
-            //    target = ballState.Location + Vector2D.FromAngleSize((new Position2D(GameParameters.OurLeftCorner.X, .076) - ballState.Location).AngleInRadians - 1.75, 0.6);
-            //else if (ballState.Location.Y < 0 && ballState.Location.Y > -.76)
-            //    target = ballState.Location + Vector2D.FromAngleSize((new Position2D(GameParameters.OurRightCorner.X, .076) - ballState.Location).AngleInRadians + 1.45, 0.6);
-            //else
-            //    target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalRight - ballState.Location).AngleInRadians + 1.5, 0.6);
-            //DrawingObjects.AddObject(new Circle(target, 0.02, new System.Drawing.Pen(System.Drawing.Brushes.Blue, 0.01f)));
             #region Ballpalcement
             Vector2D vec = StaticVariables.ballPlacementPos - Model.BallState.Location;
             Vector2D exVec1 = Vector2D.FromAngleSize(vec.AngleInRadians + Math.PI / 2, 0.5);
@@ -252,117 +107,165 @@ namespace MRL.SSL.AIConsole.Roles
                 DrawingObjects.AddObject(new Circle(StaticVariables.ballPlacementPos + exVec222, 0.04, new Pen(Color.Black, 0.01f)), "ballcircl");
             }
             #endregion
-            if ((Model.BallState.Location + exVec1 + exVec11).X > (StaticVariables.ballPlacementPos + exVec2 + exVec222).X)
-            {
-                if ((target.X <= (Model.BallState.Location + exVec1 + exVec11).X) && (target.X >= (StaticVariables.ballPlacementPos + exVec2 + exVec222).X))
-                {
-                    Line robotTarget = new Line(Model.OurRobots[RobotID].Location, target);
-                    Position2D? inter1 = robotTarget.IntersectWithLine(line1);
-                    Position2D? inter2 = robotTarget.IntersectWithLine(line2);
-                    Position2D? inter3 = robotTarget.IntersectWithLine(line11);
-                    Position2D? inter4 = robotTarget.IntersectWithLine(line22);
-                    if (inter1.HasValue)
-                    {
-                        target = inter1.Value;
-                    }
-                    else if (inter2.HasValue)
-                    {
-                        target = inter2.Value;
-                    }
-                    else if (inter3.HasValue)
-                    {
-                        target = inter3.Value;
-                    }
-                    else if (inter4.HasValue)
-                    {
-                        target = inter4.Value;
-                    }
-                }
-            }
-            if ((Model.BallState.Location + exVec1 + exVec11).X < (StaticVariables.ballPlacementPos + exVec2 + exVec222).X)
-            {
-                if ((target.X >= (Model.BallState.Location + exVec1 + exVec11).X) && (target.X <= (StaticVariables.ballPlacementPos + exVec2 + exVec222).X))
-                {
-                    Line robotTarget = new Line(Model.OurRobots[RobotID].Location, target);
-                    Position2D? inter1 = robotTarget.IntersectWithLine(line1);
-                    Position2D? inter2 = robotTarget.IntersectWithLine(line2);
-                    Position2D? inter3 = robotTarget.IntersectWithLine(line11);
-                    Position2D? inter4 = robotTarget.IntersectWithLine(line22);
-                    if (inter1.HasValue)
-                    {
-                        target = inter1.Value;
-                    }
-                    else if (inter2.HasValue)
-                    {
-                        target = inter2.Value;
-                    }
-                    else if (inter3.HasValue)
-                    {
-                        target = inter3.Value;
-                    }
-                    else if (inter4.HasValue)
-                    {
-                        target = inter4.Value;
-                    }
-                }
-            }
-
-            if ((Model.BallState.Location + exVec1 + exVec11).Y > (StaticVariables.ballPlacementPos + exVec2 + exVec222).Y)
-            {
-                if ((target.Y <= (Model.BallState.Location + exVec1 + exVec11).Y) && (target.Y >= (StaticVariables.ballPlacementPos + exVec2 + exVec222).Y))
-                {
-                    Line robotTarget = new Line(Model.OurRobots[RobotID].Location, target);
-                    Position2D? inter1 = robotTarget.IntersectWithLine(line1);
-                    Position2D? inter2 = robotTarget.IntersectWithLine(line2);
-                    Position2D? inter3 = robotTarget.IntersectWithLine(line11);
-                    Position2D? inter4 = robotTarget.IntersectWithLine(line22);
-                    if (inter1.HasValue)
-                    {
-                        target = inter1.Value;
-                    }
-                    else if (inter2.HasValue)
-                    {
-                        target = inter2.Value;
-                    }
-                    else if (inter3.HasValue)
-                    {
-                        target = inter3.Value;
-                    }
-                    else if (inter4.HasValue)
-                    {
-                        target = inter4.Value;
-                    }
-                }
-            }
-            if ((Model.BallState.Location + exVec1 + exVec11).Y < (StaticVariables.ballPlacementPos + exVec2 + exVec222).Y)
-            {
-                if ((target.Y >= (Model.BallState.Location + exVec1 + exVec11).Y) && (target.Y <= (StaticVariables.ballPlacementPos + exVec2 + exVec222).Y))
-                {
-                    Line robotTarget = new Line(Model.OurRobots[RobotID].Location, target);
-                    Position2D? inter1 = robotTarget.IntersectWithLine(line1);
-                    Position2D? inter2 = robotTarget.IntersectWithLine(line2);
-                    Position2D? inter3 = robotTarget.IntersectWithLine(line11);
-                    Position2D? inter4 = robotTarget.IntersectWithLine(line22);
-                    if (inter1.HasValue)
-                    {
-                        target = inter1.Value;
-                    }
-                    else if (inter2.HasValue)
-                    {
-                        target = inter2.Value;
-                    }
-                    else if (inter3.HasValue)
-                    {
-                        target = inter3.Value;
-                    }
-                    else if (inter4.HasValue)
-                    {
-                        target = inter4.Value;
-                    }
-                }
-            }
             #endregion
-            return target;
+            tar = target;
+            //DrawingObjects.AddObject(new StringDraw("target7= " + target, new Position2D(3.5, 5)), "target7");
+            Position2D p1, p2;
+            double dist1, dist2;
+
+            ll = new Line(StaticVariables.ballPlacementPos, Model.BallState.Location);
+            // DrawingObjects.AddObject(new Line(StaticVariables.ballPlacementPos, Model.BallState.Location, new Pen(Color.BlueViolet, 0.01f)), "l17");
+
+            Position2D p = (ll).PerpenducilarLineToPoint(target).IntersectWithLine(ll).Value;
+            //DrawingObjects.AddObject(new Circle(p, 0.04, new Pen(Color.HotPink, 0.01f)), "p7");
+
+            Line l2 = new Line(target, p);
+            //DrawingObjects.AddObject(new Line(target, p, new Pen(Color.BlueViolet, 0.01f)), "l27");
+
+
+            if (Model.BallState.Location.X > StaticVariables.ballPlacementPos.X)
+            {
+                if (p.X < Model.BallState.Location.X && p.X > StaticVariables.ballPlacementPos.X)
+                {
+                    Target.X = p.X;
+                    //DrawingObjects.AddObject(new StringDraw("Target.Xb7= " + Target.X, new Position2D(4, 5)), "Target.Xb7");
+                    if (Model.BallState.Location.Y > StaticVariables.ballPlacementPos.Y)
+                    {
+                        if (p.Y < Model.BallState.Location.Y && p.Y > StaticVariables.ballPlacementPos.Y)
+                        {
+                            Target.Y = p.Y;
+                            //DrawingObjects.AddObject(new StringDraw("Target.Yb7= " + Target.Y, new Position2D(4.5, 5)), "Target.Yb7");
+                        }
+                    }
+                    else if (Model.BallState.Location.Y < StaticVariables.ballPlacementPos.Y)
+                    {
+                        if (p.Y > Model.BallState.Location.Y && p.Y < StaticVariables.ballPlacementPos.Y)
+                        {
+                            Target.Y = p.Y;
+                            //DrawingObjects.AddObject(new StringDraw("Target.Yp7= " + Target.Y, new Position2D(4.5, 5)), "Target.Yp7");
+                        }
+                    }
+                }
+                if (target.DistanceFrom(Target) < 0.65)
+                {
+                    Circle cTarget = new Circle(Target, .65);
+                    // DrawingObjects.AddObject(new Circle(Target, 0.65, new Pen(Color.Khaki, 0.01f)), "cTarget7");
+                    line1 = new Line(target, Target);
+                    //DrawingObjects.AddObject(new Line(target, Target, new Pen(Color.BlueViolet, 0.01f)), "target7");
+                    List<Position2D> pos = cTarget.Intersect(line1);
+                    p1 = pos.First();
+                    p2 = pos.Last();
+                    //DrawingObjects.AddObject(new Circle(p1, 0.04, new Pen(Color.White, 0.01f)), "cTargetr7");
+                    //DrawingObjects.AddObject(new Circle(p2, 0.04, new Pen(Color.Red, 0.01f)), "cTargett7");
+                    dist1 = Model.OurRobots[RobotID].Location.DistanceFrom(p1);
+                    dist2 = Model.OurRobots[RobotID].Location.DistanceFrom(p2);
+                    if (dist1 < dist2)
+                    {
+                        tar = p1;
+                    }
+                    else
+                    {
+                        tar = p2;
+                    }
+                }
+            }
+            else if (Model.BallState.Location.X < StaticVariables.ballPlacementPos.X)
+            {
+                if (p.X > Model.BallState.Location.X && p.X < StaticVariables.ballPlacementPos.X)
+                {
+                    Target.X = p.X;
+                    // DrawingObjects.AddObject(new StringDraw("Target.Xp7= " + Target.X, new Position2D(4, 5)), "Target.Xp7");
+                    if (Model.BallState.Location.Y > StaticVariables.ballPlacementPos.Y)
+                    {
+                        if (p.Y < Model.BallState.Location.Y && p.Y > StaticVariables.ballPlacementPos.Y)
+                        {
+                            Target.Y = p.Y;
+                            //DrawingObjects.AddObject(new StringDraw("Target.Yb7= " + Target.Y, new Position2D(4.5, 5)), "Target.Yb7");
+                        }
+                    }
+                    else if (Model.BallState.Location.Y < StaticVariables.ballPlacementPos.Y)
+                    {
+                        if (p.Y > Model.BallState.Location.Y && p.Y < StaticVariables.ballPlacementPos.Y)
+                        {
+                            Target.Y = p.Y;
+                            // DrawingObjects.AddObject(new StringDraw("Target.Yp7= " + Target.Y, new Position2D(4.5, 5)), "Target.Yp7");
+                        }
+                    }
+                }
+                if (target.DistanceFrom(Target) < 0.65)
+                {
+                    Circle cTarget = new Circle(Target, .65);
+                    // DrawingObjects.AddObject(new Circle(Target, 0.04, new Pen(Color.Khaki, 0.01f)), "cTarget7");
+                    line1 = new Line(target, Target);
+                    List<Position2D> pos = cTarget.Intersect(line1);
+                    p1 = pos.First();
+                    p2 = pos.Last();
+
+                    dist1 = Model.OurRobots[RobotID].Location.DistanceFrom(p1);
+                    dist2 = Model.OurRobots[RobotID].Location.DistanceFrom(p2);
+                    if (dist1 < dist2)
+                    {
+                        tar = p1;
+                    }
+                    else
+                    {
+                        tar = p2;
+                    }
+                }
+            }
+            else
+            {
+                if (p.DistanceFrom(Model.BallState.Location) > 0.65)
+                {
+                    tar = p;
+                }
+                else
+                {
+                    Circle cTarget = new Circle(Model.BallState.Location, .65);
+                    // DrawingObjects.AddObject(new Circle(Model.BallState.Location, 0.04, new Pen(Color.White, 0.01f)), "cTarget7");
+                    line1 = new Line(p, Model.BallState.Location);
+                    List<Position2D> pos = cTarget.Intersect(line1);
+                    p1 = pos.First();
+                    p2 = pos.Last();
+
+                    dist1 = Model.OurRobots[RobotID].Location.DistanceFrom(p1);
+                    dist2 = Model.OurRobots[RobotID].Location.DistanceFrom(p2);
+                    if (dist1 < dist2)
+                    {
+                        tar = p1;
+                    }
+                    else
+                    {
+                        tar = p2;
+                    }
+                }
+                if (p.DistanceFrom(StaticVariables.ballPlacementPos) > 0.65)
+                {
+                    tar = p;
+                }
+                else
+                {
+                    Circle cTarget = new Circle(StaticVariables.ballPlacementPos, .65);
+                    // DrawingObjects.AddObject(new Circle(StaticVariables.ballPlacementPos, 0.04, new Pen(Color.White, 0.01f)), "cTarget7");
+                    line1 = new Line(p, StaticVariables.ballPlacementPos);
+                    List<Position2D> pos = cTarget.Intersect(line1);
+                    p1 = pos.First();
+                    p2 = pos.Last();
+
+                    dist1 = Model.OurRobots[RobotID].Location.DistanceFrom(p1);
+                    dist2 = Model.OurRobots[RobotID].Location.DistanceFrom(p2);
+                    if (dist1 < dist2)
+                    {
+                        tar = p1;
+                    }
+                    else
+                    {
+                        tar = p2;
+                    }
+                }
+            }
+            DrawingObjects.AddObject(new StringDraw("target7= " + tar, new Position2D(4, 5)), "target7");
+            return tar;
         }
 
         Position2D OverlapSolving(WorldModel Model, int RobotID, Position2D Target)

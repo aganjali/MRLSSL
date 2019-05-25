@@ -16,6 +16,7 @@ namespace MRL.SSL.AIConsole.Plays
     {
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
+            return false;
             return engine.Status == GameDefinitions.GameStatus.BallPlace_Opponent;
         }
         bool FirstBool = false;

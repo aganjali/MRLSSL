@@ -115,9 +115,9 @@ namespace MRL.SSL.AIConsole.Plays
                 if (!isInDangerZone)
                 {
                     def.Assign(engine, Model, out Positions, out Angles, false, false, false, false);
-                    rt = typeof(DefenderNormalRole1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                    rt = typeof(palcment1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
                     roles.Add(new RoleInfo(rt, 1, 0));
-                    rt = typeof(DefenderNormalRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                    rt = typeof(palcment2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
                     roles.Add(new RoleInfo(rt, 1, 0));
                 }
                 else
@@ -152,14 +152,14 @@ namespace MRL.SSL.AIConsole.Plays
 
                 int? Defender1ID = null;
 
-                if (!isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(DefenderNormalRole1)))
-                    Defender1ID = matched.Where(w => w.Value.GetType() == typeof(DefenderNormalRole1)).First().Key;
+                if (!isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(palcment1)))
+                    Defender1ID = matched.Where(w => w.Value.GetType() == typeof(palcment1)).First().Key;
                 else if (isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(DefenderStopRole1)))
                     Defender1ID = matched.Where(w => w.Value.GetType() == typeof(DefenderStopRole1)).First().Key;
 
                 int? Defender2ID = null;
-                if (!isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(DefenderNormalRole2)))
-                    Defender2ID = matched.Where(w => w.Value.GetType() == typeof(DefenderNormalRole2)).First().Key;
+                if (!isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(palcment2)))
+                    Defender2ID = matched.Where(w => w.Value.GetType() == typeof(palcment2)).First().Key;
                 else if (isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(DefenderStopRole2)))
                     Defender2ID = matched.Where(w => w.Value.GetType() == typeof(DefenderStopRole2)).First().Key;
 
@@ -187,42 +187,42 @@ namespace MRL.SSL.AIConsole.Plays
                 {
                     Position2D GoaliPos = new Position2D();
                     double gteta = 0;
-                    if (Positions.Any(w => w.Key.GetType() == typeof(GoalieNormalRole)))
-                        GoaliPos = Positions.Where(w => w.Key.GetType() == typeof(GoalieNormalRole)).First().Value.Value;
-                    if (Angles.Any(w => w.Key.GetType() == typeof(GoalieNormalRole)))
-                        gteta = Angles.Where(w => w.Key.GetType() == typeof(GoalieNormalRole)).First().Value;
+                    if (Positions.Any(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)))
+                        GoaliPos = Positions.Where(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)).First().Value.Value;
+                    if (Angles.Any(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)))
+                        gteta = Angles.Where(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)).First().Value;
 
                     Position2D Def1Pos = new Position2D();
                     double d1teta = 0;
-                    if (Positions.Any(w => w.Key.GetType() == typeof(DefenderNormalRole1)))
-                        Def1Pos = Positions.Where(w => w.Key.GetType() == typeof(DefenderNormalRole1)).First().Value.Value;
-                    if (Angles.Any(w => w.Key.GetType() == typeof(DefenderNormalRole1)))
-                        d1teta = Angles.Where(w => w.Key.GetType() == typeof(DefenderNormalRole1)).First().Value;
+                    if (Positions.Any(w => w.Key.GetType() == typeof(palcment1)))
+                        Def1Pos = Positions.Where(w => w.Key.GetType() == typeof(palcment1)).First().Value.Value;
+                    if (Angles.Any(w => w.Key.GetType() == typeof(palcment1)))
+                        d1teta = Angles.Where(w => w.Key.GetType() == typeof(palcment1)).First().Value;
 
                     Position2D Def2Pos = new Position2D();
                     double d2teta = 0;
-                    if (Positions.Any(w => w.Key.GetType() == typeof(DefenderNormalRole2)))
-                        Def2Pos = Positions.Where(w => w.Key.GetType() == typeof(DefenderNormalRole2)).First().Value.Value;
-                    if (Angles.Any(w => w.Key.GetType() == typeof(DefenderNormalRole2)))
-                        d2teta = Angles.Where(w => w.Key.GetType() == typeof(DefenderNormalRole2)).First().Value;
+                    if (Positions.Any(w => w.Key.GetType() == typeof(palcment2)))
+                        Def2Pos = Positions.Where(w => w.Key.GetType() == typeof(palcment2)).First().Value.Value;
+                    if (Angles.Any(w => w.Key.GetType() == typeof(palcment2)))
+                        d2teta = Angles.Where(w => w.Key.GetType() == typeof(palcment2)).First().Value;
 
-                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(GoalieNormalRole)))
-                        Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<GoalieNormalRole>(Model.GoalieID.Value).RunStop(eng, wmd, Model.GoalieID.Value, GoaliPos, gteta);
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(GoaliBallPalcmentRole)))
+                        Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<GoaliBallPalcmentRole>(Model.GoalieID.Value).RunStop(eng, wmd, Model.GoalieID.Value, GoaliPos, (Model.BallState.Location - Model.OurRobots[Model.GoalieID.Value].Location).AngleInDegrees);
 
-                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender1ID, typeof(DefenderNormalRole1)))
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender1ID, typeof(palcment1)))
                     {
 
                         Planner.ChangeDefaulteParams(Defender1ID.Value, false);
                         Planner.SetParameter(Defender1ID.Value, 1.2);
-                        Functions[Defender1ID.Value] = (eng, wmd) => GetRole<DefenderNormalRole1>(Defender1ID.Value).RunStop(eng, wmd, Defender1ID.Value, Def1Pos, d1teta);
+                        Functions[Defender1ID.Value] = (eng, wmd) => GetRole<palcment1>(Defender1ID.Value).RunStop(eng, wmd, Defender1ID.Value, Def1Pos, d1teta);
 
                     }
 
-                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender2ID, typeof(DefenderNormalRole2)))
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender2ID, typeof(palcment2)))
                     {
                         Planner.ChangeDefaulteParams(Defender2ID.Value, false);
                         Planner.SetParameter(Defender2ID.Value, 1.2);
-                        Functions[Defender2ID.Value] = (eng, wmd) => GetRole<DefenderNormalRole2>(Defender2ID.Value).RunStop(eng, wmd, Defender2ID.Value, Def2Pos, d2teta);
+                        Functions[Defender2ID.Value] = (eng, wmd) => GetRole<palcment2>(Defender2ID.Value).RunStop(eng, wmd, Defender2ID.Value, Def2Pos, d2teta);
 
                     }
                 }
