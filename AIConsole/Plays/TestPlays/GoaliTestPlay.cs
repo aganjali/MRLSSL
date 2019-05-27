@@ -16,7 +16,6 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 {
     public class GoaliTestPlay : PlayBase
     {
-        ReflectStatus RStatus = ReflectStatus.Waiting;
         bool isGo = false;
         bool isFirst = true;
         int catcherId = 0;
@@ -39,12 +38,44 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 
         PreDefinedPath Skill = new PreDefinedPath();
         CircularMotionSkill circleSkill = new CircularMotionSkill();
+        private void findPoints(out List<Position2D> squarePoints, Position2D center, double lenght)
+        {
+            squarePoints = new List<Position2D>();
+            squarePoints.Add(new Position2D(center.X + lenght, center.Y + lenght));
+            squarePoints.Add(new Position2D(center.X + lenght, center.Y - lenght));
+            squarePoints.Add(new Position2D(center.X - lenght, center.Y - lenght));
+            squarePoints.Add(new Position2D(center.X - lenght, center.Y + lenght));
+        }
+        int i = 0;
+
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
+            int robotId = 0;
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(PathTestRole)))
+                Functions[robotId] = (eng, wmd) => GetRole<PathTestRole>(robotId).Perform(eng, wmd, robotId);
+
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(TestRole)))
+            //    Functions[robotId] = (eng, wmd) => GetRole<TestRole>(robotId).GetData(Model, robotId, 0.5, 30);
+
+
+            //for (int i = 0; i < 180; i++)
+            //{
+            //    Line l = new Line(new Position2D(5.5, 2.2), new Position2D(5.5, -2.5));
+            //    var poses = GameParameters.LineIntersectWithOurDangerZone(l); 
+            //    DrawingObjects.AddObject("line_intersect_line_test", l);
+            //    for (int i = 0; i < poses.Count; i++)
+            //    {
+
+            //        DrawingObjects.AddObject("line_intersect_test" + i.ToString(),
+            //            new Circle(poses[i], 0.02,new Pen(Color.Red, 0.01f)));
+            //    }
+
+            //}
+
             //circleSkill.perform(Model, 2, GameParameters.OppGoalCenter, .2, false);
-            Skill.run(Model);
+            //Skill.run(Model);
             //DrawingObjects.AddObject(new StringDraw(Model.BallState.Speed.Size.ToString(), Position2D.Zero), "asds");
             //int id1 = 4;
             //int id2 = 3;
@@ -163,6 +194,9 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             //GetRole<NewCutBallTestRole>(5).Reset();
         }
 
+        enum state
+        {
 
+        }
     }
 }

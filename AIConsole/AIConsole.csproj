@@ -277,6 +277,7 @@
     <Compile Include="Roles\TestRole\CutTestRole.cs" />
     <Compile Include="Roles\TestRole\NewCutBallTestRole.cs" />
     <Compile Include="Roles\TestRole\OneTouchTestRole.cs" />
+    <Compile Include="Roles\TestRole\PathTestRole.cs" />
     <Compile Include="Roles\TestRole\TestRole.cs" />
     <Compile Include="Skills\ActiveSkills\CutBallSkill.cs" />
     <Compile Include="Skills\ActiveSkills\GetBallSkill.cs" />
@@ -298,6 +299,7 @@
     <Compile Include="Skills\RotateWheelsSkill.cs" />
     <Compile Include="Skills\StarkCatchSkill.cs" />
     <Compile Include="Skills\TestSkill\NewCutBallSkill.cs" />
+    <Compile Include="Skills\TestSkill\PathTestSkill.cs" />
     <Compile Include="Skills\TestSkill\PreDefinedPath.cs" />
     <Compile Include="Strategies\Faeze\Strategy12.cs" />
     <Compile Include="Strategies\Faeze\PounderStrategy.cs" />
