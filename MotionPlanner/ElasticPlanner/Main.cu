@@ -6,7 +6,7 @@ using namespace std;
 extern "C" __declspec(dllexport) void __cdecl Start(float ,float ,float , int , int , int , float * , float* , float* , int , int, float, float);
 extern "C" __declspec(dllexport) void __cdecl GPlannerBallState(float* , int , int , float* , float* , float* , float* , float* , int*);
 extern "C" __declspec(dllexport) void __cdecl GPlannerScore(float*, int, float*, float*, float*);
-extern "C" __declspec(dllexport) float __cdecl ForceTree(float* ,int* , int, float* , float*,int, float*, int, float, float, int);
+extern "C" __declspec(dllexport) float __cdecl ForceTree(float* ,int* , int, float* , float*,int, float*, int, float, float, int, int);
 extern "C" __declspec(dllexport) void __cdecl ShutDown();
 
 
@@ -69,11 +69,12 @@ extern void GPlannerScore(float* Robots,int RobotCount, float* Phi, float* Kdx, 
 		//cout << "memcpyKdy: "<< error << "\n";
 	}
 }
-extern float ForceTree(float* Path,int* eachPathCount, int RobotCount, float* avoid, float* finalPath, int SmoothingCount, float* Obstacles,int ObstacleCount, float Kspring, float Kspring2, int n)
+extern float ForceTree(float* Path,int* eachPathCount, int RobotCount, float* avoid, float* finalPath, int SmoothingCount, float* Obstacles,int ObstacleCount, float Kspring, float Kspring2, int n, int stopBall)
 {
 	_kSpring = Kspring;
 	_kSpring2 = Kspring2;
 	N = n;
+	StopBall = stopBall;
 	cudaError_t error;
 	int maxP = -MaxPathCount;
 
@@ -112,7 +113,7 @@ extern float ForceTree(float* Path,int* eachPathCount, int RobotCount, float* av
 			CalculateForcesKernel<<<Grid, Block>>>(DevForce, DevEachPathCount, RobotCount, ForcePitch, _kSpring, _kSpring2, N);
 		//	error = cudaGetLastError();
 		//	cout << "CalculateForceKernell iter " << i << ": " << error << "\n";
-			ReCalculatePath<<<Grid2, Block2>>>(DevPath, DevEachPathCount, RobotCount, PathPitch, ObstacleCount);
+			ReCalculatePath<<<Grid2, Block2>>>(DevPath, DevEachPathCount, RobotCount, PathPitch, ObstacleCount, StopBall);
 		//	error = cudaGetLastError();
 		//	cout << "ReCalcPathKernell iter " << i << ": " << error << "\n";
 		}
@@ -600,6 +601,30 @@ __device__ GVector2D MeetCircle(float Ox, float Oy, GVector2D F, float Px, float
 	}
 	return F;
 }
+//Zone H = 1.2, W = 2.4
+__device__ GVector2D MeetZone(float Ox, float Oy, GVector2D F, float Px, float Py, float R)
+{
+	float Vx, Vy, d, Vx_a, Vy_a;
+	Vx = Px + F.X - Ox;
+	Vy = Py + F.Y - Oy;
+	
+	Vx_a = fabsf(Vx);
+	Vy_a = fabsf(Vy);
+
+	//tmp = sqrtf(Vx * Vx + Vy * Vy);
+	if(Vx_a < 1.2f + R && Vy_a < 1.2f + R){
+		
+		d = (1.2f + R) / fmaxf(Vx_a, Vy_a);
+			
+		Vx *= d;
+		Vy *= d;
+
+		F.X = Ox + Vx - Px;
+		F.Y = Oy + Vy - Py;
+	}
+	
+	return F;
+}
 __global__ void CalculateForcesKernel(float* DevForce, int* DevEachPathCount, int RobotCount, size_t forcePitch, float kSpring, float kSpring2, int n)
 {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -630,7 +655,7 @@ __global__ void CalculateForcesKernel(float* DevForce, int* DevEachPathCount, in
 			DevForce[k * forcePitch + i * 2 + j] = kSpring * ((tmpNext - tmpCurr) + (tmpPrev - tmpCurr));// + kSpring2 * ((tmpNnext - tmpCurr) + (tmpNprev - tmpCurr)) ;
 	}
 }
-__global__ void ReCalculatePath(float* DevPath, int* DevEachPathCount, int RobotCount, size_t PathPitch, int ObstacleCount)
+__global__ void ReCalculatePath(float* DevPath, int* DevEachPathCount, int RobotCount, size_t PathPitch, int ObstacleCount, int stopBall)
 {
 	int i = blockIdx.x*blockDim.x + threadIdx.x;
 	int k = blockIdx.y; 
@@ -654,17 +679,17 @@ __global__ void ReCalculatePath(float* DevPath, int* DevEachPathCount, int Robot
 			{
 				if(ab == 1 && j == 0)
 				{
-					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, BALL_FORCE);	
+					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, BALL_FORCE * (1 - stopBall) + stopBall * BALL_STOP_FORCE );	
 				}
-				else if(az == 1 && j > 0 && j < 4 )
+				else if(az == 1 && j == 1 )
 				{
-					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, ZONE_FORCE);	
+					F = MeetZone(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, ZONE_FORCE);	
 				}
-				else if(aoz == 1 && j > 3 && j < 7 )
+				else if(aoz == 1 && j == 2 )
 				{
-					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, OPP_ZONE_FORCE);	
+					F = MeetZone(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, OPP_ZONE_FORCE);	
 				}
-				else if(ar == 1 && j > 6 && !(((j - 7) < (RobotCount / 2)) && ((k == (j - 7)) || ((k - (RobotCount / 2)) == (j - 7))))  )
+				else if(ar == 1 && j > 2 && !(((j - 3) < (RobotCount / 2)) && ((k == (j - 3)) || ((k - (RobotCount / 2)) == (j - 3))))  )
 				{
 					F = MeetCircle(tex2D(texC, (float)j, 0), tex2D(texC, (float)j, 1),F, P.X, P.Y, ROBOT_FORCE);	
 				}

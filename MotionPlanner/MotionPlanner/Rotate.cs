@@ -374,7 +374,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             finalPosToGo = Model.OurRobots[RobotID].Location + (finalPosToGo - Model.OurRobots[RobotID].Location).GetNormalizeToCopy((backBallPoint - Model.OurRobots[RobotID].Location).Size);
 
             //  SWC = Controller.CalculateTargetSpeed(Model, RobotID, finalPosToGo, ballTargetVec.AngleInDegrees, null);
-            Planner.Add(RobotID, finalPosToGo, (float)ballTargetVec.AngleInDegrees, PathType.UnSafe, true, true, true, false);
+            Planner.Add(RobotID, finalPosToGo, (float)ballTargetVec.AngleInDegrees, PathType.UnSafe, true, true, false, false);
             return SWC;
         }
         public bool IsGotoPointState(WorldModel Model, int RobotID, Position2D Target, double Teta)

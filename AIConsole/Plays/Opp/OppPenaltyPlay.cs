@@ -5,6 +5,7 @@ using System.Text;
 using MRL.SSL.AIConsole.Engine;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.AIConsole.Roles;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Plays.Opp
 {
@@ -15,6 +16,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
         GameDefinitions.GameStatus LastState = GameStatus.Normal;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
+            return false;
             double dist, DistFromBorder;
             if (LastState == GameStatus.Penalty_Opponent_Go && !GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.07, out dist, out DistFromBorder))
             {
@@ -34,9 +36,12 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             DefenceTest.MakeOutPut();
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
+            
             int RobotID = Model.GoalieID.Value;
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(PenaltyGoalieRole)))
-                Functions[RobotID] = (eng, wmd) => GetRole<PenaltyGoalieRole>(RobotID).RunRole(engine, Model, RobotID, PreviouslyAssignedRoles);
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(PenaltyGoalieRole)))
+            //    Functions[RobotID] = (eng, wmd) => GetRole<PenaltyGoalieRole>(RobotID).RunRole(engine, Model, RobotID, PreviouslyAssignedRoles);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(IntelligencePenaltyGoalKeeperRole)))
+                Functions[RobotID] = (eng, wmd) => GetRole<IntelligencePenaltyGoalKeeperRole>(RobotID).Run(engine, Model, RobotID);
             CurrentlyAssignedRoles = Assigner(engine, Model, out Functions);
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             return CurrentlyAssignedRoles;

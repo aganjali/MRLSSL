@@ -28,10 +28,11 @@ namespace MRL.SSL.AIConsole.Skills
         }
         Position2D initializeTarget = new Position2D(GameParameters.OppGoalLeft.X, GameParameters.OppGoalLeft.Y + 0.15);
 
-        public SingleWirelessCommand Rotate(GameStrategyEngine engine, WorldModel Model, int RobotID, double kickPower, SingleObjectState lastoppState)
+        public SingleWirelessCommand Rotate(GameStrategyEngine engine, WorldModel Model, int robotID, double kickSpeed, SingleObjectState lastoppState)
         {
+
             //return new SingleWirelessCommand() { Kind = 3, isDelayedKick = true, BackSensor = true, SpinBack = 0, KickSpeed = kickPower, spinBackward = true };
-            OppGoallerState state = CalculateGoallerState(engine, Model , lastoppState);
+            OppGoallerState state = CalculateGoallerState(engine, Model, lastoppState);
 
             if (state == OppGoallerState.Left)
                 initializeTarget = new Position2D(GameParameters.OppGoalLeft.X, GameParameters.OppGoalLeft.Y + 0.15);
@@ -42,7 +43,7 @@ namespace MRL.SSL.AIConsole.Skills
             int spin = (GameSettings.Default.Tactic["Penalty"] == (int)PenaltyShoter.Corner) ? 1 : 0;
             //int? robotID = OppGoallerId(engine, Model);
             Line l = new Line(GameParameters.OppGoalRight, GameParameters.OppGoalLeft);
-            Line l2 = new Line(Model.BallState.Location, Model.OurRobots[RobotID].Location);
+            Line l2 = new Line(Model.BallState.Location, Model.OurRobots[robotID].Location);
             Position2D? intersect = l2.IntersectWithLine(l);
             if (!intersect.HasValue) intersect = GameParameters.OppGoalCenter;
             DrawingObjects.AddObject(intersect.Value, "inter");
@@ -59,22 +60,22 @@ namespace MRL.SSL.AIConsole.Skills
             bool isdelayed = true;
             if (intersect.HasValue && lastoppState != null && !obs.Meet(Model.BallState, new SingleObjectState(intersect.Value, Vector2D.Zero, 0), 0.09))
             {
-                Planner.Add(RobotID, new SingleWirelessCommand() { Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, statusRequest = true, KickSpeed = Program.MaxKickSpeed });
+                Planner.Add(robotID, new SingleWirelessCommand() {RobotID = robotID, Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, statusRequest = true, KickSpeed = Program.MaxKickSpeed - 0.10 });
                 return new SingleWirelessCommand();
             }
             else if (lastoppState == null)
             {
-                Planner.Add(RobotID, new SingleWirelessCommand() { Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, statusRequest = true, KickSpeed = Program.MaxKickSpeed });
+                Planner.Add(robotID, new SingleWirelessCommand() { RobotID = robotID, Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, statusRequest = true, KickSpeed = Program.MaxKickSpeed - 0.10 });
                 return new SingleWirelessCommand();
             }
             else if (state == OppGoallerState.Right)
             {
-                Planner.Add(RobotID, new SingleWirelessCommand() { Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, spinBackward = true, KickSpeed = Program.MaxKickSpeed });
+                Planner.Add(robotID, new SingleWirelessCommand() { RobotID = robotID, Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, spinBackward = true, KickSpeed = Program.MaxKickSpeed - 0.10 });
                 return new SingleWirelessCommand();
             }
             else
             {
-                Planner.Add(RobotID, new SingleWirelessCommand() { Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, spinBackward = false, KickSpeed = Program.MaxKickSpeed });
+                Planner.Add(robotID, new SingleWirelessCommand() { RobotID = robotID, Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, spinBackward = false, KickSpeed = Program.MaxKickSpeed - 0.10 });
                 return new SingleWirelessCommand();
             }
 
@@ -89,8 +90,9 @@ namespace MRL.SSL.AIConsole.Skills
             //    SWC.spinBackward = true;
             //}
 
-            SWC.KickPower = kickPower;
-            Planner.Add(RobotID, SWC);
+            //SWC.KickPower = kickPower;
+            SWC.KickSpeed = kickSpeed;
+            Planner.Add(robotID, SWC);
             return new SingleWirelessCommand();
         }
         //private int? OppGoallerId(GameStrategyEngine engine, WorldModel Model)

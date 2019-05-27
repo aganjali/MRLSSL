@@ -68,7 +68,7 @@ namespace MRL.SSL.AIConsole.Strategies
                 sync = new Syncronizer();
             }
         }
-        double margin = 1.5;
+        double margin = 3.5;
         public override void InitializeStates(GameStrategyEngine engine, GameDefinitions.WorldModel Model, Dictionary<int, GameDefinitions.SingleObjectState> attendance)
         {
             Attendance = attendance;
@@ -228,7 +228,7 @@ namespace MRL.SSL.AIConsole.Strategies
 
                 Vector2D v = GameParameters.OppGoalCenter - Model.BallState.Location;
 
-                Position2D safeBall = GameParameters.OppGoalCenter + (Model.BallState.Location - GameParameters.OppGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(-Model.BallState.Location, Vector2D.Zero, 0), margin));
+                Position2D safeBall = GameParameters.OppGoalCenter + (Model.BallState.Location - GameParameters.OppGoalCenter).GetNormalizeToCopy(/*GameParameters.SafeRadi(new SingleObjectState(-Model.BallState.Location, Vector2D.Zero, 0), margin)*/5);
                 Position2D tmpP0 = safeBall + Vector2D.FromAngleSize(v.AngleInRadians - Math.Sign(Model.BallState.Location.Y) * Math.PI / 2, 0.15);
                 Position2D tmpP1 = safeBall + Vector2D.FromAngleSize(v.AngleInRadians + Math.Sign(Model.BallState.Location.Y) * Math.PI / 2, 0.15);
 

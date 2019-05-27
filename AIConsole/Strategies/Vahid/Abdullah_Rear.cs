@@ -179,11 +179,12 @@ namespace MRL.SSL.AIConsole.Strategies.Vahid
                 //{
                 if (isChip)
                 {
-                    sync.SyncChipCatch(engine, Model, ghasemPasserID, 0, karimID, karimPos, GameParameters.OppGoalCenter, passSpeed, Program.MaxKickSpeed, 0, false);
+                    double chipKick = Model.OurRobots[ghasemPasserID].Location.DistanceFrom(firstBallPos) *0.9 ;
+                    sync.SyncChipCatch(engine, Model, ghasemPasserID, 0, karimID, karimPos, GameParameters.OppGoalCenter, chipKick, Program.MaxKickSpeed, 0, false);
                 }
                 else
                 {
-                    sync.SyncDirectCatch(engine, Model, ghasemPasserID, 30, abdullahID, abdullahPos, GameParameters.OppGoalCenter, passSpeed, Program.MaxKickSpeed, 60);
+                    sync.SyncDirectCatch(engine, Model, ghasemPasserID, 30, abdullahID, abdullahPos, GameParameters.OppGoalCenter, 4.2, Program.MaxKickSpeed, 60);
 
                 }
 

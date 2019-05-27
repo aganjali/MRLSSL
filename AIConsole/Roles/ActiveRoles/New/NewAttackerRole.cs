@@ -267,7 +267,8 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 markPoint = GameParameters.OppGoalCenter + (markPoint - GameParameters.OppGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(-markPoint, Vector2D.Zero, 0), 0));
             }
-
+            markPoint.DrawColor = Color.DarkGreen;
+            DrawingObjects.AddObject(markPoint);
             if (CurrentState == (int)AttackerState.WaitForPass)
             {
                 Planner.Add(RobotID, markPoint, (Model.BallState.Location - markPoint).AngleInDegrees, PathType.UnSafe, true, true, true, false);
@@ -311,6 +312,7 @@ namespace MRL.SSL.AIConsole.Roles
                         else
                         {
                             GetSkill<CatchBallSkill>().Catch(engine, Model, RobotID, passIsChip, new SingleObjectState(Pos2go, Vector2D.Zero, 0), true, gotoPoint);
+                            DrawingObjects.AddObject(new StringDraw("Catch Skill is running",GameParameters.OppGoalCenter.Extend(0.1,0.15)));
                         }
 
                     }
@@ -340,7 +342,7 @@ namespace MRL.SSL.AIConsole.Roles
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return new List<RoleBase>() { new NewAttackerRole(), new ActiveRole2017(), new AttackerRole2017() };
+            return new List<RoleBase>() { new NewAttackerRole(), new ActiveRole2017(), new AttackerRole2017(), new NewRegionalRole(), new NewSupporter2Role() };
         }
 
         public override bool Evaluate(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)

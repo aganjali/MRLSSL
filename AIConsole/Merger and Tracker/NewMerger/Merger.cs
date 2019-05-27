@@ -21,6 +21,10 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         public SSL_WrapperPacket sslpacketCam1 = new SSL_WrapperPacket();
         public SSL_WrapperPacket sslpacketCam2 = new SSL_WrapperPacket();
         public SSL_WrapperPacket sslpacketCam3 = new SSL_WrapperPacket();
+        public SSL_WrapperPacket sslpacketCam4 = new SSL_WrapperPacket();
+        public SSL_WrapperPacket sslpacketCam5 = new SSL_WrapperPacket();
+        public SSL_WrapperPacket sslpacketCam6 = new SSL_WrapperPacket();
+        public SSL_WrapperPacket sslpacketCam7 = new SSL_WrapperPacket();
         private bool oneCamera = false;
         private uint cameraID = 0;
         public uint CameraID
@@ -469,7 +473,9 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         //    lastColorIsYellow = isYellow;
         //    return true;
         //}
-
+        int firstRunCounter = 0;
+        Dictionary<int, double> diffTimes = new Dictionary<int, double>();
+        List<int> lastAvailableCameras = new List<int>();
         public bool Merge(SSL_WrapperPacket Packet, ref frame Frame, ref frame newFrame, bool isYellow)
         {
             //DrawingObjects.AddObject(new Circle(Vision2AI(new Position2D(-1994, -487), false), StaticVariables.BALL_RADIUS, new Pen(Color.Red, 0.01f)), "badssdddscdsll");
@@ -499,7 +505,19 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             {
                 sslpacketCam3 = Packet;
             }
-
+            if (Packet.detection.camera_id == 4)
+            {
+                sslpacketCam4 = Packet;
+            } if (Packet.detection.camera_id == 5)
+            {
+                sslpacketCam5 = Packet;
+            } if (Packet.detection.camera_id == 6)
+            {
+                sslpacketCam6 = Packet;
+            } if (Packet.detection.camera_id == 7)
+            {
+                sslpacketCam7 = Packet;
+            }
             if (MergerParameters.AvailableCamIds.Contains((int)Packet.detection.camera_id))
             {
                 if (sslPackets.ContainsKey(Packet.detection.camera_id))
@@ -512,16 +530,62 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             if (sslPackets.Count < MergerParameters.AvailableCamIds.Count)
                 return false;
 
+            if (!lastAvailableCameras.All(a=>MergerParameters.AvailableCamIds.Contains(a)) 
+                || !MergerParameters.AvailableCamIds.All(a=>lastAvailableCameras.Contains(a)))
+            {
+                firstRunCounter = 0;
+            }
+            if (firstRunCounter++ < 10)
+            {
+                if (firstRunCounter == 1)
+                {
+                    diffTimes.Clear();
+                    for (int i = 0; i < StaticVariables.VisionPcCounts; i++)
+                    {
+                        diffTimes.Add(i, 0);
+                    }
+                }
+                Dictionary<int, double> minTime = new Dictionary<int, double>();
+                for (int i = 0; i < StaticVariables.VisionPcCounts; i++)
+                {
+                    
+                    int cameraPerPc = StaticVariables.CameraCount / StaticVariables.VisionPcCounts;
+                    var packs = sslPackets.Where(w => w.Value.detection.camera_id >= i * cameraPerPc && w.Value.detection.camera_id < (i + 1) * cameraPerPc);
+                    if (packs.Count() > 0)
+                    {
+
+                        minTime[i] = packs.Min(m => m.Value.detection.t_capture);
+                    }
+                    else
+                        minTime[i] = 0;
+                }
+                double maxTime = minTime.Max(m => m.Value);
+                for (int i = 0; i < StaticVariables.VisionPcCounts; i++)
+                {
+                    diffTimes[i] *= (firstRunCounter - 1);
+                    diffTimes[i] += maxTime - minTime[i];
+                    diffTimes[i] /= (firstRunCounter);
+                }
+            }
+            else 
+            {
+                ;
+            }
+
             if (lastColorIsYellow != isYellow)
                 Frame = new frame();
             Frame.timeofcapture = 0;
             #region capture Time
             for (int i = 0; i < sslPackets.Count; i++)
             {
+                int pc = GetCameraPC(sslPackets.ElementAt(i).Value.detection.camera_id);
+                sslPackets.ElementAt(i).Value.detection.t_capture += diffTimes[pc];
                 Frame.timeofcapture += sslPackets.ElementAt(i).Value.detection.t_capture;
+                Frame.timeList[sslPackets.ElementAt(i).Value.detection.camera_id] = sslPackets.ElementAt(i).Value.detection.t_capture;
             }
             if (sslPackets.Count > 0)
                 Frame.timeofcapture /= (double)sslPackets.Count;
+            
             #endregion
 
             int counterBall = 0;
@@ -676,7 +740,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                     MathMatrix ourRobotPos;
 
                     double confidence = 0;
-                    double time = 0;
+                    double time =0;
                     double x = 0, y = 0;
                     foreach (var ball in item)
                     {
@@ -687,6 +751,10 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                         x += ourRobotPos[0, 0];
                         y += ourRobotPos[1, 0];
                         confidence += ball.Confidence;
+                        //if (ball.Time  < time)
+                        //{
+                        //    time = ball.Time;
+                        //}
                         time += ball.Time;
                     }
                     confidence /= (double)item.Count;
@@ -780,14 +848,21 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
             sslPackets = new Dictionary<uint, SSL_WrapperPacket>();
             lastColorIsYellow = isYellow;
+            lastAvailableCameras = MergerParameters.AvailableCamIds.ToList();
             return true;
+        }
+
+        private int GetCameraPC(uint id)
+        {
+            int cameraPerPc = StaticVariables.CameraCount / StaticVariables.VisionPcCounts;
+            return (int)id / cameraPerPc;
         }
 
         private static bool IsInField(Position2D pos, double margin)
         {
-            if (pos.X < -4500 - margin || pos.X > 4500 + margin)
+            if (pos.X < -GameParameters.OurGoalCenter.X * 1000 - margin || pos.X > GameParameters.OurGoalCenter.X * 1000 + margin)
                 return false;
-            if (pos.Y < -3000 - margin || pos.Y > 3000 + margin)
+            if (pos.Y < -GameParameters.OurLeftCorner.Y * 1000 - margin || pos.Y > GameParameters.OurLeftCorner.Y * 1000 + margin)
                 return false;
             return true;
         }

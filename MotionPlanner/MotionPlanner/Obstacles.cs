@@ -36,7 +36,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             set 
             {
                 if (value != 0)
-                    AddObstacle(1, 0, 0, 0, null, null);
+                    AddObstacle(1, 0, 0, 0, null, null, false);
                 else
                     RemoveRobots();
             }
@@ -60,7 +60,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             set 
             {
                 if (value != 0)
-                    AddBall(Model.BallState);
+                    AddBall(Model.BallState, false);
                 else
                     RemoveBall();
             }
@@ -160,33 +160,48 @@ namespace MRL.SSL.Planning.MotionPlanner
             obstaclesList[id] = obs;
         }
     
-        public void AddBall(Position2D p)
+        public void AddBall(Position2D p, bool stopBall)
         {
             int id = -1;
             avoidBall = 1;
             Obstacle obs = new Obstacle();
             obs.Type = ObstacleType.Ball;
-            obs.R = new Vector2D(MotionPlannerParameters.BallRadi, MotionPlannerParameters.BallRadi);
+            if (!stopBall)
+            {
+                obs.R = new Vector2D(MotionPlannerParameters.BallRadi, MotionPlannerParameters.BallRadi);    
+            }
+            else
+                obs.R = new Vector2D(MotionPlannerParameters.StopBallRadi, MotionPlannerParameters.StopBallRadi);
             obs.State = new SingleObjectState(p, new Vector2D(), null);
             obstaclesList[id] = obs;
         }
-        public void AddBall(SingleObjectState s)
+        public void AddBall(SingleObjectState s, bool stopBall)
         {
             int id = -1;
             avoidBall = 1;
             Obstacle obs = new Obstacle();
             obs.Type = ObstacleType.Ball;
-            obs.R = new Vector2D(MotionPlannerParameters.BallRadi, MotionPlannerParameters.BallRadi);
+            if (!stopBall)
+            {
+                obs.R = new Vector2D(MotionPlannerParameters.BallRadi, MotionPlannerParameters.BallRadi);
+            }
+            else
+                obs.R = new Vector2D(MotionPlannerParameters.StopBallRadi, MotionPlannerParameters.StopBallRadi);
             obs.State = new SingleObjectState(s);
             obstaclesList[id] = obs;
         }
-        public void AddBall(SingleObjectState s, double kSpeedBall)
+        public void AddBall(SingleObjectState s, double kSpeedBall, bool stopBall)
         {
             int id = -1;
             avoidBall = 1;
             Obstacle obs = new Obstacle();
             obs.Type = ObstacleType.Ball;
-            obs.R = new Vector2D(MotionPlannerParameters.BallRadi, MotionPlannerParameters.BallRadi);
+            if (!stopBall)
+            {
+                obs.R = new Vector2D(MotionPlannerParameters.BallRadi, MotionPlannerParameters.BallRadi);
+            }
+            else
+                obs.R = new Vector2D(MotionPlannerParameters.StopBallRadi, MotionPlannerParameters.StopBallRadi);
             obs.State = new SingleObjectState(s.Location + kSpeedBall * s.Speed, s.Speed, 0);
             obstaclesList[id] = obs;
         }
@@ -196,55 +211,67 @@ namespace MRL.SSL.Planning.MotionPlanner
             avoidDangerZone = 1;
             Obstacle obs = new Obstacle();
             int id = -2;
-            obs.Type = ObstacleType.ZoneCircle;
-            obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW, MotionPlannerParameters.DangerZoneW);
-            obs.State = new SingleObjectState(GameParameters.OurGoalCenter , new Vector2D(), null);
+            obs.Type = ObstacleType.ZoneRectangle;
+            obs.R = new Vector2D(MotionPlannerParameters.DangerZoneH / 2, MotionPlannerParameters.DangerZoneW / 2);
+            obs.State = new SingleObjectState(GameParameters.OurGoalCenter - new Vector2D(MotionPlannerParameters.DangerZoneH / 2, 0), new Vector2D(), null);
             obstaclesList[id] = (obs);
-            //obs.Type = ObstacleType.ZoneRectangle;
-            //obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW / 2, MotionPlannerParameters.DangerZoneH / 2);
-            //obs.State = new SingleObjectState(GameParameters.OurGoalCenter + new Vector2D(-MotionPlannerParameters.DangerZoneW / 2, 0), new Vector2D(), null);
+
+            //int id = -2;
+            //obs.Type = ObstacleType.ZoneCircle;
+            //obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW, MotionPlannerParameters.DangerZoneW);
+            //obs.State = new SingleObjectState(GameParameters.OurGoalCenter , new Vector2D(), null);
+            //obstaclesList[id] = (obs);
+            ////obs.Type = ObstacleType.ZoneRectangle;
+            ////obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW / 2, MotionPlannerParameters.DangerZoneH / 2);
+            ////obs.State = new SingleObjectState(GameParameters.OurGoalCenter + new Vector2D(-MotionPlannerParameters.DangerZoneW / 2, 0), new Vector2D(), null);
+            ////obstaclesList[id] = obs;
+            //obs = new Obstacle();
+            //id = -3;
+            //obs.Type = ObstacleType.ZoneCircle;
+            //obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW, MotionPlannerParameters.DangerZoneW);
+            //obs.State = new SingleObjectState(GameParameters.OurGoalCenter + new Vector2D(0, MotionPlannerParameters.DangerZoneH / 2), new Vector2D(), null);
+            //obstaclesList[id] = (obs);
+            //obs = new Obstacle();
+            //id = -4;
+            //obs.Type = ObstacleType.ZoneCircle;
+            //obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW, MotionPlannerParameters.DangerZoneW);
+            //obs.State = new SingleObjectState(GameParameters.OurGoalCenter + new Vector2D(0, -MotionPlannerParameters.DangerZoneH / 2), new Vector2D(), null);
             //obstaclesList[id] = obs;
-            obs = new Obstacle();
-            id = -3;
-            obs.Type = ObstacleType.ZoneCircle;
-            obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW, MotionPlannerParameters.DangerZoneW);
-            obs.State = new SingleObjectState(GameParameters.OurGoalCenter + new Vector2D(0, MotionPlannerParameters.DangerZoneH / 2), new Vector2D(), null);
-            obstaclesList[id] = (obs);
-            obs = new Obstacle();
-            id = -4;
-            obs.Type = ObstacleType.ZoneCircle;
-            obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW, MotionPlannerParameters.DangerZoneW);
-            obs.State = new SingleObjectState(GameParameters.OurGoalCenter + new Vector2D(0, -MotionPlannerParameters.DangerZoneH / 2), new Vector2D(), null);
-            obstaclesList[id] = obs;
         }
         public void AddOppZone()
         {
             avoidOppZone = 1;
             Obstacle obs = new Obstacle();
             int id = -5;
-            obs.Type = ObstacleType.ZoneCircle;
-            obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2, MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2);
-            obs.State = new SingleObjectState(GameParameters.OppGoalCenter, new Vector2D(), null);
+            obs.Type = ObstacleType.ZoneRectangle;
+            obs.R = new Vector2D(MotionPlannerParameters.DangerZoneH / 2, MotionPlannerParameters.DangerZoneW / 2);
+            obs.State = new SingleObjectState(GameParameters.OppGoalCenter + new Vector2D(MotionPlannerParameters.DangerZoneH / 2, 0), new Vector2D(), null);
             obstaclesList[id] = (obs);
-            //obs.Type = ObstacleType.ZoneRectangle;
-            //obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW / 2, MotionPlannerParameters.DangerZoneH / 2);
-            //obs.State = new SingleObjectState(GameParameters.OurGoalCenter + new Vector2D(-MotionPlannerParameters.DangerZoneW / 2, 0), new Vector2D(), null);
+
+            //int id = -5;
+            //obs.Type = ObstacleType.ZoneCircle;
+            //obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2, MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2);
+            //obs.State = new SingleObjectState(GameParameters.OppGoalCenter, new Vector2D(), null);
+            //obstaclesList[id] = (obs);
+            ////obs.Type = ObstacleType.ZoneRectangle;
+            ////obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW / 2, MotionPlannerParameters.DangerZoneH / 2);
+            ////obs.State = new SingleObjectState(GameParameters.OurGoalCenter + new Vector2D(-MotionPlannerParameters.DangerZoneW / 2, 0), new Vector2D(), null);
+            ////obstaclesList[id] = obs;
+            //obs = new Obstacle();
+            //id = -6;
+            //obs.Type = ObstacleType.ZoneCircle;
+            //obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2, MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2);
+            //obs.State = new SingleObjectState(GameParameters.OppGoalCenter + new Vector2D(0, MotionPlannerParameters.DangerZoneH / 2), new Vector2D(), null);
+            //obstaclesList[id] = (obs);
+            //obs = new Obstacle();
+            //id = -7;
+            //obs.Type = ObstacleType.ZoneCircle;
+            //obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2, MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2);
+            //obs.State = new SingleObjectState(GameParameters.OppGoalCenter + new Vector2D(0, -MotionPlannerParameters.DangerZoneH / 2), new Vector2D(), null);
             //obstaclesList[id] = obs;
-            obs = new Obstacle();
-            id = -6;
-            obs.Type = ObstacleType.ZoneCircle;
-            obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2, MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2);
-            obs.State = new SingleObjectState(GameParameters.OppGoalCenter + new Vector2D(0, MotionPlannerParameters.DangerZoneH / 2), new Vector2D(), null);
-            obstaclesList[id] = (obs);
-            obs = new Obstacle();
-            id = -7;
-            obs.Type = ObstacleType.ZoneCircle;
-            obs.R = new Vector2D(MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2, MotionPlannerParameters.DangerZoneW + RobotParameters.OurRobotParams.Diameter / 2);
-            obs.State = new SingleObjectState(GameParameters.OppGoalCenter + new Vector2D(0, -MotionPlannerParameters.DangerZoneH / 2), new Vector2D(), null);
-            obstaclesList[id] = obs;
         }
 
-        public void AddObstacle(int Robots,int Ball, int DangerZone, int oppDangerZone, List<int> ourIdsToExclude, List<int> oppIdsToExclude)
+        public void AddObstacle(int Robots,int Ball, int DangerZone, int oppDangerZone, List<int> ourIdsToExclude, List<int> oppIdsToExclude, bool stopBall = false)
         {
             if (Robots != 0)
             {
@@ -256,13 +283,13 @@ namespace MRL.SSL.Planning.MotionPlanner
                         AddRobot(item.Value, false, item.Key);
             }
             if (Ball != 0)
-                AddBall(Model.BallState);
+                AddBall(Model.BallState, stopBall);
             if (DangerZone != 0)
                 AddDangerZone();
             if (oppDangerZone != 0)
                 AddOppZone();
         }
-        public void AddObstacle(int Robots, int Ball, int DangerZone, int oppDangerZone, List<int> ourIdsToExclude, List<int> oppIdsToExclude, double kSpeedBall, double kSpeedRobot)
+        public void AddObstacle(int Robots, int Ball, int DangerZone, int oppDangerZone, List<int> ourIdsToExclude, List<int> oppIdsToExclude, double kSpeedBall, double kSpeedRobot, bool stopBall)
         {
             if (Robots != 0)
             {
@@ -274,7 +301,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                         AddRobot(item.Value, false, item.Key,kSpeedRobot);
             }
             if (Ball != 0)
-                AddBall(Model.BallState, kSpeedBall);
+                AddBall(Model.BallState, kSpeedBall, stopBall);
             if (DangerZone != 0)
                 AddDangerZone();
             if (oppDangerZone != 0)

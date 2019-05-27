@@ -96,6 +96,10 @@
     <Reference Include="Meta.Numerics">
       <HintPath>..\Third Party\Assemblies\Meta.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\Third Party\Assemblies\protobuf-net.dll</HintPath>
     </Reference>
@@ -142,6 +146,7 @@
     <Compile Include="Plays\HaltPlay.cs" />
     <Compile Include="Plays\MoveRobotPlay.cs" />
     <Compile Include="Plays\Opp\BusDefencePlay.cs" />
+    <Compile Include="Plays\Opp\NewOppBallPlacerPlay.cs" />
     <Compile Include="Plays\Opp\OppBallPlacePlay.cs" />
     <Compile Include="Plays\Opp\OppCornerMarkPlay.cs" />
     <Compile Include="Plays\Opp\OppCornerPlay.cs" />
@@ -150,8 +155,10 @@
     <Compile Include="Plays\Opp\OppKickOffPlay.cs" />
     <Compile Include="Plays\Opp\OppPenaltyPlay.cs" />
     <Compile Include="Plays\Opp\OppNewPenaltyPlay.cs" />
+    <Compile Include="Plays\Our\NewNormal8Robot.cs" />
     <Compile Include="Plays\Our\NewPassingNormalPlay.cs" />
     <Compile Include="Plays\Our\NewNormalPlay.cs" />
+    <Compile Include="Plays\Our\NormalPlay.cs" />
     <Compile Include="Plays\Our\OurBallPlacePlay.cs" />
     <Compile Include="Plays\Our\OurNewPenaltyPlay.cs" />
     <Compile Include="Plays\PassShootTune.cs" />
@@ -162,6 +169,7 @@
     <Compile Include="Roles\ActiveRoles\New\AttackerRole2017.cs" />
     <Compile Include="Roles\ActiveRoles\New\NewAttacker2.cs" />
     <Compile Include="Roles\ActiveRoles\New\NewAttacker3Role.cs" />
+    <Compile Include="Roles\BallPlacement\BallPalcementCatcher.cs" />
     <Compile Include="Roles\BallPlacement\BallPlacerRole.cs" />
     <Compile Include="Roles\Defending\BusDefenceRoles\BusBase.cs" />
     <Compile Include="Roles\Defending\BusDefenceRoles\BusRole1.cs" />
@@ -177,12 +185,22 @@
     <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole5.cs" />
     <Compile Include="Roles\Defending\Normal\CenterBackNormalRole.cs" />
     <Compile Include="Roles\Defending\Normal\LeftBackMarkerNormalRole.cs" />
+    <Compile Include="Roles\Defending\Normal\Marker1Normal8Robot.cs" />
+    <Compile Include="Roles\Defending\Normal\Marker2Normal8Robot.cs" />
+    <Compile Include="Roles\Defending\Normal\NewRegionalRole.cs" />
+    <Compile Include="Roles\Defending\Normal\NormalAttacker.cs" />
+    <Compile Include="Roles\Defending\Normal\NormalAttacker2.cs" />
+    <Compile Include="Roles\Defending\Normal\NormalMarkerRole1.cs" />
+    <Compile Include="Roles\Defending\Normal\NormalMarkerRole2.cs" />
     <Compile Include="Roles\Defending\Normal\RightBackMarkerNormalRole.cs" />
+    <Compile Include="Roles\Defending\StaticDefender3.cs" />
     <Compile Include="Roles\GoalieRole\BusGoalieCornerRole.cs" />
     <Compile Include="Roles\GoalieRole\GoalieCornerRole.cs" />
     <Compile Include="Roles\GoalieRole\NewStaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\StaticGoalieRole.cs" />
     <Compile Include="Roles\Stop\RotationalStopCover.cs" />
+    <Compile Include="Roles\Stop\StopRole4.cs" />
+    <Compile Include="Roles\Stop\StopRole5.cs" />
     <Compile Include="Roles\TestRole\DefenderCornerRole1Test.cs" />
     <Compile Include="Roles\TestRole\DefenderCornerRole2Test.cs" />
     <Compile Include="Roles\ActiveRoles\Actions\ActionDescriptionBase.cs" />
@@ -278,6 +296,10 @@
     <Compile Include="Roles\TestRole\NewCutBallTestRole.cs" />
     <Compile Include="Roles\TestRole\OneTouchTestRole.cs" />
     <Compile Include="Roles\TestRole\PathTestRole.cs" />
+
+
+    <Compile Include="Roles\TestRole\StaticPositionerRole.cs" />
+
     <Compile Include="Roles\TestRole\TestRole.cs" />
     <Compile Include="Skills\ActiveSkills\CutBallSkill.cs" />
     <Compile Include="Skills\ActiveSkills\GetBallSkill.cs" />
@@ -301,18 +323,26 @@
     <Compile Include="Skills\TestSkill\NewCutBallSkill.cs" />
     <Compile Include="Skills\TestSkill\PathTestSkill.cs" />
     <Compile Include="Skills\TestSkill\PreDefinedPath.cs" />
+    <Compile Include="Strategies\ChangingPositionerMiddle.cs" />
+    <Compile Include="Strategies\DrawerKickOffStrategy.cs" />
     <Compile Include="Strategies\Faeze\Strategy12.cs" />
     <Compile Include="Strategies\Faeze\PounderStrategy.cs" />
     <Compile Include="Strategies\Faeze\SimpleShootStrategy.cs" />
     <Compile Include="Strategies\Faeze\WallMounting.cs" />
+    <Compile Include="Strategies\LongChipNotMidd.cs" />
     <Compile Include="Strategies\Mamad\3inMiddle.cs" />
     <Compile Include="Strategies\Mamad\LineAttakers.cs" />
     <Compile Include="Strategies\Mamad\new1-2.cs" />
     <Compile Include="Strategies\Mamad\NewCornerPassShoot.cs" />
     <Compile Include="Strategies\Mamad\RearOneTouchPassBack.cs" />
     <Compile Include="Strategies\Mamad\Rotational.cs" />
+    <Compile Include="Strategies\Middle3AtackerStrategy.cs" />
+    <Compile Include="Strategies\PassAndShootStrategy.cs" />
+    <Compile Include="Strategies\PassShootCornerStrategy.cs" />
     <Compile Include="Strategies\Syncronizer.cs" />
+    <Compile Include="Strategies\Vahid\Abdullah_Rear.cs" />
     <Compile Include="Strategies\Vahid\CrazyRobots.cs" />
+    <Compile Include="Strategies\Vahid\IMSimpleCornerChip.cs" />
     <Compile Include="Strategies\Vahid\RushingAttackers.cs" />
     <Compile Include="Strategies\Vahid\RearChipAndConfuse.cs" />
     <Compile Include="Strategies\Vahid\RearDirectTwoPass.cs" />

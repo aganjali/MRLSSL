@@ -8,6 +8,7 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.GameDefinitions.General_Settings;
 using System.Drawing;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Plays
 {
@@ -122,6 +123,7 @@ namespace MRL.SSL.AIConsole.Plays
             Functions = new Dictionary<int, CommonDelegate>();
 
             List<int> oppAttackerIds = new List<int>();
+            Planner.IsStopBall(FreekickDefence.BallIsMoved);
 
             double markRegion = -3.5;
             Dictionary<int, float> scores;

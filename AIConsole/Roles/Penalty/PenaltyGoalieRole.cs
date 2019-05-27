@@ -27,7 +27,7 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 Planner.Add(RobotID, new SingleObjectState(Target, Vector2D.Zero, (float)(Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees), PathType.UnSafe, false, false, false);
             }
-            Planner.AddKick(RobotID, kickPowerType.Power, true, 255);
+            Planner.AddKick(RobotID, kickPowerType.Speed, true, 4);
             return new SingleWirelessCommand();
         }
 

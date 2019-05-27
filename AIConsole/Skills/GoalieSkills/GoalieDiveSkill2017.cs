@@ -103,14 +103,13 @@ namespace MRL.SSL.AIConsole.Skills.GoalieSkills
                 if (!Position2D.IsBetween(GameParameters.OurGoalRight, GameParameters.OurGoalLeft, posToGo.Value))
                 {
 
-                    Position2D dangerZoneLineCenter = new Position2D(3.5, 0);
+                    Position2D dangerZoneLineCenter = new Position2D(GameParameters.OurGoalCenter.X - 1, 0);
                     Line RightLine = new Line(GameParameters.OurGoalRight.Extend(-0.05, -0.13), dangerZoneLineCenter);
                     Line LeftLine = new Line(GameParameters.OurGoalLeft.Extend(-0.05, 0.13), dangerZoneLineCenter);
-                    if (PrepWithBallSpeedIntersect.HasValue && PrepWithBallSpeedIntersect.Value.X > 3.7 && PrepWithBallSpeedIntersect.Value.X < 4.38 &&
+                    if (PrepWithBallSpeedIntersect.HasValue && PrepWithBallSpeedIntersect.Value.X > GameParameters.OurGoalCenter.X - 0.80 && PrepWithBallSpeedIntersect.Value.X < GameParameters.OurGoalCenter.X - 0.12 &&
                         PrepWithBallSpeedIntersect.Value.Y > -.85 && PrepWithBallSpeedIntersect.Value.Y < .85)
                     {
                         posToGo = PrepWithBallSpeedIntersect.Value;
-                        DrawingObjects.AddObject(new StringDraw("", new Position2D(3.5, 0.1)));
                     }
                     else
                     {

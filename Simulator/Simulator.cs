@@ -15,7 +15,7 @@ namespace Simulator
 {
     public class MRLSimulator : SimulatorBase, System.IDisposable
     {
-        public RectangleF field = new RectangleF(4.52f, 3.025f, 9.05f, 6.05f);
+        public RectangleF field = new RectangleF(6.0f, 4.5f, 12.0f, 9.0f);
         private Scene _scene;
         Thread _sendThread, _reciveThread, _simulatorThread;
         private Dictionary<int, Robot> blueRobots;
@@ -65,157 +65,84 @@ namespace Simulator
             addBall(0, Position2D.Zero);
             //engine.Run();
         }
-        private List<messages_robocup_ssl_detection.SSL_DetectionFrame> GenerateCameraModel(Camera cam0, Camera cam1, Camera cam2, Camera cam3)
+        private List<messages_robocup_ssl_detection.SSL_DetectionFrame> GenerateCameraModel(Camera[] cams)
         {
-            messages_robocup_ssl_detection.SSL_DetectionFrame packet0 = new messages_robocup_ssl_detection.SSL_DetectionFrame();
-            messages_robocup_ssl_detection.SSL_DetectionFrame packet1 = new messages_robocup_ssl_detection.SSL_DetectionFrame();
-            messages_robocup_ssl_detection.SSL_DetectionFrame packet2 = new messages_robocup_ssl_detection.SSL_DetectionFrame();
-            messages_robocup_ssl_detection.SSL_DetectionFrame packet3 = new messages_robocup_ssl_detection.SSL_DetectionFrame();
-
-            if (cam0 != null && cam1 != null && cam2 != null && cam3 != null)
+            messages_robocup_ssl_detection.SSL_DetectionFrame[] packet = new messages_robocup_ssl_detection.SSL_DetectionFrame[StaticVariables.CameraCount];
+            for (int i = 0; i < StaticVariables.CameraCount; i++)
             {
-                if (yellowRobots != null)
-                {
-                    foreach (var item in yellowRobots.Keys.ToList())
-                    {
-                        if (cam0.IsInCamera(new Vector3(yellowRobots[item].RobotActor.GlobalPosition.X, yellowRobots[item].RobotActor.GlobalPosition.Z, yellowRobots[item].RobotActor.GlobalPosition.Y)))
-                            packet0.robots_yellow.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
-                            {
-                                confidence = 1,
-                                x = yellowRobots[item].RobotActor.GlobalPosition.X * 1000,
-                                y = yellowRobots[item].RobotActor.GlobalPosition.Z * 1000,
-                                robot_id = yellowRobots[item].ID,
-                                orientation = (float)(Math.PI * ((GetAngle(yellowRobots[item].RobotActor.GlobalOrientationQuat) + 90) / 180.0))
-                            });
-                        if (cam1.IsInCamera(new Vector3(yellowRobots[item].RobotActor.GlobalPosition.X, yellowRobots[item].RobotActor.GlobalPosition.Z, yellowRobots[item].RobotActor.GlobalPosition.Y)))
-                            packet1.robots_yellow.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
-                            {
-                                confidence = 1,
-                                x = yellowRobots[item].RobotActor.GlobalPosition.X * 1000,
-                                y = yellowRobots[item].RobotActor.GlobalPosition.Z * 1000,
-                                robot_id = yellowRobots[item].ID,
-                                orientation = (float)(Math.PI * ((GetAngle(yellowRobots[item].RobotActor.GlobalOrientationQuat) + 90) / 180.0))
-                            });
-                        if (cam2.IsInCamera(new Vector3(yellowRobots[item].RobotActor.GlobalPosition.X, yellowRobots[item].RobotActor.GlobalPosition.Z, yellowRobots[item].RobotActor.GlobalPosition.Y)))
-                            packet2.robots_yellow.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
-                            {
-                                confidence = 1,
-                                x = yellowRobots[item].RobotActor.GlobalPosition.X * 1000,
-                                y = yellowRobots[item].RobotActor.GlobalPosition.Z * 1000,
-                                robot_id = yellowRobots[item].ID,
-                                orientation = (float)(Math.PI * ((GetAngle(yellowRobots[item].RobotActor.GlobalOrientationQuat) + 90) / 180.0))
-                            });
-                        if (cam3.IsInCamera(new Vector3(yellowRobots[item].RobotActor.GlobalPosition.X, yellowRobots[item].RobotActor.GlobalPosition.Z, yellowRobots[item].RobotActor.GlobalPosition.Y)))
-                            packet3.robots_yellow.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
-                            {
-                                confidence = 1,
-                                x = yellowRobots[item].RobotActor.GlobalPosition.X * 1000,
-                                y = yellowRobots[item].RobotActor.GlobalPosition.Z * 1000,
-                                robot_id = yellowRobots[item].ID,
-                                orientation = (float)(Math.PI * ((GetAngle(yellowRobots[item].RobotActor.GlobalOrientationQuat) + 90) / 180.0))
-                            });
-                    }
-                }
-                if (blueRobots != null)
-                {
-                    foreach (var item in blueRobots.Keys.ToList())
-                    {
-                        int i = 0;
-                        if (cam0.IsInCamera(new Vector3(blueRobots[item].RobotActor.GlobalPosition.X, blueRobots[item].RobotActor.GlobalPosition.Z, blueRobots[item].RobotActor.GlobalPosition.Y)))
-                        {
-                            packet0.robots_blue.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
-                               {
-                                   confidence = 1,
-                                   x = blueRobots[item].RobotActor.GlobalPosition.X * 1000,
-                                   y = blueRobots[item].RobotActor.GlobalPosition.Z * 1000,
-                                   robot_id = blueRobots[item].ID,
-                                   orientation = (float)(Math.PI * ((GetAngle(blueRobots[item].RobotActor.GlobalOrientationQuat) + 90) / 180.0))
-                               });
-                            ++i;
-                        }
-                        if (cam1.IsInCamera(new Vector3(blueRobots[item].RobotActor.GlobalPosition.X, blueRobots[item].RobotActor.GlobalPosition.Z, blueRobots[item].RobotActor.GlobalPosition.Y)))
-                        {
-                            packet1.robots_blue.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
-                               {
-                                   confidence = 1,
-                                   x = blueRobots[item].RobotActor.GlobalPosition.X * 1000,
-                                   y = blueRobots[item].RobotActor.GlobalPosition.Z * 1000,
-                                   robot_id = blueRobots[item].ID,
-                                   orientation = (float)(Math.PI * ((GetAngle(blueRobots[item].RobotActor.GlobalOrientationQuat) + 90) / 180.0))
-                               });
-                            ++i;
-                        }
-                        if (cam2.IsInCamera(new Vector3(blueRobots[item].RobotActor.GlobalPosition.X, blueRobots[item].RobotActor.GlobalPosition.Z, blueRobots[item].RobotActor.GlobalPosition.Y)))
-                        {
-                            packet2.robots_blue.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
-                               {
-                                   confidence = 1,
-                                   x = blueRobots[item].RobotActor.GlobalPosition.X * 1000,
-                                   y = blueRobots[item].RobotActor.GlobalPosition.Z * 1000,
-                                   robot_id = blueRobots[item].ID,
-                                   orientation = (float)(Math.PI * ((GetAngle(blueRobots[item].RobotActor.GlobalOrientationQuat) + 90) / 180.0))
-                               });
-                            ++i;
-                        }
-                        if (cam3.IsInCamera(new Vector3(blueRobots[item].RobotActor.GlobalPosition.X, blueRobots[item].RobotActor.GlobalPosition.Z, blueRobots[item].RobotActor.GlobalPosition.Y)))
-                        {
-                            packet3.robots_blue.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
-                              {
-                                  confidence = 1,
-                                  x = blueRobots[item].RobotActor.GlobalPosition.X * 1000,
-                                  y = blueRobots[item].RobotActor.GlobalPosition.Z * 1000,
-                                  robot_id = blueRobots[item].ID,
-                                  orientation = (float)(Math.PI * ((GetAngle(blueRobots[item].RobotActor.GlobalOrientationQuat) + 90) / 180.0))
-                              });
-                            ++i;
-                        }
-                        if (i ==0)
-                        {
-                            
-                        }
-                    }
-                }
-                if (balls != null)
-                {
-                    foreach (int item in balls.Keys)
-                    {
-                        if (cam0.IsInCamera(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)))
-                            packet0.balls.Add(new messages_robocup_ssl_detection.SSL_DetectionBall()
-                            {
-                                confidence = 1,
-                                x = cam0.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).X,
-                                y = cam0.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).Z,
-                                z = cam0.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).Y
-                            });
-                        if (cam1.IsInCamera(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)))
-                            packet1.balls.Add(new messages_robocup_ssl_detection.SSL_DetectionBall()
-                            {
-                                confidence = 1,
-                                x = cam1.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).X,
-                                y = cam1.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).Z,
-                                z = cam1.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).Y
-                            });
-                        if (cam2.IsInCamera(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)))
-                            packet2.balls.Add(new messages_robocup_ssl_detection.SSL_DetectionBall()
-                            {
-                                confidence = 1,
-                                x = cam0.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).X,
-                                y = cam0.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).Z,
-                                z = cam0.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).Y
-                            });
-                        if (cam3.IsInCamera(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)))
-                            packet3.balls.Add(new messages_robocup_ssl_detection.SSL_DetectionBall()
-                            {
-                                confidence = 1,
-                                x = cam1.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).X,
-                                y = cam1.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).Z,
-                                z = cam1.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).Y
-                            });
-                    }
-                }
-                return new List<messages_robocup_ssl_detection.SSL_DetectionFrame>() { packet0, packet1,packet2,packet3 };
+                packet[i] = new messages_robocup_ssl_detection.SSL_DetectionFrame();
             }
-            return null;
+            foreach (var item in cams)
+            {
+                if (item == null)
+                {
+                    return null;
+                }
+            }
+            if (yellowRobots != null)
+            {
+                foreach (var item in yellowRobots.Keys.ToList())
+                {
+                    foreach (var c in cams)
+                    {
+                        if (c.IsInCamera(new Vector3(yellowRobots[item].RobotActor.GlobalPosition.X, yellowRobots[item].RobotActor.GlobalPosition.Z, yellowRobots[item].RobotActor.GlobalPosition.Y)))
+                        {
+                            packet[c.ID].robots_yellow.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
+                            {
+                                confidence = 1,
+                                x = yellowRobots[item].RobotActor.GlobalPosition.X * 1000,
+                                y = yellowRobots[item].RobotActor.GlobalPosition.Z * 1000,
+                                robot_id = yellowRobots[item].ID,
+                                orientation = (float)(Math.PI * ((GetAngle(yellowRobots[item].RobotActor.GlobalOrientationQuat) + 90) / 180.0))
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+            if (blueRobots != null)
+            {
+                foreach (var item in blueRobots.Keys.ToList())
+                {
+                    foreach (var c in cams)
+                    {
+                        if (c.IsInCamera(new Vector3(blueRobots[item].RobotActor.GlobalPosition.X, blueRobots[item].RobotActor.GlobalPosition.Z, blueRobots[item].RobotActor.GlobalPosition.Y)))
+                        {
+                            packet[c.ID].robots_blue.Add(new messages_robocup_ssl_detection.SSL_DetectionRobot()
+                            {
+                                confidence = 1,
+                                x = blueRobots[item].RobotActor.GlobalPosition.X * 1000,
+                                y = blueRobots[item].RobotActor.GlobalPosition.Z * 1000,
+                                robot_id = blueRobots[item].ID,
+                                orientation = (float)(Math.PI * ((GetAngle(blueRobots[item].RobotActor.GlobalOrientationQuat) + 90) / 180.0))
+                            });
+                            break;
+                        }
+                    }
+                    
+                }
+            }
+            if (balls != null)
+            {
+                foreach (int item in balls.Keys)
+                {
+                    foreach (var c in cams)
+                    {
+                        if (c.IsInCamera(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)))
+                        {
+                            packet[c.ID].balls.Add(new messages_robocup_ssl_detection.SSL_DetectionBall()
+                            {
+                                confidence = 1,
+                                x = c.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).X,
+                                y = c.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).Z,
+                                z = c.CalculateObjectPosition(new Vector3(balls[item].GlobalPosition.X, balls[item].GlobalPosition.Z, balls[item].GlobalPosition.Y)).Y
+                            });
+                        }
+                    }
+                }
+            }
+            return packet.ToList();
+
         }
         private float GetAngle(Quaternion q1)
         {
@@ -268,11 +195,18 @@ namespace Simulator
         void SendDataRun()
         {
             double timeCapture = 0;
-            Camera cam0 = new Camera(field.Width / 4, field.Height / 4, 4, new RectangleF(field.X  + 0.5f, field.Y + 0.5f, field.Width / 2 + 1f, field.Height / 2 + 1f), 0),
-                cam1 = new Camera(field.Width / 4, -field.Height / 4, 4, new RectangleF(field.X  + 0.5f,  0.5f, field.Width / 2 + 1f, field.Height / 2 + 1f), 1),
-                cam2 = new Camera(-field.Width / 4, field.Height / 4, 4, new RectangleF(0.5f, field.Y + 0.5f, field.Width / 2 + 1f, field.Height / 2+ 1f), 2),
-                cam3 = new Camera(-field.Width / 4, -field.Height / 4, 4, new RectangleF(0.5f,  0.5f, field.Width / 2 + 1f, field.Height / 2 + 1f), 3);
-
+            
+            Camera[] cams = new Camera[StaticVariables.CameraCount];
+            
+            float widthStep = field.Width * 2.0f / StaticVariables.CameraCount;
+            float heightStep = field.Height / 2.0f;
+            
+            for (int c = 0; c < StaticVariables.CameraCount; c++)
+            {
+                int i = c % 2, j = c / 2;
+                float cx = field.Width - (j * widthStep + widthStep / 2.0f), cy =  field.Height - (i * heightStep + heightStep / 2.0f);
+                cams[c] = new Camera(cx, cy, 4.0f, new RectangleF(cx + widthStep / 2 + 0.5f, cy + heightStep / 2 + 0.5f, widthStep + 1.0f, heightStep + 1.0f), c);
+            }
             Stopwatch sw = new Stopwatch();
             //    HiPerfTimer t2 = new HiPerfTimer();
 
@@ -283,49 +217,26 @@ namespace Simulator
                 elapsed = 0;
 
                 sw.Restart();
-                List<messages_robocup_ssl_detection.SSL_DetectionFrame> lists = GenerateCameraModel(cam0, cam1, cam2, cam3);
+                List<messages_robocup_ssl_detection.SSL_DetectionFrame> lists = GenerateCameraModel(cams);
                 messages_robocup_ssl_wrapper.SSL_WrapperPacket wrapper = new messages_robocup_ssl_wrapper.SSL_WrapperPacket();
-                wrapper.detection = new messages_robocup_ssl_detection.SSL_DetectionFrame();
-
-                wrapper.detection = lists[0];
-                wrapper.detection.t_capture = timeCapture;
-                wrapper.detection.camera_id = 0;
-
-
                 MemoryStream stream = new MemoryStream();
-                ProtoBuf.Serializer.Serialize<messages_robocup_ssl_wrapper.SSL_WrapperPacket>(stream, wrapper);
+                wrapper.detection = new messages_robocup_ssl_detection.SSL_DetectionFrame();
+                
+                for (int i = 0; i < cams.Length; i++)
+			    {
+                    elapsed = sw.ElapsedMilliseconds;
+                    if (i == 0)
+	                    elapsed = 0;
+			        wrapper.detection = lists[i];
+                    wrapper.detection.t_capture = timeCapture + elapsed;
+                    wrapper.detection.camera_id = (uint)i;
 
-                _networkManager.SendData(stream);
+                    stream = new MemoryStream();
+                    ProtoBuf.Serializer.Serialize<messages_robocup_ssl_wrapper.SSL_WrapperPacket>(stream, wrapper);
+                    _networkManager.SendData(stream);
+                }
+                
 
-                elapsed = sw.ElapsedMilliseconds;
-                wrapper.detection = lists[1];
-                wrapper.detection.t_capture = timeCapture + elapsed;
-                wrapper.detection.camera_id = 1;
-
-                stream = new MemoryStream();
-                ProtoBuf.Serializer.Serialize<messages_robocup_ssl_wrapper.SSL_WrapperPacket>(stream, wrapper);
-
-                _networkManager.SendData(stream);
-
-                elapsed = sw.ElapsedMilliseconds;
-                wrapper.detection = lists[2];
-                wrapper.detection.t_capture = timeCapture + elapsed;
-                wrapper.detection.camera_id = 2;
-
-                stream = new MemoryStream();
-                ProtoBuf.Serializer.Serialize<messages_robocup_ssl_wrapper.SSL_WrapperPacket>(stream, wrapper);
-
-                _networkManager.SendData(stream);
-
-                elapsed = sw.ElapsedMilliseconds;
-                wrapper.detection = lists[3];
-                wrapper.detection.t_capture = timeCapture + elapsed;
-                wrapper.detection.camera_id = 3;
-
-                stream = new MemoryStream();
-                ProtoBuf.Serializer.Serialize<messages_robocup_ssl_wrapper.SSL_WrapperPacket>(stream, wrapper);
-
-                _networkManager.SendData(stream);
 
                 while ((elapsed = sw.ElapsedMilliseconds) < 16) ;
 

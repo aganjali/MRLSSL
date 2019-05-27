@@ -250,3 +250,8 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+GameDefinitions/General Settings/AISettings.cs
+GameDefinitions/General Settings/AISettings.Designer.cs
+GameDefinitions/General Settings/AISettings.Designer.cs
+GameDefinitions/General Settings/AISettings.settings

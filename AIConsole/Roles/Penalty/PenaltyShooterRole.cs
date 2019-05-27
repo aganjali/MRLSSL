@@ -15,7 +15,7 @@ namespace MRL.SSL.AIConsole.Roles
         SingleObjectState lastoppstate = null;
         Position2D initializeTarget = new Position2D(GameParameters.OppGoalLeft.X, GameParameters.OppGoalLeft.Y + 0.15);
         bool initialized = false;
-        public SingleWirelessCommand Perform(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID, double kickPower, Dictionary<int, RoleBase> AssignedRoles)
+        public SingleWirelessCommand Perform(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID, double KickSpeed, Dictionary<int, RoleBase> AssignedRoles)
         {
             OppGoallerState state = CalculateGoallerState(engine, Model);
             if (!initialized)
@@ -48,7 +48,7 @@ namespace MRL.SSL.AIConsole.Roles
                 //return GetSkill<GotoPointSkill>().GotoPointInRefrence(Model, RobotID,secondTarget-Model.BallState.Location ,secondTarget, (initializeTarget - Model.OurRobots[RobotID].Location).AngleInDegrees, true, false);
             }
             else
-                return GetSkill<RotateWheelsSkill>().Rotate(engine, Model, RobotID, kickPower , lastoppstate);
+                return GetSkill<RotateWheelsSkill>().Rotate(engine, Model, RobotID, KickSpeed, lastoppstate);
         }
 
         public override RoleCategory QueryCategory()
@@ -58,12 +58,12 @@ namespace MRL.SSL.AIConsole.Roles
         int RNDTime = 0;
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            int? goalieId =engine.GameInfo.OppTeam.GoaliID; 
+            int? goalieId = engine.GameInfo.OppTeam.GoaliID;
             if (goalieId.HasValue && Model.Opponents.ContainsKey(goalieId.Value))
             {
                 lastoppstate = Model.Opponents[goalieId.Value];
             }
-            else if(lastoppstate== null)
+            else if (lastoppstate == null)
             {
                 lastoppstate = new SingleObjectState(GameParameters.OppGoalLeft, Vector2D.Zero, 0);
             }

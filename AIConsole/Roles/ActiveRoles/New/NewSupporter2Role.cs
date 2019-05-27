@@ -8,6 +8,7 @@ using MRL.SSL.GameDefinitions;
 using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.AIConsole.Skills;
 using MRL.SSL.Planning.MotionPlanner;
+using MRL.SSL.AIConsole.Roles.Defending.Normal;
 
 namespace MRL.SSL.AIConsole.Roles
 {
@@ -141,7 +142,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             List<RoleBase> res = new List<RoleBase>() {
             new ActiveRole2017(),
-            new NewSupporter2Role()};
+            new NewSupporter2Role(),new NewRegionalRole(),};
             if (NormalSharedState.CommonInfo.PickIsFeasible && !NormalSharedState.CommonInfo.IsPicking)
             {
 

@@ -60,8 +60,8 @@ namespace MRL.SSL.AIConsole.Roles
             if (Model.OurRobots[RobotID].Location.DistanceFrom(targ) > 1)
                 AvoidBall = true;
             Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 2);
-            SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, false, AvoidBall, 1.9, true);
+            Planner.SetParameter(RobotID, 1);
+            SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, false, AvoidBall, 1, true);
             SWC.isChipKick = isChipKick;
             SWC.KickPower = kickPower;
             return SWC;

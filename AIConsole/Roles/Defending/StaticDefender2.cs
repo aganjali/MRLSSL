@@ -9,6 +9,8 @@ using MRL.SSL.AIConsole.Skills;
 using System.Drawing;
 using MRL.SSL.Planning.MotionPlanner;
 using MRL.SSL.AIConsole.Plays;
+using MRL.SSL.AIConsole.Roles.Defending.Normal;
+using MRL.SSL.AIConsole.Roles.Defending;
 
 namespace MRL.SSL.AIConsole.Roles
 {
@@ -541,7 +543,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             Position2D tempball = ballState.Location + ballState.Speed * 0.16;
             double d1, d2;
-            List<RoleBase> res = new List<RoleBase>() { new StaticDefender1(), new StaticDefender2() };
+            List<RoleBase> res = new List<RoleBase>() { new StaticDefender1(), new StaticDefender2(), new staticDefender3()};
             if (FreekickDefence.StaticSecondState == DefenderStates.BallInFront)
             {
                 if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))
@@ -552,6 +554,13 @@ namespace MRL.SSL.AIConsole.Roles
                 if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))
                     res.Add(new NewActiveRole());
             }
+            
+            if (FreekickDefence.StaticSecondState == DefenderStates.BallInFront)
+            {
+                if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))
+                    res.Add(new ActiveRole2017());
+            }
+           
             return res;
         }
 
@@ -686,7 +695,7 @@ namespace MRL.SSL.AIConsole.Roles
             obstmp3.AddObstacle(1, 0, 0, 0, new List<int>() { pursueID }, new List<int>());// mohavate jarime va robotha bedoone robote taghib shavande
             obstmp2.AddObstacle(1, 0, 1, 0, new List<int>() { pursueID }, new List<int>());
 
-            obstmp.AddObstacle(0, 0, 1, 0, new List<int>(), new List<int>());
+            obstmp.AddObstacle(0, 0, 1, 0, new List<int>(), new List<int>(), false);
             if (deltaxCurrent > Model.OurRobots[pursueID].Location.DistanceFrom(targete) && obstmp.Meet(Model.OurRobots[pursueID], new SingleObjectState(targete, Vector2D.Zero, 0f), .15))
             {
                 tg = targete;

@@ -8,6 +8,7 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.GameDefinitions.General_Settings;
 using System.Drawing;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Plays.Opp
 {
@@ -97,6 +98,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             FreekickDefence.SwitchToActiveReset();
             DefenceTest.BallTest = FreekickDefence.testDefenceState;
             DefenceTest.GenerateBallPos();
+            Planner.IsStopBall(FreekickDefence.BallIsMoved);
+
             if (DefenceTest.BallTest)
             {
                 ballState = DefenceTest.currentBallState;
@@ -267,7 +270,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 if (regional2.HasValue)
                     DefenceTest.DefenderRegionalRole2 = Model.OurRobots[regional2.Value].Location;
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, golie, typeof(GoalieCornerRole)))
-                    Functions[golie.Value] = (eng, wmd) => GetRole<GoalieCornerRole>(golie.Value).Run(engine, wmd, golie.Value, gol.DefenderPosition.Value, gol.Teta, gol, normal1.DefenderPosition.Value, n1.Value, true);
+                    Functions[golie.Value] = (eng, wmd) => GetRole<GoalieCornerRole>(golie.Value).Run(engine, wmd, golie.Value, gol.DefenderPosition.Value, gol.Teta, gol, normal1.DefenderPosition.Value, n1, true);
                 DefenceTest.WeHaveGoalie = true;
                 if (golie.HasValue)
                     DefenceTest.GoalieRole = Model.OurRobots[golie.Value].Location;
@@ -1190,6 +1193,21 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 }
             }
             #endregion
+            // added io2018 vahid
+            if (Model.OurRobots.Count > 6)
+            {
+                List<int> ids = new List<int>();
+                if (Model.GoalieID.HasValue)
+                    ids = Model.OurRobots.Where(w => w.Key != Model.GoalieID.Value).Select(s => s.Key).ToList();
+                else
+                    ids = Model.OurRobots.Select(s => s.Key).ToList();
+                AddRoleInfo(roles, typeof(StaticPositionerRole), 1, 0);
+                var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+                int? SPR = null;
+                SPR = getID(assigenroles, typeof(StaticPositionerRole));
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, SPR, typeof(StaticPositionerRole)))
+                    Functions[SPR.Value] = (eng, wmd) => GetRole<StaticPositionerRole>(SPR.Value).perform(engine, Model, SPR.Value, new Position2D(3.5, 4 * Math.Sign(Model.BallState.Location.Y)));
+            }
             ControlParameters.BallIsMoved = ballismoved;
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             DefenceTest.BallTest = FreekickDefence.testDefenceState;

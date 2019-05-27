@@ -489,34 +489,24 @@ namespace MRL.SSL.CommonControls.D2DControls
                 pg.Dispose();
                 gs.Dispose();
             }
-            //Our Defence Area
+            
             {
+
+
                 PathGeometry pg1 = new PathGeometry(d2dfactory);
                 GeometrySink gs1 = pg1.Open();
-                gs1.BeginFigure(new PointF((float)GameParameters.OurGoalCenter.X, (float)(GameParameters.OurGoalCenter.Y + GameParameters.DefenceAreaFrontWidth / 2 + GameParameters.DefenceareaRadii)), FigureBegin.Hollow);
-                ArcSegment arcseg1 = new ArcSegment();
-                arcseg1.ArcSize = ArcSize.Small;
-                arcseg1.EndPoint = new System.Drawing.PointF((float)(GameParameters.OurGoalCenter.X - GameParameters.DefenceareaRadii), (float)(GameParameters.OurGoalCenter.Y + GameParameters.DefenceAreaFrontWidth / 2));
-                arcseg1.RotationAngle = (float)Math.PI / 2;
-                arcseg1.Size = new System.Drawing.SizeF((float)GameParameters.DefenceareaRadii, (float)GameParameters.DefenceareaRadii);
-                arcseg1.SweepDirection = SweepDirection.Clockwise;
-                gs1.AddArc(arcseg1);
-                gs1.AddLine((new System.Drawing.PointF((float)(GameParameters.OurGoalCenter.X - GameParameters.DefenceareaRadii), (float)(GameParameters.OurGoalCenter.Y - GameParameters.DefenceAreaFrontWidth / 2))));
-                arcseg1.EndPoint = new System.Drawing.PointF((float)GameParameters.OurGoalCenter.X, (float)(GameParameters.OurGoalCenter.Y - GameParameters.DefenceAreaFrontWidth / 2 - GameParameters.DefenceareaRadii));
-                gs1.AddArc(arcseg1);
+                //Our Defence Area
+                gs1.BeginFigure(new PointF((float)GameParameters.OurGoalCenter.X, (float)(GameParameters.OurGoalCenter.Y + GameParameters.DefenceAreaWidth / 2)), FigureBegin.Hollow);
+                gs1.AddLine(new PointF((float)(GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight), (float)(GameParameters.OurGoalCenter.Y + GameParameters.DefenceAreaWidth / 2)));
+                gs1.AddLine(new PointF((float)(GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight), (float)(GameParameters.OurGoalCenter.Y - GameParameters.DefenceAreaWidth / 2)));
+                gs1.AddLine(new PointF((float)(GameParameters.OurGoalCenter.X), (float)(GameParameters.OurGoalCenter.Y - GameParameters.DefenceAreaWidth / 2)));
                 gs1.EndFigure(FigureEnd.Open);
                 //Opp Defence Area
-                gs1.BeginFigure(new PointF((float)GameParameters.OppGoalCenter.X, (float)(GameParameters.OppGoalCenter.Y + GameParameters.DefenceAreaFrontWidth / 2 + GameParameters.DefenceareaRadii)), FigureBegin.Hollow);
-                ArcSegment arcseg2 = new ArcSegment();
-                arcseg2.ArcSize = ArcSize.Small;
-                arcseg2.EndPoint = new PointF((float)(GameParameters.OppGoalCenter.X + GameParameters.DefenceareaRadii), (float)(GameParameters.OppGoalCenter.Y + GameParameters.DefenceAreaFrontWidth / 2));
-                arcseg2.RotationAngle = (float)Math.PI / 2;
-                arcseg2.Size = new SizeF((float)GameParameters.DefenceareaRadii, (float)GameParameters.DefenceareaRadii);
-                arcseg2.SweepDirection = SweepDirection.Counterclockwise;
-                gs1.AddArc(arcseg2);
-                gs1.AddLine(new PointF((float)(GameParameters.OppGoalCenter.X + GameParameters.DefenceareaRadii), (float)(GameParameters.OppGoalCenter.Y - GameParameters.DefenceAreaFrontWidth / 2)));
-                arcseg2.EndPoint = new PointF((float)GameParameters.OppGoalCenter.X, (float)(GameParameters.OppGoalCenter.Y - GameParameters.DefenceAreaFrontWidth / 2 - GameParameters.DefenceareaRadii));
-                gs1.AddArc(arcseg2);
+                gs1.BeginFigure(new PointF((float)GameParameters.OppGoalCenter.X, (float)(GameParameters.OppGoalCenter.Y + GameParameters.DefenceAreaWidth / 2)), FigureBegin.Hollow);
+                gs1.AddLine(new PointF((float)(GameParameters.OppGoalCenter.X + GameParameters.DefenceAreaHeight), (float)(GameParameters.OppGoalCenter.Y + GameParameters.DefenceAreaWidth / 2)));
+                gs1.AddLine(new PointF((float)(GameParameters.OppGoalCenter.X + GameParameters.DefenceAreaHeight), (float)(GameParameters.OppGoalCenter.Y - GameParameters.DefenceAreaWidth / 2)));
+                gs1.AddLine(new PointF((float)(GameParameters.OppGoalCenter.X), (float)(GameParameters.OppGoalCenter.Y - GameParameters.DefenceAreaWidth / 2)));
+
                 gs1.EndFigure(FigureEnd.Open);
                 gs1.Close();
                 renderTarget.DrawGeometry(pg1, WhiteBrush, 0.01f);
@@ -546,11 +536,11 @@ namespace MRL.SSL.CommonControls.D2DControls
             }
             //Penalty Points
             Ellipse PenaltyPoint = new Ellipse();
-            PenaltyPoint.Center = new PointF((float)GameParameters.OppGoalCenter.X + 0.4f, (float)GameParameters.OppGoalCenter.Y);
+            PenaltyPoint.Center = new PointF((float)GameParameters.OppGoalCenter.X + (float)GameParameters.PenaltyDistanceFromGoalLine, (float)GameParameters.OppGoalCenter.Y);
             PenaltyPoint.RadiusX = 0.005f;
             PenaltyPoint.RadiusY = 0.005f;
             renderTarget.FillEllipse(WhiteBrush, PenaltyPoint);
-            PenaltyPoint.Center = new PointF((float)GameParameters.OurGoalCenter.X - 0.4f, (float)GameParameters.OurGoalCenter.Y);
+            PenaltyPoint.Center = new PointF((float)GameParameters.OurGoalCenter.X - (float)GameParameters.PenaltyDistanceFromGoalLine, (float)GameParameters.OurGoalCenter.Y);
             renderTarget.FillEllipse(WhiteBrush, PenaltyPoint);
 
             #endregion

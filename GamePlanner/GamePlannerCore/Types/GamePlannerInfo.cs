@@ -21,7 +21,7 @@ namespace MRL.SSL.Planning.GamePlanner.Types
         double xStep, yStep;
         float[,] directGoodness, chipGoodness;
 
-        static double minPassOneTouchSpeed = 3, maxPassOneTouchSpeed = 7, minPassCatchSpeed = 4,
+        static double minPassOneTouchSpeed = 3, maxPassOneTouchSpeed = 6, minPassCatchSpeed = 4,
             maxPassCatchSpeed = 5, minPassDist = 1, maxPassDist = 5.2, minChipCatchCoef = 0.2,
             maxChipCatchCoef = 0.6, minChipOneTouchCoef = 0.5, maxChipOneTouchCoef = 0.55;
         public double[] DriblePower = { 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80 };
@@ -39,8 +39,7 @@ namespace MRL.SSL.Planning.GamePlanner.Types
         bool chipIsSutaible;
         float passPointScore;
         List<VisibleGoalInterval> ourGoalIntervals, oppGoalIntervals;
-        bool Debug = false;
-
+        bool Debug = true;
         public List<VisibleGoalInterval> OppGoalIntervals
         {
             get { return oppGoalIntervals; }
@@ -167,7 +166,7 @@ namespace MRL.SSL.Planning.GamePlanner.Types
                 BestPassPoint = bestDir;
             }
         }
-        public List<VisibleGoalInterval> GetVisibleIntervals(WorldModel Model, Position2D From, Position2D Start, Position2D End, bool useOpp, bool useOur, int? OpponentIDToExclude, params int[] robotIDsToExclude)
+        public List<VisibleGoalInterval>GetVisibleIntervals(WorldModel Model, Position2D From, Position2D Start, Position2D End, bool useOpp, bool useOur, int? OpponentIDToExclude, params int[] robotIDsToExclude)
         {
             return region.GetVisibleIntervals(Model, From, Start, End, useOpp, useOur, OpponentIDToExclude, robotIDsToExclude);
         }
@@ -401,17 +400,19 @@ namespace MRL.SSL.Planning.GamePlanner.Types
                 {
                     FirstCenter = FirstCenter.Extend(0, HeightStep);
                     CenterPoints.Add(FirstCenter);
-                    //DrawingObjects.AddObject("centerppscore" + FirstCenter.toString(), FirstCenter);
+
+                    //DrawingObjects.AddObject(FirstCenter);
+                        
+                    
                 }
+
 
                 for (int j = 1; j < Rows; j++)
                 {
                     Position2D NextCenter = FirstCenter.Extend(-j * WidthStep, 0);
                     CenterPoints.Add(NextCenter);
-                    //    DrawingObjects.AddObject("centerppscore" + NextCenter.toString(), NextCenter);
+                    //DrawingObjects.AddObject(NextCenter);
                 }
-
-
             }
 
 
@@ -563,8 +564,11 @@ namespace MRL.SSL.Planning.GamePlanner.Types
             Position2D otPos = new Position2D(), crPos = new Position2D();
             double maxScoreCr = double.MinValue, maxScoreOt = double.MinValue;
             double[] scoresOt = new double[CenterofRegions.Count], scoresCr = new double[CenterofRegions.Count];
+                
             foreach (var passTarget in CenterofRegions)
             {
+                
+
                 index++;
                 if (!GameParameters.IsInField(passTarget, -0.1) || GameParameters.IsInDangerousZone(passTarget, true, 0, out dist, out DistFromBorder))
                 {
@@ -586,7 +590,7 @@ namespace MRL.SSL.Planning.GamePlanner.Types
                     t2 = t1 - speed / accel;
                     t1 = speed / accel;
                 }
-                double d = 0.5 * accel * t1 * t1 + speed * t2;
+                double d = 0.5 * accel * t1 * t1 + speed * t2; 
                 double d1 = d, d2 = d;
                 ballPPrepVec.NormalizeTo(d);
                 int idx;
@@ -667,7 +671,7 @@ namespace MRL.SSL.Planning.GamePlanner.Types
             }
             return new List<PassPointData>() { new PassPointData(otPos, maxScoreOt, PassType.OT), new PassPointData(crPos, maxScoreCr, PassType.Catch) };
         }
-        public List<PassPointData> CalculateAttackerPassScore(WorldModel Model, int passerID, int? shooterID, Position2D attackerPos, Position2D topLeft, double passSpeed, double shootSpeed, double width, double heigth, int Rows, int column)
+        public List<PassPointData> CalculateAttackerPassScore(WorldModel Model, int passerID, int? shooterID/*, Position2D attackerPos*/, Position2D topLeft, double passSpeed, double shootSpeed, double width, double heigth, int Rows, int column)
         {
             Obstacles obs = new Obstacles(Model);
             SingleObjectState ball = Model.BallState;
@@ -680,8 +684,11 @@ namespace MRL.SSL.Planning.GamePlanner.Types
             Position2D otPos = new Position2D(), crPos = new Position2D();
             double maxScoreCr = double.MinValue, maxScoreOt = double.MinValue;
             double[] scoresOt = new double[CenterofRegions.Count], scoresCr = new double[CenterofRegions.Count];
+
             foreach (var passTarget in CenterofRegions)
             {
+                
+
                 index++;
                 if (!GameParameters.IsInField(passTarget, -0.1) || GameParameters.IsInDangerousZone(passTarget, true, 0, out dist, out DistFromBorder))
                 {
@@ -764,13 +771,13 @@ namespace MRL.SSL.Planning.GamePlanner.Types
 
                 double h = 1;
                 if (Math.Abs(passTarget.Y) > 0.92 * Math.Abs(GameParameters.OurLeftCorner.Y))
-                    h = 0.8;
+                    h = 0.8;// h = 80;
                 double i = (Math.Max(Math.Min(passTarget.DistanceFrom(Model.BallState.Location), 3), 0.7) - 0.7) / 2.3;
-                double attackerScore = attackerPos.DistanceFrom(passTarget) / 50;
+                //double attackerScore = attackerPos.DistanceFrom(passTarget) / 50;
                 double scoreOt = Kc * a * b * e * f * h * i / (time);
                 double scoreCr = a * b * e * f * h * i / (time);
-                scoreOt *= attackerScore;
-                scoreCr *= attackerScore;
+                //scoreOt *= attackerScore;
+                //scoreCr *= attackerScore;
                 if (scoreOt > maxScoreOt)
                 {
                     maxScoreOt = scoreOt;

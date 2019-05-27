@@ -6,29 +6,47 @@ using MRL.SSL.AIConsole.Engine;
 using MRL.SSL.Planning.MotionPlanner;
 using MRL.SSL.AIConsole.Skills;
 using MRL.SSL.GameDefinitions;
-
+using MRL.SSL.CommonClasses.MathLibrary;
+using MRL.SSL.AIConsole.Roles;
 namespace MRL.SSL.AIConsole.Roles
 {
     class BallPlacerRole : RoleBase
     {
         int counter = 0;
-
+        PlacementModes currentMode = PlacementModes.Pass;
         public override RoleCategory QueryCategory()
         {
             return RoleCategory.Test;
         }
-
+        GetBallSkill activeSkill = new GetBallSkill();
+        int? catcherID = null;
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            if (CurrentState == (int)state.GoBehind)
+            if (currentMode == PlacementModes.OneRobot)
             {
-                if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.1)
-                    CurrentState = (int)state.GoPlace;
+                if (CurrentState == (int)state.GoBehind)
+                {
+                    if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.1)
+                        CurrentState = (int)state.GoPlace;
+                }
+                else if (CurrentState == (int)state.GoPlace)
+                {
+                    if (Model.OurRobots[RobotID].Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
+                        CurrentState = (int)state.Place;
+                }
             }
-            else if (CurrentState == (int)state.GoPlace)
+            else if (currentMode == PlacementModes.Pass)
             {
-                if (Model.OurRobots[RobotID].Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
-                    CurrentState = (int)state.Place;
+                if (CurrentState == (int)state.GoBehind)
+                {
+
+                    if (Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.21 && catcherID.HasValue && Model.OurRobots[catcherID.Value].Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.10)
+                        CurrentState = (int)state.Pass;
+                }
+                if (Model.BallState.Speed.Size > 0.6)
+                {
+                    CurrentState = (int)state.Halt;
+                }
             }
         }
 
@@ -47,27 +65,77 @@ namespace MRL.SSL.AIConsole.Roles
             return true;
         }
 
-        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID)
+        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, int catcherId, PlacementModes mode)
         {
-            if (CurrentState == (int)state.GoBehind)
+            currentMode = mode;
+            catcherID = catcherId;
+            if (currentMode == PlacementModes.OneRobot)
             {
-                GetSkill<GetBallSkill>().PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos);
-                Planner.AddKick(RobotID, true);
-            }
-            else if (CurrentState == (int)state.GoPlace)
-            {
-                Planner.ChangeDefaulteParams(RobotID, false);
-                Planner.SetParameter(RobotID, 1.5);
-                Planner.Add(RobotID, StaticVariables.ballPlacementPos , (StaticVariables.ballPlacementPos - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, true);
-                Planner.AddKick(RobotID, true);
-            }
-            else
-            {
-                Planner.Add(RobotID, Model.OurRobots[RobotID].Location, Model.OurRobots[RobotID].Angle.Value, PathType.UnSafe, false, false, false, false);
-                if (counter++ > 30)
-                    Planner.AddKick(RobotID, false);
-                else
+                if (CurrentState == (int)state.GoBehind)
+                {
+                    Planner.ChangeDefaulteParams(RobotID, false);
+                    Planner.SetParameter(RobotID, 1, 1);
+                    double dist, boarder;
+                    if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder)
+                        || GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.20, out dist, out boarder))
+                    {
+                        activeSkill.SetAvoidDangerZone(false,false);
+                    }
+                    activeSkill.PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos);
                     Planner.AddKick(RobotID, true);
+                }
+                else if (CurrentState == (int)state.GoPlace)
+                {
+                    Planner.ChangeDefaulteParams(RobotID, false);
+                    Planner.SetParameter(RobotID,1, 0.1);
+                    Planner.Add(RobotID, StaticVariables.ballPlacementPos, (StaticVariables.ballPlacementPos - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, false, false);
+                    Planner.AddKick(RobotID, true);
+                }
+                else
+                {
+                    Planner.Add(RobotID, Model.OurRobots[RobotID].Location, Model.OurRobots[RobotID].Angle.Value, PathType.UnSafe, false, false, false, false);
+                    if (counter++ > 30)
+                        Planner.AddKick(RobotID, false);
+                    else
+                        Planner.AddKick(RobotID, true);
+                }
+            }
+            else if (currentMode == PlacementModes.Pass)
+            {
+                if (CurrentState == (int)state.GoBehind)
+                {
+                    double dist, boarder;
+                    if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder)
+                        || GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.20, out dist, out boarder))
+                    {
+                        activeSkill.SetAvoidDangerZone(false, false);
+                    }
+                    activeSkill.PerformForStrategy(engine, Model, RobotID, StaticVariables.ballPlacementPos, false, 0.2);
+                    Planner.AddKick(RobotID, true);
+                }
+                else if (CurrentState == (int)state.Pass)
+                {
+                    //Planner.AddRotate(Model,RobotID,StaticVariables.ballPlacementPos,0,kickPowerType.Speed,4,false);
+
+                    var speed = Math.Min(Math.Max(0.9, 0.5 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)), 5);
+                    
+                    double dist, boarder;
+                    if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder)
+                        || GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.20, out dist, out boarder))
+                    {
+                        activeSkill.SetAvoidDangerZone(false, false);
+                    }
+                        activeSkill.PerformStatic(engine, Model, RobotID, StaticVariables.ballPlacementPos);
+                        Planner.AddKick(RobotID, kickPowerType.Speed, false, speed);
+                    
+                }
+                else if (CurrentState == (int)state.Halt)
+                {
+
+                    Vector2D vec = Vector2D.FromAngleSize((StaticVariables.ballPlacementPos - GameParameters.OppGoalCenter).AngleInRadians + 2 * 3 * Math.PI / 180, 0.7);
+                    Planner.Add(RobotID, Model.OurRobots[RobotID].Location, (Model.BallState.Location - GameParameters.OppGoalCenter).AngleInDegrees);
+                }
+
             }
         }
 
@@ -81,7 +149,14 @@ namespace MRL.SSL.AIConsole.Roles
         {
             GoBehind,
             GoPlace,
-            Place
+            Place,
+            Pass,
+            Halt
+        }
+        public enum PlacementModes
+        {
+            OneRobot,
+            Pass
         }
     }
 }

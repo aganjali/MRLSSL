@@ -17,6 +17,7 @@ using ActiveDribleKind = MRL.SSL.AIConsole.Engine.NormalSharedState.ActiveDrible
 
 using System.Drawing;
 using MRL.SSL.Planning.GamePlanner.Types;
+using MRL.SSL.AIConsole.Roles.Defending.Normal;
 
 namespace MRL.SSL.AIConsole.Roles
 {
@@ -221,9 +222,13 @@ namespace MRL.SSL.AIConsole.Roles
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
             List<RoleBase> res = new List<RoleBase>() {
-                new ActiveRole2017(),
-            new NewActiveRole(), new NewSupporter2Role(),
-            new StaticDefender1(),new StaticDefender2()};
+                
+            new NewActiveRole(),
+            new ActiveRole2017(),
+            new NewSupporter2Role(),
+            new NewRegionalRole(),
+            new StaticDefender1(),new StaticDefender2(),new staticDefender3(),
+            new Marker1Normal8Robot(),new Marker2Normal8Robot() };
             if (NormalSharedState.CommonInfo.PickIsFeasible && !NormalSharedState.CommonInfo.IsPicking)
             {
                 if (NormalSharedState.CommonInfo.PickerID == NormalSharedState.CommonInfo.ActiveID)
@@ -235,7 +240,7 @@ namespace MRL.SSL.AIConsole.Roles
             }
             if (!NormalSharedState.CommonInfo.AttackerMode)
             {
-                res.Add(new AttackerRole2017());
+                //res.Add(new AttackerRole2017());
                 res.Add(new NewAttackerRole());
             }
             else
@@ -277,7 +282,7 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 costs = costs.OrderBy(o => o.Value).ToDictionary(k => k.Key, v => v.Value);
                 type = engine.ImplementedActions.ElementAt(costs.First().Key).Key;
-                return engine.ImplementedActions.ElementAt(costs.First().Key).Value;
+                return engine.ImplementedActions.ElementAt(costs.First().Key).Value;//1).Value;
             }
             else
                 throw new Exception("No action feasible!");
@@ -324,6 +329,7 @@ namespace MRL.SSL.AIConsole.Roles
 
         void DetermineActiveState(WorldModel Model, int RobotID, SingleObjectState ball, double minDist)
         {
+
             if (firstNearBallFlag)
                 ballFirstPos = ball.Location;
             double ballRobotDist = ball.Location.DistanceFrom(Model.OurRobots[RobotID].Location);
@@ -338,9 +344,9 @@ namespace MRL.SSL.AIConsole.Roles
 
             if (ball.Location.X > NewActiveParameters.sweepZone && minDist < 1)
                 CurrentState = (int)ActiveRoleState.Sweep;
-            else if (ball.Location.X < NewActiveParameters.kickAnyWayRegion/* || ballFirstPos.DistanceFrom(ball.Location) > 0.4*/)
+            else if (ball.Location.X < NewActiveParameters.kickAnyWayRegion && Math.Abs(ball.Location.Y) < Math.Abs(GameParameters.OppLeftCorner.Y) / 2 - 0.2/* || ballFirstPos.DistanceFrom(ball.Location) > 0.4*/)
                 CurrentState = (int)ActiveRoleState.KickAnyway;
-            else if (GoodPointInGoal.HasValue && goodness > NewActiveParameters.minGoodness)
+            else if (GoodPointInGoal.HasValue && goodness >= NewActiveParameters.minGoodness)
                 CurrentState = (int)ActiveRoleState.Open2Kick;
             else
             {

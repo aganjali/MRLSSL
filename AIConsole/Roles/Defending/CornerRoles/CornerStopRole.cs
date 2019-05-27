@@ -109,12 +109,12 @@ namespace MRL.SSL.AIConsole.Roles
                 int sgndec = -Math.Sign(ballInitialState.Y);
                 if (decrese)
                 {
-                    Vector2D targetvector = Vector2D.FromAngleSize(targetVector.AngleInRadians + (((difefrence > .05) ? .05 : 0.00) * sgndec), .6);
+                    Vector2D targetvector = Vector2D.FromAngleSize(targetVector.AngleInRadians + (((difefrence > .05) ? .05 : 0.00) * sgndec), .7);
                     target = ballInitialState + targetvector;
                 }
                 else
                 {
-                    Vector2D targetvector = Vector2D.FromAngleSize(targetVector.AngleInRadians - (((difefrence > .05) ? .05 : 0.00) * sgndec), .6);
+                    Vector2D targetvector = Vector2D.FromAngleSize(targetVector.AngleInRadians - (((difefrence > .05) ? .05 : 0.00) * sgndec), .7);
                     target = ballInitialState + targetvector;
                 }
                 DrawingObjects.AddObject(new Circle(target, .12f, new Pen((goToAngle) ? Brushes.DeepSkyBlue : Brushes.HotPink, .02f)), "2465464");
@@ -123,11 +123,11 @@ namespace MRL.SSL.AIConsole.Roles
                 Planner.AddKick(RobotID, true);
                 if (goToAngle)
                 {
-                    Planner.Add(RobotID, target, (ballState.Location - model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, true, false, true, false);
+                    Planner.Add(RobotID, target, (ballState.Location - model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, true, true, true, false);
                 }
                 else
                 {
-                    Planner.Add(RobotID, target2, (ballState.Location - model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, true, false, true, false);
+                    Planner.Add(RobotID, target2, (ballState.Location - model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, true, true, true, false);
                 }
             }
             else

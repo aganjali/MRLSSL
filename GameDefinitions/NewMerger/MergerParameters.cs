@@ -10,7 +10,7 @@ namespace MRL.SSL.GameDefinitions
     public class MergerParameters
     {
         static List<MergerCalibrationData> mergerCalibData = new List<MergerCalibrationData>();
-        static Dictionary<int, MathMatrix> coefMatrix = new Dictionary<int, MathMatrix>();
+        static Dictionary<int, MathMatrix>   coefMatrix = new Dictionary<int, MathMatrix>();
         public static Dictionary<int, MathMatrix> CoefMatrix
         {
             get { return MergerParameters.coefMatrix; }
@@ -111,7 +111,7 @@ namespace MRL.SSL.GameDefinitions
                 //    availableCamIds.Add(int.Parse(item.ToString()));
                 //}
 
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < StaticVariables.CameraCount; i++)
                 {
                     availableCamIds.Add(i);
                 }
@@ -135,7 +135,27 @@ namespace MRL.SSL.GameDefinitions
             }
 
         }
+        private static int cameraId2KeyByOrder(params int[] camIds) {
+            if (camIds.Length == 0)
+                return -1;
+            int res = 0;
+            foreach (var item in camIds)
+            {
+                res = res * 10 + item;
+            }
+            return res;
+        }
+        private static List<int> GetCameraIdsFromKey(int key)
+        {
+            List<int> res = new List<int>();
 
+            do
+            {
+                res.Add(key % 10);
+                key = key / 10;
+            } while (key > 0);
+            return res;
+        }
         public static void SetMatrix()
         {
             coefMatrix = new Dictionary<int, MathMatrix>();
@@ -143,10 +163,11 @@ namespace MRL.SSL.GameDefinitions
             Dictionary<int, MathMatrix> reals = new Dictionary<int, MathMatrix>();
             List<Position2D> tempCam = new List<Position2D>();
             List<Position2D> tempReal = new List<Position2D>();
-            List<int> idx = new List<int> { 0, 1, 2, 3, 10, 20, 31, 32 };
+            List<int> cameraIds = new List<int> ();
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < StaticVariables.CameraCount; i++)
             {
+                cameraIds.Add(i);
                 foreach (var item in mergerCalibData)
                 {
                     if (item.CameraData.Keys.Contains(i))
@@ -171,153 +192,182 @@ namespace MRL.SSL.GameDefinitions
                 tempCam = new List<Position2D>();
                 tempReal = new List<Position2D>();
             }
-
-            int count10 = 0;
-            int count20 = 0;
-            int count31 = 0;
-            int count32 = 0;
-            foreach (var item in mergerCalibData)
+            for (int i = 0; i < StaticVariables.CameraCount - 1; i++)
             {
-                if (item.CameraData.Keys.Contains(1) && item.CameraData.Keys.Contains(0))
+                List<int> neighbors = new List<int>();
+                if (i % 2 == 0)
                 {
-                    count10++;
+                    neighbors.Add(i + 1);
                 }
-                if (item.CameraData.Keys.Contains(2) && item.CameraData.Keys.Contains(0))
+                if (i + 2 < StaticVariables.CameraCount)
                 {
-                    count20++;
+                    neighbors.Add(i + 2);
                 }
-                if (item.CameraData.Keys.Contains(3) && item.CameraData.Keys.Contains(1))
+                foreach (var j in neighbors)
                 {
-                    count31++;
-                }
-                if (item.CameraData.Keys.Contains(3) && item.CameraData.Keys.Contains(2))
-                {
-                    count32++;
+                    var data = mergerCalibData.Where(w => w.CameraData.Keys.Contains(i) && w.CameraData.Keys.Contains(j));
+                    int size = data.Count();
+                    MathMatrix c = new MathMatrix(size, 5);
+                    MathMatrix r = new MathMatrix(size, 3);
+                    int count = 0;
+                    foreach (var item in data)
+                    {
+                        c[count, 0] = item.CameraData[j].X;
+                        c[count, 1] = item.CameraData[j].Y;
+                        c[count, 2] = item.CameraData[i].X;
+                        c[count, 3] = item.CameraData[i].Y;
+                        c[count, 4] = 1;
+                          
+                        r[count, 0] = item.RealData.X;
+                        r[count, 1] = item.RealData.Y;
+                        r[count, 2] = 1;
+                        count++;
+                    }
+                    int id = cameraId2KeyByOrder(j, i);
+                    cams.Add(id, c);
+                    reals.Add(id, r);
+                    cameraIds.Add(id);
                 }
             }
 
-            MathMatrix cam10 = new MathMatrix(count10, 5);
-            MathMatrix real10 = new MathMatrix(count10, 3);
-            MathMatrix cam20 = new MathMatrix(count20, 5);
-            MathMatrix real20 = new MathMatrix(count20, 3);
-            MathMatrix cam31 = new MathMatrix(count31, 5);
-            MathMatrix real31 = new MathMatrix(count31, 3);
-            MathMatrix cam32 = new MathMatrix(count32, 5);
-            MathMatrix real32 = new MathMatrix(count32, 3);
-            count10 = 0;
-            count20 = 0;
-            count31 = 0;
-            count32 = 0;
 
-            foreach (var item in mergerCalibData)
-            {
-                if (item.CameraData.Keys.Contains(1) && item.CameraData.Keys.Contains(0))
-                {
-                    cam10[count10, 0] = item.CameraData[1].X;
-                    cam10[count10, 1] = item.CameraData[1].Y;
-                    cam10[count10, 2] = item.CameraData[0].X;
-                    cam10[count10, 3] = item.CameraData[0].Y;
-                    cam10[count10, 4] = 1;
-
-                    real10[count10, 0] = item.RealData.X;
-                    real10[count10, 1] = item.RealData.Y;
-                    real10[count10, 2] = 1;
-                    count10++;
-                }
-                if (item.CameraData.Keys.Contains(2) && item.CameraData.Keys.Contains(0))
-                {
-                    cam20[count20, 0] = item.CameraData[2].X;
-                    cam20[count20, 1] = item.CameraData[2].Y;
-                    cam20[count20, 2] = item.CameraData[0].X;
-                    cam20[count20, 3] = item.CameraData[0].Y;
-                    cam20[count20, 4] = 1;
-
-                    real20[count20, 0] = item.RealData.X;
-                    real20[count20, 1] = item.RealData.Y;
-                    real20[count20, 2] = 1;
-                    count20++;
-                }
-                if (item.CameraData.Keys.Contains(3) && item.CameraData.Keys.Contains(1))
-                {
-                    cam31[count31, 0] = item.CameraData[3].X;
-                    cam31[count31, 1] = item.CameraData[3].Y;
-                    cam31[count31, 2] = item.CameraData[1].X;
-                    cam31[count31, 3] = item.CameraData[1].Y;
-                    cam31[count31, 4] = 1;
-
-                    real31[count31, 0] = item.RealData.X;
-                    real31[count31, 1] = item.RealData.Y;
-                    real31[count31, 2] = 1;
-                    count31++;
-                }
-                if (item.CameraData.Keys.Contains(3) && item.CameraData.Keys.Contains(2))
-                {
-                    cam32[count32, 0] = item.CameraData[3].X;
-                    cam32[count32, 1] = item.CameraData[3].Y;
-                    cam32[count32, 2] = item.CameraData[2].X;
-                    cam32[count32, 3] = item.CameraData[2].Y;
-                    cam32[count32, 4] = 1;
-
-                    real32[count32, 0] = item.RealData.X;
-                    real32[count32, 1] = item.RealData.Y;
-                    real32[count32, 2] = 1;
-                    count32++;
-                }
-            }
-
-            cams.Add(10, cam10);
-            reals.Add(10, real10);
-            cams.Add(20, cam20);
-            reals.Add(20, real20);
-            cams.Add(31, cam31);
-            reals.Add(31, real31);
-            cams.Add(32, cam32);
-            reals.Add(32, real32);
-
-            foreach (var item in idx)
+            foreach (var item in cameraIds)
             {
                 MathMatrix cam = cams[item].Transpose;
                 MathMatrix real = reals[item].Transpose;
-                MathMatrix a = real * cam.Transpose * Inverse.invert(cam * cam.Transpose);
-                coefMatrix.Add(item, a);
+                if (cam.Rows == 0 || cam.Cols == 0)
+                {
+                    MathMatrix ret = new MathMatrix(0, 0);
+                    var ids = GetCameraIdsFromKey(item);
+                    if (ids.Count == 1)
+                    {
+                        ret =  MathMatrix.IdentityMatrix(3, 3);
+                    }
+                    else if (ids.Count == 2)
+                    {
+                        ret = new MathMatrix(3, 5);
+                        ret[0, 0] = 0.5;
+                        ret[0, 2] = 0.5;
+                        ret[1, 1] = 0.5;
+                        ret[1, 3] = 0.5;
+                        ret[2, 4] = 1;
+                    }
+                    else if (ids.Count == 3)
+                    {
+                        ret = new MathMatrix(3, 7);
+                        ret[0, 0] = 0.3333;
+                        ret[0, 2] = 0.3333;
+                        ret[0, 4] = 0.3333;
+                        ret[1, 1] = 0.3333;
+                        ret[1, 3] = 0.3333;
+                        ret[1, 5] = 0.3333;
+
+                        ret[2, 6] = 1;
+                    }
+                    else if (ids.Count == 4)
+                    {
+                        ret = new MathMatrix(3, 9);
+                        ret[0, 0] = 0.25;
+                        ret[0, 2] = 0.25;
+                        ret[0, 4] = 0.25;
+                        ret[0, 6] = 0.25;
+                        ret[1, 1] = 0.25;
+                        ret[1, 3] = 0.25;
+                        ret[1, 5] = 0.25;
+                        ret[1, 7] = 0.25;
+                        ret[2, 8] = 1;
+                    }
+                    coefMatrix.Add(item, ret);
+                }
+                else
+                {
+                    MathMatrix a = real * cam.Transpose * Inverse.invert(cam * cam.Transpose);
+                    coefMatrix.Add(item, a);
+                }
             }
 
-            Dictionary<int, Position2D> camera = mergerCalibData.Where(t => t.RealData.X == 0 && t.RealData.Y == 0).FirstOrDefault().CameraData;
-            List<Position2D> temp = new List<Position2D>();
+            double widthStep = (GameParameters.OurGoalCenter.X - GameParameters.OppGoalCenter.X) * 2.0 / StaticVariables.CameraCount;
+            double rx = GameParameters.OurGoalCenter.X, ry = 0; ;
+            for (int i = 0; i  < StaticVariables.CameraCount - 3; i += 2)
+            {
+                rx -= widthStep;
+                var mergerData = mergerCalibData.Where(t => t.RealData.X == rx && t.RealData.Y == ry).FirstOrDefault();
+                Dictionary<int, Position2D> camera = new Dictionary<int, Position2D>();
 
-            temp.Add(camera[2]);
-            temp.Add(camera[1]);
-            coefMatrix.Add(21, centerMat(temp));
-            temp = new List<Position2D>();
-            temp.Add(camera[3]);
-            temp.Add(camera[0]);
-            coefMatrix.Add(30, centerMat(temp));
-            temp = new List<Position2D>();
-            temp.Add(camera[0]);
-            temp.Add(camera[1]);
-            temp.Add(camera[3]);
-            coefMatrix.Add(310, centerMat(temp));
-            temp = new List<Position2D>();
-            temp.Add(camera[1]);
-            temp.Add(camera[3]);
-            temp.Add(camera[2]);
-            coefMatrix.Add(321, centerMat(temp));
-            temp = new List<Position2D>();
-            temp.Add(camera[3]);
-            temp.Add(camera[2]);
-            temp.Add(camera[0]);
-            coefMatrix.Add(320, centerMat(temp));
-            temp = new List<Position2D>();
-            temp.Add(camera[2]);
-            temp.Add(camera[0]);
-            temp.Add(camera[1]);
-            coefMatrix.Add(210, centerMat(temp));
-            temp = new List<Position2D>();
-            temp.Add(camera[3]);
-            temp.Add(camera[2]);
-            temp.Add(camera[1]);
-            temp.Add(camera[0]);
-            coefMatrix.Add(3210, centerMat(temp));
+                if (mergerData != null)
+                    camera = mergerData.CameraData;
+
+                for (int j = i; j < i + 4; j++)
+                {
+                    if (!camera.ContainsKey(j))
+                    {
+                        camera.Add(j, new Position2D(rx, ry));
+                    }
+                }
+                 
+                List<Position2D> temp = new List<Position2D>();
+                int cameraID = -1;
+                
+                temp.Add(camera[i + 2]);
+                temp.Add(camera[i + 1]);
+
+                cameraID = cameraId2KeyByOrder(i + 2, i + 1);
+                coefMatrix.Add(cameraID, centerMat(temp));
+
+                temp = new List<Position2D>();
+                temp.Add(camera[i + 3]);
+                temp.Add(camera[i]);
+
+                cameraID = cameraId2KeyByOrder(i + 3, i);
+                coefMatrix.Add(cameraID, centerMat(temp));
+                
+              
+                temp = new List<Position2D>();
+                temp.Add(camera[i]);
+                temp.Add(camera[i + 1]);
+                temp.Add(camera[i + 3]);
+
+                cameraID = cameraId2KeyByOrder(i + 3, i + 1, i);
+                coefMatrix.Add(cameraID, centerMat(temp));
+                
+                temp = new List<Position2D>();
+                temp.Add(camera[i + 1]);
+                temp.Add(camera[i + 3]);
+                temp.Add(camera[i + 2]);
+
+                cameraID = cameraId2KeyByOrder(i + 3, i + 2, i + 1);
+                coefMatrix.Add(cameraID, centerMat(temp));
+                
+                temp = new List<Position2D>();
+                temp.Add(camera[i + 3]);
+                temp.Add(camera[i + 2]);
+                temp.Add(camera[i]);
+
+                cameraID = cameraId2KeyByOrder(i + 3, i + 2, i);
+                coefMatrix.Add(cameraID, centerMat(temp));
+                
+                temp = new List<Position2D>();
+                temp.Add(camera[i + 2]);
+                temp.Add(camera[i]);
+                temp.Add(camera[i + 1]);
+
+                cameraID = cameraId2KeyByOrder(i + 2, i + 1, i);
+                coefMatrix.Add(cameraID, centerMat(temp));
+                
+                temp = new List<Position2D>();
+                temp.Add(camera[i + 3]);
+                temp.Add(camera[i + 2]);
+                temp.Add(camera[i + 1]);
+                temp.Add(camera[i]);
+
+                cameraID = cameraId2KeyByOrder(i + 3, i + 2, i + 1, i);
+                coefMatrix.Add(cameraID, centerMat(temp));
+            }
+            
+            
+
+           
+            
 
         }
 
@@ -346,19 +396,19 @@ namespace MRL.SSL.GameDefinitions
             else if (cam.Count == 3)
             {
                 ret = new MathMatrix(3, 7);
-                ret[0, 0] = 0.3;
+                ret[0, 0] = 0.3333;
                 ret[0, 1] = 0;
-                ret[0, 2] = 0.3;
+                ret[0, 2] = 0.3333;
                 ret[0, 3] = 0;
-                ret[0, 4] = 0.3;
+                ret[0, 4] = 0.3333;
                 ret[0, 5] = 0;
                 ret[0, 6] = (-cam[0].X - cam[1].X - cam[2].X) / 3;
                 ret[1, 0] = 0;
-                ret[1, 1] = 0.3;
+                ret[1, 1] = 0.3333;
                 ret[1, 2] = 0;
-                ret[1, 3] = 0.3;
+                ret[1, 3] = 0.3333;
                 ret[1, 4] = 0;
-                ret[1, 5] = 0.3;
+                ret[1, 5] = 0.3333;
                 ret[1, 6] = (-cam[0].Y - cam[1].Y - cam[2].Y) / 3;
                 ret[2, 0] = 0;
                 ret[2, 1] = 0;

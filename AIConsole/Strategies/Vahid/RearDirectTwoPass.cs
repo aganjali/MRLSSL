@@ -180,7 +180,7 @@ namespace MRL.SSL.AIConsole.Strategies
                     if (Model.OurRobots[passerID].Location.DistanceFrom(Model.BallState.Location) < .135)
                     {
                         Obstacles obs = new Obstacles(Model);
-                        obs.AddObstacle(1, 0, 0, 0, new List<int>() { passerID , attacker1ID}, null);
+                        obs.AddObstacle(1, 0, 0, 0, new List<int>() { passerID, attacker1ID }, null);
                         isChip = obs.Meet(Model.BallState, new SingleObjectState(attacker1Pos1, Vector2D.Zero, 0), 0.06);
                         if (isChip)
                         {

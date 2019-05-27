@@ -1,4 +1,5 @@
-﻿//using System;
+﻿#region old
+//using System;
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
@@ -437,7 +438,8 @@
 //        }
 
 //    }
-//}
+//} 
+#endregion
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -530,13 +532,14 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             }
             return q2;
         }
-        RectangularMatrix _x = new RectangularMatrix(7, 1), _P = new RectangularMatrix(7, 7, true);
+        RectangularMatrix _x = new RectangularMatrix(7, 1),
+                          _P = new RectangularMatrix(7, 7, true);
         public void observe(bool visionProblem, vraw obs, double timestamp)
         {
             bool b = xs.Count > 0 && xs.First().RowCount > 2 ;
             RectangularMatrix fx =(b)? xs.First():null;
             if (Math.Abs(timestamp - time) > StaticVariables.MaxPredictTime || (fx != null && (double.IsNaN(fx[0, 0]) || double.IsNaN(fx[1, 0]) || double.IsNaN(fx[2, 0]))))
-                reset();
+                reset() ;
             if (reset_on_obs)
             {
                 if (obs.conf <= 0.0) return;
@@ -547,6 +550,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 _x[4, 0] = 0.0;
                 _x[5, 0] = 0.0;
                 _x[6, 0] = 0.0;
+
 
                 _P[0, 0] = StaticVariables.ROBOT_POSITION_VARIANCE;
                 _P[1, 1] = StaticVariables.ROBOT_POSITION_VARIANCE;

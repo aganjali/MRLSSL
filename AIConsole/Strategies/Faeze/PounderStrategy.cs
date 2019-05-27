@@ -17,7 +17,7 @@ namespace MRL.SSL.AIConsole.Strategies
         double PassSpeed = 2;
         const double tresh = 0.01;
         int PasserID, Posser1ID, shooterID, Poser2ID, Poser3ID;
-        Position2D PasserPos, ShooterPos1, ShootTarget, Pos1, Pos2, Pos3, ShooterPos22;
+        Position2D PasserPos, ShooterPos1, ShootTarget, Pos, Pos1, Pos2, Pos3, ShooterPos22;
         double PasserAngle, ShooterAngle, RotateTeta, KickPower = Program.MaxKickSpeed;
         int RotateDelay, failcounter;
         Syncronizer sync;
@@ -40,9 +40,9 @@ namespace MRL.SSL.AIConsole.Strategies
             chip = false;
             failcounter = 0;
             CurrentState = InitialState;
-            RotateTeta = -30;
-            PassSpeed = 2;
-            KickPower = 100;
+            RotateTeta = 0;
+            PassSpeed = 3;
+            KickPower = 150;
             PasserID = -1;
             Posser1ID = -1;
             shooterID = -1;
@@ -98,32 +98,33 @@ namespace MRL.SSL.AIConsole.Strategies
                 firstBallPos = Model.BallState.Location;
                 //first positioning : pos1,pos2,pos3,pos4,pos5 
                 PasserPos = GameParameters.OppGoalCenter + (Model.BallState.Location - GameParameters.OppGoalCenter).GetNormalizeToCopy(Model.BallState.Location.DistanceFrom(GameParameters.OppGoalCenter) + 0.3);
-                Pos1 = Position2D.Zero;
+                Pos = Position2D.Zero;
+                Pos1 = new Position2D(Pos.X, (Pos.Y + 1.3));
                 Pos2 = GameParameters.OppGoalCenter + (Position2D.Zero - GameParameters.OppGoalCenter).GetNormalizeToCopy(2);
                 if (firstBallPos.Y < 0)
                 {
                     Pos3 = new Position2D(Pos2.X, Pos2.Y + 1.5);
-                    ShooterPos1 = new Position2D(Pos1.X, Pos1.Y + 2.5);
+                    ShooterPos1 = new Position2D(Pos.X, Pos.Y + 2.5);
 
-                    ShooterPos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((GameParameters.OppRightCorner - GameParameters.OppGoalCenter).AngleInRadians - 30 * Math.PI / 180, (1.7));
+                    ShooterPos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((GameParameters.OppRightCorner - GameParameters.OppGoalCenter).AngleInRadians - 30 * Math.PI / 180, (1.9));
                 }
                 if (firstBallPos.Y > 0)
                 {
                     Pos3 = new Position2D(Pos2.X, Pos2.Y - 1.5);
-                    ShooterPos1 = new Position2D(Pos1.X, Pos1.Y - 2.5);
-                    ShooterPos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((GameParameters.OppLeftCorner - GameParameters.OppGoalCenter).AngleInRadians + 30 * Math.PI / 180, (1.7));
+                    ShooterPos1 = new Position2D(Pos.X, Pos.Y - 2.5);
+                    ShooterPos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((GameParameters.OppLeftCorner - GameParameters.OppGoalCenter).AngleInRadians + 30 * Math.PI / 180, (1.9));
                 }
                 //second positioning : pos11,pos22,pos33,pos44,pos55
                 double d = 1;
-                Vector2D firstvec = (Position2D.Zero - GameParameters.OppGoalCenter).GetNormalizeToCopy(1.2);
-                pos33 = GameParameters.OppGoalCenter + firstvec;
-                pos333 = GameParameters.OppGoalCenter + firstvec.GetNormalizeToCopy(1.2 + d);
+                Vector2D firstvec = (Position2D.Zero - GameParameters.OppGoalCenter).GetNormalizeToCopy(1);
+                pos33 = GameParameters.OppGoalCenter + firstvec.GetNormalizeToCopy(1.5); ;
+                pos333 = GameParameters.OppGoalCenter + firstvec.GetNormalizeToCopy(1.5 + d);
 
-                pos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (20 * Math.PI / 180), 1.3);
-                pos222 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (20 * Math.PI / 180), 1.3 + d);
+                pos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (20 * Math.PI / 180), 1.7);
+                pos222 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (20 * Math.PI / 180), 1.7 + d);
 
-                pos11 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (40 * Math.PI / 180), 1.4);
-                pos111 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (40 * Math.PI / 180), 1.4 + d);
+                pos11 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (40 * Math.PI / 180), 2.1);
+                pos111 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(firstvec.AngleInRadians + (40 * Math.PI / 180), 2.1 + d);
                 if (firstBallPos.Y < 0)
                 {
                     pos11 = new Position2D(pos11.X, -1 * pos11.Y);
@@ -177,11 +178,11 @@ namespace MRL.SSL.AIConsole.Strategies
             if (CurrentState == (int)State.First)
             {
                 //if all posers go to position : CurrentState = (int)State.Go
-                if (Model.OurRobots[PasserID].Location.DistanceFrom(PasserPos) < 0.1 &&
-                    Model.OurRobots[shooterID].Location.DistanceFrom(Pos1) < 0.1 &&
-                    Model.OurRobots[Poser2ID].Location.DistanceFrom(Pos2) < 0.1 &&
-                    Model.OurRobots[Poser3ID].Location.DistanceFrom(Pos3) < 0.1 &&
-                    Model.OurRobots[Posser1ID].Location.DistanceFrom(ShooterPos1) < 0.1)
+                if (Model.OurRobots[PasserID].Location.DistanceFrom(PasserPos) < 0.2 &&
+                    Model.OurRobots[shooterID].Location.DistanceFrom(Pos1) < 0.2 &&
+                    Model.OurRobots[Poser2ID].Location.DistanceFrom(Pos2) < 0.2 &&
+                    Model.OurRobots[Poser3ID].Location.DistanceFrom(Pos3) < 0.2 &&
+                    Model.OurRobots[Posser1ID].Location.DistanceFrom(ShooterPos1) < 0.2)
                     CurrentState = (int)State.Go;
                 if (Model.BallState.Location.DistanceFrom(firstBallPos) > 0.07)
                     CurrentState = (int)State.Finish;
@@ -244,8 +245,8 @@ namespace MRL.SSL.AIConsole.Strategies
                 if (!flag1)
                 {
                     Planner.Add(Poser2ID, pos11, (ShootTarget - pos11).AngleInDegrees, PathType.UnSafe, true, true, true, true);
-                    if (Model.OurRobots[Poser2ID].Location.DistanceFrom(pos11) < 0.15)
-                        flag1 = true;
+                   // if (Model.OurRobots[Poser2ID].Location.DistanceFrom(pos11) < 0.15)
+                        //flag1 = true;
                 }
                 else if (flag1)
                 {
@@ -257,8 +258,8 @@ namespace MRL.SSL.AIConsole.Strategies
                 if (!flag2)
                 {
                     Planner.Add(Poser3ID, pos22, (ShootTarget - Pos1).AngleInDegrees, PathType.UnSafe, true, true, true, true);
-                    if (Model.OurRobots[Poser3ID].Location.DistanceFrom(pos22) < 0.15)
-                        flag2 = true;
+                   // if (Model.OurRobots[Poser3ID].Location.DistanceFrom(pos22) < 0.15)
+                        //flag2 = true;
                 }
                 else if (flag2)
                 {
@@ -270,8 +271,8 @@ namespace MRL.SSL.AIConsole.Strategies
                 if (!flag3)
                 {
                     Planner.Add(Posser1ID, pos33, (ShootTarget - pos11).AngleInDegrees, PathType.UnSafe, true, true, true, true);
-                    if (Model.OurRobots[Posser1ID].Location.DistanceFrom(pos33) < 0.1)
-                        flag3 = true;
+                    //if (Model.OurRobots[Posser1ID].Location.DistanceFrom(pos33) < 0.1)
+                        //flag3 = true;
                 }
                 else if (flag3)
                 {

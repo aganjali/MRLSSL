@@ -113,7 +113,7 @@ namespace Visualizer.Classes
         /// <summary>
         /// default log address(mydocument\MRLLog)
         /// </summary>
-        private static string DefaultAddress = Path.Combine(@"D:\" /*Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)*/, "MRLLog");
+        private static string DefaultAddress = Path.Combine(@"C:\" /*Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)*/, "MRLLog");
         /// <summary>
         /// control flag
         /// </summary>

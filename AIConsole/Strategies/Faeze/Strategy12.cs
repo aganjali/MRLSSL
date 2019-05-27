@@ -41,7 +41,7 @@ namespace MRL.SSL.AIConsole.Strategies
             chip = false;
             failcounter = 0;
             CurrentState = InitialState;
-            RotateTeta = 90;
+            RotateTeta = 0;
             PassSpeed = 2;
             KickPower = 100;
             PasserID = -1;
@@ -107,7 +107,7 @@ namespace MRL.SSL.AIConsole.Strategies
                     Pos1 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((FirstPos.AngleInRadians * (Math.PI / 180) < 180) ? ((FirstPos.AngleInRadians * (Math.PI / 180)) * -1) : (360 - FirstPos.AngleInRadians * (Math.PI / 180)) * -1, 2);
                     ShooterPos1 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((FirstPos.AngleInRadians - (20 * Math.PI / 180) < 180) ? ((FirstPos.AngleInRadians - (20 * Math.PI / 180)) * -1) : (360 - FirstPos.AngleInRadians - (20 * Math.PI / 180)) * -1, 2);
                     Pos3 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((FirstPos.AngleInRadians + (20 * Math.PI / 180) < 180) ? ((FirstPos.AngleInRadians + (20 * Math.PI / 180)) * -1) : (360 - FirstPos.AngleInRadians + (20 * Math.PI / 180)) * -1, 2);
-                    ShooterPos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((FirstPos.AngleInRadians - (40 * Math.PI / 180) < 180) ? ((FirstPos.AngleInRadians - (40 * Math.PI / 180)) * -1) : (360 - FirstPos.AngleInRadians - (40 * Math.PI / 180)) * -1, 1.10);
+                    ShooterPos22 = GameParameters.OppGoalCenter + Vector2D.FromAngleSize((FirstPos.AngleInRadians - (60 * Math.PI / 180) < 180) ? ((FirstPos.AngleInRadians - (60 * Math.PI / 180)) * -1) : (360 - FirstPos.AngleInRadians - (40 * Math.PI / 180)) * -1, 1.60);
                     pos33 = new Position2D(Pos3.X - 1, Pos3.Y - 1);
                     pos11 = new Position2D(ShooterPos1.X + 2, ShooterPos1.Y);
                     pos1be2 = new Position2D(pos11.X - 1.75, pos11.Y + 1);

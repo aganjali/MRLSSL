@@ -25,7 +25,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         float[] finalPath;
         float[] tmpfpath;
         
-        public int SmoothingCount = 50;
+        public int SmoothingCount = 30;
         public float Kspring = 0.35f;
         public float Kspring2 = 0;
         public int n = 2;
@@ -76,7 +76,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             //float[] obsf = new float[2];
             //ForceTree(p, pc, 1, p2, p3, 1, obsf, 1, 0.1f, 0.1f, 1);
         }
-        public Dictionary<int, List<SingleObjectState>> Run(WorldModel Model,Dictionary<int,bool> CutOtherPath, Dictionary<int, SingleObjectState> InitialStates, Dictionary<int, SingleObjectState> GoalStates, List<int> RobotIds, Dictionary<int, PathType> Types, Dictionary<int, int> avoidballs, Dictionary<int, int> avoidrobots, Dictionary<int, int> avoidzones, Dictionary<int, int> avoidOppzones, bool useErrt)
+        public Dictionary<int, List<SingleObjectState>> Run(WorldModel Model,Dictionary<int,bool> CutOtherPath, Dictionary<int, SingleObjectState> InitialStates, Dictionary<int, SingleObjectState> GoalStates, List<int> RobotIds, Dictionary<int, PathType> Types, Dictionary<int, int> avoidballs, Dictionary<int, int> avoidrobots, Dictionary<int, int> avoidzones, Dictionary<int, int> avoidOppzones, bool useErrt, bool StopBall)
         {
             TotalFPath.Clear();
             Dictionary<int, Line> Lines = new Dictionary<int, Line>();
@@ -139,7 +139,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 if (i < Count)
                 {
                     int id = RobotIds[i];
-                    errts[i].Run(new WorldModel(Model), id,intersectsLines[id], InitialStates[id], GoalStates[id], avoidballs[id], avoidzones[id], avoidOppzones[id], avoidrobots[id], (FinalPathes.ContainsKey(id) ? FinalPathes[id] : null), Types[id]);
+                    errts[i].Run(new WorldModel(Model), id, intersectsLines[id], InitialStates[id], GoalStates[id], avoidballs[id], avoidzones[id], avoidOppzones[id], avoidrobots[id], (FinalPathes.ContainsKey(id) ? FinalPathes[id] : null), Types[id], StopBall);
                     avdBall.Add(avoidballs[id]);
                     avdR.Add(avoidrobots[id]);
                     avdZ.Add(avoidzones[id]);
@@ -147,7 +147,7 @@ namespace MRL.SSL.Planning.MotionPlanner
 
                 }
                 else
-                    errts[i].Run(true);
+                    errts[i].Run(true, StopBall);
             }
             avoid.Clear();
             avoid.AddRange(avdBall);
@@ -171,7 +171,10 @@ namespace MRL.SSL.Planning.MotionPlanner
                 {
                     EachPathCount[i] = errts[i].PathCount;
                     TotalFPath.AddRange(errts[i].FPath);
-
+                    if (errts[i].PathCount < 2)
+                    {
+                        ;
+                    }
                     //List<Position2D> ppat = new List<Position2D>();
                     //errts[i].Path.ForEach(f => ppat.Add(new Position2D(f.Location.X, f.Location.Y)));
                     //DrawingObjects.AddObject(new DrawRegion(ppat, false, true, System.Drawing.Color.YellowGreen, System.Drawing.Color.YellowGreen), "kksksss" + i.ToString());
@@ -204,7 +207,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             obs.Clear();
             var o = AddAllObstacles(Model, ref obsX, ref obsY, ref obs, RobotIds, MotionPlannerParameters.kSpeedBall, MotionPlannerParameters.kSpeedRobot);
             
-            GPPlanner.ForceTree(TotalFPath.ToArray(), EachPathCount, 2 * Count, avoid.ToArray(), finalPath, SmoothingCount, o, obsX.Count, Kspring, Kspring2, n);
+            GPPlanner.ForceTree(TotalFPath.ToArray(), EachPathCount, 2 * Count, avoid.ToArray(), finalPath, SmoothingCount, o, obsX.Count, Kspring, Kspring2, n, (StopBall)?1:0);
             FinalPathes.Clear();
             CurrentPathWeightes.Clear();
             LastPathWeightes.Clear();
@@ -349,17 +352,17 @@ namespace MRL.SSL.Planning.MotionPlanner
             
             obX.Add((float)GameParameters.OurGoalCenter.X);
             obY.Add((float)GameParameters.OurGoalCenter.Y);
-            obX.Add((float)GameParameters.OurGoalCenter.X);
-            obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
-            obX.Add((float)GameParameters.OurGoalCenter.X);
-            obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OurGoalCenter.X);
+            //obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OurGoalCenter.X);
+            //obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
 
             obX.Add((float)GameParameters.OppGoalCenter.X);
             obY.Add((float)GameParameters.OppGoalCenter.Y);
-            obX.Add((float)GameParameters.OppGoalCenter.X);
-            obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
-            obX.Add((float)GameParameters.OppGoalCenter.X);
-            obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OppGoalCenter.X);
+            //obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OppGoalCenter.X);
+            //obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
 
             List<int> otherIds = Model.OurRobots.Keys.Except(ids).ToList();
             ids.ForEach(f => { obsX.Add((float)Model.OurRobots[f].Location.X); obsY.Add((float)Model.OurRobots[f].Location.Y); });
@@ -378,17 +381,17 @@ namespace MRL.SSL.Planning.MotionPlanner
 
             obX.Add((float)GameParameters.OurGoalCenter.X);
             obY.Add((float)GameParameters.OurGoalCenter.Y);
-            obX.Add((float)GameParameters.OurGoalCenter.X);
-            obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
-            obX.Add((float)GameParameters.OurGoalCenter.X);
-            obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OurGoalCenter.X);
+            //obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OurGoalCenter.X);
+            //obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
 
             obX.Add((float)GameParameters.OppGoalCenter.X);
             obY.Add((float)GameParameters.OppGoalCenter.Y);
-            obX.Add((float)GameParameters.OppGoalCenter.X);
-            obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
-            obX.Add((float)GameParameters.OppGoalCenter.X);
-            obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OppGoalCenter.X);
+            //obY.Add((float)GameParameters.DefenceAreaFrontWidth / 2);
+            //obX.Add((float)GameParameters.OppGoalCenter.X);
+            //obY.Add(-(float)GameParameters.DefenceAreaFrontWidth / 2);
 
             List<int> otherIds = Model.OurRobots.Keys.Except(ids).ToList();
             ids.ForEach(f => { obsX.Add((float)(Model.OurRobots[f].Location.X + kSpeedRobot * Model.OurRobots[f].Speed.X)); obsY.Add((float)(Model.OurRobots[f].Location.Y + kSpeedRobot * Model.OurRobots[f].Speed.Y)); });

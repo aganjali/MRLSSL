@@ -21,7 +21,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         private static Dictionary<int, int> arobots = new Dictionary<int, int>();
         private static Dictionary<int, int> azones = new Dictionary<int, int>();
         private static Dictionary<int, int> aOppzones = new Dictionary<int, int>();
-    
+
         private static Dictionary<int, PathType> types = new Dictionary<int, PathType>();
         private static Dictionary<int, CommandType> CommandTypes = new Dictionary<int, CommandType>();
         private static Dictionary<int, CommandType> LastCommandTypes = new Dictionary<int, CommandType>();
@@ -42,8 +42,13 @@ namespace MRL.SSL.Planning.MotionPlanner
         private static Dictionary<int, Vector2D> lastVs = new Dictionary<int, Vector2D>();
         private static Dictionary<int, double> lastWs = new Dictionary<int, double>();
 
+        private static Dictionary<int, int> lastVelResetCounter = new Dictionary<int, int>();
         public static Dictionary<int, Vector2D> AlfaList = new Dictionary<int, Vector2D>();
-
+        private static bool stopBall = false;
+        public static void IsStopBall(bool s)
+        {
+            stopBall = s;
+        }
         public static void Add(int RobotID, SingleObjectState finalState, PathType type, bool avoidBall, bool avoidRobots, bool avoidOurDangerZone, bool avoidOppDangerZone)
         {
             goals[RobotID] = finalState;
@@ -70,7 +75,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             if (!UseDefultParams.ContainsKey(RobotID))
                 UseDefultParams[RobotID] = true;
         }
-        public static void Add(int RobotID, SingleObjectState finalState, PathType type, bool avoidBall, bool avoidRobots, bool avoidOurDangerZone, bool avoidOppDangerZone,bool spin)
+        public static void Add(int RobotID, SingleObjectState finalState, PathType type, bool avoidBall, bool avoidRobots, bool avoidOurDangerZone, bool avoidOppDangerZone, bool spin)
         {
             goals[RobotID] = finalState;
             if (avoidBall)
@@ -768,10 +773,11 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
             Dictionary<int, List<SingleObjectState>> paths = new Dictionary<int, List<SingleObjectState>>();
             //DrawingObjects.AddObject(new Circle(), "c");
-            
-            paths = errtManager.Run(Model, CutOtherPaths, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false);
+
+            paths = errtManager.Run(Model, CutOtherPaths, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false, stopBall);
             //paths.Add(0, new List<SingleObjectState> { new SingleObjectState(new Position2D(1, 1), new Vector2D(), 0), new SingleObjectState(new Position2D(1.0000000000000000001, .999999999999999), new Vector2D(), 0) });
             //Vector2D tmpLastV = Vector2D.Zero;
+
             foreach (var item in paths.Keys)
             {
                 Vector2D lastV = new Vector2D();
@@ -783,7 +789,17 @@ namespace MRL.SSL.Planning.MotionPlanner
                 //if (item == 2)
                 //    tmpLastV = lastV;
                 double lastWW = lastW;
-                commands[item] = controllers[item].CalculateTargetSpeed(Model, item, paths[item][paths[item].Count - 2].Location, (double)goals[item].Angle, paths[item], (UseDefultParams.ContainsKey(item)) ? UseDefultParams[item] : false, ref lastV, ref lastW);
+                // try
+                {
+                    commands[item] = controllers[item].CalculateTargetSpeed(Model, item, paths[item][paths[item].Count - 2].Location, (double)goals[item].Angle, paths[item], (UseDefultParams.ContainsKey(item)) ? UseDefultParams[item] : false, ref lastV, ref lastW);
+                }
+
+                //catch (Exception e)
+                //{
+
+                //    throw;
+                //}
+
                 //    Vector2D v = GameParameters.RotateCoordinates(new Vector2D(commands[item].Vx, commands[item].Vy), Model.OurRobots[item].Angle.Value + 100 * lastW.ToDegree() * StaticVariables.FRAME_PERIOD);
                 //    v = GameParameters.RotateCoordinates(v, Model.OurRobots[item].Angle.Value);
                 //    commands[item].Vx = v.X;
@@ -882,17 +898,47 @@ namespace MRL.SSL.Planning.MotionPlanner
                 }
             }
             List<int> mustRemove = new List<int>();
+
             foreach (var item in lastVs.Keys)
             {
                 if (!Model.OurRobots.ContainsKey(item))
+                {
                     mustRemove.Add(item);
+                    lastVelResetCounter[item]++;
+                }
+                else
+                {
+                    lastVelResetCounter[item] = 0;
+                }
             }
+
             foreach (var item in mustRemove)
             {
-                lastVs.Remove(item);
-                if (lastWs.ContainsKey(item))
-                    lastWs.Remove(item);
+                if (lastVelResetCounter[item] == 60)
+                {
+                    lastVs.Remove(item);
+                    if (lastWs.ContainsKey(item))
+                        lastWs.Remove(item);
+
+                    lastVelResetCounter[item] = 0;
+                }
             }
+            //Todo: Changed for fixing robot falls 
+            //foreach (var item in lastVs.Keys)
+            //{
+            //    if (!Model.OurRobots.ContainsKey(item))
+            //    {
+            //        mustRemove.Add(item);
+            //    }
+            //}
+
+            //foreach (var item in mustRemove)
+            //{
+            //    lastVs.Remove(item);
+            //    if (lastWs.ContainsKey(item))
+            //        lastWs.Remove(item);
+
+            //}
             LastCommandTypes = CommandTypes;
             SWCommands = new Dictionary<int, SingleWirelessCommand>();
             CommandTypes = new Dictionary<int, CommandType>();
@@ -977,7 +1023,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                         tmpTypes[id] = types[id];
                     }
                 }
-                Dictionary<int, List<SingleObjectState>> paths = errtManager.Run(model, CutOtherPaths, tmpinits, tmpGoals, tmpinits.Keys.ToList(), tmpTypes, tmpAballs, tmpArobots, tmpAzones, tmpAOppzones, false);
+                Dictionary<int, List<SingleObjectState>> paths = errtManager.Run(model, CutOtherPaths, tmpinits, tmpGoals, tmpinits.Keys.ToList(), tmpTypes, tmpAballs, tmpArobots, tmpAzones, tmpAOppzones, false, stopBall);
 
 
                 foreach (var item in paths.Keys)

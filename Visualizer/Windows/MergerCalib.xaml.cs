@@ -88,6 +88,14 @@ namespace MRL.SSL.Visualizer.Windows
             txtCam2YStat.Text = "";
             txtCam3XStat.Text = "";
             txtCam3YStat.Text = "";
+            txtCam4XStat.Text = "";
+            txtCam4YStat.Text = "";
+            txtCam5XStat.Text = "";
+            txtCam5YStat.Text = "";
+            txtCam6XStat.Text = "";
+            txtCam6YStat.Text = "";
+            txtCam7XStat.Text = "";
+            txtCam7YStat.Text = "";
             if (selectedPosKey.HasValue)
             {
                 txtRealX.Text = points[selectedPosKey.Value].RealData.X.ToString();
@@ -111,6 +119,22 @@ namespace MRL.SSL.Visualizer.Windows
                         case 3:
                             txtCam3XStat.Text = item.Value.X.ToString();
                             txtCam3YStat.Text = item.Value.Y.ToString();
+                            break;
+                        case 4:
+                            txtCam4XStat.Text = item.Value.X.ToString();
+                            txtCam4YStat.Text = item.Value.Y.ToString();
+                            break;
+                        case 5:
+                            txtCam5XStat.Text = item.Value.X.ToString();
+                            txtCam5YStat.Text = item.Value.Y.ToString();
+                            break;
+                        case 6:
+                            txtCam6XStat.Text = item.Value.X.ToString();
+                            txtCam6YStat.Text = item.Value.Y.ToString();
+                            break;
+                        case 7:
+                            txtCam7XStat.Text = item.Value.X.ToString();
+                            txtCam7YStat.Text = item.Value.Y.ToString();
                             break;
                     }
                 }
@@ -164,6 +188,22 @@ namespace MRL.SSL.Visualizer.Windows
                                         case 3:
                                             txtCam3X.Text = Packet.detection.balls[0].x.ToString();
                                             txtCam3Y.Text = Packet.detection.balls[0].y.ToString();
+                                            break;
+                                        case 4:
+                                            txtCam4X.Text = Packet.detection.balls[0].x.ToString();
+                                            txtCam4Y.Text = Packet.detection.balls[0].y.ToString();
+                                            break;
+                                        case 5:
+                                            txtCam5X.Text = Packet.detection.balls[0].x.ToString();
+                                            txtCam5Y.Text = Packet.detection.balls[0].y.ToString();
+                                            break;
+                                        case 6:
+                                            txtCam6X.Text = Packet.detection.balls[0].x.ToString();
+                                            txtCam6Y.Text = Packet.detection.balls[0].y.ToString();
+                                            break;
+                                        case 7:
+                                            txtCam7X.Text = Packet.detection.balls[0].x.ToString();
+                                            txtCam7Y.Text = Packet.detection.balls[0].y.ToString();
                                             break;
                                     }
                                 }));
@@ -236,6 +276,26 @@ namespace MRL.SSL.Visualizer.Windows
                 if (txtCam3X.Text != "" && txtCam3Y.Text != "")
                 {
                     tempCam.Add(3, new Position2D(double.Parse(txtCam3X.Text), double.Parse(txtCam3Y.Text)));
+                    flag = true;
+                }
+                if (txtCam4X.Text != "" && txtCam4Y.Text != "")
+                {
+                    tempCam.Add(4, new Position2D(double.Parse(txtCam4X.Text), double.Parse(txtCam4Y.Text)));
+                    flag = true;
+                }
+                if (txtCam5X.Text != "" && txtCam5Y.Text != "")
+                {
+                    tempCam.Add(5, new Position2D(double.Parse(txtCam5X.Text), double.Parse(txtCam5Y.Text)));
+                    flag = true;
+                }
+                if (txtCam6X.Text != "" && txtCam6Y.Text != "")
+                {
+                    tempCam.Add(6, new Position2D(double.Parse(txtCam6X.Text), double.Parse(txtCam6Y.Text)));
+                    flag = true;
+                }
+                if (txtCam7X.Text != "" && txtCam7Y.Text != "")
+                {
+                    tempCam.Add(7, new Position2D(double.Parse(txtCam7X.Text), double.Parse(txtCam7Y.Text)));
                     flag = true;
                 }
                 if (!flag)
@@ -322,18 +382,34 @@ namespace MRL.SSL.Visualizer.Windows
             txtCam1X.Text = "";
             txtCam2X.Text = "";
             txtCam3X.Text = "";
+            txtCam4X.Text = "";
+            txtCam5X.Text = "";
+            txtCam6X.Text = "";
+            txtCam7X.Text = "";
             txtCam0Y.Text = "";
             txtCam1Y.Text = "";
             txtCam2Y.Text = "";
             txtCam3Y.Text = "";
+            txtCam4Y.Text = "";
+            txtCam5Y.Text = "";
+            txtCam6Y.Text = "";
+            txtCam7Y.Text = "";
             txtCam0XStat.Text = "";
             txtCam1XStat.Text = "";
             txtCam2XStat.Text = "";
             txtCam3XStat.Text = "";
+            txtCam4XStat.Text = "";
+            txtCam5XStat.Text = "";
+            txtCam6XStat.Text = "";
+            txtCam7XStat.Text = "";
             txtCam0YStat.Text = "";
             txtCam1YStat.Text = "";
             txtCam2YStat.Text = "";
             txtCam3YStat.Text = "";
+            txtCam4YStat.Text = "";
+            txtCam5YStat.Text = "";
+            txtCam6YStat.Text = "";
+            txtCam7YStat.Text = "";
             selectedPosKey = null;
             UIRefresh();
         }
@@ -419,16 +495,21 @@ namespace MRL.SSL.Visualizer.Windows
         {
             List<char> idList = txt1.Text.ToList();
             List<int> ids = new List<int>();
+            int res;
             foreach (var item in idList)
             {
-                if (item != '0' && item != '1' && item != '2' && item != '3')
+                if (!int.TryParse(item.ToString(), out res) || res < 0 || res >= StaticVariables.CameraCount)
                 {
-                    ids = new List<int>() { 0, 1, 2, 3 };
+                    ids = new List<int>();
+                    for (int i = 0; i < StaticVariables.CameraCount; i++)
+                    {
+                        ids.Add(i);
+                    }
                     txt1.Text = namesToShow;
                     e.Handled = true;
                 }
                 else
-                    ids.Add(int.Parse(item.ToString()));
+                    ids.Add(res);
 
             }
             MergerParameters.AvailableCamIds = ids;

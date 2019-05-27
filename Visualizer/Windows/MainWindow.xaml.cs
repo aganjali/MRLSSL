@@ -58,7 +58,7 @@ namespace Visualizer.Windows
 
         public MainWindow()
         {
-            new StrategyDesigner().Show();
+
             InitializeComponent();
             //  var f = GameSettings.Default.Score;
             _averagingQueue = new Queue<AveragingInfo>();
@@ -170,7 +170,7 @@ namespace Visualizer.Windows
                 if (currentRobots != null)
                 {
                     if (currentRobots.Count != 0)
-                        id = new List<int>() {  0,1, 2, 3, 4, 5, 6, 7 }.FirstOrDefault(s => !currentRobots.Any(a => a.Id == s && a.TeamColor.ToArgb() == System.Drawing.Color.Blue.ToArgb()));
+                        id = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7 }.FirstOrDefault(s => !currentRobots.Any(a => a.Id == s && a.TeamColor.ToArgb() == System.Drawing.Color.Blue.ToArgb()));
                     else
                         id = 0;
 
@@ -185,18 +185,27 @@ namespace Visualizer.Windows
         {
             WorldModel simModel = new WorldModel();
             simModel.OurRobots = new Dictionary<int, SingleObjectState>();
-            simModel.OurRobots.Add(1, new SingleObjectState(ObjectType.OurRobot, new Position2D(0, 2), Vector2D.Zero, Vector2D.Zero, 90, null));
-            simModel.OurRobots.Add(2, new SingleObjectState(ObjectType.OurRobot, new Position2D(0, 2), Vector2D.Zero, Vector2D.Zero, 90, null));
-            simModel.OurRobots.Add(3, new SingleObjectState(ObjectType.OurRobot, new Position2D(0, 2), Vector2D.Zero, Vector2D.Zero, 90, null));
-            simModel.OurRobots.Add(4, new SingleObjectState(ObjectType.OurRobot, new Position2D(0, 2), Vector2D.Zero, Vector2D.Zero, 90, null));
-            simModel.OurRobots.Add(5, new SingleObjectState(ObjectType.OurRobot, new Position2D(0, 2), Vector2D.Zero, Vector2D.Zero, 90, null));
+            List<int> robotIds = new List<int>();
+            currentRobots.ForEach(o => robotIds.Add(o.Id));
+            for (int i = 0; i < 8; i++)
+            {
+                if (!robotIds.Contains(i))
+                    simulator.addRobot(i, System.Drawing.Color.Blue, new Position2D(1, (i * 0.24) - 0.96), 90);
+                if (!robotIds.Contains(8 + i))
+                    simulator.addRobot(8 + i, System.Drawing.Color.Yellow, new Position2D(-1, (i * 0.24) - 0.96), 180);
+            }
+            //simModel.OurRobots.Add(1, new SingleObjectState(ObjectType.OurRobot, new Position2D(0, 2), Vector2D.Zero, Vector2D.Zero, 90, null));
+            //simModel.OurRobots.Add(2, new SingleObjectState(ObjectType.OurRobot, new Position2D(0, 2), Vector2D.Zero, Vector2D.Zero, 90, null));
+            //simModel.OurRobots.Add(3, new SingleObjectState(ObjectType.OurRobot, new Position2D(0, 2), Vector2D.Zero, Vector2D.Zero, 90, null));
+            //simModel.OurRobots.Add(4, new SingleObjectState(ObjectType.OurRobot, new Position2D(0, 2), Vector2D.Zero, Vector2D.Zero, 90, null));
+            //simModel.OurRobots.Add(5, new SingleObjectState(ObjectType.OurRobot, new Position2D(0, 2), Vector2D.Zero, Vector2D.Zero, 90, null));
 
-            simModel.Opponents = new Dictionary<int, SingleObjectState>();
-            simModel.Opponents.Add(1, new SingleObjectState(ObjectType.Opponent, new Position2D(0, -2), Vector2D.Zero, Vector2D.Zero, -90, null));
-            simModel.Opponents.Add(2, new SingleObjectState(ObjectType.Opponent, new Position2D(0, -2), Vector2D.Zero, Vector2D.Zero, -90, null));
-            simModel.Opponents.Add(3, new SingleObjectState(ObjectType.Opponent, new Position2D(0, -2), Vector2D.Zero, Vector2D.Zero, -90, null));
-            simModel.Opponents.Add(4, new SingleObjectState(ObjectType.Opponent, new Position2D(0, -2), Vector2D.Zero, Vector2D.Zero, -90, null));
-            simModel.Opponents.Add(5, new SingleObjectState(ObjectType.Opponent, new Position2D(0, -2), Vector2D.Zero, Vector2D.Zero, -90, null));
+            //simModel.Opponents = new Dictionary<int, SingleObjectState>();
+            //simModel.Opponents.Add(1, new SingleObjectState(ObjectType.Opponent, new Position2D(0, -2), Vector2D.Zero, Vector2D.Zero, -90, null));
+            //simModel.Opponents.Add(2, new SingleObjectState(ObjectType.Opponent, new Position2D(0, -2), Vector2D.Zero, Vector2D.Zero, -90, null));
+            //simModel.Opponents.Add(3, new SingleObjectState(ObjectType.Opponent, new Position2D(0, -2), Vector2D.Zero, Vector2D.Zero, -90, null));
+            //simModel.Opponents.Add(4, new SingleObjectState(ObjectType.Opponent, new Position2D(0, -2), Vector2D.Zero, Vector2D.Zero, -90, null));
+            //simModel.Opponents.Add(5, new SingleObjectState(ObjectType.Opponent, new Position2D(0, -2), Vector2D.Zero, Vector2D.Zero, -90, null));
             //simulator.InitializeWorldModel(simModel);            
         }
 
@@ -2579,6 +2588,16 @@ namespace Visualizer.Windows
         private void PassShootTuneTool_Click(object sender, RoutedEventArgs e)
         {
             new PassAndSHootTuneWindow().Show();
+
+        }
+
+        private void windowsFormsHost_ChildChanged(object sender, System.Windows.Forms.Integration.ChildChangedEventArgs e)
+        {
+
+        }
+
+        private void recieveImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
 
         }
 

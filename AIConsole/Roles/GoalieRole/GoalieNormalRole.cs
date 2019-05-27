@@ -80,6 +80,8 @@ namespace MRL.SSL.AIConsole.Roles
 
         public SingleWirelessCommand RunStop(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D TargetPos, double Teta)
         {
+            Planner.ChangeDefaulteParams(RobotID,false);
+            Planner.SetParameter(RobotID, 1);
             if (DefenceTest.BallTest)
             {
                 ballState = DefenceTest.currentBallState;
@@ -111,11 +113,12 @@ namespace MRL.SSL.AIConsole.Roles
             if (CurrentState == (int)GoalieStates.Normal)
             {
                 //GetSkill<GotoPointSkill>().SetController(false);
-                SWc = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, TargetPos, Teta, false, false, 1.9, false);
+                SWc = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, TargetPos, Teta, false, false, 1, false);
             }
             else if (CurrentState == (int)GoalieStates.InPenaltyArea)
             {
                 //SWc = GetSkill<GoalieInPenaltyAreaSkill>().GoGetBall(engine, model, robotID, true, 200);
+                
                 GetSkill<GetBallSkill>().SetAvoidDangerZone(false, true);
                 Position2D tar = TargetToKick(Model, RobotID);
                 GetSkill<GetBallSkill>().OutGoingSideTrack(Model, RobotID, tar);

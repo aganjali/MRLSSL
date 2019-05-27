@@ -66,7 +66,7 @@ namespace MRL.SSL.AIConsole.Plays
             int? goalieID = (engine.GameInfo.OppTeam.GoaliID.HasValue && Model.Opponents.ContainsKey(engine.GameInfo.OppTeam.GoaliID.Value)) ? engine.GameInfo.OppTeam.GoaliID : null;
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
-
+            
             List<int> oppAttackerIds = new List<int>();
             List<int> attids = new List<int>();
             if (goalieID.HasValue)

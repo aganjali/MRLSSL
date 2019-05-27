@@ -21,13 +21,16 @@ namespace MRL.SSL.AIConsole.Roles
         bool passSync = false, kickIsSuitable = false;
         Position2D? lastBall = null;
         List<PassPointData> lastPassPoints = new List<PassPointData>();
+        List<PassPointData> lastPassPointsSecond = new List<PassPointData>();
         PassPointData passPoint;
+        PassPointData passPointSecond;
         double lastScore;
         public override void DetermineActionState(GameStrategyEngine engine, WorldModel Model, int RobotID, NormalSharedState.ActiveRoleState activeRoleState, ref NormalSharedState.ActionInfo actInfo)
         {
             base.DetermineActionState(engine, Model, RobotID, activeRoleState, ref actInfo);
             int? AttackerID = NormalSharedState.CommonInfo.AttackerID;
             actInfo.PassTarget = passPoint.pos;
+            actInfo.PassTargetSecond = passPointSecond.pos;
             actInfo.pKind = (passPoint.type == PassType.OT) ? NormalSharedState.ActivePassKind.OneTouch : NormalSharedState.ActivePassKind.Catch;
 
             double passSpeed = (!actInfo.isChip) ?
@@ -68,7 +71,7 @@ namespace MRL.SSL.AIConsole.Roles
                 if (lastBall.HasValue && Model.BallState.Location.DistanceFrom(lastBall.Value) > 0.6)
                     lastBall = null;
                 List<PassPointData> poses = new List<PassPointData>();
-
+                List<PassPointData> posesSecond = new List<PassPointData>();
                 Obstacles obs = new Obstacles(Model);
                 if (NormalSharedState.CommonInfo.AttackerID.HasValue)
                 {
@@ -85,11 +88,41 @@ namespace MRL.SSL.AIConsole.Roles
                 }
                 else
                 {
-                    Position2D topLeft = new Position2D(-0.5, GameParameters.OurRightCorner.Y);
-                    double width = GameParameters.OurGoalCenter.X - 0.5 - 0.25, heigth = 2 * GameParameters.OurLeftCorner.Y, passSpeed = 4, shootSpeed = 8;
+                    //Position2D topLeft = new Position2D(-0.5, GameParameters.OurRightCorner.Y);
+                    #region First Attacker Position
+                    double regionX = 0;
+                    if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H / 2)
+                    {
+                        regionX = Model.BallState.Location.X;
+                    }
+                    else if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H)
+                    {
+                        regionX = -(StaticVariables.FIELD_LENGTH_H - 2 * (StaticVariables.FIELD_LENGTH_H) / 3);
+                    }
+                    Position2D topLeft = new Position2D(regionX, GameParameters.OurRightCorner.Y);
+                    double width = GameParameters.OurGoalCenter.X - 0.5 - 0.25, heigth = 2 * GameParameters.OurLeftCorner.Y, passSpeed = 4, shootSpeed = Program.MaxKickSpeed;
                     int Rows = 5, column = 10;
                     poses = engine.GameInfo.CalculatePassScore(Model, RobotID, NormalSharedState.CommonInfo.AttackerID, topLeft, passSpeed, shootSpeed, width, heigth, Rows, column);
+                    #endregion
+                    double mScore = double.MinValue;
+                    int sgn = 0;
+                    foreach (var item in poses)
+                    {
+                        if (item.score > mScore)
+                        {
+                            mScore = item.score;
+                            sgn = Math.Sign(item.pos.Y);
+                        }
+                    }
+
+                    topLeft = new Position2D(regionX, sgn < 0 ? 0 : GameParameters.OurRightCorner.Y);
+                    width = (GameParameters.OurGoalCenter.X - 0.5 - 0.25);
+                    heigth = GameParameters.OurLeftCorner.Y;
+
+                    posesSecond = engine.GameInfo.CalculateAttackerPassScore(Model, RobotID, RobotID/*, attackerPos*/, topLeft, passSpeed, shootSpeed, width, heigth, Rows, column);
+
                     lastPassPoints = poses;
+                    lastPassPointsSecond = posesSecond;
                     lastBall = Model.BallState.Location;
                 }
                 double maxSc = double.MinValue;
@@ -101,6 +134,15 @@ namespace MRL.SSL.AIConsole.Roles
                         passPoint = item;
                     }
                 }
+                maxSc = double.MinValue;
+                foreach (var item in posesSecond)
+                {
+                    if (item.score > maxSc)
+                    {
+                        maxSc = item.score;
+                        passPointSecond = item;
+                    }
+                }
 
 
                 double t = Math.Abs(Vector2D.AngleBetweenInRadians(Vector2D.FromAngleSize(Model.OurRobots[RobotID].Angle.Value * Math.PI / 180, 1), passPoint.pos - Model.BallState.Location));
@@ -110,7 +152,7 @@ namespace MRL.SSL.AIConsole.Roles
                 double a = (actInfo.isChip) ? 1 : 0.1;
                 double drScore = t * d * a + 0.1;
                 lastScore = drScore;
-                
+
                 return drScore;
 
                 //double d = Model.OurRobots[NormalSharedState.CommonInfo.AttackerID.Value].Location.DistanceFrom(points[0]);

@@ -8,6 +8,7 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.GameDefinitions.General_Settings;
 using System.Drawing;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Plays
 {
@@ -98,6 +99,8 @@ namespace MRL.SSL.AIConsole.Plays
             FreekickDefence.weAreInKickoff = false;
             FreekickDefence.SwitchToActiveReset();
             DataBridge.SetInitialPoses(Model);
+            
+            Planner.IsStopBall(FreekickDefence.BallIsMoved);
 
             DefenceTest.BallTest = FreekickDefence.testDefenceState;
             DefenceTest.GenerateBallPos();
@@ -252,6 +255,11 @@ namespace MRL.SSL.AIConsole.Plays
                         MarkMaximumDist = MaxMArkDist,
                     });
                 }
+                defendcommands.Add(new DefenderCommand()
+                {
+                    RoleType = typeof(CornerStopRole),
+                    //OppID = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 1 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(1).Key : id
+                });
                 FreekickDefence.OppToMark1 = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 0 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(0).Key : id;
 
                 var infos = FreekickDefence.Match(engine, Model, defendcommands, true);
@@ -291,11 +299,11 @@ namespace MRL.SSL.AIConsole.Plays
                 else
                     ids = Model.OurRobots.Select(s => s.Key).ToList();
 
-
+                AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
                 var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
 
-                int? n1 = null, n2 = null, regionalandmarker = null, regional = null, golie = null, gotopoint = null;
+                int? n1 = null, n2 = null, regionalandmarker = null, regional = null, golie = null, gotopoint = null, stop = null;
 
 
                 n1 = getID(assigenroles, typeof(DefenderCornerRole1));
@@ -318,6 +326,7 @@ namespace MRL.SSL.AIConsole.Plays
                     marker = infos.Single(y => y.RoleType == typeof(DefenderMarkerRole));
                 else
                     marker = infos.Single(y => y.RoleType == typeof(NewDefenderMrkerRole));
+                stop = getID(assigenroles, typeof(CornerStopRole));
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n1, typeof(DefenderCornerRole1)))
                     Functions[n1.Value] = (eng, wmd) => GetRole<DefenderCornerRole1>(n1.Value).Run(eng, wmd, n1.Value, normal1.DefenderPosition.Value, normal1.Teta);
@@ -353,11 +362,6 @@ namespace MRL.SSL.AIConsole.Plays
                         Functions[gotopoint.Value] = (eng, wmd) => GetRole<ActiveRole>(gotopoint.Value).Perform(eng, wmd, gotopoint.Value, null);
                 }
 
-
-
-
-
-
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, regionalandmarker, freerole2))
                 {
                     if (freerole2 == typeof(RegionalDefenderRole2))
@@ -380,6 +384,10 @@ namespace MRL.SSL.AIConsole.Plays
                 }
                 FreekickDefence.freeSwitchbetweenRegionalAndMarker = false;
                 lastState = 2;
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop, typeof(CornerStopRole)))
+                    Functions[stop.Value] = (eng, wmd) => GetRole<CornerStopRole>(stop.Value).Run(engine, Model, stop.Value, 80, 180);
+
             }
             #endregion
 
@@ -506,6 +514,11 @@ namespace MRL.SSL.AIConsole.Plays
                             FreekickDefence.OppToMark3 = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 3 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(3).Key : id;
                         }
                     }
+                    defendcommands.Add(new DefenderCommand()
+                    {
+                        RoleType = typeof(CornerStopRole),
+                        // OppID = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 1 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(1).Key : id
+                    });
                 }
 
 
@@ -571,8 +584,9 @@ namespace MRL.SSL.AIConsole.Plays
                         AddRoleInfo(roles, typeof(NewDefenderMarkerRole2), 1, 0);
                         AddRoleInfo(roles, typeof(NewDefenderMrkerRole), 1, 0);
                     }
-                }
 
+                }
+                AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
                 List<int> ids = new List<int>();
                 if (Model.GoalieID.HasValue)
                     ids = Model.OurRobots.Where(w => w.Key != Model.GoalieID.Value).Select(s => s.Key).ToList();
@@ -582,7 +596,7 @@ namespace MRL.SSL.AIConsole.Plays
 
                 var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
-                int? n1 = null, n2 = null, marker = null, marker2ID = null, golierole = null, regOrActive = null;
+                int? n1 = null, n2 = null, marker = null, marker2ID = null, golierole = null, regOrActive = null, STOP = null;
 
                 n1 = getID(assigenroles, typeof(DefenderCornerRole1));
                 n2 = getID(assigenroles, typeof(DefenderCornerRole2));
@@ -600,6 +614,7 @@ namespace MRL.SSL.AIConsole.Plays
                     golierole = Model.GoalieID;
 
                 regOrActive = getID(assigenroles, freeRole);  ///////////////////////////////////// TODO: OR DEFENDER 2
+
 
                 var gol = infos.Single(s => s.RoleType == typeof(GoalieCornerRole));
                 var normal1 = infos.Single(s => s.RoleType == typeof(DefenderCornerRole1));
@@ -624,6 +639,7 @@ namespace MRL.SSL.AIConsole.Plays
                     else
                         reg = infos.Single(s => s.RoleType == typeof(NewDefenderMarkerRole3));
 
+                STOP = getID(assigenroles, typeof(CornerStopRole));
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n1, typeof(DefenderCornerRole1)))
                     Functions[n1.Value] = (eng, wmd) => GetRole<DefenderCornerRole1>(n1.Value).Run(eng, wmd, n1.Value, normal1.DefenderPosition.Value, normal1.Teta);
                 DefenceTest.WeHaveDefenderCornerRole1 = true;
@@ -694,6 +710,10 @@ namespace MRL.SSL.AIConsole.Plays
                     DefenceTest.DefenderMarkerRole2 = Model.OurRobots[marker2ID.Value].Location;
                 FreekickDefence.freeSwitchbetweenRegionalAndMarker = false;
                 lastState = 3;
+                if (STOP.HasValue)
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, STOP, typeof(CornerStopRole)))
+                        Functions[STOP.Value] = (eng, wmd) => GetRole<CornerStopRole>(STOP.Value).Run(engine, Model, STOP.Value, 80, 180);
+
             }
             #endregion
 
@@ -753,7 +773,21 @@ namespace MRL.SSL.AIConsole.Plays
                     }
                 }
 
-                FreekickDefence.OppToMark3 = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 4 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(4).Key : id;
+
+
+                defendcommands.Add(new DefenderCommand()
+                {
+                    RoleType = typeof(CornerStopRole),
+                    //OppID = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 4 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(4).Key : id
+                });
+                defendcommands.Add(new DefenderCommand()
+                {
+                    RoleType = typeof(RegionalDefenderRole2),
+                    //OppID = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 5 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(5).Key : id
+                });
+
+
+                FreekickDefence.OppToMark3 = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 6 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(6).Key : id;
                 if (!noRegional || FreekickDefence.OppToMark3 == null)
                     defendcommands.Add(new DefenderCommand()
                     {
@@ -768,7 +802,7 @@ namespace MRL.SSL.AIConsole.Plays
                     {
                         RoleType = typeof(NewDefenderMarkerRole3),
                         MarkMaximumDist = MaxMArkDist,
-                        OppID = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 4 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(4).Key : id
+                        OppID = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 6 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(6).Key : id
                     });
 
                 }
@@ -817,11 +851,14 @@ namespace MRL.SSL.AIConsole.Plays
                 else
                     ids = Model.OurRobots.Select(s => s.Key).ToList();
 
+
+                AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
+                AddRoleInfo(roles, typeof(RegionalDefenderRole2), 1, 0);
                 var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
 
 
-                int?  n2 = null, marker = null, regional = null, golie = null, mark2 = null, n3 = null;
+                int? n2 = null, marker = null, regional = null, golie = null, mark2 = null, n3 = null, stop = null, regi = null; ;
 
                 //n1 = getID(assigenroles, typeof(DefenderCornerRole1)); // New
                 n3 = getID(assigenroles, typeof(DefenderCornerRole1)); // New
@@ -864,7 +901,8 @@ namespace MRL.SSL.AIConsole.Plays
                     else
                         marker2 = infos.Single(s => s.RoleType == typeof(NewDefenderMarkerRole2));
                 }
-
+                stop = getID(assigenroles, typeof(CornerStopRole));
+                regi = getID(assigenroles, typeof(RegionalDefenderRole2));
                 DrawingObjects.AddObject(new StringDraw("Its New Role \n Don't have Overlap Solving \n With Defender Corner 1", Color.HotPink, normal3.DefenderPosition.Value.Extend(.3, 0)));
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n3, typeof(DefenderCornerRole1)))
@@ -931,12 +969,18 @@ namespace MRL.SSL.AIConsole.Plays
                         Functions[mark2.Value] = (eng, wmd) => GetRole<ActiveRole>(mark2.Value).Perform(eng, wmd, mark2.Value, null);
                 }
                 FreekickDefence.freeSwitchbetweenRegionalAndMarker = false;
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop, typeof(CornerStopRole)))
+                    Functions[stop.Value] = (eng, wmd) => GetRole<CornerStopRole>(stop.Value).Run(engine, Model, stop.Value, 80, 180);
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, regi, typeof(RegionalDefenderRole2)))
+                    Functions[regi.Value] = (eng, wmd) => GetRole<RegionalDefenderRole2>(regi.Value).positionnig(engine, Model, regional.Value, reg.DefenderPosition.Value, reg.Teta);
+
                 lastState = 4;
             }
             #endregion
 
-            #region opp >= 5
-            else if (oppAttackerIds.Count < 6)
+            #region opp == 5
+            else if (oppAttackerIds.Count == 5)
             {
                 bool ballnew = false;
                 if (ballnew)
@@ -1021,7 +1065,11 @@ namespace MRL.SSL.AIConsole.Plays
                         }
                         FreekickDefence.OppToMark2 = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 3 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(3).Key : id;
                     }
-
+                    defendcommands.Add(new DefenderCommand()
+                    {
+                        RoleType = typeof(CornerStopRole),
+                        //OppID = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 4 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(4).Key : id
+                    });
                     #endregion
                     var infos = FreekickDefence.Match(engine, Model, defendcommands, false);
                     #region Role Add
@@ -1051,7 +1099,7 @@ namespace MRL.SSL.AIConsole.Plays
                         {
                             freeRole = typeof(StopRole1);
                         }
-                                
+
                     }
                     else
                         freeRole = typeof(ActiveRole);
@@ -1064,11 +1112,13 @@ namespace MRL.SSL.AIConsole.Plays
                     else
                         ids = Model.OurRobots.Select(s => s.Key).ToList();
 
+
+                    AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
                     var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
                     #endregion
                     #region IDExport
 
-                    int?  n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null;
+                    int? n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null, stop = null;
 
                     n3 = getID(assigenroles, typeof(DefenderCornerRole1)); // New
                     n4 = getID(assigenroles, typeof(DefenderCornerRole4)); // New
@@ -1107,6 +1157,7 @@ namespace MRL.SSL.AIConsole.Plays
                             marker2 = infos.Single(s => s.RoleType == typeof(StopRole1));
                         }
                     }
+                    stop = getID(assigenroles, typeof(CornerStopRole));
                     #endregion
                     #region Role Assigners
                     if (normal3.DefenderPosition.HasValue)
@@ -1181,20 +1232,23 @@ namespace MRL.SSL.AIConsole.Plays
                         }
                         else
                         {
-                            if (freeRole == typeof(StopRole1) )
+                            if (freeRole == typeof(StopRole1))
                             {
                                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, mark2, typeof(StopRole1)))
                                     Functions[mark2.Value] = (eng, wmd) => GetRole<StopRole1>(mark2.Value).RotateRun(engine, Model, mark2.Value);//Mark(eng, wmd, mark2.Value, marker2.DefenderPosition.Value, marker2.Teta);
-                               
+
                                 DefenceTest.WeHaveDefenderMarkerRole2 = false;
                             }
                             else
                             {
                                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, mark2, typeof(ActiveRole)))
                                     Functions[mark2.Value] = (eng, wmd) => GetRole<ActiveRole>(mark2.Value).Perform(eng, wmd, mark2.Value, null);
-                            }   
+                            }
                         }
                     }
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop, typeof(CornerStopRole)))
+                        Functions[stop.Value] = (eng, wmd) => GetRole<CornerStopRole>(stop.Value).Run(engine, Model, stop.Value, 80, 180);
+
                     #endregion
                 }
                 else
@@ -1274,6 +1328,11 @@ namespace MRL.SSL.AIConsole.Plays
                         }
                         FreekickDefence.OppToMark3 = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 4 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(4).Key : id;
                     }
+                    defendcommands.Add(new DefenderCommand()
+                    {
+                        RoleType = typeof(CornerStopRole),
+                        //OppID = engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ToList().Count > 4 ? engine.GameInfo.OppTeam.Scores.Where(h => h.Key != goalieID).ElementAt(4).Key : id
+                    });
 
                     #endregion
                     var infos = FreekickDefence.Match(engine, Model, defendcommands, true);
@@ -1328,12 +1387,11 @@ namespace MRL.SSL.AIConsole.Plays
                     {
 
                     }
-
                     var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
                     #endregion
                     #region IDExport
 
-                    int?  n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null;
+                    int? n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null, stop = null;
 
                     n3 = getID(assigenroles, typeof(DefenderCornerRole1)); // New
                     n4 = getID(assigenroles, typeof(NewDefenderMarkerRole2)); // New
@@ -1350,6 +1408,7 @@ namespace MRL.SSL.AIConsole.Plays
                     var normal3 = infos.Single(s => s.RoleType == typeof(DefenderCornerRole1));// New 
                     var normal4 = infos.Single(s => s.RoleType == typeof(NewDefenderMarkerRole2));// New 
                     var normal2 = infos.Single(s => s.RoleType == typeof(DefenderCornerRole2));
+                    //var Regional = infos.Single(s => s.RoleType == typeof(RegionalDefenderRole));
                     DefenceInfo mark;
                     if (!usenewmarker)
                         mark = infos.Single(s => s.RoleType == typeof(DefenderMarkerRole));
@@ -1372,6 +1431,7 @@ namespace MRL.SSL.AIConsole.Plays
                             marker2 = infos.Single(s => s.RoleType == typeof(StopRole1));
                         }
                     }
+                    stop = getID(assigenroles, typeof(CornerStopRole));
                     #endregion
                     #region Role Assigners
                     if (normal3.DefenderPosition.HasValue)
@@ -1463,14 +1523,17 @@ namespace MRL.SSL.AIConsole.Plays
                             }
                         }
                     }
+
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop, typeof(CornerStopRole)))
+                        Functions[stop.Value] = (eng, wmd) => GetRole<CornerStopRole>(stop.Value).Run(engine, Model, stop.Value, 80, 180);
                     #endregion
                 }
             }
             #endregion
 
 
-            #region opp >= 5
-            else if (oppAttackerIds.Count > 5)
+            #region opp == 6
+            else if (oppAttackerIds.Count == 6)
             {
 
                 noRegional = false;
@@ -1537,7 +1600,11 @@ namespace MRL.SSL.AIConsole.Plays
                     }
                     FreekickDefence.OppToMark3 = scores.Count > 4 ? scores.ElementAt(4).Key : id;
                 }
-
+                defendcommands.Add(new DefenderCommand()
+                {
+                    RoleType = typeof(CornerStopRole),
+                    //OppID = scores.Count > 2 ? scores.ElementAt(2).Key : id
+                });
                 #endregion
                 var infos = FreekickDefence.Match(engine, Model, defendcommands, true);
                 #region Role Add
@@ -1583,12 +1650,12 @@ namespace MRL.SSL.AIConsole.Plays
                 {
 
                 }
-
+                AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
                 var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
                 #endregion
                 #region IDExport
 
-                int? n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null;
+                int? n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null, stop = null, newmarker = null;
 
                 n3 = getID(assigenroles, typeof(DefenderCornerRole1)); // New
                 n4 = getID(assigenroles, typeof(NewDefenderMarkerRole2)); // New
@@ -1620,6 +1687,7 @@ namespace MRL.SSL.AIConsole.Plays
                     else
                         marker2 = infos.Single(s => s.RoleType == typeof(NewDefenderMarkerRole3));
                 }
+                stop = getID(assigenroles, typeof(CornerStopRole));
                 #endregion
                 #region Role Assigners
                 if (normal3.DefenderPosition.HasValue)
@@ -1691,10 +1759,261 @@ namespace MRL.SSL.AIConsole.Plays
                             Functions[mark2.Value] = (eng, wmd) => GetRole<ActiveRole>(mark2.Value).Perform(eng, wmd, mark2.Value, null);
                     }
                 }
+                if (stop.HasValue)
+                {
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop.Value, typeof(CornerStopRole)))
+                        Functions[stop.Value] = (eng, wmd) => GetRole<CornerStopRole>(stop.Value).Run(engine, Model, stop.Value, 80, 180);
+                }
+
+
                 #endregion
 
             }
             #endregion
+
+
+            #region opp >=7
+            else if (oppAttackerIds.Count >= 7)
+            {
+
+                noRegional = false;
+                if (lastState == 4)
+                {
+                    FreekickDefence.freeSwitchbetweenRegionalAndMarker = true;
+                }
+                else
+                {
+                    FreekickDefence.freeSwitchbetweenRegionalAndMarker = false;
+                }
+                #region role Initial set
+                int denseRobot = accumulatedOppId2(Model, oppAttackerIds);
+                Dictionary<int, float> scores = engine.GameInfo.OppTeam.Scores.Where(y => y.Key != denseRobot).ToDictionary(y => y.Key, t => t.Value);
+                defendcommands.Add(new DefenderCommand()
+
+                {
+                    RoleType = typeof(NewDefenderMarkerRole2),
+                    MarkMaximumDist = MaxMArkDist,
+                    OppID = scores.Count > 3 ? scores.ElementAt(3).Key : id
+                });
+                FreekickDefence.OppToMark2 = scores.Count > 3 ? scores.ElementAt(3).Key : id;
+                defendcommands.Add(new DefenderCommand()
+                {
+                    RoleType = typeof(DefenderCornerRole1),
+                    OppID = scores.Count > 0 ? scores.ElementAt(0).Key : id
+                });
+                defendcommands.Add(new DefenderCommand()
+                {
+                    RoleType = typeof(DefenderCornerRole2),
+                    OppID = scores.Count > 1 ? scores.ElementAt(1).Key : id
+                });
+                if (!usenewmarker)
+                    defendcommands.Add(new DefenderCommand()
+                    {
+                        RoleType = typeof(DefenderMarkerRole),
+                        OppID = scores.Count > 2 ? scores.ElementAt(2).Key : id
+                    });
+                else
+                    defendcommands.Add(new DefenderCommand()
+                    {
+                        RoleType = typeof(NewDefenderMrkerRole),
+                        OppID = scores.Count > 2 ? scores.ElementAt(2).Key : id
+                    });
+                FreekickDefence.OppToMark1 = scores.Count > 2 ? scores.ElementAt(2).Key : id;
+                if (!ballismoved || !wehaveActive)
+                {
+                    if (!usenewmarker)
+                        defendcommands.Add(new DefenderCommand()
+                        {
+                            RoleType = typeof(DefenderMarkerRole3),
+                            MarkMaximumDist = MaxMArkDist,
+                            OppID = scores.Count > 4 ? scores.ElementAt(4).Key : id
+
+                        });
+                    else
+                    {
+                        defendcommands.Add(new DefenderCommand()
+                        {
+                            RoleType = typeof(NewDefenderMarkerRole3),
+                            OppID = scores.Count > 4 ? scores.ElementAt(4).Key : id
+                        });
+
+                    }
+                    FreekickDefence.OppToMark3 = scores.Count > 4 ? scores.ElementAt(4).Key : id;
+                }
+                defendcommands.Add(new DefenderCommand()
+                {
+                    RoleType = typeof(CornerStopRole),
+                    //OppID = scores.Count > 2 ? scores.ElementAt(2).Key : id
+                });
+
+                #endregion
+                var infos = FreekickDefence.Match(engine, Model, defendcommands, true);
+                #region Role Add
+                roles = new List<RoleInfo>();
+
+                //AddRoleInfo(roles, typeof(GoalieCornerRole), 1, 0);
+                //AddRoleInfo(roles, typeof(DefenderCornerRole1), 1, 0); New 
+                AddRoleInfo(roles, typeof(DefenderCornerRole1), 1, 0); // New
+                AddRoleInfo(roles, typeof(NewDefenderMarkerRole2), 1, 0); // New
+                AddRoleInfo(roles, typeof(DefenderCornerRole2), 1, 0);
+                if (!usenewmarker)
+                    AddRoleInfo(roles, typeof(DefenderMarkerRole), 1, 0);
+                else
+                    AddRoleInfo(roles, typeof(NewDefenderMrkerRole), 1, 0);
+
+                Type freeRole;
+                if (!ballismoved || !wehaveActive)
+                {
+                    if (!usenewmarker)
+                    {
+                        freeRole = typeof(DefenderMarkerRole3);
+                        FreekickDefence.DefenderMarkerRole3ToActive = true;
+                    }
+                    else
+                    {
+                        freeRole = typeof(NewDefenderMarkerRole3);
+                        FreekickDefence.DefenderMarkerRole3ToActive = true;
+                    }
+                }
+                else
+                    freeRole = typeof(ActiveRole);
+
+                AddRoleInfo(roles, freeRole, 1, 0);
+
+                List<int> ids = new List<int>();
+                if (Model.GoalieID.HasValue)
+                    ids = Model.OurRobots.Where(w => w.Key != Model.GoalieID.Value).Select(s => s.Key).ToList();
+                else
+                    ids = Model.OurRobots.Select(s => s.Key).ToList();
+
+
+                if (freeRole == typeof(ActiveRole))
+                {
+
+                }
+
+                //arghavan
+                AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
+                var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+                #endregion
+                #region IDExport
+
+                int? n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null, stop = null, newmarker = null;
+
+                n3 = getID(assigenroles, typeof(DefenderCornerRole1)); // New
+                n4 = getID(assigenroles, typeof(NewDefenderMarkerRole2)); // New
+                n2 = getID(assigenroles, typeof(DefenderCornerRole2));
+                if (!usenewmarker)
+                    marker = getID(assigenroles, typeof(DefenderMarkerRole));
+                else
+                    marker = getID(assigenroles, typeof(NewDefenderMrkerRole));
+                if (Model.GoalieID.HasValue && Model.OurRobots.ContainsKey(Model.GoalieID.Value))
+                    golie = Model.GoalieID;
+
+                mark2 = getID(assigenroles, freeRole);  ///////////////////////////////////// TODO: OR DEFENDER 2
+
+                var normal3 = infos.Single(s => s.RoleType == typeof(DefenderCornerRole1));// New 
+                var normal4 = infos.Single(s => s.RoleType == typeof(NewDefenderMarkerRole2));// New 
+                var normal2 = infos.Single(s => s.RoleType == typeof(DefenderCornerRole2));
+                DefenceInfo mark;
+                if (!usenewmarker)
+                    mark = infos.Single(s => s.RoleType == typeof(DefenderMarkerRole));
+                else
+                    mark = infos.Single(s => s.RoleType == typeof(NewDefenderMrkerRole));
+                var gol = infos.Single(s => s.RoleType == typeof(GoalieCornerRole));
+
+                DefenceInfo marker2 = new DefenceInfo();
+                if (!ballismoved || !wehaveActive)
+                {
+                    if (!usenewmarker)
+                        marker2 = infos.Single(s => s.RoleType == typeof(DefenderMarkerRole3));
+                    else
+                        marker2 = infos.Single(s => s.RoleType == typeof(NewDefenderMarkerRole3));
+                }
+                stop = getID(assigenroles, typeof(CornerStopRole));
+                #endregion
+                #region Role Assigners
+                if (normal3.DefenderPosition.HasValue)
+                    DrawingObjects.AddObject(new StringDraw("Its New Role \n Don't have Overlap Solving \n With Defender Corner 1", Color.HotPink, normal3.DefenderPosition.Value.Extend(.3, 0)));
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n3, typeof(DefenderCornerRole1)))
+                    Functions[n3.Value] = (eng, wmd) => GetRole<DefenderCornerRole1>(n3.Value).Run(eng, wmd, n3.Value, normal3.DefenderPosition.Value, normal3.Teta); //New 
+                DefenceTest.WeHaveDefenderCornerRole1 = true;
+                if (n3.HasValue)
+                    DefenceTest.DefenderCornerRole1 = Model.OurRobots[n3.Value].Location;
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n4, typeof(NewDefenderMarkerRole2)))
+                    Functions[n4.Value] = (eng, wmd) => GetRole<NewDefenderMarkerRole2>(n4.Value).Mark(eng, wmd, n4.Value, normal4.OppID.Value);
+                DefenceTest.WeHaveDefenderCornerRole4 = true;
+                if (n4.HasValue)
+                    DefenceTest.DefenderCornerRole4 = Model.OurRobots[n4.Value].Location;
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n2, typeof(DefenderCornerRole2)))
+                    Functions[n2.Value] = (eng, wmd) => GetRole<DefenderCornerRole2>(n2.Value).Run(eng, wmd, n2.Value, normal2.DefenderPosition.Value, normal2.Teta);
+                DefenceTest.WeHaveDefenderCornerRole2 = true;
+                if (n2.HasValue)
+                    DefenceTest.DefenderCornerRole2 = Model.OurRobots[n2.Value].Location;
+
+                if (!usenewmarker)
+                {
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, marker, typeof(DefenderMarkerRole)))
+                        Functions[marker.Value] = (eng, wmd) => GetRole<DefenderMarkerRole>(marker.Value).Mark(eng, wmd, marker.Value, mark.DefenderPosition.Value, mark.Teta);
+                }
+                else
+                {
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, marker, typeof(NewDefenderMrkerRole)))
+                        Functions[marker.Value] = (eng, wmd) => GetRole<NewDefenderMrkerRole>(marker.Value).mark(eng, wmd, marker.Value, mark.OppID.Value);
+                }
+                DefenceTest.WeHaveDefenderMarkerRole1 = true;
+                if (marker.HasValue)
+                    DefenceTest.DefenderMarkerRole1 = Model.OurRobots[marker.Value].Location;
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, golie, typeof(GoalieCornerRole)))
+                    Functions[golie.Value] = (eng, wmd) => GetRole<GoalieCornerRole>(golie.Value).Run(engine, wmd, golie.Value, gol.DefenderPosition.Value, gol.Teta, gol, normal3.DefenderPosition.Value, n3.Value, true);
+                DefenceTest.WeHaveGoalie = true;
+                if (golie.HasValue)
+                    DefenceTest.GoalieRole = Model.OurRobots[golie.Value].Location;
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, mark2, freeRole))
+                {
+                    if (freeRole == typeof(DefenderMarkerRole3) || freeRole == typeof(NewDefenderMarkerRole3))
+                    {
+                        if (!usenewmarker)
+                        {
+                            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, mark2, typeof(DefenderMarkerRole3)))
+                                Functions[mark2.Value] = (eng, wmd) => GetRole<DefenderMarkerRole3>(mark2.Value).Mark(eng, wmd, mark2.Value, marker2.DefenderPosition.Value, marker2.Teta);
+                        }
+                        else
+                        {
+
+
+                            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, mark2, typeof(NewDefenderMarkerRole3)))
+                                Functions[mark2.Value] = (eng, wmd) => GetRole<NewDefenderMarkerRole3>(mark2.Value).mark(eng, wmd, mark2.Value, marker2.OppID.Value);
+
+                        }
+                        DefenceTest.WeHaveDefenderMarkerRole2 = true;
+                        if (mark2.HasValue)
+                            DefenceTest.DefenderMarkerRole2 = Model.OurRobots[mark2.Value].Location;
+                    }
+                    else
+                    {
+
+                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, mark2, typeof(ActiveRole)))
+                            Functions[mark2.Value] = (eng, wmd) => GetRole<ActiveRole>(mark2.Value).Perform(eng, wmd, mark2.Value, null);
+                    }
+                }
+                if (stop.HasValue)
+                {
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop.Value, typeof(CornerStopRole)))
+                        Functions[stop.Value] = (eng, wmd) => GetRole<CornerStopRole>(stop.Value).Run(engine, Model, stop.Value, 80, 180);
+                }
+
+
+                #endregion
+
+            }
+            #endregion
+
             #region Switches Handling
             FreekickDefence.LastSwitchDefender2Marker1 = FreekickDefence.SwitchDefender2Marker1;//New IO2014
             FreekickDefence.LastSwitchDefender2Marker2 = FreekickDefence.SwitchDefender2Marker2;//New IO2014 

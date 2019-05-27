@@ -15,6 +15,8 @@ namespace MRL.SSL.AIConsole.Roles
 {
     public class GoalieCornerRole : RoleBase, IGoalie
     {
+        double RahmatiMargin = 1;
+        double PrepMargin = 0.2;
         public static Position2D RobotLoc = new Position2D();
         private Position2D ballSavedForStates = new Position2D();
         public static Position2D ballSavedPos = new Position2D();
@@ -141,9 +143,9 @@ namespace MRL.SSL.AIConsole.Roles
                                 //{
                                 //    robotPerpWithTargetToGoal = gol.TargetState.Location + (intersectPos.Value - gol.TargetState.Location).GetNormalizeToCopy(intersectPos.Value.DistanceFrom(gol.TargetState.Location) - 0.1);//WC2017
                                 //}
-                                robotPerpWithTargetToGoal = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);// 11/25/2017 replaced vahid
+                                robotPerpWithTargetToGoal = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(PrepMargin);// 11/25/2017 replaced vahid
                             }
-                            if (robotPerpWithTargetToGoal.DistanceFrom(robotLocation) > .1 && robotPerpWithTargetToGoal.DistanceFrom(GameParameters.OurGoalCenter) < .9)
+                            if (robotPerpWithTargetToGoal.DistanceFrom(robotLocation) > PrepMargin && robotPerpWithTargetToGoal.DistanceFrom(GameParameters.OurGoalCenter) < RahmatiMargin)
                             {
                                 DrawingObjects.AddObject(new StringDraw("Prependicular,CR1>0.1," + gol.TargetState.Type.ToString() + ",margin:" + (gol.TargetState.Type == ObjectType.Ball ? "0.2" : "0.3"), new Position2D(5.4, 0)), "Z3cx2s1fdsf698546546546546");
                                 finalTarget = robotPerpWithTargetToGoal;
@@ -152,7 +154,7 @@ namespace MRL.SSL.AIConsole.Roles
                             else
                             {
                                 DrawingObjects.AddObject(new StringDraw("targetPos,CR1>0.1," + gol.TargetState.Type.ToString() + ",margin:" + (gol.TargetState.Type == ObjectType.Ball ? "0.2" : "0.3"), new Position2D(5.4, 0)), "56465132cd5s64fd5s64fa65987f4654");
-                                Position2D tg = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(.9);
+                                Position2D tg = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(RahmatiMargin);
                                 finalTarget = new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y);
                                 angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                             }
@@ -177,9 +179,9 @@ namespace MRL.SSL.AIConsole.Roles
 
                         if (robotPerpWithTargetToGoal.X > GameParameters.OurGoalCenter.X)
                         {
-                            robotPerpWithTargetToGoal = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);// 11/25/2017 replaced vahid
+                            robotPerpWithTargetToGoal = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(PrepMargin);// 11/25/2017 replaced vahid
                         }
-                        if (robotPerpWithTargetToGoal.DistanceFrom(currentPos) > .1 && robotPerpWithTargetToGoal.DistanceFrom(GameParameters.OurGoalCenter) < .9)
+                        if (robotPerpWithTargetToGoal.DistanceFrom(currentPos) > PrepMargin && robotPerpWithTargetToGoal.DistanceFrom(GameParameters.OurGoalCenter) < RahmatiMargin)
                         {
                             DrawingObjects.AddObject(new StringDraw("Prependicular,CR1=null," + gol.TargetState.Type.ToString(), new Position2D(5.4, 0)), "222f2f2f2s5edf4we6rwe4fw987+564ew");
                             finalTarget = robotPerpWithTargetToGoal;
@@ -188,7 +190,7 @@ namespace MRL.SSL.AIConsole.Roles
                         else
                         {
                             DrawingObjects.AddObject(new StringDraw("targetPos,CR1=null," + gol.TargetState.Type.ToString(), new Position2D(5.4, 0)), "56465132trg564fg5szgdfrg4654");
-                            Position2D tg = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(.9);
+                            Position2D tg = GameParameters.OurGoalCenter + (gol.TargetState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(RahmatiMargin);
                             finalTarget = new Position2D(Math.Min(tg.X, GameParameters.OurGoalCenter.X - .1), tg.Y);
                             angle = (gol.TargetState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                         }
@@ -507,7 +509,7 @@ namespace MRL.SSL.AIConsole.Roles
                 else if (Gointersect)
                 {
                     Line ballSpeedLine = new Line(Model.BallState.Location, Model.BallState.Location + Model.BallState.Speed.GetNormalizeToCopy(10));
-                    List<Position2D> intersects = GameParameters.LineIntersectWithDangerZone(ballSpeedLine, true);
+                    List<Position2D> intersects = GameParameters.LineIntersectWithOurDangerZone(ballSpeedLine);
                     if (intersects.Count > 0)
                     {
                         Position2D pos = intersects.OrderBy(y => y.DistanceFrom(ballSpeedLine.Tail)).FirstOrDefault();

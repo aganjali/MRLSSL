@@ -146,6 +146,7 @@ namespace MRL.SSL.AIConsole.Engine
         bool strategyApplied = false;
         bool getBalls = true;
         Dictionary<int, Position2D> balls2send = new Dictionary<int, Position2D>();
+        HiPerfTimer timer = new HiPerfTimer();
         public EngineManager()
         {
             GPPlanner.Initilize();
@@ -241,7 +242,6 @@ namespace MRL.SSL.AIConsole.Engine
                 #region recieve from simulator or sslvision
                 if (RecieveMode == ModelRecieveMode.SSLVision || RecieveMode == ModelRecieveMode.Simulator)
                 {
-
                     MemoryStream sharedVisionStream = null;
                     if (RecieveMode == ModelRecieveMode.Simulator)
                     {
@@ -267,10 +267,11 @@ namespace MRL.SSL.AIConsole.Engine
                             
                         }
                         Model = globalMerger.GenerateWorldModel4Cam(sslPacket, tmpCmd, GameSettings.Default.Engines[0].ReverseColor, GameSettings.Default.Engines[0].ReverseSide, TrackerType.Accurate, /*(RecieveMode == ModelRecieveMode.Simulator) ? TrackerType.Fast :*/ TrackerType.Accurate, true, statusForMerged);
+                        
                         if (Model != null)
                         {
                             //timer.Stop();
-                            //Console.WriteLine("frameRate: " + 1 / timer.Duration);
+                            //Console.WriteLine("time: " + timer.Duration* 1000);
                             //timer.Start();
                         }
                         if (Model != null)
@@ -331,7 +332,7 @@ namespace MRL.SSL.AIConsole.Engine
                     try
                     {
 
-                        sequenceNum++;
+                        //sequenceNum++;
 
                         if (Model.BallState == null || double.IsInfinity(Model.BallState.Location.X) || double.IsNaN(Model.BallState.Location.X))
                             Model.BallState.Location = new MRL.SSL.CommonClasses.MathLibrary.Position2D();
@@ -726,17 +727,19 @@ namespace MRL.SSL.AIConsole.Engine
                                     //  commands.Commands = new Dictionary<int, SingleWirelessCommand>();
                                     //if ((Model4Run0.OurRobots.ContainsKey(0) && !commands.Commands.ContainsKey(0)) || (Model4Run0.OurRobots.ContainsKey(1) && !commands.Commands.ContainsKey(1)))
                                     //    Logger.Write(LogType.Info, "0 : " + commands.Commands.ContainsKey(0) + "\t1: " + commands.Commands.ContainsKey(1));
-                                    PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
+                                   
 
+                                    PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
+                                  
                                     foreach (var item in commands.Commands.Keys.ToList())
                                     {
                                         DrawingObjects.AddObject(new StringDraw("kick: " + commands.Commands[item].KickPower, Model.OurRobots[item].Location + new Vector2D(-0.3, -0.3)), "kickPower" + item);
                                     }
                                     #endregion
                                     RobotComponentsController.PreviousCommands = commands.Commands;
-                                    if (sequenceNum == 15)
-                                        sequenceNum = 0;
-
+                                    sequenceNum += 3;
+                                    if (sequenceNum > 13)
+                                        sequenceNum = 1;
                                 }
                                 else
                                 {
@@ -823,7 +826,8 @@ namespace MRL.SSL.AIConsole.Engine
                         commands = new RobotCommands();
                     if (commands.Commands == null)
                         commands.Commands = new Dictionary<int, SingleWirelessCommand>();
-                    rettovis = commands.Commands;
+                    rettovis = 
+                        commands.Commands;
                     if (getBalls)
                         balls2send = globalMerger.ballsViwed.ToDictionary(k => k.Key, v => v.Value);
                     reciveFinished.Set();

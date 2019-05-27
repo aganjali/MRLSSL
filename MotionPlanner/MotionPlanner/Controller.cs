@@ -201,7 +201,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 TargetSpeed = PathTrajectorySpeed3(Model.OurRobots[RobotID], path, tmpTarget, stat.Speed.Size, _maxSpeed.X, _maxAcceleration.X / afactor, pathLength, idx);
                 Target = tmpTarget;
             }
-
+            DrawingObjects.AddObject(new Circle(Target, 0.08, new Pen(Brushes.Aqua, 0.01f)));
             lastPosition = Target;
             double dX = Target.X - stat.Location.X, dY = Target.Y - stat.Location.Y, v0X = stat.Speed.X,
                 v0Y = stat.Speed.Y, vfX = TargetSpeed.X, vfY = TargetSpeed.Y;
@@ -216,13 +216,13 @@ namespace MRL.SSL.Planning.MotionPlanner
             {
                 dX = 0;
 
-              //  aTunner.Check4CollisionReset(PIDType.X);
+                //  aTunner.Check4CollisionReset(PIDType.X);
             }
 
             if (Math.Abs(dY) < 0.001)
             {
                 dY = 0;
-               // aTunner.Check4CollisionReset(PIDType.Y);
+                // aTunner.Check4CollisionReset(PIDType.Y);
             }
 
             #region Min
@@ -237,7 +237,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 du *= 0.5;
                 double alpha = u + du;
                 double axMax = Math.Sin(alpha) * _maxAcceleration.X;
-                double ayMax = Math.Cos(alpha) * _maxAcceleration.X;
+                double ayMax = Math.Cos(alpha) * _maxAcceleration.Y;
 
                 vxMax = Math.Sin(alpha) * _maxSpeed.X;//Math.Max(Math.Sin(alpha) * _maxSpeed.X, Math.Abs(stat.Speed.X));
                 vyMax = Math.Cos(alpha) * _maxSpeed.Y;// Math.Max(Math.Cos(alpha) * _maxSpeed.Y, Math.Abs(stat.Speed.Y)); ;
@@ -271,9 +271,9 @@ namespace MRL.SSL.Planning.MotionPlanner
             if (Math.Abs(deltaAng) < 0.3)
             {
                 deltaAng = 0;
-               // aTunner.Check4CollisionReset(PIDType.W);
+                // aTunner.Check4CollisionReset(PIDType.W);
             }
-            
+
             deltaAng *= Math.PI / 180.0;
 
             counter = 0;
@@ -314,7 +314,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             #region Accuercy
             if ((Math.Abs(dX) < TunningDistance && path.Count <= 2) || (path.Count > 2 && pathLength < _tunningDistance))
             {
-                
+
                 inEndPhaseX = true;
                 //Vtemp.X = xTunner.Tune(dX, stat.Speed.X, 1, RobotID);
                 Vtemp.X = aTunner.Tune(dX, RobotID, PIDType.X);
@@ -322,7 +322,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 double alfa = (Vtemp.X - stat.Speed.X) * StaticVariables.FRAME_RATE;
                 if (Math.Abs(alfa) > alfamax)
                     Vtemp.X = (stat.Speed.X) + Math.Sign(alfa) * alfamax * StaticVariables.FRAME_PERIOD;
-                
+
             }
             else
             {
@@ -358,12 +358,16 @@ namespace MRL.SSL.Planning.MotionPlanner
             {
                 inEndPhaseW = true;
                 ww = wTunner.Tune(deltaAng, stat.AngularSpeed.Value, 3, RobotID);
-                
+
                 //ww = aTunner.Tune(deltaAng, RobotID, PIDType.W);
                 double alfamax = 50;
                 double alfa = (ww - stat.AngularSpeed.Value) * StaticVariables.FRAME_RATE;
                 if (Math.Abs(alfa) > alfamax)
                     ww = (stat.AngularSpeed.Value) + Math.Sign(alfa) * alfamax * StaticVariables.FRAME_PERIOD;
+                //if (RobotID == 5)
+                //{
+                //    aTunner.Drawings(PIDType.W, RobotID);
+                //}
             }
             else
             {
@@ -371,6 +375,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                     aTunner.Check4CollisionReset(PIDType.W);
 
                 inEndPhaseW = false;
+                //aTunner.Reset(PIDType.W);
                 wTunner.Reset();
             }
             //if (RobotID == 4||RobotID == 2)
@@ -391,6 +396,7 @@ namespace MRL.SSL.Planning.MotionPlanner
 
             #endregion
 
+
             #region Converting to Robot Axis
 
             Vector2D temp = new Vector2D(Vtemp.Y, Vtemp.X);
@@ -398,7 +404,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             V.Y = temp.Y * Math.Cos(Rotation) + temp.X * Math.Sin(Rotation);
             outW = -ww;
 
-            
+
 
             #endregion
 
@@ -643,7 +649,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         private Vector2D PathTrajectorySpeed3(SingleObjectState Robot, List<SingleObjectState> path, Position2D tmpTarget, double v0, double v_max, double a_max, double pl, int idx)
         {
 
-            double  v_size = 0;
+            double v_size = 0;
             if (path.Count < 3)
                 return Vector2D.Zero;
             //for (int i = 0; i < path.Count - 1; i++)
@@ -685,7 +691,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             //Vector2D v2 = path[idx].Location - tmpTarget; 
             //double alfa = v1.AngleInRadians;
             //double cos = Math.Cos(Math.Min(4 * Math.Abs(Vector2D.AngleBetweenInRadians(v1, v2)),Math.PI/2));
-      
+
             //double cos = Math.Abs(Math.Cos(Vector2D.AngleBetweenInRadians(v1, v2)));
 
             //double min = 0.99;
@@ -700,7 +706,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             int endIdx = Math.Max(i - count, 0);
             double s = 0;
             double d0 = 0;
-            for (int k = i+1; k < path.Count-1; k++)
+            for (int k = i + 1; k < path.Count - 1; k++)
             {
                 d0 += path[k].Location.DistanceFrom(path[k + 1].Location);
             }
@@ -716,12 +722,12 @@ namespace MRL.SSL.Planning.MotionPlanner
             double alfa = V.AngleInRadians;
             double cos = Math.Abs(Math.Cos(s));
             return Vector2D.FromAngleSize(alfa, cos * v_size);
-         
+
         }
         private Position2D UpdateTarget(List<SingleObjectState> path, double speed, ref int idx, ref double pathLength)
         {
 
-            double  distInterPol = 0.3, maxPathLength = 2;
+            double distInterPol = 0.3, maxPathLength = 2;
             pathLength = 0;
             for (int j = path.Count - 2; j >= 0; j--)
             {
