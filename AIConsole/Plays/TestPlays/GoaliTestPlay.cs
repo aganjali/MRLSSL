@@ -52,7 +52,9 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-            int robotId = 9;
+            int robotId = 0;
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(PathTestRole)))
+                Functions[robotId] = (eng, wmd) => GetRole<PathTestRole>(robotId).Perform(eng, wmd, robotId);
 
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(TestRole)))
             //    Functions[robotId] = (eng, wmd) => GetRole<TestRole>(robotId).GetData(Model, robotId, 0.5, 30);

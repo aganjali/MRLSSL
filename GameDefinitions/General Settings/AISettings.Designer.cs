@@ -85,7 +85,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10002")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10006")]
         public int SSLVisionPort {
             get {
                 return ((int)(this["SSLVisionPort"]));
@@ -145,7 +145,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL_SSL-PC")]
         public string AiName {
             get {
                 return ((string)(this["AiName"]));
@@ -157,7 +157,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL_SSL-PC")]
         public string VisName {
             get {
                 return ((string)(this["VisName"]));
@@ -169,7 +169,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL_SSL-PC")]
         public string SimulatorName {
             get {
                 return ((string)(this["SimulatorName"]));
@@ -181,7 +181,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL-PC")]
         public string AnalayzerName {
             get {
                 return ((string)(this["AnalayzerName"]));
