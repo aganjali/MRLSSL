@@ -28,16 +28,16 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         protected RectangularMatrix errors;
         protected int errors_n;
 
-        public virtual RectangularMatrix f(bool visionProblem, RectangularMatrix x, ref RectangularMatrix I, bool checkCollision) { return new RectangularMatrix(0, 0); }// noiseless dynamics
-        public virtual RectangularMatrix h(RectangularMatrix x) { return new RectangularMatrix(0, 0); } // noiseless observation
+        public virtual RectangularMatrix f(bool visionProblem, RectangularMatrix x, ref RectangularMatrix I, bool checkCollision) { return new RectangularMatrix(1, 1); }// noiseless dynamics
+        public virtual RectangularMatrix h(RectangularMatrix x) { return new RectangularMatrix(1,1); } // noiseless observation
 
-        public virtual RectangularMatrix Q(RectangularMatrix x) { return new RectangularMatrix(0, 0); } // Covariance of propagation noise
-        public virtual RectangularMatrix R(RectangularMatrix x) { return new RectangularMatrix(0, 0); } // Covariance of observation noise
+        public virtual RectangularMatrix Q(RectangularMatrix x) { return new RectangularMatrix(1, 1); } // Covariance of propagation noise
+        public virtual RectangularMatrix R(RectangularMatrix x) { return new RectangularMatrix(1, 1); } // Covariance of observation noise
 
-        public virtual RectangularMatrix A(bool visionProblem, RectangularMatrix x) { return new RectangularMatrix(0, 0); } // Jacobian of f w.r.t. x
-        public virtual RectangularMatrix W(RectangularMatrix x) { return new RectangularMatrix(0, 0); } // Jacobian of f w.r.t. noise
-        public virtual RectangularMatrix H(RectangularMatrix x) { return new RectangularMatrix(0, 0); } // Jacobian of h w.r.t. x
-        public virtual RectangularMatrix V(RectangularMatrix x) { return new RectangularMatrix(0, 0); } // Jacobian of h w.r.t. noise
+        public virtual RectangularMatrix A(bool visionProblem, RectangularMatrix x) { return new RectangularMatrix(1, 1); } // Jacobian of f w.r.t. x
+        public virtual RectangularMatrix W(RectangularMatrix x) { return new RectangularMatrix(1, 1); } // Jacobian of f w.r.t. noise
+        public virtual RectangularMatrix H(RectangularMatrix x) { return new RectangularMatrix(1, 1); } // Jacobian of h w.r.t. x
+        public virtual RectangularMatrix V(RectangularMatrix x) { return new RectangularMatrix(1, 1); } // Jacobian of h w.r.t. noise
         protected RectangularMatrix tmpC;
         protected RectangularMatrix tmpCV;
         public Kalman(int _state_n, int _obs_n, double _stepsize)
@@ -51,7 +51,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             Ps.Clear();
             Ps.Enqueue(new RectangularMatrix(state_n, state_n));
             Is.Clear();
-            Is.Enqueue(new RectangularMatrix(0, 0));
+            Is.Enqueue(new RectangularMatrix(1, 1));
 
             prediction_lookahead = 0;
             prediction_time = 0;
@@ -65,7 +65,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             Ps.Clear();
             Ps.Enqueue(P);
             Is.Clear();
-            Is.Enqueue(new RectangularMatrix(0, 0));
+            Is.Enqueue(new RectangularMatrix(1, 1));
             stepped_time = time = t;
         }
         //Omid : chk back and last

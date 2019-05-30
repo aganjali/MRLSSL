@@ -84,16 +84,16 @@ namespace MRL.SSL.AIConsole.Plays
                     int? mr5ID = null;
                     foreach (var item in PreviouslyAssignedRoles)
                     {
-                        if (item.GetType is MarkerRole1)
-                        { mr1 = (MarkerRole1)item.Value; mr1ID = item.Key; }
-                        if (item.GetType is MarkerRole2)
-                        { mr2 = (MarkerRole2)item.Value; mr2ID = item.Key; }
-                        if (item.GetType is MarkerRole3)
-                        { mr3 = (MarkerRole3)item.Value; mr3ID = item.Key; }
-                        if (item.GetType is MarkerRole4)
-                        { mr4 = (MarkerRole4)item.Value; mr4ID = item.Key; }
-                        if (item.GetType is MarkerRole5)
-                        { mr5 = (MarkerRole5)item.Value; mr5ID = item.Key; }
+                        //if (item.GetType is MarkerRole1)
+                        //{ mr1 = (MarkerRole1)item.Value; mr1ID = item.Key; }
+                        //if (item.GetType is MarkerRole2)
+                        //{ mr2 = (MarkerRole2)item.Value; mr2ID = item.Key; }
+                        //if (item.GetType is MarkerRole3)
+                        //{ mr3 = (MarkerRole3)item.Value; mr3ID = item.Key; }
+                        //if (item.GetType is MarkerRole4)
+                        //{ mr4 = (MarkerRole4)item.Value; mr4ID = item.Key; }
+                        //if (item.GetType is MarkerRole5)
+                        //{ mr5 = (MarkerRole5)item.Value; mr5ID = item.Key; }
                     }
                     if (Model.BallState.Speed.Size < 1)
                     {
