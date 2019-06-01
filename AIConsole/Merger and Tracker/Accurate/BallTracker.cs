@@ -36,8 +36,8 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             if (StaticVariables.BALL_PRINT_KALMAN_ERROR)
                 prediction_lookahead = StaticVariables.LATENCY_DELAY;
 
-            RectangularMatrix __V = V(new RectangularMatrix(0, 0));
-            RectangularMatrix __R = R(new RectangularMatrix(0, 0));
+            RectangularMatrix __V = V(new RectangularMatrix(1, 1));
+            RectangularMatrix __R = R(new RectangularMatrix(1, 1));
             tmpCV = __V * __R * __V.Transpose();
         }
 
@@ -158,7 +158,14 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
             // Update the x and P queue.
             RectangularMatrix x = new RectangularMatrix(4, 1);
-            RectangularMatrix P = new RectangularMatrix(4, 4, true);
+            RectangularMatrix P = new RectangularMatrix(4, 4);
+            P.Fill((i, j) =>
+            {
+                if (i == j)
+                    return 1;
+                else
+                    return 0;
+            });
             Position2D xp = occluded_position(dt);
             Vector2D xv = occluded_velocity(dt);
 
@@ -203,8 +210,14 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             if (_reset && obs.timestamp >= timestamp &&
                 obs.conf >= (StaticVariables.BALL_CONFIDENCE_THRESHOLD))
             {
-                RectangularMatrix x = new RectangularMatrix(4, 1), P = new RectangularMatrix(4, 4, true);
-
+                RectangularMatrix x = new RectangularMatrix(4, 1), P = new RectangularMatrix(4, 4);
+                P.Fill((i, j) =>
+                {
+                    if (i == j)
+                        return 1;
+                    else
+                        return 0;
+                });
                 x[0, 0] = obs.pos.X;
                 x[1, 0] = obs.pos.Y;
                 x[2, 0] = 0.0;
@@ -406,7 +419,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         public RectangularMatrix _f;
         public override RectangularMatrix f(bool visionProblem, RectangularMatrix x, ref RectangularMatrix I, bool checkCollision = true)
         {
-            I = new RectangularMatrix(0, 0);
+            I = new RectangularMatrix(1, 1);
             _f = x.Copy(); // Copy Matrix
             double _x = _f[0, 0], _y = _f[1, 0], _vx = _f[2, 0], _vy = _f[3, 0];
             double _v = Math.Sqrt(_vx * _vx + _vy * _vy);
@@ -494,7 +507,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             return _h;
         }
 
-        public RectangularMatrix _Q = new RectangularMatrix(2, 2, true);
+        public RectangularMatrix _Q = new RectangularMatrix(2, 2);
         public override RectangularMatrix Q(RectangularMatrix x)
         {
             _Q[0, 0] = _Q[1, 1] = velocity_variance(x);
@@ -506,7 +519,14 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         {
             if (_R == null || _R.RowCount == 0)
             {
-                _R = new RectangularMatrix(2, 2, true);
+                _R = new RectangularMatrix(2, 2);
+                _R.Fill((i, j) =>
+                {
+                    if (i == j)
+                        return 1;
+                    else
+                        return 0;
+                });
                 _R = StaticVariables.BALL_POSITION_VARIANCE * _R;
             }
             return _R;
@@ -517,7 +537,14 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         {
             if (_A == null || _A.RowCount == 0)
             {
-                _A = new RectangularMatrix(4, 4, true);
+                _A = new RectangularMatrix(4, 4);
+                _A.Fill((i, j) =>
+                {
+                    if (i == j)
+                        return 1;
+                    else
+                        return 0;
+                });
                 _A[0, 2] = stepsize;
                 _A[1, 3] = stepsize;
             }
@@ -536,7 +563,14 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         public override RectangularMatrix H(RectangularMatrix x)
         {
 
-            _H = new RectangularMatrix(2, 4, true);
+            _H = new RectangularMatrix(2, 4);
+            _H.Fill((i, j) =>
+            {
+                if (i == j)
+                    return 1;
+                else
+                    return 0;
+            });
             return _H;
         }
 
@@ -544,7 +578,14 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         private bool _immobile;
         public override RectangularMatrix V(RectangularMatrix x)
         {
-            _V = new RectangularMatrix(2, 2, true);
+            _V = new RectangularMatrix(2, 2);
+            _V.Fill((i, j) =>
+            {
+                if (i == j)
+                    return 1;
+                else
+                    return 0;
+            });
             return _V;
         }
 
@@ -556,7 +597,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             Ps.Clear();
             Ps.Enqueue(P);
             Is.Clear();
-            Is.Enqueue(new RectangularMatrix(0, 0));
+            Is.Enqueue(new RectangularMatrix(1, 1));
             stepped_time = time = t;
         }
         //Omid : chk back and last
@@ -565,7 +606,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             RectangularMatrix x = xs.Last();
             RectangularMatrix P = Ps.Last();
             RectangularMatrix __A = A(false, x);
-            RectangularMatrix I = new RectangularMatrix(0, 0);
+            RectangularMatrix I = new RectangularMatrix(1, 1);
             //imCheck[0, 0] = x[0, 0];
             //imCheck[1, 0] = x[1, 0];
             //imCheck[2, 0] = x[2, 0];
@@ -595,7 +636,15 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             imCheck[1, 0] = x[1, 0];
             imCheck[2, 0] = x[2, 0];
             imCheck[3, 0] = x[3, 0];
-            P = (new RectangularMatrix(P.RowCount, P.RowCount, true) - K * __H) * P;
+            var tmpM = new RectangularMatrix(P.RowCount, P.RowCount);
+            tmpM.Fill((i, j) =>
+            {
+                if (i == j)
+                    return 1;
+                else
+                    return 0;
+            });
+            P = (tmpM - K * __H) * P;
             xs.Enqueue(x); Ps.Enqueue(P); Is.Enqueue(I);
             if (prediction_lookahead > 0.0)
             {

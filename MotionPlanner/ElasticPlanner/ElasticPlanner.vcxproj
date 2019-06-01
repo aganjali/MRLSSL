@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -9,6 +9,10 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\..\GPUPlanner_10\Main.cu" />
+    <CudaCompile Include="Main.cu" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A862B0C8-E8D1-4369-89EA-D9C855C99C66}</ProjectGuid>
@@ -23,18 +27,21 @@
     </SccLocalPath>
     <SccProvider>
     </SccProvider>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -98,16 +105,6 @@
       <CodeGeneration>compute_20,sm_20</CodeGeneration>
     </CudaCompile>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="GamePlanner.h" />
-    <ClInclude Include="Smoothing.h" />
-    <ClInclude Include="Types.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <CudaCompile Include="Main.cu">
-      <FileType>CppCode</FileType>
-    </CudaCompile>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 4.2.targets" />

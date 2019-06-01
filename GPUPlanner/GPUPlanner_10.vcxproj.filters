@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{1b479fe5-6592-4ca8-bed6-eaf5648b97cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Types.cuh">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Smoothing.cuh">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePlanner.cuh">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="Main.cu" />
+  </ItemGroup>
+</Project>
