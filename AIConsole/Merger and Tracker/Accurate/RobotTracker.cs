@@ -1,5 +1,4 @@
-﻿#region old
-//using System;
+﻿//using System;
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
@@ -438,8 +437,7 @@
 //        }
 
 //    }
-//} 
-#endregion
+//}
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -484,12 +482,12 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
             if (StaticVariables.ROBOT_PRINT_KALMAN_ERROR > 0)
                 prediction_lookahead = StaticVariables.LATENCY_DELAY;
-            RectangularMatrix _W = W(new RectangularMatrix(0, 0));
-            RectangularMatrix _Q = Q(new RectangularMatrix(0, 0));
+            RectangularMatrix _W = W(new RectangularMatrix(1, 1));
+            RectangularMatrix _Q = Q(new RectangularMatrix(1, 1));
             tmpC = _W * _Q * _W.Transpose();
 
-            RectangularMatrix __V = V(new RectangularMatrix(0, 0));
-            RectangularMatrix __R = R(new RectangularMatrix(0, 0));
+            RectangularMatrix __V = V(new RectangularMatrix(1, 1));
+            RectangularMatrix __R = R(new RectangularMatrix(1, 1));
             tmpCV = __V * __R * __V.Transpose();
         }
 
@@ -532,14 +530,14 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             }
             return q2;
         }
-        RectangularMatrix _x = new RectangularMatrix(7, 1),
-                          _P = new RectangularMatrix(7, 7, true);
+        RectangularMatrix _x = new RectangularMatrix(7, 1), _P = new RectangularMatrix(7, 7);
+        
         public void observe(bool visionProblem, vraw obs, double timestamp)
         {
             bool b = xs.Count > 0 && xs.First().RowCount > 2 ;
             RectangularMatrix fx =(b)? xs.First():null;
             if (Math.Abs(timestamp - time) > StaticVariables.MaxPredictTime || (fx != null && (double.IsNaN(fx[0, 0]) || double.IsNaN(fx[1, 0]) || double.IsNaN(fx[2, 0]))))
-                reset() ;
+                reset();
             if (reset_on_obs)
             {
                 if (obs.conf <= 0.0) return;
@@ -550,7 +548,6 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 _x[4, 0] = 0.0;
                 _x[5, 0] = 0.0;
                 _x[6, 0] = 0.0;
-
 
                 _P[0, 0] = StaticVariables.ROBOT_POSITION_VARIANCE;
                 _P[1, 1] = StaticVariables.ROBOT_POSITION_VARIANCE;
@@ -600,7 +597,14 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         }
         public void reset(double timestamp, double[] state)
         {
-            RectangularMatrix x = new RectangularMatrix(7, 1), P = new RectangularMatrix(7, 7, true);
+            RectangularMatrix x = new RectangularMatrix(7, 1), P = new RectangularMatrix(7, 7);
+            P.Fill((i, j) =>
+            {
+                if (i == j)
+                    return 1;
+                else
+                    return 0;
+            });
             for (int i = 0; i < 7; i++)
             {
                 x[i, 0] = state[i];
@@ -727,7 +731,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         RectangularMatrix _f;
         public override RectangularMatrix f(bool visionProblem, RectangularMatrix x, ref RectangularMatrix I, bool checkCollision = true)
         {
-            I = new RectangularMatrix(0, 0);
+            I = new RectangularMatrix(1, 1);
             // _f = new MathMatrix(x);
             rcommand c = get_command(stepped_time);
 
@@ -872,7 +876,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
             return _h;
         }
-        RectangularMatrix _Q = new RectangularMatrix(4, 4, true);
+        RectangularMatrix _Q = new RectangularMatrix(4, 4);
         public override RectangularMatrix Q(RectangularMatrix x)
         {
 
@@ -890,7 +894,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
             if (_R == null || _R.RowCount == 0)
             {
-                _R = new RectangularMatrix(3, 3, true);
+                _R = new RectangularMatrix(3, 3);
                 _R[0, 0] = StaticVariables.ROBOT_POSITION_VARIANCE;
                 _R[1, 1] = StaticVariables.ROBOT_POSITION_VARIANCE;
                 _R[2, 2] = StaticVariables.ROBOT_THETA_VARIANCE;
@@ -899,7 +903,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             return _R;
         }
 
-        RectangularMatrix _A = new RectangularMatrix(7, 7, true);
+        RectangularMatrix _A = new RectangularMatrix(7, 7);
         public override RectangularMatrix A(bool visionProblem, RectangularMatrix x)
         {
             
@@ -907,7 +911,13 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             double vpar = x[3, 0], vperp = x[4, 0], vtheta = x[5, 0];
             double stuck = x[6, 0]; 
             double cos_theta = Math.Cos(theta), sin_theta = Math.Sin(theta);
-
+            _A.Fill((i, j) =>
+            {
+                if (i == j)
+                    return 1;
+                else
+                    return 0;
+            });
             _A[0, 2] = (1.0 - stuck) * stepsize *
               (vpar * -sin_theta + vperp * -cos_theta);
             _A[0, 3] = cos_theta * (1.0 - stuck) * stepsize;
@@ -965,7 +975,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             Ps.Clear();
             Ps.Enqueue(P);
             Is.Clear();
-            Is.Enqueue(new RectangularMatrix(0, 0));
+            Is.Enqueue(new RectangularMatrix(1, 1));
             cs.Clear();
             cs.Enqueue(new rcommand(t, new Vector3D()));
             stepped_time = time = t;
@@ -980,7 +990,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             RectangularMatrix P = Ps.Last();
             RectangularMatrix __A = A(visionProblem, x);
 
-            RectangularMatrix I = new RectangularMatrix(0, 0);
+            RectangularMatrix I = new RectangularMatrix(1, 1);
             int c = 0;
             x = f(visionProblem, x, ref I);
 
@@ -1037,7 +1047,15 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             imCheck[3, 0] = x[3, 0];
             //HiPerfTimer ht = new HiPerfTimer();
             //ht.Start();
-            P = (new RectangularMatrix(P.RowCount, P.RowCount, true) - K * __H) * P;
+            var tmpM = new RectangularMatrix(P.RowCount, P.RowCount);
+            tmpM.Fill((i, j) =>
+            {
+                if (i == j)
+                    return 1;
+                else
+                    return 0;
+            });
+            P = (tmpM - K * __H) * P;
             //ht.Stop();
             //Console.WriteLine(ht.Duration * 1000);
             // Add the current state back onto the prediction list.

@@ -57,7 +57,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             
             int idx = (int)type;
 
-          //  CharterData.AddData("err", pid[idx].Err);
+            CharterData.AddData("err", pid[idx].Err);
 
             //DrawingObjects.AddObject(new StringDraw(type.ToString() + velCoef[idx], new Position2D(1 + (double)((idx) * 0.25), -(double)(RobotID * 0.3))), RobotID + type.ToString() + "velCoef" + type);
         }
@@ -109,9 +109,24 @@ namespace MRL.SSL.Planning.MotionPlanner
                 if (velQ.Count < latency + maxFrame2Calc || posQ.Count < prediction + maxFrame2Calc)
                     return velocityCoef;
 
-                RectangularMatrix xn = new RectangularMatrix(posQ.Skip(prediction).ToArray());
-                RectangularMatrix x = new RectangularMatrix(posQ.Take(posQ.Count - prediction).ToArray());
-                RectangularMatrix vn = new RectangularMatrix(velQ.Take(velQ.Count - latency).ToArray());
+                var tmp = posQ.Skip(prediction).ToArray();
+                double[,] temp = new double[tmp.Length, 1];
+                for (int i = 0; i < tmp.Length; i++)
+                    temp[i, 0] = tmp[i];
+                RectangularMatrix xn = new RectangularMatrix(temp);
+
+                tmp = posQ.Take(posQ.Count - prediction).ToArray();
+                temp = new double[tmp.Length, 1];
+                for (int i = 0; i < tmp.Length; i++)
+                    temp[i, 0] = tmp[i];
+                RectangularMatrix x = new RectangularMatrix(temp);
+
+                tmp = velQ.Take(velQ.Count - latency).ToArray();
+                temp = new double[tmp.Length, 1];
+                for (int i = 0; i < tmp.Length; i++)
+                    temp[i, 0] = tmp[i];
+                RectangularMatrix vn = new RectangularMatrix(temp);
+
                 RectangularMatrix d = StaticVariables.FRAME_RATE * (xn - x);
 
                 RectangularMatrix alfaM = ((SquareMatrix)(vn.Transpose() * vn)).Inverse() * vn.Transpose() * d;
@@ -151,7 +166,11 @@ namespace MRL.SSL.Planning.MotionPlanner
 
                 double[] xn = posQ.Skip(prediction).ToArray();
                 double[] x = posQ.Take(posQ.Count - prediction).ToArray();
-                RectangularMatrix vn = new RectangularMatrix(velQ.Take(velQ.Count - latency).ToArray());
+                var tmp = velQ.Take(velQ.Count - latency).ToArray();
+                double [,] temp = new double[tmp.Length, 1];
+                for (int i = 0; i < tmp.Length; i++)
+                    temp[i, 0] = tmp[i];
+                RectangularMatrix vn = new RectangularMatrix(temp);
                 RectangularMatrix d = new RectangularMatrix(maxFrame2Calc, 1);
 
                 for (int i = 0; i < maxFrame2Calc; i++)
@@ -298,7 +317,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             {
                 kp = 6;// 7.3;
                 ki = 0;//0.03;
-                kd =  0.02;
+                kd =  0.001;
             }
 
             if (first)
@@ -306,13 +325,13 @@ namespace MRL.SSL.Planning.MotionPlanner
                 first = false;
                 lastE = dS;
             }
-            //if (i == 3 && RobotID == 5)
-            //    CharterData.AddData("errW", dS);
+            if (i == 3 && RobotID == 6)
+                CharterData.AddData("errW", dS);
             double d = (dS - lastE) / StaticVariables.FRAME_PERIOD;
             IdS = IdS * lambda + (dS * StaticVariables.FRAME_PERIOD);
             lastE = dS;
-            //if (i == 3 && RobotID == 6)
-            //    CharterData.AddData("err", kp * dS + IdS * ki + d * kd);
+            if (i == 3 && RobotID == 6)
+                CharterData.AddData("err", kp * dS + IdS * ki + d * kd);
             return kp * dS + IdS * ki + d * kd;
         }
         public void Reset()

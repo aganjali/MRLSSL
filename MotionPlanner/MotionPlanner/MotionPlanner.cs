@@ -723,7 +723,7 @@ namespace MRL.SSL.Planning.MotionPlanner
 
         public static void initialize()
         {
-            errtManager = new ERRTManager(8, 100, false);//TODO: change for eight
+            errtManager = new ERRTManager(8, 100, true);//TODO: change for eight
             controllers = new Dictionary<int, Controller>();
             //ControlParameters.SetParams(
             //defultParams = 
