@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 ﻿using MRL.SSL.AIConsole.Engine;
 
+=======
+>>>>>>> parent of 562e8f6... Update PathTestSkill.cs
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +18,13 @@ namespace MRL.SSL.AIConsole.Skills.TestSkill
     {
         List<SingleObjectState> LastPath = null;
         ERRT errt = new ERRT(true);
+<<<<<<< HEAD
         float[] temp;
 
         public void Perform(WorldModel Model, int RobotID)
+=======
+        public void perform(WorldModel Model, int RobotID)
+>>>>>>> parent of 562e8f6... Update PathTestSkill.cs
         {
             Position2D init = new Position2D(-2, 0.5);
             Position2D goal = new Position2D(0, .5);
@@ -31,6 +38,7 @@ namespace MRL.SSL.AIConsole.Skills.TestSkill
             errt.eventFinish.WaitOne();
             List<Position2D> ppat = new List<Position2D>();
             errt.Path.ForEach(f => ppat.Add(new Position2D(f.Location.X, f.Location.Y)));
+<<<<<<< HEAD
 
             List<Position2D> spat = new List<Position2D>();
             List<Position2D> noSmooth = new List<Position2D>();
@@ -97,6 +105,15 @@ namespace MRL.SSL.AIConsole.Skills.TestSkill
             //    Console.WriteLine("Point " + i.ToString() + ":" + "X = " + errt.Path[i].Location.X + "| Y = " + errt.Path[i].Location.Y);
             //}
             //DrawingObjects.AddObject("path_test_errt", new DrawRegion(ppat, false, false, System.Drawing.Color.Red, System.Drawing.Color.Red));
+=======
+            LastPath = errt.Path;
+            for (int i = 0; i < errt.Path.Count; i++)
+            {
+
+                Console.WriteLine("Point " + i.ToString() + ":" + "X = " + errt.Path[i].Location.X + "| Y = " + errt.Path[i].Location.Y);
+            }
+            DrawingObjects.AddObject("path_test_errt", new DrawRegion(ppat, false, false, System.Drawing.Color.Red, System.Drawing.Color.Red));
+>>>>>>> parent of 562e8f6... Update PathTestSkill.cs
         }
     }
 
