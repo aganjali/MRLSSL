@@ -20,7 +20,7 @@ namespace MRL.SSL.AIConsole.Roles
         public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID)
         {
             
-            GetSkill<PathTestSkill>().Perform(Model, robotID);
+            GetSkill<PathTestSkill>().RandomInterpolateSmoothingTest(Model, robotID);
             //PathTestSkill p = new PathTestSkill();
             //p.Perform(Model, robotID);
 
