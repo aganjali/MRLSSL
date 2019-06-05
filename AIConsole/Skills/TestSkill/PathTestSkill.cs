@@ -1,4 +1,5 @@
-﻿using MRL.SSL.CommonClasses.MathLibrary;
+﻿using MRL.SSL.AIConsole.Engine;
+using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.Planning.MotionPlanner;
 using System;
@@ -6,13 +7,13 @@ using System.Collections.Generic;
 
 namespace MRL.SSL.AIConsole.Skills.TestSkill
 {
-    class PathTestSkill
+    class PathTestSkill : SkillBase
     {
         List<SingleObjectState> LastPath = null;
         ERRT errt = new ERRT(true);
         float[] temp;
 
-        public void perform(WorldModel Model, int RobotID)
+        public void Perform(WorldModel Model, int RobotID)
         {
             Position2D init = new Position2D(-2, 0.5);
             Position2D goal = new Position2D(0, .5);
@@ -23,8 +24,8 @@ namespace MRL.SSL.AIConsole.Skills.TestSkill
             List<Position2D> ppat = new List<Position2D>();
             errt.Path.ForEach(f => ppat.Add(new Position2D(f.Location.X, f.Location.Y)));
             List<Position2D> spat = new List<Position2D>();
-            List<Position2D> oldPat = new List<Position2D>();
-            errt.Path.ForEach(f => oldPat.Add(new Position2D(f.Location.X, f.Location.Y)));
+            List<Position2D> noSmooth = new List<Position2D>();
+            errt.Path.ForEach(f => noSmooth.Add(new Position2D(f.Location.X, f.Location.Y)));
             LastPath = errt.Path;
             //for (int i = 0; i < errt.Path.Count; i++)
             var path = errt.FPath;
@@ -44,23 +45,22 @@ namespace MRL.SSL.AIConsole.Skills.TestSkill
             }
             ppat.Add(goal);
 
-            for (int i = 0; i < ppat.Count; i++)
-            {
+            //for (int i = 0; i < ppat.Count; i++)
+            //{
 
-                Console.WriteLine("Point " + i.ToString() + ":" + "X = " + errt.Path[i].Location.X + "| Y = " + errt.Path[i].Location.Y);
-                spat.Add(CalQ((float)ppat[i].X, (float)ppat[i].Y, (float)ppat[i + 1].X, (float)ppat[i + 1].Y));
-                spat.Add(CalR((float)ppat[i].X, (float)ppat[i].Y, (float)ppat[i + 1].X, (float)ppat[i + 1].Y));
+            //    Console.WriteLine("Point " + i.ToString() + ":" + "X = " + errt.Path[i].Location.X + "| Y = " + errt.Path[i].Location.Y);
+            //    spat.Add(CalQ((float)ppat[i].X, (float)ppat[i].Y, (float)ppat[i + 1].X, (float)ppat[i + 1].Y));
+            //    spat.Add(CalR((float)ppat[i].X, (float)ppat[i].Y, (float)ppat[i + 1].X, (float)ppat[i + 1].Y));
 
 
-            }
-            DrawingObjects.AddObject("path_test_errt", new DrawRegion(ppat, false, false, System.Drawing.Color.Red, System.Drawing.Color.Red));
-            spat.Add(goal);
+            //}
+            //spat.Add(goal);
 
             var a = CalQ(2, 2, 2, 6);
             var b = CalR(2, 2, 2, 6);
-            DrawingObjects.AddObject("OneSmooth", new DrawRegion(ppat, false, false, System.Drawing.Color.Red, System.Drawing.Color.Red));
-            DrawingObjects.AddObject("Raw", new DrawRegion(oldPat, false, false, System.Drawing.Color.Blue, System.Drawing.Color.Blue));
-            DrawingObjects.AddObject("SecondSmooth", new DrawRegion(spat, false, false, System.Drawing.Color.Yellow, System.Drawing.Color.Yellow));
+            DrawingObjects.AddObject("OneSmooth", new DrawRegion(ppat, false, false, System.Drawing.Color.Blue, System.Drawing.Color.Blue));
+            DrawingObjects.AddObject("Raw", new DrawRegion(noSmooth, false, false, System.Drawing.Color.Red, System.Drawing.Color.Red));
+           // DrawingObjects.AddObject("SecondSmooth", new DrawRegion(spat, false, false, System.Drawing.Color.Yellow, System.Drawing.Color.Yellow));
 
 
 

@@ -11,6 +11,7 @@ using System.IO;
 using System.Drawing;
 using Enterprise;
 using MRL.SSL.AIConsole.Skills.TestSkill;
+using MRL.SSL.AIConsole.Skills;
 
 namespace MRL.SSL.AIConsole.Roles
 {
@@ -18,7 +19,10 @@ namespace MRL.SSL.AIConsole.Roles
     {
         public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID)
         {
-            GetSkill<PathTestSkill>().perform(Model, robotID);
+            
+            GetSkill<PathTestSkill>().Perform(Model, robotID);
+            //PathTestSkill p = new PathTestSkill();
+            //p.Perform(Model, robotID);
 
         }
         public override RoleCategory QueryCategory()
