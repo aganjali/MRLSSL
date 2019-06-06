@@ -265,7 +265,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 if (LastSmoothPath.Count > 1)
                 {
                     LastSmoothPath[LastSmoothPath.Count - 1] = Init;
-                    LastSmoothPath = RandomInterpolateSmoothing(LastNotModifiedSmoothPath, obs);
+                    LastSmoothPath = RandomInterpolateSmoothing(LastSmoothPath, obs);
                 }
                 else
                     LastSmoothPath.Clear();
