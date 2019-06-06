@@ -36,7 +36,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             get { return maxPathCount; }
             set { maxPathCount = value; }
         }
-
+        HiPerfTimer h = new HiPerfTimer();
         public int MaxRRTCount
         {
             get { return maxRRTCount; }
@@ -89,15 +89,19 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
             int Count =  Math.Min(errts.Count, RobotIds.Count);
             WaitHandle[] waits = new WaitHandle[errts.Count];
-           
-            
+
+           // h.Start();
             for (int i = 0; i < errts.Count; i++)
             {
                 if (i < Count)
                 {
                     int id = RobotIds[i];
+                    if (LastGoals.ContainsKey(id) && LastGoals[id].Location.DistanceFrom(GoalStates[id].Location) > 0.01)
+                    {
+                        errts[i].LastSmoothPath = new List<SingleObjectState>();
+                    }
                     errts[i].Run(new WorldModel(Model), id, InitialStates[id], GoalStates[id], avoidballs[id], avoidzones[id], avoidOppzones[id], avoidrobots[id], (FinalPathes.ContainsKey(id) ? FinalPathes[id] : null), Types[id], StopBall);
-                   
+                 
 
                 }
                 else
@@ -110,38 +114,58 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
 
             WaitHandle.WaitAll(waits);
+            //h.Stop();
+            //Console.WriteLine((h.Duration * 1000).ToString());
 
-        
-            
-            FinalPathes.Clear();
+
+
+            FinalPathes = new Dictionary<int, List<SingleObjectState>>();
             CurrentPathWeightes.Clear();
             LastPathWeightes.Clear();
             for (int i = 0; i <  Count; i++)
             {
                 int id = RobotIds[i];
                 CurrentPathWeightes[id] = PathWeightCalculator(Model, errts[i].SmoothPath, id, errts[i].Obstacles, GoalStates[id]);
-                FinalPathes[id] = errts[i].SmoothPath;
+                
             }
 
             for (int i = Count; i < 2 * Count; i++)
             {
                 int id = RobotIds[i - Count];
-                if ((LastGoals.ContainsKey(id) && LastGoals[id].Location.DistanceFrom(GoalStates[id].Location) > 0.01)
-                    || (errts[i - Count].LastSmoothPath.Count == 0))
-                    continue;
-                LastPathWeightes[id] = PathWeightCalculator(Model, errts[i - Count].LastSmoothPath, id, errts[i - Count].Obstacles,GoalStates[id]);
-
-                if (LastPathWeightes[id] < CurrentPathWeightes[id] + 1)
+                if (errts[i - Count].LastSmoothPath.Count == 0)
                 {
-                    FinalPathes[id] = errts[i - Count].LastSmoothPath;
+                    DrawingObjects.AddObject("pathcircleeee" + id.ToString(), new Circle(Position2D.Zero, 1, new System.Drawing.Pen(System.Drawing.Color.Red, 0.1f)));
+
+                    //FinalPathes[id] = new List<SingleObjectState>();
+                    FinalPathes[id] = errts[i - Count].SmoothPath;//.ForEach(f => FinalPathes[id].Add(new SingleObjectState(f)));
                 }
+                else
+                {
+                    LastPathWeightes[id] = PathWeightCalculator(Model, errts[i - Count].LastSmoothPath, id, errts[i - Count].Obstacles, GoalStates[id]);
+
+                    if (LastPathWeightes[id] < CurrentPathWeightes[id] + 1)
+                    {
+
+                        //FinalPathes[id] = new List<SingleObjectState>();
+                        FinalPathes[id] = errts[i - Count].LastSmoothPath;//.ForEach(f => FinalPathes[id].Add(new SingleObjectState(f)));
+                    }
+                    else
+                    {
+                        //FinalPathes[id] = errts[i].SmoothPath;
+                        //FinalPathes[id] = new List<SingleObjectState>();
+                        FinalPathes[id] = errts[i - Count].SmoothPath;//.ForEach(f => FinalPathes[id].Add(new SingleObjectState(f)));
+                    }
+                }
+                
             }
             for (int i = 0; i < Count; i++)
             {
                 int id = RobotIds[i];
-                errts[i ].LastSmoothPath = FinalPathes[id];
-
-                List<Position2D> ppat = new List<Position2D>();
+                errts[i].LastSmoothPath = new List<SingleObjectState>();
+                FinalPathes[id].ForEach(f => errts[i].LastSmoothPath.Add(new SingleObjectState(f)));
+                //errts[i].LastSmoothPath = FinalPathes[id];
+                
+                List <Position2D> ppat = new List<Position2D>();
                 FinalPathes[id].ForEach(f => ppat.Add(new Position2D(f.Location.X, f.Location.Y)));
                 DrawingObjects.AddObject("path" + id.ToString(), new DrawRegion(ppat, false, false, System.Drawing.Color.Red, System.Drawing.Color.Red));
             }
@@ -213,7 +237,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             if(met)
                 return (100000 + _angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length);
             if ((Goal.Location - Path[0].Location).Size > 0.01)
-                return (50000 + _angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length);
+                return (50000 + _angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length + (Goal.Location - Path[0].Location).Size * 10);
             return (_angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length);
         }
       

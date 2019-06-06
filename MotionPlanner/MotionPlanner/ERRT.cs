@@ -18,8 +18,8 @@ namespace MRL.SSL.Planning.MotionPlanner
         private const double distanceTresh = 0.1;
         private const int numWayPoints = 30;
         private const double extendSize = 0.15;
-        public const int maxNodes = 100;
-        public const int maxNodes2Try = 500;
+        public const int maxNodes = 70;
+        public const int maxNodes2Try = 300;
         public List<SingleObjectState> Path = new List<SingleObjectState>();
         public List<SingleObjectState> SmoothPath = new List<SingleObjectState>();
         public List<SingleObjectState> LastSmoothPath = new List<SingleObjectState>();
@@ -28,7 +28,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         private SingleObjectState[] WayPoints = new SingleObjectState[numWayPoints];
         public AutoResetEvent eventR = new AutoResetEvent(false);
         public AutoResetEvent eventFinish = new AutoResetEvent(false);
-        Random rand = new Random();
+        ThreadLocal<XorShift> rand = null;
         bool useERrrt = true;
         public int AvoidBall = 1, AvoidZone = 1, AvoidOppZone = 0, AvoidRobot = 1;
         bool first = true;
@@ -63,23 +63,23 @@ namespace MRL.SSL.Planning.MotionPlanner
             get { return obstacles; }
             set { obstacles = value; }
         }
-        public SingleObjectState RandomState()
+        public SingleObjectState RandomState(int id)
         {
-            return new SingleObjectState(new Position2D(MotionPlannerParameters.FieldLength_H - MotionPlannerParameters.FieldLength * rand.NextDouble(), MotionPlannerParameters.FieldWidth_H - MotionPlannerParameters.FieldWidth * rand.NextDouble()), Vector2D.Zero, null);
+            return new SingleObjectState(new Position2D(MotionPlannerParameters.FieldLength_H - MotionPlannerParameters.FieldLength * rand.Value.randFloat(), MotionPlannerParameters.FieldWidth_H - MotionPlannerParameters.FieldWidth * rand.Value.randFloat()), Vector2D.Zero, null);
         }
-        public SingleObjectState ChoosTarget(SingleObjectState goal, SingleObjectState[] wayPoints)
+        public SingleObjectState ChoosTarget(int id, SingleObjectState goal, SingleObjectState[] wayPoints)
         {
-            double r = rand.NextDouble();
+            double r = rand.Value.randFloat();
             if (r < goalProbbality)
                 return goal;
             else if (r < (wayPointProbbality + goalProbbality) && useERrrt)
             {
-                int l = rand.Next() % numWayPoints;
+                int l = rand.Value.randInt() % numWayPoints;
                 if (wayPoints[l] != null)
                     return wayPoints[l];
 
             }
-            return RandomState();
+            return RandomState(id);
         }
         public SingleObjectState Extend(SingleObjectState Nearest, SingleObjectState target, Obstacles obs)
         {
@@ -118,7 +118,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         public void Run(bool Set, bool stopBall)
         {
             StopBall = stopBall;
-            LastSmoothPath.Clear();
+            LastSmoothPath = new List<SingleObjectState>();
             if (Set)
                 eventFinish.Set();
         }
@@ -131,14 +131,15 @@ namespace MRL.SSL.Planning.MotionPlanner
                 if (first)
                 {
                     first = false;
+                    rand = new ThreadLocal<XorShift>(() => new XorShift((uint)Guid.NewGuid().GetHashCode()));
                     eventFinish.Set();
                     eventR.WaitOne();
                 }
-                if (useERrrt && lastPath != null && lastPath.Count > 0)
+                if (/*useERrrt*/false && lastPath != null && lastPath.Count > 0)
                 {
                     for (int i = 0; i < numWayPoints; i++)
                     {
-                        int j = rand.Next() % lastPath.Count;
+                        int j = rand.Value.randInt() % lastPath.Count;
                         WayPoints[i] = lastPath[j];
                         WayPoints[i].ParentState = null;
                     }
@@ -207,7 +208,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                         while (NearestState.Location.DistanceFrom(goal.Location) > 0.1 && tree.Count < maxNodes && nodes2try < maxNodes2Try)
                         {
                             nodes2try++;
-                            target = ChoosTarget(goal, WayPoints);
+                            target = ChoosTarget(RobotID, goal, WayPoints);
                             if (tree.Count > 0)
                             {
                                 double[] d2 = { target.Location.X, target.Location.Y };
@@ -234,6 +235,11 @@ namespace MRL.SSL.Planning.MotionPlanner
 
                     if (NearestState.Location != goal.Location)
                     {
+                        //SingleObjectState sos = new SingleObjectState(NearestState.Location, Vector2D.Zero, 0)
+                        //{
+                        //    ParentState = NearestState
+                        //};
+                        //NearestState = sos;
                         goal.ParentState = NearestState;
                         NearestState = new SingleObjectState(goal)
                         {
@@ -261,14 +267,14 @@ namespace MRL.SSL.Planning.MotionPlanner
                     Path = res;
 
                 }
-                SmoothPath = RandomInterpolateSmoothing(Path, obs);
+                SmoothPath = RandomInterpolateSmoothing(Path, obs, false);
                 if (LastSmoothPath.Count > 1)
                 {
-                    LastSmoothPath[LastSmoothPath.Count - 1] = Init;
-                    LastSmoothPath = RandomInterpolateSmoothing(LastSmoothPath, obs);
+                    LastSmoothPath[LastSmoothPath.Count - 1] = new SingleObjectState(Init);
+                    LastSmoothPath = RandomInterpolateSmoothing(LastSmoothPath, obs, true);
                 }
                 else
-                    LastSmoothPath.Clear();
+                    LastSmoothPath = new List<SingleObjectState>();
 
                 obstacles = obs;
                 Finished = true;
@@ -444,52 +450,54 @@ namespace MRL.SSL.Planning.MotionPlanner
         {
             FindPathThread.Abort();
         }
-        //---------->
-        Random r = new Random(DateTime.Now.Millisecond);
+        //---------->\
         List<SingleObjectState> LastPath = null;
-        public List<SingleObjectState> RandomInterpolateSmoothing(List<SingleObjectState> path, Obstacles obs)
+        public List<SingleObjectState> RandomInterpolateSmoothing(List<SingleObjectState> path, Obstacles obs, bool justInitChanged)
         {
             List<SingleObjectState> ppat = new List<SingleObjectState>();
-            
+         //   return path;
             for (int m = 0; m < path.Count; m++)
             {
-                ppat.Add(Path[m]);
+                ppat.Add(new SingleObjectState( path[m]));
             }
-       
-            for (int i = 0; i < path.Count; i++)
+        //    return ppat;
+            //if (!obs.Meet(ppat[0], ppat[1], MotionPlannerParameters.RobotRadi)) 
             {
-                List<int> nodes = new List<int>();
-                for (int k = 0; k < ppat.Count; k++)
+                int N = (justInitChanged) ? 2 : path.Count / 4;
+                for (int i = 0; i < N; i++)
                 {
-                    nodes.Add(k);
-                }
-                if (ppat.Count == 2)
-                    break;
+                    List<int> nodes = new List<int>();
+                    for (int k = 0; k < ppat.Count; k++)
+                    {
+                        nodes.Add(k);
+                    }
+                    if (ppat.Count == 2)
+                        break;
 
-                int s = r.Next(0, nodes.Count);
-                int sKey = nodes[s];
-                SingleObjectState start = ppat[sKey];
-                nodes.RemoveAt(s);
-                if (s > 0 && s < ppat.Count - 1)
+                    int s = (justInitChanged) ? (nodes.Count - 1) : rand.Value.randInt(0, nodes.Count);
+                    int sKey = nodes[s];
+                    SingleObjectState start = ppat[sKey];
                     nodes.RemoveAt(s);
-                if (s - 1 >= 0 && nodes.Count > s - 1)
-                    nodes.RemoveAt(s - 1);
-                if (nodes.Count == 0)
-                    continue;
-                int e = r.Next(0, nodes.Count);
-                int eKey = nodes[e];
-                SingleObjectState end = ppat[eKey];
+                    if (s > 0 && s < ppat.Count - 1)
+                        nodes.RemoveAt(s);
+                    if (s - 1 >= 0 && nodes.Count > s - 1)
+                        nodes.RemoveAt(s - 1);
+                    if (nodes.Count == 0)
+                        continue;
+                    int e = rand.Value.randInt(0, nodes.Count);
+                    int eKey = nodes[e];
+                    SingleObjectState end = ppat[eKey];
 
 
-                if (!obs.Meet(start, end, MotionPlannerParameters.RobotRadi))
-                {
-                    int min = (sKey < eKey) ? sKey : eKey;
-                    int max = (sKey > eKey) ? sKey : eKey;
-                    if (max - min > 1)
-                        ppat.RemoveRange(min + 1, max - min - 1);
+                    if (!obs.Meet(start, end, MotionPlannerParameters.RobotRadi))
+                    {
+                        int min = (sKey < eKey) ? sKey : eKey;
+                        int max = (sKey > eKey) ? sKey : eKey;
+                        if (max - min > 1)
+                            ppat.RemoveRange(min + 1, max - min - 1);
+                    }
                 }
             }
-            
             return ppat;
         }
 

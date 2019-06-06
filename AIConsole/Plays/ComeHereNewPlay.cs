@@ -19,7 +19,7 @@ namespace MRL.SSL.AIConsole.Plays
             return engine.Status == GameDefinitions.GameStatus.ComeHere && !RotateParameters.TuneFlag;/* || Model.Status == GameDefinitions.GameStatus.TestDefend || Model.Status == GameStatus.TestOffend;*/
 
         }
-        comeHereMode modes = comeHereMode.linear;
+        comeHereMode modes = comeHereMode.circular;
         bool first = false;
         bool second = false;
         const double robotRadius = 0.25;

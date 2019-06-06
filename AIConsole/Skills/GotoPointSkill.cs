@@ -27,7 +27,7 @@ namespace MRL.SSL.AIConsole.Skills
 
         public SingleWirelessCommand GotoPoint(WorldModel Model, int RobotID, Position2D TargetLocation, double Teta, bool AvoidObstacles, bool AvoidBall)
         {
-            Planner.Add(RobotID, new SingleObjectState(TargetLocation, Vector2D.Zero, (float)Teta), PathType.UnSafe, AvoidBall, AvoidObstacles, IsInFieald);
+            Planner.Add(RobotID, new SingleObjectState(TargetLocation, Vector2D.Zero, (float)Teta), PathType.UnSafe, AvoidBall, AvoidObstacles, true,true);
             return SRC;
         }
 

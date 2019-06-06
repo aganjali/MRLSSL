@@ -240,6 +240,7 @@
     <Compile Include="Wireless Packets\WheelSpeedData.cs" />
     <Compile Include="Wireless Packets\WirelessPacket.cs" />
     <Compile Include="WorldModel.cs" />
+    <Compile Include="XorShift.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
