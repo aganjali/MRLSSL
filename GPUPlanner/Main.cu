@@ -27,7 +27,7 @@ extern void Start(float maxRobotAccel, float maxRobotSpeed, float ballDecel, int
 	cout << "freeMem: " << memory_free << "    totalMem: " << memory_total;
 	cuCtxDetach(cuContext);*/
 	GamePlannerInit(maxRobotAccel, maxRobotSpeed, ballDecel, DataScoreX, DataScoreY, eachRegionCount, RegionCount, maxSampleCount, sigmaX, sigmaY);
-	ElasticInit(maxPathCount, maxRRTCount);
+	//ElasticInit(maxPathCount, maxRRTCount);
 	/*cuMemGetInfo(&memory_free, &memory_total);
 	cout << "freeMem: " << memory_free << "    totalMem: " << memory_total;*/
 }
@@ -142,7 +142,7 @@ extern float ForceTree(float* Path, int* eachPathCount, int RobotCount, float* a
 extern void ShutDown()
 {
 	DisposeGamePlanner();
-	DisposeElastic();
+	//DisposeElastic();
 }
 
 

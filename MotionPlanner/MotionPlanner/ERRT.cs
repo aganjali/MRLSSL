@@ -21,6 +21,10 @@ namespace MRL.SSL.Planning.MotionPlanner
         public const int maxNodes = 100;
         public const int maxNodes2Try = 500;
         public List<SingleObjectState> Path = new List<SingleObjectState>();
+        public List<SingleObjectState> SmoothPath = new List<SingleObjectState>();
+        public List<SingleObjectState> LastSmoothPath = new List<SingleObjectState>();
+        public List<SingleObjectState> LastNotModifiedSmoothPath = new List<SingleObjectState>();
+
         private SingleObjectState[] WayPoints = new SingleObjectState[numWayPoints];
         public AutoResetEvent eventR = new AutoResetEvent(false);
         public AutoResetEvent eventFinish = new AutoResetEvent(false);
@@ -37,8 +41,6 @@ namespace MRL.SSL.Planning.MotionPlanner
         WorldModel Model;
         int RobotID = 0;
         SingleObjectState Init = new SingleObjectState();
-        Dictionary<int, bool> Intersects = new Dictionary<int, bool>();
-        List<Line> Lines = new List<Line>(); 
         SingleObjectState Goal = new SingleObjectState();
         List<SingleObjectState> lastPath = null;
         bool StopBall = false;
@@ -46,7 +48,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         public bool Start = false;
         public float Time = 0;
         KDTree tree = new KDTree(2);
-        public float[] FPath = new float[2 * maxNodes];
+       // public float[] FPath = new float[2 * maxNodes];
         public int PathCount = 0;
         public ERRT(bool useExtendedRRT)
         {
@@ -79,7 +81,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
             return RandomState();
         }
-        public SingleObjectState Extend(SingleObjectState Nearest, SingleObjectState target, Obstacles obs,List<Line> lines)
+        public SingleObjectState Extend(SingleObjectState Nearest, SingleObjectState target, Obstacles obs)
         {
             Vector2D t = target.Location - Nearest.Location;
             double l = t.Size;
@@ -87,31 +89,22 @@ namespace MRL.SSL.Planning.MotionPlanner
                 t.Scale(extendSize / l);
             Position2D tt = Nearest.Location + t;
             SingleObjectState res = new SingleObjectState(ObjectType.OurRobot, tt, Vector2D.Zero, Vector2D.Zero, null, null);
-            bool b = false;
+           
             Line li = new Line(Nearest.Location, res.Location);
-            Position2D tmp = Position2D.Zero;
-            foreach (var item in lines)
-            {
-                if (li.IntersectWithLine(item, ref tmp) && (tmp - li.Head).InnerProduct(li.Tail - li.Head) >= 0 && (tmp - li.Tail).InnerProduct(li.Head - li.Tail) >= 0 && (tmp - item.Tail).InnerProduct(item.Head - item.Tail) >= 0 && (tmp - item.Head).InnerProduct(item.Tail - item.Head) >= 0)
-                {
-                    b = true;
-                    break;
-                }
-            }
-            if (b || obs.Meet(Nearest, res, MotionPlannerParameters.RobotRadi))
+           
+            if (obs.Meet(Nearest, res, MotionPlannerParameters.RobotRadi))
                 return null;
             else
                 return res;
         }
 
-        public void Run(WorldModel model, int robotID, List<Line> lines, SingleObjectState InitileState, SingleObjectState GoalState, int avoidBall, int avoidZone, int avoidOppZone, int avoidRobot, List<SingleObjectState> LastPath, PathType Type, bool stopBall)
+        public void Run(WorldModel model, int robotID, SingleObjectState InitileState, SingleObjectState GoalState, int avoidBall, int avoidZone, int avoidOppZone, int avoidRobot, List<SingleObjectState> LastPath, PathType Type, bool stopBall)
         {
 
             Model = model;
             RobotID = robotID;
             Init = InitileState;
             Goal = GoalState;
-            Lines = lines;
             pathType = Type;
             AvoidBall = avoidBall;
             AvoidRobot = avoidRobot;
@@ -119,11 +112,13 @@ namespace MRL.SSL.Planning.MotionPlanner
             AvoidOppZone = avoidOppZone;
             lastPath = LastPath;
             StopBall = stopBall;
+         
             eventR.Set();
         }
         public void Run(bool Set, bool stopBall)
         {
             StopBall = stopBall;
+            LastSmoothPath.Clear();
             if (Set)
                 eventFinish.Set();
         }
@@ -172,33 +167,22 @@ namespace MRL.SSL.Planning.MotionPlanner
                         obs.ObstaclesList.Remove(item);
                 }
                 SingleObjectState NearestState = new SingleObjectState(init);
-                bool b = false;
-                Line li = new Line(init.Location, goal.Location);
-                Position2D tmp = Position2D.Zero;
-
-                foreach (var item in Lines)
-                {
-                    if (li.IntersectWithLine(item, ref tmp) && (tmp - li.Head).InnerProduct(li.Tail - li.Head) >= 0 && (tmp - li.Tail).InnerProduct(li.Head - li.Tail) >= 0 && (tmp - item.Tail).InnerProduct(item.Head - item.Tail) >= 0 && (tmp - item.Head).InnerProduct(item.Tail - item.Head) >= 0)
-                    {
-                        b = true;
-                        break;
-                    }
-                }
-                if (!b && !obs.Meet(init, goal, MotionPlannerParameters.RobotRadi))
+               
+                if (!obs.Meet(init, goal, MotionPlannerParameters.RobotRadi))
                 {
                     res.Add(goal);
-                    FPath[2 * PathCount] = (float)goal.Location.X;
-                    FPath[2 * PathCount + 1] = (float)goal.Location.Y;
+                    //FPath[2 * PathCount] = (float)goal.Location.X;
+                    //FPath[2 * PathCount + 1] = (float)goal.Location.Y;
                     PathCount++;
                     if (init.Location != Init.Location)
                     {
                         res.Add(init);
-                        FPath[2 * PathCount] = (float)init.Location.X;
-                        FPath[2 * PathCount + 1] = (float)init.Location.Y;
+                        //FPath[2 * PathCount] = (float)init.Location.X;
+                        //FPath[2 * PathCount + 1] = (float)init.Location.Y;
                         PathCount++;
                     }
-                    FPath[2 * PathCount] = (float)Init.Location.X;
-                    FPath[2 * PathCount + 1] = (float)Init.Location.Y;
+                    //FPath[2 * PathCount] = (float)Init.Location.X;
+                    //FPath[2 * PathCount + 1] = (float)Init.Location.Y;
                     PathCount++;
                     res.Add(Init);
                     Path = res;
@@ -229,7 +213,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                                 double[] d2 = { target.Location.X, target.Location.Y };
                                 NearestState = tree.nearest(d2);
                             }
-                            Extended = Extend(NearestState, target, obs, Lines);
+                            Extended = Extend(NearestState, target, obs);
                             if (Extended != null)
                             {
                                 if (Extended.Location == goal.Location)
@@ -251,14 +235,16 @@ namespace MRL.SSL.Planning.MotionPlanner
                     if (NearestState.Location != goal.Location)
                     {
                         goal.ParentState = NearestState;
-                        NearestState = new SingleObjectState(goal);
-                        NearestState.ParentState = goal.ParentState;
+                        NearestState = new SingleObjectState(goal)
+                        {
+                            ParentState = goal.ParentState
+                        };
                     }
 
                     while (NearestState != null)
                     {
-                        FPath[2 * PathCount] = (float)NearestState.Location.X;
-                        FPath[2 * PathCount + 1] = (float)NearestState.Location.Y;
+                        //FPath[2 * PathCount] = (float)NearestState.Location.X;
+                        //FPath[2 * PathCount + 1] = (float)NearestState.Location.Y;
                         PathCount++;
                         res.Add(NearestState);
                         NearestState = NearestState.ParentState;
@@ -267,19 +253,26 @@ namespace MRL.SSL.Planning.MotionPlanner
 
                     if (Init.Location != init.Location)
                     {
-                        FPath[2 * PathCount] = (float)Init.Location.X;
-                        FPath[2 * PathCount + 1] = (float)Init.Location.Y;
+                        //FPath[2 * PathCount] = (float)Init.Location.X;
+                        //FPath[2 * PathCount + 1] = (float)Init.Location.Y;
                         PathCount++;
                         res.Add(Init);
                     }
                     Path = res;
+
                 }
+                SmoothPath = RandomInterpolateSmoothing(Path, obs);
+                if (LastSmoothPath.Count > 1)
+                {
+                    LastSmoothPath[LastSmoothPath.Count - 1] = Init;
+                    LastSmoothPath = RandomInterpolateSmoothing(LastNotModifiedSmoothPath, obs);
+                }
+                else
+                    LastSmoothPath.Clear();
+
                 obstacles = obs;
                 Finished = true;
-                if (PathCount == 0)
-                {
-                    ;
-                }
+
                 eventFinish.Set();
                 eventR.WaitOne();
             }
@@ -451,10 +444,60 @@ namespace MRL.SSL.Planning.MotionPlanner
         {
             FindPathThread.Abort();
         }
+        //---------->
+        Random r = new Random(DateTime.Now.Millisecond);
+        List<SingleObjectState> LastPath = null;
+        public List<SingleObjectState> RandomInterpolateSmoothing(List<SingleObjectState> path, Obstacles obs)
+        {
+            List<SingleObjectState> ppat = new List<SingleObjectState>();
+            
+            for (int m = 0; m < path.Count; m++)
+            {
+                ppat.Add(Path[m]);
+            }
+       
+            for (int i = 0; i < path.Count; i++)
+            {
+                List<int> nodes = new List<int>();
+                for (int k = 0; k < ppat.Count; k++)
+                {
+                    nodes.Add(k);
+                }
+                if (ppat.Count == 2)
+                    break;
+
+                int s = r.Next(0, nodes.Count);
+                int sKey = nodes[s];
+                SingleObjectState start = ppat[sKey];
+                nodes.RemoveAt(s);
+                if (s > 0 && s < ppat.Count - 1)
+                    nodes.RemoveAt(s);
+                if (s - 1 >= 0 && nodes.Count > s - 1)
+                    nodes.RemoveAt(s - 1);
+                if (nodes.Count == 0)
+                    continue;
+                int e = r.Next(0, nodes.Count);
+                int eKey = nodes[e];
+                SingleObjectState end = ppat[eKey];
+
+
+                if (!obs.Meet(start, end, MotionPlannerParameters.RobotRadi))
+                {
+                    int min = (sKey < eKey) ? sKey : eKey;
+                    int max = (sKey > eKey) ? sKey : eKey;
+                    if (max - min > 1)
+                        ppat.RemoveRange(min + 1, max - min - 1);
+                }
+            }
+            
+            return ppat;
+        }
+
     }
+}
     public enum PathType
     {
         Safe,
         UnSafe
     }
-}
+

@@ -19,7 +19,7 @@ namespace MRL.SSL.AIConsole.Skills.TestSkill
             Position2D goal = new Position2D(0, .5);
             int N = 2;
 
-            errt.Run(Model, RobotID, new List<Line>(), new SingleObjectState(init, Vector2D.Zero, 0), new SingleObjectState(goal, Vector2D.Zero, 0), 1, 1, 1, 1, LastPath, PathType.UnSafe, false);
+            errt.Run(Model, RobotID, new SingleObjectState(init, Vector2D.Zero, 0), new SingleObjectState(goal, Vector2D.Zero, 0), 1, 1, 1, 1, LastPath, PathType.UnSafe, false);
             errt.eventFinish.WaitOne();
             List<Position2D> ppat = new List<Position2D>();
             //errt.Path.ForEach(f => ppat.Add(new Position2D(f.Location.X, f.Location.Y)));
@@ -75,7 +75,7 @@ namespace MRL.SSL.AIConsole.Skills.TestSkill
             int avoidBall = 1, avoidRobot = 1, avoidZone = 1, avoidOppZone = 1;            
             int N = 10;
 
-            errt.Run(Model, RobotID, new List<Line>(), new SingleObjectState(init, Vector2D.Zero, 0), new SingleObjectState(goal, Vector2D.Zero, 0), avoidBall, 
+            errt.Run(Model, RobotID, new SingleObjectState(init, Vector2D.Zero, 0), new SingleObjectState(goal, Vector2D.Zero, 0), avoidBall, 
                 avoidZone, avoidOppZone, avoidRobot, LastPath, PathType.UnSafe, false);
             errt.eventFinish.WaitOne();
             for (int m = 0; m < errt.Path.Count; m++)

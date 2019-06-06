@@ -34,7 +34,6 @@ namespace MRL.SSL.Planning.MotionPlanner
         private static Dictionary<int, bool> UseDefultParams = new Dictionary<int, bool>();
         private static Dictionary<int, bool> BackSensors = new Dictionary<int, bool>();
         private static Dictionary<int, bool> SpinBacks = new Dictionary<int, bool>();
-        private static Dictionary<int, bool> CutOtherPaths = new Dictionary<int, bool>();
         private static Dictionary<int, bool> ReCalculateTeta = new Dictionary<int, bool>();
 
         private static Random rand = new Random();
@@ -712,10 +711,6 @@ namespace MRL.SSL.Planning.MotionPlanner
         {
             BackSensors[RobotID] = backSensor;
         }
-        public static void AddCutOhterPath(int RobotID, bool cut)
-        {
-            CutOtherPaths[RobotID] = cut;
-        }
         public static void ChangeDefaulteParams(int RobotID, bool useDefaultparams)
         {
             UseDefultParams[RobotID] = useDefaultparams;
@@ -768,13 +763,11 @@ namespace MRL.SSL.Planning.MotionPlanner
                         }
                     }
                 }
-                if (!CutOtherPaths.ContainsKey(item))
-                    CutOtherPaths[item] = true;
             }
             Dictionary<int, List<SingleObjectState>> paths = new Dictionary<int, List<SingleObjectState>>();
             //DrawingObjects.AddObject(new Circle(), "c");
 
-            paths = errtManager.Run(Model, CutOtherPaths, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false, stopBall);
+            paths = errtManager.Run(Model, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false, stopBall);
             //paths.Add(0, new List<SingleObjectState> { new SingleObjectState(new Position2D(1, 1), new Vector2D(), 0), new SingleObjectState(new Position2D(1.0000000000000000001, .999999999999999), new Vector2D(), 0) });
             //Vector2D tmpLastV = Vector2D.Zero;
 
@@ -951,7 +944,6 @@ namespace MRL.SSL.Planning.MotionPlanner
             BackSensors = new Dictionary<int, bool>();
             SpinBacks = new Dictionary<int, bool>();
             UseDefultParams = new Dictionary<int, bool>();
-            CutOtherPaths = new Dictionary<int, bool>();
             lastVel = lastVs;
             lastOmega = lastWs;
             return robotCommand;
@@ -997,8 +989,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                             }
                         }
                     }
-                    if (!CutOtherPaths.ContainsKey(item))
-                        CutOtherPaths[item] = true;
+
                 }
                 Dictionary<int, SingleObjectState> tmpGoals = new Dictionary<int, SingleObjectState>();
                 Dictionary<int, SingleObjectState> tmpinits = new Dictionary<int, SingleObjectState>();
@@ -1023,7 +1014,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                         tmpTypes[id] = types[id];
                     }
                 }
-                Dictionary<int, List<SingleObjectState>> paths = errtManager.Run(model, CutOtherPaths, tmpinits, tmpGoals, tmpinits.Keys.ToList(), tmpTypes, tmpAballs, tmpArobots, tmpAzones, tmpAOppzones, false, stopBall);
+                Dictionary<int, List<SingleObjectState>> paths = errtManager.Run(model, tmpinits, tmpGoals, tmpinits.Keys.ToList(), tmpTypes, tmpAballs, tmpArobots, tmpAzones, tmpAOppzones, false, stopBall);
 
 
                 foreach (var item in paths.Keys)
@@ -1085,7 +1076,6 @@ namespace MRL.SSL.Planning.MotionPlanner
             commands = new Dictionary<int, SingleWirelessCommand>();
             BackSensors = new Dictionary<int, bool>();
             SpinBacks = new Dictionary<int, bool>();
-            CutOtherPaths = new Dictionary<int, bool>();
             UseDefultParams = new Dictionary<int, bool>();
 
             lastVel = lastVs;
