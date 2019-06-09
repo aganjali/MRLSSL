@@ -356,6 +356,7 @@ namespace MRL.SSL.AIConsole.Engine
                                 foreach (int key in GameSettings.Default.Engines.Keys)
                                 {
                                     _runningEngines[key].Status = GameStatusCalculator.CalculateGameStatus(_runningEngines[key].Status, ch, Model.OurMarkerISYellow);
+                                    //TODO: ballPlacement add to model
                                     statusForMerged = _runningEngines[key].Status;
                                 }
                                 _refereeCommandsLock.ExitWriteLock();

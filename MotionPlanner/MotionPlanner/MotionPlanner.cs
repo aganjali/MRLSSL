@@ -25,6 +25,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         private static Dictionary<int, PathType> types = new Dictionary<int, PathType>();
         private static Dictionary<int, CommandType> CommandTypes = new Dictionary<int, CommandType>();
         private static Dictionary<int, CommandType> LastCommandTypes = new Dictionary<int, CommandType>();
+
         private static Dictionary<int, SingleWirelessCommand> SWCommands = new Dictionary<int, SingleWirelessCommand>();
         private static Dictionary<int, kickData> kickdatas = new Dictionary<int, kickData>();
         private static Dictionary<int, Rotate> rotates = new Dictionary<int, Rotate>();
@@ -35,7 +36,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         private static Dictionary<int, bool> BackSensors = new Dictionary<int, bool>();
         private static Dictionary<int, bool> SpinBacks = new Dictionary<int, bool>();
         private static Dictionary<int, bool> ReCalculateTeta = new Dictionary<int, bool>();
-
+        private static Dictionary<int, List<Obstacle>> VirtualObstacles = new Dictionary<int, List<Obstacle>>();
         private static Random rand = new Random();
         public static ParameterList defultParams = new ParameterList();
         private static Dictionary<int, Vector2D> lastVs = new Dictionary<int, Vector2D>();
@@ -70,6 +71,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             else
                 aOppzones[RobotID] = 0;
             types[RobotID] = type;
+            VirtualObstacles[RobotID] = null;
             CommandTypes[RobotID] = CommandType.GotoPointCommand;
             if (!UseDefultParams.ContainsKey(RobotID))
                 UseDefultParams[RobotID] = true;
@@ -96,6 +98,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             else
                 aOppzones[RobotID] = 0;
             types[RobotID] = type;
+            VirtualObstacles[RobotID] = null;
             kickdatas[RobotID] = new kickData(spin);
             CommandTypes[RobotID] = CommandType.GotoPointCommand;
             if (!UseDefultParams.ContainsKey(RobotID))
@@ -122,6 +125,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 aOppzones[RobotID] = 1;
             else
                 aOppzones[RobotID] = 0;
+            VirtualObstacles[RobotID] = null;
             types[RobotID] = type;
             CommandTypes[RobotID] = CommandType.GotoPointCommand;
             if (!UseDefultParams.ContainsKey(RobotID))
@@ -146,6 +150,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 azones[RobotID] = 0;
             aOppzones[RobotID] = 0;
             types[RobotID] = type;
+            VirtualObstacles[RobotID] = null;
             CommandTypes[RobotID] = CommandType.GotoPointCommand;
             if (!UseDefultParams.ContainsKey(RobotID))
                 UseDefultParams[RobotID] = true;
@@ -174,6 +179,39 @@ namespace MRL.SSL.Planning.MotionPlanner
                 aOppzones[RobotID] = 0;
             types[RobotID] = type;
             kickdatas[RobotID] = new kickData(spin);
+            VirtualObstacles[RobotID] = null;
+            CommandTypes[RobotID] = CommandType.GotoPointCommand;
+            if (!UseDefultParams.ContainsKey(RobotID))
+                UseDefultParams[RobotID] = true;
+
+
+        }
+        public static void Add(int RobotID, Position2D finalState, double angle, PathType type, bool avoidBall, bool avoidRobots, bool avoidOurDangerZone, bool avoidOppDangerZone, bool spin, List<Obstacle> otherObs)
+        {
+            goals[RobotID] = new SingleObjectState(finalState, Vector2D.Zero, (float)angle);
+            if (avoidBall)
+                aballs[RobotID] = 1;
+            else
+                aballs[RobotID] = 0;
+
+            if (avoidRobots)
+                arobots[RobotID] = 1;
+            else
+                arobots[RobotID] = 0;
+
+            if (avoidOurDangerZone)
+                azones[RobotID] = 1;
+            else
+                azones[RobotID] = 0;
+            if (avoidOppDangerZone)
+                aOppzones[RobotID] = 1;
+            else
+                aOppzones[RobotID] = 0;
+
+            VirtualObstacles[RobotID] = otherObs;
+
+            types[RobotID] = type;
+            kickdatas[RobotID] = new kickData(spin);
             CommandTypes[RobotID] = CommandType.GotoPointCommand;
             if (!UseDefultParams.ContainsKey(RobotID))
                 UseDefultParams[RobotID] = true;
@@ -195,6 +233,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             azones[RobotID] = 1;
             aOppzones[RobotID] = 0;
             types[RobotID] = type;
+            VirtualObstacles[RobotID] = null;
             CommandTypes[RobotID] = CommandType.GotoPointCommand;
             if (!UseDefultParams.ContainsKey(RobotID))
                 UseDefultParams[RobotID] = true;
@@ -207,6 +246,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             azones[RobotID] = 1;
             aOppzones[RobotID] = 0;
             types[RobotID] = PathType.UnSafe;
+            VirtualObstacles[RobotID] = null;
             CommandTypes[RobotID] = CommandType.GotoPointCommand;
             if (!UseDefultParams.ContainsKey(RobotID))
                 UseDefultParams[RobotID] = true;
@@ -220,6 +260,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             aOppzones[RobotID] = 0;
             types[RobotID] = PathType.UnSafe;
             CommandTypes[RobotID] = CommandType.GotoPointCommand;
+            VirtualObstacles[RobotID] = null;
             if (!UseDefultParams.ContainsKey(RobotID))
                 UseDefultParams[RobotID] = true;
         }
@@ -234,6 +275,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 azones[RobotID] = 0;
             aOppzones[RobotID] = 0;
             types[RobotID] = PathType.UnSafe;
+            VirtualObstacles[RobotID] = null;
             CommandTypes[RobotID] = CommandType.GotoPointCommand;
             if (!UseDefultParams.ContainsKey(RobotID))
                 UseDefultParams[RobotID] = true;
@@ -250,6 +292,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             aOppzones[RobotID] = 0;
             types[RobotID] = PathType.UnSafe;
             CommandTypes[RobotID] = CommandType.GotoPointCommand;
+            VirtualObstacles[RobotID] = null;
             if (!UseDefultParams.ContainsKey(RobotID))
                 UseDefultParams[RobotID] = true;
         }
@@ -767,10 +810,10 @@ namespace MRL.SSL.Planning.MotionPlanner
             Dictionary<int, List<SingleObjectState>> paths = new Dictionary<int, List<SingleObjectState>>();
             //DrawingObjects.AddObject(new Circle(), "c");
             h.Start();
-            paths = errtManager.Run(Model, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false, stopBall);
-       h.Stop();
+            paths = errtManager.Run(Model, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false, stopBall, VirtualObstacles);
+            h.Stop();
             Console.WriteLine((h.Duration * 1000).ToString());
-
+           
             //paths.Add(0, new List<SingleObjectState> { new SingleObjectState(new Position2D(1, 1), new Vector2D(), 0), new SingleObjectState(new Position2D(1.0000000000000000001, .999999999999999), new Vector2D(), 0) });
             //Vector2D tmpLastV = Vector2D.Zero;
 
@@ -947,6 +990,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             BackSensors = new Dictionary<int, bool>();
             SpinBacks = new Dictionary<int, bool>();
             UseDefultParams = new Dictionary<int, bool>();
+            VirtualObstacles = new Dictionary<int, List<Obstacle>>();
             lastVel = lastVs;
             lastOmega = lastWs;
             return robotCommand;
@@ -1003,6 +1047,8 @@ namespace MRL.SSL.Planning.MotionPlanner
                 Dictionary<int, PathType> tmpTypes = new Dictionary<int, PathType>();
 
 
+                Dictionary<int, List<Obstacle>> tmpVirtualObs = new Dictionary<int, List<Obstacle>>();
+
 
                 foreach (var id in initialStates.Keys.ToList())
                 {
@@ -1015,9 +1061,10 @@ namespace MRL.SSL.Planning.MotionPlanner
                         tmpAOppzones[id] = aOppzones[id];
                         tmpAballs[id] = aballs[id];
                         tmpTypes[id] = types[id];
+                        tmpVirtualObs[id] = VirtualObstacles[id];
                     }
                 }
-                Dictionary<int, List<SingleObjectState>> paths = errtManager.Run(model, tmpinits, tmpGoals, tmpinits.Keys.ToList(), tmpTypes, tmpAballs, tmpArobots, tmpAzones, tmpAOppzones, false, stopBall);
+                Dictionary<int, List<SingleObjectState>> paths = errtManager.Run(model, tmpinits, tmpGoals, tmpinits.Keys.ToList(), tmpTypes, tmpAballs, tmpArobots, tmpAzones, tmpAOppzones, false, stopBall, tmpVirtualObs);
 
 
                 foreach (var item in paths.Keys)
@@ -1080,7 +1127,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             BackSensors = new Dictionary<int, bool>();
             SpinBacks = new Dictionary<int, bool>();
             UseDefultParams = new Dictionary<int, bool>();
-
+            VirtualObstacles = new Dictionary<int, List<Obstacle>>();
             lastVel = lastVs;
             lastOmega = lastWs;
             return robotCommand;

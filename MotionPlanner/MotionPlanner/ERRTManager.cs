@@ -56,7 +56,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             tmpfpath = new float[2* maxPathCount];
             for (int i = 0; i < _maxRRTCount; i++)
             {
-                errts.Add(new ERRT(useERRT));
+                errts.Add(new ERRT(useERRT, i));
             }
 
             finalPath = new float[2 * maxPathCount * maxRRTCount];
@@ -67,7 +67,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             //float[] obsf = new float[2];
             //ForceTree(p, pc, 1, p2, p3, 1, obsf, 1, 0.1f, 0.1f, 1);
         }
-        public Dictionary<int, List<SingleObjectState>> Run(WorldModel Model, Dictionary<int, SingleObjectState> InitialStates, Dictionary<int, SingleObjectState> GoalStates, List<int> RobotIds, Dictionary<int, PathType> Types, Dictionary<int, int> avoidballs, Dictionary<int, int> avoidrobots, Dictionary<int, int> avoidzones, Dictionary<int, int> avoidOppzones, bool useErrt, bool StopBall)
+        public Dictionary<int, List<SingleObjectState>> Run(WorldModel Model, Dictionary<int, SingleObjectState> InitialStates, Dictionary<int, SingleObjectState> GoalStates, List<int> RobotIds, Dictionary<int, PathType> Types, Dictionary<int, int> avoidballs, Dictionary<int, int> avoidrobots, Dictionary<int, int> avoidzones, Dictionary<int, int> avoidOppzones, bool useErrt, bool StopBall, Dictionary<int, List<Obstacle>> virtualObs)
         {
          
             foreach (var item in RobotIds)
@@ -85,7 +85,11 @@ namespace MRL.SSL.Planning.MotionPlanner
                 if (!Types.ContainsKey(item))
                     Types[item] = PathType.UnSafe;
 
-             
+                if (!Types.ContainsKey(item))
+                    Types[item] = PathType.UnSafe;
+                if (!virtualObs.ContainsKey(item))
+                    virtualObs[item] = null;
+
             }
             int Count =  Math.Min(errts.Count, RobotIds.Count);
             WaitHandle[] waits = new WaitHandle[errts.Count];
@@ -100,7 +104,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                     {
                         errts[i].LastSmoothPath = new List<SingleObjectState>();
                     }
-                    errts[i].Run(new WorldModel(Model), id, InitialStates[id], GoalStates[id], avoidballs[id], avoidzones[id], avoidOppzones[id], avoidrobots[id], (FinalPathes.ContainsKey(id) ? FinalPathes[id] : null), Types[id], StopBall);
+                    errts[i].Run(new WorldModel(Model), id, InitialStates[id], GoalStates[id], avoidballs[id], avoidzones[id], avoidOppzones[id], avoidrobots[id], (FinalPathes.ContainsKey(id) ? FinalPathes[id] : null), Types[id], StopBall, virtualObs[id]);
                  
 
                 }
@@ -125,6 +129,14 @@ namespace MRL.SSL.Planning.MotionPlanner
             for (int i = 0; i <  Count; i++)
             {
                 int id = RobotIds[i];
+                if (errts[i].Obstacles.Meet(errts[i].SmoothPath[0], errts[i].SmoothPath[1], MotionPlannerParameters.RobotRadi))
+                {
+                    errts[i].SmoothPath.RemoveAt(0);
+                }
+                else
+                {
+
+                }
                 CurrentPathWeightes[id] = PathWeightCalculator(Model, errts[i].SmoothPath, id, errts[i].Obstacles, GoalStates[id]);
                 
             }
@@ -148,6 +160,11 @@ namespace MRL.SSL.Planning.MotionPlanner
 
                         //FinalPathes[id] = new List<SingleObjectState>();
                         FinalPathes[id] = errts[i - Count].LastSmoothPath;//.ForEach(f => FinalPathes[id].Add(new SingleObjectState(f)));
+                        if (errts[i - Count].LastSmoothPath.Count >= 2 && errts[i - Count].LastSmoothPath[0].Location.DistanceFrom(GoalStates[id].Location) < 0.1)
+                        {
+                            errts[i - Count].Failed = false;
+                        }
+                        
                     }
                     else
                     {
@@ -168,6 +185,11 @@ namespace MRL.SSL.Planning.MotionPlanner
                 List <Position2D> ppat = new List<Position2D>();
                 FinalPathes[id].ForEach(f => ppat.Add(new Position2D(f.Location.X, f.Location.Y)));
                 DrawingObjects.AddObject("path" + id.ToString(), new DrawRegion(ppat, false, false, System.Drawing.Color.Red, System.Drawing.Color.Red));
+
+                //List<Position2D> ppat2 = new List<Position2D>();
+                //errts[i].Path.ForEach(f => ppat2.Add(new Position2D(f.Location.X, f.Location.Y)));
+                //DrawingObjects.AddObject("path2222" + id.ToString(), new DrawRegion(ppat2, false, false, System.Drawing.Color.Red, System.Drawing.Color.Blue));
+
             }
             LastGoals = new Dictionary<int, SingleObjectState>();
             for (int i = 0; i < Count; i++)

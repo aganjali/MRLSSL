@@ -12,7 +12,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
     public sealed partial class AISettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static AISettings defaultInstance = ((AISettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new AISettings())));
@@ -145,7 +145,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("DESKTOP-24NQDGO")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
         public string AiName {
             get {
                 return ((string)(this["AiName"]));
@@ -157,7 +157,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("DESKTOP-24NQDGO")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
         public string VisName {
             get {
                 return ((string)(this["VisName"]));
@@ -169,7 +169,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("DESKTOP-24NQDGO")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
         public string SimulatorName {
             get {
                 return ((string)(this["SimulatorName"]));
@@ -181,7 +181,7 @@ namespace MRL.SSL.GameDefinitions.General_Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("DESKTOP-24NQDGO")]
+        [global::System.Configuration.DefaultSettingValueAttribute("MRL-SSL3-PC")]
         public string AnalayzerName {
             get {
                 return ((string)(this["AnalayzerName"]));

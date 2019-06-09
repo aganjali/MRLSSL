@@ -171,11 +171,24 @@ namespace MRL.SSL.GameDefinitions
             }
             return pos;
         }
-
+        public static Position2D InFieldSize(Position2D pos, double margin)
+        {
+            if (!GameParameters.IsInField(pos, margin))
+            {
+                Position2D t = pos;
+                double x = t.X, y = t.Y;
+                if (Math.Abs(t.X) > Math.Abs(OurLeftCorner.X))
+                    x = t.X - Math.Sign(t.X) * (Math.Abs(t.X) - Math.Abs(OurLeftCorner.X + margin));
+                if (Math.Abs(t.Y) > Math.Abs(OurLeftCorner.Y))
+                    y = t.Y - Math.Sign(t.Y) * (Math.Abs(t.Y) - Math.Abs(OurLeftCorner.Y + margin));
+                return new Position2D(x, y);
+            }
+            return pos;
+        }
         //public static double SafeRadi(SingleObjectState target, double margin)
         //{
         //    SingleObjectState Target = new SingleObjectState(target);
-            
+
         //    if (!GameParameters.IsInField(Target.Location, 0))
         //    {
         //        Position2D t = Target.Location;

@@ -77,6 +77,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Third Party\Assemblies\KDTree.dll</HintPath>
     </Reference>
+    <Reference Include="KDTreeFast">
+      <HintPath>..\..\Third Party\Assemblies\KDTreeFast.dll</HintPath>
+    </Reference>
     <Reference Include="Meta.Numerics">
       <HintPath>..\..\Third Party\Assemblies\Meta.Numerics.dll</HintPath>
     </Reference>
@@ -111,6 +114,9 @@
       <Project>{0FF8E98C-5502-444D-B853-61D2036F2C49}</Project>
       <Name>GPUDirect</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -107,6 +107,7 @@
     <Compile Include="CommunicationController.cs" />
     <Compile Include="ControlData.cs" />
     <Compile Include="ControlParameters.cs" />
+    <Compile Include="DistributedThread.cs" />
     <Compile Include="Engines.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Extentions.cs" />

@@ -8,6 +8,7 @@ using MRL.SSL.GameDefinitions;
 using MRL.SSL.CommonClasses.Extentions;
 using MRL.SSL.GameDefinitions.General_Settings;
 using MRL.SSL.GameDefinitions.Wireless_Packets;
+using System.Threading;
 
 namespace MRL.SSL.AIConsole.Engine
 {
@@ -19,6 +20,7 @@ namespace MRL.SSL.AIConsole.Engine
         public static double OurKickSpeed = 2.5;
         static void Main(string[] args)
         {
+            
 
             MergerParameters.Load();// mamad add
             RotateParametersNew.Load();// mamad add
@@ -91,7 +93,7 @@ namespace MRL.SSL.AIConsole.Engine
             RefereeConnection rc = new RefereeConnection(StaticVariables.OldRefbox);
             while (true)
             {
-                string command = Console.ReadLine();
+                        string command = Console.ReadLine();
                 if (command.Trim().ToLower() == "exit")
                 {
                     break;

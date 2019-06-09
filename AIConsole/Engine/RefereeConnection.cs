@@ -118,7 +118,7 @@ namespace MRL.SSL.AIConsole.Engine
                     int tS = (int)(sslReferee.stage_time_left / 1000000f);
                     int bG = (sslReferee.blue != null) ? (int)sslReferee.blue.goalie : lastEvent.BlueGoalie;
                     int yG = (sslReferee.yellow != null) ? (int)sslReferee.yellow.goalie : lastEvent.YellowGoalie;
-
+                    //TODO: receive ballplacement position
                     lastEvent = new GameEvents() { BlueScore = bS, YellowScore = yS, TimeOfstage = tS, BlueGoalie = bG, YellowGoalie = yG };
 
                     EngineManager.Manager.FillEvents(lastEvent);

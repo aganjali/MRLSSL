@@ -19,7 +19,7 @@ namespace MRL.SSL.AIConsole.Plays
             return engine.Status == GameDefinitions.GameStatus.ComeHere && !RotateParameters.TuneFlag;/* || Model.Status == GameDefinitions.GameStatus.TestDefend || Model.Status == GameStatus.TestOffend;*/
 
         }
-        comeHereMode modes = comeHereMode.circular;
+        comeHereMode modes = comeHereMode.linear;
         bool first = false;
         bool second = false;
         const double robotRadius = 0.25;
@@ -63,7 +63,14 @@ namespace MRL.SSL.AIConsole.Plays
                     int k = 0;
                     foreach (var item in ours)
                     {
-                        Planner.Add(list[k], targets[k], 180, PathType.UnSafe, true, true, false, true, false);
+                        Planner.Add(list[k], targets[k], 180, PathType.UnSafe, true, true, false, true, false, new List<Obstacle>() {
+                            new Obstacle()
+                            {
+                                State = new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0),
+                                R = new Vector2D(2, 4),
+                                Type = ObstacleType.Rectangle
+                            }
+                        });
                         k++;
                     }
                     j++;

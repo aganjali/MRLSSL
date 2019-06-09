@@ -87,7 +87,24 @@ namespace MRL.SSL.Planning.MotionPlanner
             avoidRobots = 0;
             avoidOppZone = 0;
         }
-        
+        public void AddVirtualObstacle(Obstacle obs)
+        {
+            int id = -8;
+            if (obstaclesList.Count > 0)
+            {
+                id = obstaclesList.Keys.OrderBy(o => o).First();
+                if (id <= -8)
+                    id -= 1;
+            }
+            if (obs.Type == ObstacleType.Circle)
+            {
+                AddCircle(obs.State, obs.R.X, id);
+            }
+            else if(obs.Type == ObstacleType.Rectangle)
+            {
+                AddRectangle(obs.State, obs.R.X , obs.R.Y , id);
+            }
+        }
         public void AddCircle(Position2D p, double Radi, int id)
         {
             id = (id > -8) ? -8 : id;

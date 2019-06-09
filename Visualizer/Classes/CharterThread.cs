@@ -40,7 +40,7 @@ namespace MRL.SSL.Visualizer.Classes
         }
         private static void action()
         {
-            while (Event.WaitOne())
+                while (Event.WaitOne())
             {
                 if(ShowData!=null)
                     ShowData(null);

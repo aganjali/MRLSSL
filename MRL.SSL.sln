@@ -41,6 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assemblies", "Assemblies", 
 		Third Party\Assemblies\GraphSharp.Controls.dll = Third Party\Assemblies\GraphSharp.Controls.dll
 		Third Party\Assemblies\GraphSharp.dll = Third Party\Assemblies\GraphSharp.dll
 		Third Party\Assemblies\KDTree.dll = Third Party\Assemblies\KDTree.dll
+		Third Party\Assemblies\KDTreeFast.dll = Third Party\Assemblies\KDTreeFast.dll
 		Third Party\Assemblies\Logger.dll = Third Party\Assemblies\Logger.dll
 		Third Party\Assemblies\MathNet.Numerics.dll = Third Party\Assemblies\MathNet.Numerics.dll
 		Third Party\Assemblies\Meta.Numerics.dll = Third Party\Assemblies\Meta.Numerics.dll
