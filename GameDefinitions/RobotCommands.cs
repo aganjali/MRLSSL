@@ -210,9 +210,10 @@ namespace MRL.SSL.GameDefinitions
 
         int RobotNum;
         byte[] packet;
-        int[] roAddressStrart = { 5, 15, 25, 37, 47, 57, 69, 79, 89 };
-        int[] roAddressEnd = { 14, 24, 34, 46, 56, 66, 78, 88, 98 };
-
+        //int[] roAddressStrart = { 5, 15, 25, 37, 47, 57, 69, 79, 89 };
+        //int[] roAddressEnd = { 14, 24, 34, 46, 56, 66, 78, 88, 98 };
+        int[] roAddressStrart = { 6, 17, 28, 39, 50, 61, 72, 83 };
+        int[] roAddressEnd = { 16, 27, 38, 49, 60, 71, 82, 93 };
         public byte[] SendrobotPacket(byte sequenc, SingleWirelessCommand Rwc, int RobotID)
         {
             Dictionary<int, SingleWirelessCommand> listWcommands = Commands;
@@ -241,74 +242,142 @@ namespace MRL.SSL.GameDefinitions
             packet[11] = (Rwc.BackSensor) ? (byte)1 : (byte)0;//getChkSum(robotdata);
             return packet;
         }
-
-
-        public byte[] CreatPacket(byte sequenc)
+        #region jj
+        public byte[] CreatPacket(int frame)
         {
             Dictionary<int, SingleWirelessCommand> listWcommands = Commands;
             var listWcommand = listWcommands.OrderBy(o => o.Key);
             RobotNum = 0;
-            packet = new byte[102];
+            packet = new byte[97];
             packet[0] = 128;
             packet[1] = 128;
             packet[2] = 128;
-            packet[99] = 129;
-            packet[100] = 129;
-            packet[101] = 129;
+            packet[94] = 129;
+            packet[95] = 129;
+            packet[96] = 129;
 
             if (listWcommand.Count() <= 8)
             {
                 foreach (var item in listWcommand)
                 {
+                    packet[(RobotNum * 11) + 6] = (byte)(item.Key);
+                    RoPack(roAddressStrart[RobotNum], roAddressEnd[RobotNum], item.Value);
                     RobotNum++;
-                    if (RobotNum <= 3)   //first half packet
-                    {
-                        if (item.Key < 8)
-                        {
-                            packet[3] = (byte)(packet[3] | (int)Math.Pow(2, item.Key));
-                        }
-                        else if (item.Key >= 8)
-                        {
-                            int ID = item.Key - 8;
-                            packet[4] = (byte)(packet[4] | (int)Math.Pow(2, ID));
-                        }
-                        RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
-                    }
-                    else if (RobotNum > 3 && RobotNum <= 6)               //sec half packet
-                    {
-                        if (item.Key < 8)
-                        {
-                            packet[35] = (byte)(packet[35] | (int)Math.Pow(2, item.Key));
-                        }
-                        else if (item.Key >= 8)
-                        {
-                            int ID = item.Key - 8;
-                            packet[36] = (byte)(packet[36] | (int)Math.Pow(2, ID));
-                        }
-                        RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
-                    }
-                    else                 //sec half packet
-                    {
-                        if (item.Key < 8)
-                        {
-                            packet[67] = (byte)(packet[67] | (int)Math.Pow(2, item.Key));
-                        }
-                        else if (item.Key >= 8)
-                        {
-                            int ID = item.Key - 8;
-                            packet[68] = (byte)(packet[68] | (int)Math.Pow(2, ID));
-                        }
-                        RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
-                    }
-                }
-                packet[4] = (byte)(packet[4] | (sequenc << 4));
-                packet[36] = (byte)(packet[36] | ((sequenc + 1) << 4));
-                packet[68] = (byte)(packet[68] | ((sequenc + 2) << 4));
-            }
 
+                    //if (RobotNum == 1)
+                    //{
+                    //    packet[5] = (byte)(item.Key);
+                    //    RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+                    //}
+                    //else if (RobotNum == 2)
+                    //{
+                    //    packet[16] = (byte)(item.Key);
+                    //    RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+                    //}
+                    //else if (RobotNum == 3)
+                    //{
+                    //    packet[27] = (byte)(item.Key);
+                    //    RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+                    //}
+                    //else if (RobotNum == 4)
+                    //{
+                    //    packet[38] = (byte)(item.Key);
+                    //    RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+                    //}
+                    //else if (RobotNum == 5)
+                    //{
+                    //    packet[49] = (byte)(item.Key);
+                    //    RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+                    //}
+                    //else if (RobotNum == 6)
+                    //{
+                    //    packet[60] = (byte)(item.Key);
+                    //    RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+                    //}
+                    //else if (RobotNum == 7)
+                    //{
+                    //    packet[71] = (byte)(item.Key);
+                    //    RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+                    //}
+                    //else if (RobotNum == 8)
+                    //{
+                    //    packet[82] = (byte)(item.Key);
+                    //    RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+                    //}
+                }
+                packet[3] = (byte)(RobotNum);
+                packet[4] = (byte)(frame / 10);
+                packet[5] = (byte)(frame % 10);
+            }
             return packet;
         }
+        #endregion
+        //public byte[] CreatPacket(byte sequenc)
+        //{
+        //    Dictionary<int, SingleWirelessCommand> listWcommands = Commands;
+        //    var listWcommand = listWcommands.OrderBy(o => o.Key);
+        //    RobotNum = 0;
+        //    packet = new byte[102];
+        //    packet[0] = 128;
+        //    packet[1] = 128;
+        //    packet[2] = 128;
+        //    packet[99] = 129;
+        //    packet[100] = 129;
+        //    packet[101] = 129;
 
+        //    if (listWcommand.Count() <= 8)
+        //    {
+        //        foreach (var item in listWcommand)
+        //        {
+        //            RobotNum++;
+        //            if (RobotNum <= 3)   //first half packet
+        //            {
+        //                if (item.Key < 8)
+        //                {
+        //                    packet[3] = (byte)(packet[3] | (int)Math.Pow(2, item.Key));
+        //                }
+        //                else if (item.Key >= 8)
+        //                {
+        //                    int ID = item.Key - 8;
+        //                    packet[4] = (byte)(packet[4] | (int)Math.Pow(2, ID));
+        //                }
+        //                RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+        //            }
+        //            else if (RobotNum > 3 && RobotNum <= 6)               //sec half packet
+        //            {
+        //                if (item.Key < 8)
+        //                {
+        //                    packet[35] = (byte)(packet[35] | (int)Math.Pow(2, item.Key));
+        //                }
+        //                else if (item.Key >= 8)
+        //                {
+        //                    int ID = item.Key - 8;
+        //                    packet[36] = (byte)(packet[36] | (int)Math.Pow(2, ID));
+        //                }
+        //                RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+        //            }
+        //            else                 //sec half packet
+        //            {
+        //                if (item.Key < 8)
+        //                {
+        //                    packet[67] = (byte)(packet[67] | (int)Math.Pow(2, item.Key));
+        //                }
+        //                else if (item.Key >= 8)
+        //                {
+        //                    int ID = item.Key - 8;
+        //                    packet[68] = (byte)(packet[68] | (int)Math.Pow(2, ID));
+        //                }
+        //                RoPack(roAddressStrart[RobotNum - 1], roAddressEnd[RobotNum - 1], item.Value);
+        //            }
+        //        }
+        //        packet[4] = (byte)(packet[4] | (sequenc << 4));
+        //        packet[36] = (byte)(packet[36] | ((sequenc + 1) << 4));
+        //        packet[68] = (byte)(packet[68] | ((sequenc + 2) << 4));
+        //    }
+
+        //    return packet;
+        //}
+        #region ro
         private void RoPack(int start, int end, SingleWirelessCommand robotdata)
         {
             // packet[start] ~  packet[end] = robotdata==ropack
@@ -360,13 +429,72 @@ namespace MRL.SSL.GameDefinitions
                 roPack[9] = (robotdata.BackSensor) ? (byte)1 : (byte)0;//getChkSum(robotdata);
 
                 getW(robotdata.W);
-                for (int i = start, j = 0; i <= end; i++, j++)
+                for (int i = start, j = 0; i < end; i++, j++)
                 {
-                    packet[i] = roPack[j];
+                    packet[i + 1] = roPack[j];
                 }
             }
 
         }
+        #endregion
+        //private void RoPack(int start, int end, SingleWirelessCommand robotdata)
+        //{
+        //    // packet[start] ~  packet[end] = robotdata==ropack
+        //    byte[] roPack = new byte[10];
+
+        //    if (robotdata.Kind == 5)
+        //    {
+        //        roPack[0] = robotdata.Kind;
+
+        //        if (robotdata.SRC._clockWise == 1)
+        //            roPack[1] = 1;
+        //        roPack[1] |= (byte)(robotdata.SRC._teta << 1);
+        //        roPack[2] |= (byte)(((int)robotdata.SRC._vy) >> 8);
+        //        roPack[3] |= (byte)(((int)robotdata.SRC._vy) & 255);
+
+        //        roPack[4] |= (byte)((int)robotdata.SRC._omega);
+        //        int d = (int)((robotdata.SRC._omega - (int)robotdata.SRC._omega) * 2048);
+        //        roPack[4] |= (byte)((d & 0x3F) << 2);
+        //        roPack[5] = (byte)(d >> 6);
+        //        roPack[6] = (byte)robotdata.SRC.framecount;
+
+        //        roPack[7] = (byte)(Math.Min(robotdata.KickPower, 255));
+        //        roPack[8] = getMode(robotdata);
+        //        roPack[9] = (robotdata.BackSensor) ? (byte)1 : (byte)0;//getChkSum(robotdata);
+
+        //        for (int i = start, j = 0; i <= end; i++, j++)
+        //        {
+        //            packet[i] = roPack[j];
+        //        }
+        //    }
+        //    else
+        //    {
+        //        roPack[0] = robotdata.Kind;
+
+        //        byte[] Vx = getV(robotdata.Vx);
+        //        roPack[1] = Vx[0];
+        //        roPack[2] = Vx[1];
+
+        //        byte[] Vy = getV(robotdata.Vy);
+        //        roPack[3] = Vy[0];
+        //        roPack[4] = Vy[1];
+
+        //        byte[] W = getW(robotdata.W);
+        //        roPack[5] = W[0];
+        //        roPack[6] = W[1];
+
+        //        roPack[7] = (byte)(Math.Min(robotdata.KickPower, 255));
+        //        roPack[8] = getMode(robotdata);
+        //        roPack[9] = (robotdata.BackSensor) ? (byte)1 : (byte)0;//getChkSum(robotdata);
+
+        //        getW(robotdata.W);
+        //        for (int i = start, j = 0; i <= end; i++, j++)
+        //        {
+        //            packet[i] = roPack[j];
+        //        }
+        //    }
+
+        //}
 
         private byte[] getV(double V)
         {

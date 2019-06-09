@@ -141,6 +141,7 @@ namespace MRL.SSL.AIConsole.Engine
         /// initialize engines and other parameters , run send and recieve thread
         /// </summary>
         byte sequenceNum = 0;
+        int frame = 0;
         //     SaveModelData SMD = new SaveModelData(6, false);
         bool strategyChanged = false;
         bool strategyApplied = false;
@@ -264,10 +265,10 @@ namespace MRL.SSL.AIConsole.Engine
 
                         if (sslPacket != null && sslPacket.detection != null && sslPacket.detection.robots_yellow.Count > 7)
                         {
-                            
+
                         }
                         Model = globalMerger.GenerateWorldModel4Cam(sslPacket, tmpCmd, GameSettings.Default.Engines[0].ReverseColor, GameSettings.Default.Engines[0].ReverseSide, TrackerType.Accurate, /*(RecieveMode == ModelRecieveMode.Simulator) ? TrackerType.Fast :*/ TrackerType.Accurate, true, statusForMerged);
-                        
+
                         if (Model != null)
                         {
                             //timer.Stop();
@@ -356,7 +357,6 @@ namespace MRL.SSL.AIConsole.Engine
                                 foreach (int key in GameSettings.Default.Engines.Keys)
                                 {
                                     _runningEngines[key].Status = GameStatusCalculator.CalculateGameStatus(_runningEngines[key].Status, ch, Model.OurMarkerISYellow);
-                                    //TODO: ballPlacement add to model
                                     statusForMerged = _runningEngines[key].Status;
                                 }
                                 _refereeCommandsLock.ExitWriteLock();
@@ -728,10 +728,15 @@ namespace MRL.SSL.AIConsole.Engine
                                     //  commands.Commands = new Dictionary<int, SingleWirelessCommand>();
                                     //if ((Model4Run0.OurRobots.ContainsKey(0) && !commands.Commands.ContainsKey(0)) || (Model4Run0.OurRobots.ContainsKey(1) && !commands.Commands.ContainsKey(1)))
                                     //    Logger.Write(LogType.Info, "0 : " + commands.Commands.ContainsKey(0) + "\t1: " + commands.Commands.ContainsKey(1));
-                                   
 
-                                    PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
-                                  
+
+                                    // PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
+                                    PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(frame), false);
+                                    frame++;
+                                    if (frame == 60)
+                                    {
+                                        frame = 0;
+                                    }
                                     foreach (var item in commands.Commands.Keys.ToList())
                                     {
                                         DrawingObjects.AddObject(new StringDraw("kick: " + commands.Commands[item].KickPower, Model.OurRobots[item].Location + new Vector2D(-0.3, -0.3)), "kickPower" + item);
@@ -827,8 +832,7 @@ namespace MRL.SSL.AIConsole.Engine
                         commands = new RobotCommands();
                     if (commands.Commands == null)
                         commands.Commands = new Dictionary<int, SingleWirelessCommand>();
-                    rettovis = 
-                        commands.Commands;
+                    rettovis = commands.Commands;
                     if (getBalls)
                         balls2send = globalMerger.ballsViwed.ToDictionary(k => k.Key, v => v.Value);
                     reciveFinished.Set();
@@ -1020,7 +1024,7 @@ namespace MRL.SSL.AIConsole.Engine
                 if (ModelToSend != null)
                 {
                     WorldModel model = new WorldModel(ModelToSend);
-                         CharterData.AddData("Speed", (double)(model.BallState.Speed.Size));
+                    CharterData.AddData("Speed", (double)(model.BallState.Speed.Size));
                     //     CharterData.AddData("SpeedSlow", (double)(model.BallStateSlow.Speed.Size));
                     visData.Model = model;//new WorldModel(model);
                     getBalls = false;
