@@ -318,6 +318,7 @@
     <Compile Include="Skills\GotoPointSkill.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Skills\MarkSkill.cs" />
     <Compile Include="Skills\rotatedrible.cs" />
     <Compile Include="Skills\RotateWheelsSkill.cs" />
     <Compile Include="Skills\StarkCatchSkill.cs" />

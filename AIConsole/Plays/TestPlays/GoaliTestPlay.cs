@@ -38,14 +38,14 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 
         PreDefinedPath Skill = new PreDefinedPath();
         CircularMotionSkill circleSkill = new CircularMotionSkill();
-        private void findPoints(out List<Position2D> squarePoints, Position2D center, double lenght)
-        {
-            squarePoints = new List<Position2D>();
-            squarePoints.Add(new Position2D(center.X + lenght, center.Y + lenght));
-            squarePoints.Add(new Position2D(center.X + lenght, center.Y - lenght));
-            squarePoints.Add(new Position2D(center.X - lenght, center.Y - lenght));
-            squarePoints.Add(new Position2D(center.X - lenght, center.Y + lenght));
-        }
+        //private void findPoints(out List<Position2D> squarePoints, Position2D center, double lenght)
+        //{
+        //    //squarePoints = new List<Position2D>();
+        //    squarePoints.Add(new Position2D(center.X + lenght, center.Y + lenght));
+        //    squarePoints.Add(new Position2D(center.X + lenght, center.Y - lenght));
+        //    squarePoints.Add(new Position2D(center.X - lenght, center.Y - lenght));
+        //    squarePoints.Add(new Position2D(center.X - lenght, center.Y + lenght));
+        //}
         int i = 0;
 
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
@@ -58,14 +58,14 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             int robotId3 = 3;
             int robotId4 = 4;
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId0, typeof(OnLineRole1)))
-                Functions[robotId0] = (eng, wmd) => GetRole<OnLineRole1>(robotId0).Perform(engine,Model,robotId0);
+                Functions[robotId0] = (eng, wmd) => GetRole<OnLineRole1>(robotId0).Perform(engine, Model, robotId0);
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId1, typeof(OnLineRole2)))
-                Functions[robotId1] = (eng, wmd) => GetRole<OnLineRole2>(robotId1).Perform(engine,Model,robotId1);
+                Functions[robotId1] = (eng, wmd) => GetRole<OnLineRole2>(robotId1).Perform(engine, Model, robotId1);
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId3, typeof(VandersarGoalKeeperRole)))
-                Functions[robotId3] = (eng, wmd) => GetRole<VandersarGoalKeeperRole>(robotId3).Run(engine,Model, robotId3);
-            
+                Functions[robotId3] = (eng, wmd) => GetRole<VandersarGoalKeeperRole>(robotId3).Run(engine, Model, robotId3);
+
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId4, typeof(GerrardRole)))
                 Functions[robotId4] = (eng, wmd) => GetRole<GerrardRole>(robotId4).Perform(eng, wmd, robotId4);
             //int robotId = 0;
@@ -231,9 +231,9 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             //GetRole<NewCutBallTestRole>(5).Reset();
         }
 
-        enum state
-        {
+        //enum state
+        //{
 
-        }
+        //}
     }
 }
