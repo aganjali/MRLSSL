@@ -52,9 +52,42 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-            int robotId = 0;
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(PathTestRole)))
-                Functions[robotId] = (eng, wmd) => GetRole<PathTestRole>(robotId).Perform(eng, wmd, robotId);
+            int robotId0 = 0;
+            int robotId1 = 1;
+            int robotId3 = 3;
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId0, typeof(OnLineRole1)))
+                Functions[robotId0] = (eng, wmd) => GetRole<OnLineRole1>(robotId0).Perform(engine,Model,robotId0);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId1, typeof(OnLineRole2)))
+                Functions[robotId1] = (eng, wmd) => GetRole<OnLineRole2>(robotId1).Perform(engine,Model,robotId1);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId3, typeof(VandersarGoalKeeperRole)))
+                Functions[robotId3] = (eng, wmd) => GetRole<VandersarGoalKeeperRole>(robotId3).Run(engine,Model, robotId3);
+            //int robotId = 0;
+            //var geo = Model.SslVisionGeometry;
+            //var packet = Model.CurrentVisionPacket5;
+            //int camId = 5;
+            //if (geo != null)
+            //{
+            //    var camGeo = geo.calib.Where(w => w.camera_id == camId).FirstOrDefault();
+            //    if (camGeo != null)
+            //    {
+            //        camGeo.
+            //        Quater q = new Quater(camGeo.q1, camGeo.q2, camGeo.q2, camGeo.q0);
+            //        MathMatrix rotation = q.GetMatrix();
+            //        if (packet != null && packet.detection != null && packet.detection.balls.Count > 0)
+            //        {
+
+            //            var ball = packet.detection.balls[0];
+            //            var pixel = new MathMatrix(3, 1);
+           
+
+            //        }
+            //    }
+            //}
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(PathTestRole)))
+            //    Functions[robotId] = (eng, wmd) => GetRole<PathTestRole>(robotId).Perform(eng, wmd, robotId);
 
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(TestRole)))
             //    Functions[robotId] = (eng, wmd) => GetRole<TestRole>(robotId).GetData(Model, robotId, 0.5, 30);

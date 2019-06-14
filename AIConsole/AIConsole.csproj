@@ -193,11 +193,15 @@
     <Compile Include="Roles\Defending\Normal\NormalMarkerRole1.cs" />
     <Compile Include="Roles\Defending\Normal\NormalMarkerRole2.cs" />
     <Compile Include="Roles\Defending\Normal\RightBackMarkerNormalRole.cs" />
+    <Compile Include="Roles\Defending\OnLineRoles\DefenseInterval.cs" />
+    <Compile Include="Roles\Defending\OnLineRoles\OnLineRole1.cs" />
+    <Compile Include="Roles\Defending\OnLineRoles\OnLineRole2.cs" />
     <Compile Include="Roles\Defending\StaticDefender3.cs" />
     <Compile Include="Roles\GoalieRole\BusGoalieCornerRole.cs" />
     <Compile Include="Roles\GoalieRole\GoalieCornerRole.cs" />
     <Compile Include="Roles\GoalieRole\NewStaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\StaticGoalieRole.cs" />
+    <Compile Include="Roles\GoalieRole\VandersarGoalKeeperRole.cs" />
     <Compile Include="Roles\Stop\RotationalStopCover.cs" />
     <Compile Include="Roles\Stop\StopRole4.cs" />
     <Compile Include="Roles\Stop\StopRole5.cs" />

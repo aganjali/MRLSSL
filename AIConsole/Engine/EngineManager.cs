@@ -357,6 +357,7 @@ namespace MRL.SSL.AIConsole.Engine
                                 foreach (int key in GameSettings.Default.Engines.Keys)
                                 {
                                     _runningEngines[key].Status = GameStatusCalculator.CalculateGameStatus(_runningEngines[key].Status, ch, Model.OurMarkerISYellow);
+                                    //TODO: ballPlacement add to model
                                     statusForMerged = _runningEngines[key].Status;
                                 }
                                 _refereeCommandsLock.ExitWriteLock();
@@ -381,6 +382,14 @@ namespace MRL.SSL.AIConsole.Engine
                                     //localModel = globalMerger.StartAnalyse(sslPacket, GameSettings.Default.Engines[key].ReverseColor, GameSettings.Default.Engines[key].ReverseSide, statusForMerged);
                                     localModel0.CurrentVisionPacket0 = globalModel.CurrentVisionPacket0;
                                     localModel0.CurrentVisionPacket1 = globalModel.CurrentVisionPacket1;
+                                    localModel0.CurrentVisionPacket2 = globalModel.CurrentVisionPacket2;
+                                    localModel0.CurrentVisionPacket3 = globalModel.CurrentVisionPacket3;
+                                    localModel0.CurrentVisionPacket4 = globalModel.CurrentVisionPacket4;
+                                    localModel0.CurrentVisionPacket5 = globalModel.CurrentVisionPacket5;
+                                    localModel0.CurrentVisionPacket6 = globalModel.CurrentVisionPacket6;
+                                    localModel0.CurrentVisionPacket7 = globalModel.CurrentVisionPacket7;
+                                    localModel0.SslVisionGeometry = globalModel.SslVisionGeometry;
+
                                     localModel0.SequenceNumber = sequenceNum;
 
                                     localModel0.OurRobots = new Dictionary<int, SingleObjectState>();

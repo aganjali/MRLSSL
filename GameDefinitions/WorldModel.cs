@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 using MRL.SSL.CommonClasses.MathLibrary;
+using messages_robocup_ssl_geometry;
 
 namespace MRL.SSL.GameDefinitions
 {
@@ -42,6 +43,14 @@ namespace MRL.SSL.GameDefinitions
             GlobalKickingProhibited = Model.GlobalKickingProhibited;
             CurrentVisionPacket0 = Model.CurrentVisionPacket0;
             CurrentVisionPacket1 = Model.CurrentVisionPacket1;
+            CurrentVisionPacket2 = Model.CurrentVisionPacket2;
+            CurrentVisionPacket3 = Model.CurrentVisionPacket3;
+            CurrentVisionPacket4 = Model.CurrentVisionPacket4;
+            CurrentVisionPacket5 = Model.CurrentVisionPacket5;
+            CurrentVisionPacket6 = Model.CurrentVisionPacket6;
+            CurrentVisionPacket7 = Model.CurrentVisionPacket7;
+            SslVisionGeometry = Model.SslVisionGeometry;
+
             FirstBallCatchingPoint = Model.FirstBallCatchingPoint;
             predictedBall = new PredictedStates();
             predictedBall.states = Model.predictedBall.states.Clone();
@@ -49,6 +58,7 @@ namespace MRL.SSL.GameDefinitions
             lastW = Model.lastW.ToDictionary(p => p.Key, q => q.Value);
             BallFallingPoint = Model.BallFallingPoint;
             IsChip = Model.IsChip;
+            
         }
         public void SetMarkingStates(WorldModel Model)
         {
@@ -93,6 +103,7 @@ namespace MRL.SSL.GameDefinitions
             set { predictedBall = value; }
         }
 
+        public SSL_GeometryData SslVisionGeometry { get; set; }
     }
     public class PredictedStates
     {

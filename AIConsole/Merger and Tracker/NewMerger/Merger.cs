@@ -7,6 +7,7 @@ using messages_robocup_ssl_detection;
 using MRL.SSL.GameDefinitions;
 using System.Drawing;
 using MRL.SSL.CommonClasses.MathLibrary;
+using messages_robocup_ssl_geometry;
 
 namespace MRL.SSL.AIConsole.Merger_and_Tracker
 {
@@ -25,6 +26,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         public SSL_WrapperPacket sslpacketCam5 = new SSL_WrapperPacket();
         public SSL_WrapperPacket sslpacketCam6 = new SSL_WrapperPacket();
         public SSL_WrapperPacket sslpacketCam7 = new SSL_WrapperPacket();
+        public SSL_GeometryData sslVisionGeometry = null;
         private bool oneCamera = false;
         private uint cameraID = 0;
         public uint CameraID
