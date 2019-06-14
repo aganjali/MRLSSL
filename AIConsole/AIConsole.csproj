@@ -193,7 +193,6 @@
     <Compile Include="Roles\Defending\Normal\NormalMarkerRole1.cs" />
     <Compile Include="Roles\Defending\Normal\NormalMarkerRole2.cs" />
     <Compile Include="Roles\Defending\Normal\RightBackMarkerNormalRole.cs" />
-    <Compile Include="Roles\Defending\OnLineRoles\DefenseInterval.cs" />
     <Compile Include="Roles\Defending\OnLineRoles\OnLineRole1.cs" />
     <Compile Include="Roles\Defending\OnLineRoles\OnLineRole2.cs" />
     <Compile Include="Roles\Defending\StaticDefender3.cs" />
