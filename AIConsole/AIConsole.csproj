@@ -197,6 +197,7 @@
     <Compile Include="Roles\Defending\OnLineRoles\OnLineRole1.cs" />
     <Compile Include="Roles\Defending\OnLineRoles\OnLineRole2.cs" />
     <Compile Include="Roles\Defending\StaticDefender3.cs" />
+    <Compile Include="Roles\GerrardRole.cs" />
     <Compile Include="Roles\GoalieRole\BusGoalieCornerRole.cs" />
     <Compile Include="Roles\GoalieRole\GoalieCornerRole.cs" />
     <Compile Include="Roles\GoalieRole\NewStaticGoalieRole.cs" />
@@ -321,6 +322,7 @@
     <Compile Include="Skills\rotatedrible.cs" />
     <Compile Include="Skills\RotateWheelsSkill.cs" />
     <Compile Include="Skills\StarkCatchSkill.cs" />
+    <Compile Include="Skills\TestSkill\GerrardTestSkill.cs" />
     <Compile Include="Skills\TestSkill\NewCutBallSkill.cs" />
     <Compile Include="Skills\TestSkill\PathTestSkill.cs" />
     <Compile Include="Skills\TestSkill\PreDefinedPath.cs" />
