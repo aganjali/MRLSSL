@@ -259,7 +259,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             if(met)
                 return (100000 + _angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length);
             if ((Goal.Location - Path[0].Location).Size > 0.01)
-                return (50000 + _angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length + (Goal.Location - Path[0].Location).Size * 10);
+                return (50000 + _angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length + (Goal.Location - Path[0].Location).Size * 100);
             return (_angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length);
         }
       

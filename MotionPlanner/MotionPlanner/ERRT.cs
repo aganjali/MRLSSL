@@ -8,6 +8,7 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using KdTreeFast;
 using System.Threading;
 using KdTreeFast.Math;
+using System.Drawing;
 
 namespace MRL.SSL.Planning.MotionPlanner
 {
@@ -356,35 +357,46 @@ namespace MRL.SSL.Planning.MotionPlanner
             if (GameParameters.IsInDangerousZone(Goal.Location, false, 0.1, out distanceInDangerZone, out d1) && AvoidZone != 0)
             {
                 Goal.Location.X = Math.Min(GameParameters.OurGoalCenter.X , Goal.Location.X);
-                Goal2OurVec = Goal.Location - GameParameters.OurGoalCenter;
-                //double safeR = GameParameters.SafeRadi(Goal, MotionPlannerParameters.DangerZoneW - GameParameters.DefenceareaRadii + 0.01);
-                Goal2OurVec.NormalizeTo(d1 + MotionPlannerParameters.GoalExtendFromDangerZoneMargin); 
-                Goal.Location = Goal2OurVec + GameParameters.OurGoalCenter;
+                //Goal2OurVec = Goal.Location - GameParameters.OurGoalCenter;
+                ////double safeR = GameParameters.SafeRadi(Goal, MotionPlannerParameters.DangerZoneW - GameParameters.DefenceareaRadii + 0.01);
+                //Goal2OurVec.NormalizeTo(d1 + MotionPlannerParameters.GoalExtendFromDangerZoneMargin); 
+                //Goal.Location = Goal2OurVec + GameParameters.OurGoalCenter;
+                Goal.Location = GameParameters.IntersectWithDangerZone(Goal.Location, true, MotionPlannerParameters.GoalExtendFromDangerZoneMargin);
+
                 goalinzone = true;
             }
             Vector2D Init2OurVec = new Vector2D() ;
             if (GameParameters.IsInDangerousZone(Init.Location, false, 0.1, out distanceInDangerZone, out d2) && AvoidZone != 0)
             {
                 Init.Location.X = Math.Min(GameParameters.OurGoalCenter.X, Init.Location.X);
-                Init2OurVec = Init.Location - GameParameters.OurGoalCenter;
-                Init2OurVec.NormalizeTo(d2 + 0.16);
-                Init.Location = Init2OurVec + GameParameters.OurGoalCenter;
+                //Init2OurVec = Init.Location - GameParameters.OurGoalCenter;
+                //Init2OurVec.NormalizeTo(d2 + 0.16);
+                //Init.Location = Init2OurVec + GameParameters.OurGoalCenter;
+                Init.Location = GameParameters.IntersectWithDangerZone(Init.Location, true, 0.16);
+
             }
 
-            if (GameParameters.IsInDangerousZone(Goal.Location, true, 0.25, out distanceInDangerZone, out d1) && AvoidOppZone != 0)
+            if (GameParameters.IsInDangerousZone(Goal.Location, true, 0.35, out distanceInDangerZone, out d1) && AvoidOppZone != 0)
             {
+                DrawingObjects.AddObject(new Circle(Goal.Location, 0.1, new System.Drawing.Pen(Color.Aqua, 0.1f)), "goalbeforex");
+
+               
                 Goal.Location.X = Math.Max(GameParameters.OppGoalCenter.X , Goal.Location.X);
-                Vector2D oppGoal2OurVec = Goal.Location - GameParameters.OppGoalCenter;
-                oppGoal2OurVec.NormalizeTo(d1 + 0.26);
-                Goal.Location = oppGoal2OurVec + GameParameters.OppGoalCenter;
+                //Vector2D oppGoal2OurVec = Goal.Location - GameParameters.OppGoalCenter;
+                //oppGoal2OurVec.NormalizeTo(d1 + 0.26);
+                //Goal.Location = oppGoal2OurVec + GameParameters.OppGoalCenter;
+                Goal.Location = GameParameters.IntersectWithDangerZone(Goal.Location, false, 0.36);
+                DrawingObjects.AddObject(new Circle(Goal.Location, 0.1, new System.Drawing.Pen(Color.Beige, 0.1f)), "goalafterex");
+
             }
-            
-            if (GameParameters.IsInDangerousZone(Init.Location, true, 0.25, out distanceInDangerZone, out d2) && AvoidOppZone != 0)
+
+            if (GameParameters.IsInDangerousZone(Init.Location, true, 0.35, out distanceInDangerZone, out d2) && AvoidOppZone != 0)
             {
                 Init.Location.X = Math.Max(GameParameters.OppGoalCenter.X , Init.Location.X);
-                Vector2D oppInit2OurVec = Init.Location - GameParameters.OppGoalCenter;
-                oppInit2OurVec.NormalizeTo(d2 + 0.26);
-                Init.Location = oppInit2OurVec + GameParameters.OppGoalCenter;
+                Init.Location = GameParameters.IntersectWithDangerZone(Init.Location, false, 0.36);
+                //Vector2D oppInit2OurVec = Init.Location - GameParameters.OppGoalCenter;
+                //oppInit2OurVec.NormalizeTo(d2 + 0.26);
+                //Init.Location = oppInit2OurVec + GameParameters.OppGoalCenter;
             }
             mustRemoveObstacles = new List<int>();
        
@@ -517,20 +529,24 @@ namespace MRL.SSL.Planning.MotionPlanner
         }
         //---------->\
         List<SingleObjectState> LastPath = null;
-        
+
 
         public List<SingleObjectState> RandomInterpolateSmoothing(List<SingleObjectState> path, Obstacles obs, bool justInitChanged)
         {
             List<SingleObjectState> ppat = new List<SingleObjectState>();
-         //   return path;
+            //   return path;
             for (int m = 0; m < path.Count; m++)
             {
-                ppat.Add(new SingleObjectState( path[m]));
+                ppat.Add(new SingleObjectState(path[m]));
             }
+            if (ppat.Count <= 2)
+                return ppat;
+            bool ji = justInitChanged;
+
             //    return ppat;
-         //   if (!obs.Meet(ppat[0], ppat[1], MotionPlannerParameters.RobotRadi))
+            //   if (!obs.Meet(ppat[0], ppat[1], MotionPlannerParameters.RobotRadi))
             {
-                int N = (justInitChanged) ? 3 : path.Count / 2;// 4;
+                int N = (ji) ? 6 : path.Count / 2;// 4;
                 for (int i = 0; i < N; i++)
                 {
                     List<int> nodes = new List<int>();
@@ -541,7 +557,8 @@ namespace MRL.SSL.Planning.MotionPlanner
                     if (ppat.Count == 2)
                         break;
 
-                    int s = (justInitChanged) ? (nodes.Count - 1) : rand.Value.randInt(0, nodes.Count);
+                    int s = (ji) ? (nodes.Count - 1) : rand.Value.randInt(0, nodes.Count);
+                    ji = false;
                     int sKey = nodes[s];
                     SingleObjectState start = ppat[sKey];
                     nodes.RemoveAt(s);
@@ -564,14 +581,73 @@ namespace MRL.SSL.Planning.MotionPlanner
                             ppat.RemoveRange(min + 1, max - min - 1);
                     }
                 }
+
             }
-          //  else
-         //   {
-          //  }
+            //if (!justInitChanged)
+            //{
+            //    Position2D r = CalR(ppat[0].Location.X, ppat[0].Location.Y, ppat[1].Location.X, ppat[1].Location.Y);
+            //    Position2D q;
+            //    List<SmoothData> extera = new List<SmoothData>();
+            //    for (int i = 1; i < ppat.Count - 1; i++)
+            //    {
+            //        q = CalQ(ppat[i].Location.X, ppat[i].Location.Y, ppat[i + 1].Location.X, ppat[i + 1].Location.Y);
+            //        if (!obs.Meet(new SingleObjectState(r, Vector2D.Zero, 0), new SingleObjectState(q, Vector2D.Zero, 0), MotionPlannerParameters.RobotRadi))
+            //        {
+
+            //            extera.Add(new SmoothData()
+            //            {
+            //                rIndex = i,
+            //                qIndex = i + 1,
+            //                Q = new SingleObjectState(q, Vector2D.Zero, 0),
+            //                R = new SingleObjectState(r, Vector2D.Zero, 0)
+            //            });
+
+
+            //        }
+
+            //        r = CalR(ppat[i].Location.X, ppat[i].Location.Y, ppat[i + 1].Location.X, ppat[i + 1].Location.Y);
+            //    }
+            //    foreach (var item in extera)
+            //    {
+            //        ppat.RemoveAt(item.rIndex);
+            //        ppat.Insert(item.rIndex, item.R);
+            //        DrawingObjects.AddObject(new Circle(item.R.Location, 0.1, new System.Drawing.Pen(Color.Aqua, 0.01f)), "rrrr" + item.rIndex);
+
+            //        ppat.Insert(item.qIndex, item.Q);
+            //        DrawingObjects.AddObject(new Circle(item.Q.Location, 0.1, new System.Drawing.Pen(Color.Beige, 0.01f)), "qqqq" + item.qIndex);
+
+            //    }
+            //}
+            //  else
+            //   {
+            //  }
             return ppat;
         }
+        Position2D CalQ(double x1, double y1, double x2, double y2)
+        {
+            x1 = 3f / 4f * x1;
+            y1 = 3f / 4f * y1;
+            x2 = 1f / 4f * x2;
+            y2 = 1f / 4f * y2;
+            return new Position2D((x1 + x2), (y1 + y2));
 
+        }
+        Position2D CalR(double x1, double y1, double x2, double y2)
+        {
+            x1 = 1f / 4f * x1;
+            y1 = 1f / 4f * y1;
+            x2 = 3f / 4f * x2;
+            y2 = 3f / 4f * y2;
+            return new Position2D((x1 + x2), (y1 + y2));
+
+        }
+        class SmoothData{
+            public SingleObjectState Q;
+                public SingleObjectState R;
+            public int rIndex, qIndex;
+        }
     }
+
 }
     public enum PathType
     {
