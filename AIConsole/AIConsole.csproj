@@ -22,6 +22,7 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -34,7 +35,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -155,6 +155,7 @@
     <Compile Include="Plays\Opp\OppKickOffPlay.cs" />
     <Compile Include="Plays\Opp\OppPenaltyPlay.cs" />
     <Compile Include="Plays\Opp\OppNewPenaltyPlay.cs" />
+    <Compile Include="Plays\Our\AUNormalPlay.cs" />
     <Compile Include="Plays\Our\NewNormal8Robot.cs" />
     <Compile Include="Plays\Our\NewPassingNormalPlay.cs" />
     <Compile Include="Plays\Our\NewNormalPlay.cs" />

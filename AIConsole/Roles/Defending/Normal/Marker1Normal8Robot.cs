@@ -9,7 +9,7 @@ using MRL.SSL.Planning.MotionPlanner;
 using System.Drawing;
 using MRL.SSL.Planning.GamePlanner.Types;
 
-namespace MRL.SSL.AIConsole.Roles.Defending.Normal
+namespace MRL.SSL.AIConsole.Roles
 {
     class
         Marker1Normal8Robot : RoleBase

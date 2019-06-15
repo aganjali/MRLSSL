@@ -56,6 +56,9 @@ namespace MRL.SSL.AIConsole.Engine
             public static Position2D NormalAttackerMarker1Target = Position2D.Zero;
             public static Position2D NormalAttackerMarker2Target = Position2D.Zero;
             public static double ST3Cost = 100;
+            public static int OnlineRole1Id = -1;
+            public static int OnlineRole2Id = -1;
+
             //new
 
             public static bool AttackerMode = false;
