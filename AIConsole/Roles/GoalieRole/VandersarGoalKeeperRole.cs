@@ -60,7 +60,7 @@ namespace MRL.SSL.AIConsole.Roles
             }
             Vector2D extended = Model.BallState.Location - GameParameters.OurGoalCenter;
             extended = extended.GetNormalizeToCopy(0);
-            
+
             Planner.Add(RobotID, posToGo + extended, angle, PathType.UnSafe, false, false, false, true, false);
         }
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
@@ -98,7 +98,54 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 CurrentState = (int)state.ballTarget;
             }
+            CurrentState = stateCalculator(CurrentState, Model);
 
+
+        }
+
+        private int stateCalculator(int currentState,WorldModel model)
+        {
+            int ret = 0;
+            int def1ID= NormalSharedState.CommonInfo.OnlineRole1Id;
+            int def2ID = NormalSharedState.CommonInfo.OnlineRole2Id;
+            Position2D def1Target = NormalSharedState.CommonInfo.OnlineRole1Target;
+            Position2D def2Target = NormalSharedState.CommonInfo.OnlineRole2Target;
+            const double fullyTresh = 0.04;
+            const double almostTresh = 0.10;
+            bool DefsFullyArrived = model.OurRobots[def1ID].Location.DistanceFrom(def1Target) < fullyTresh;
+            bool DefsAlmostArrived = model.OurRobots[def1ID].Location.DistanceFrom(def1Target) < almostTresh;
+            bool def1missing = def1ID == -1;
+            bool def2missing = def2ID == -1;
+            bool setBallTarget = true ;
+            if (currentState == (int)state.ballTarget)
+            {
+                if (true)
+                {
+
+                }
+                else if (true)
+                {
+
+                }
+                else if (true)
+                {
+
+                }
+            }
+            else if (currentState == (int)state.robotTarget)
+            {
+
+            }
+            else if (currentState == (int)state.inPenaltyArea)
+            {
+
+            
+            }
+            else if (currentState == (int)state.dive)
+            {
+
+            }
+            return ret;
         }
 
         public override double CalculateCost(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
@@ -199,7 +246,7 @@ namespace MRL.SSL.AIConsole.Roles
             }
             return Math.Max(0, visibleWidth);
         }
-        
+
         double Map(double value, double fromSource, double toSource, double fromTarget, double toTarget)
         {
             return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;

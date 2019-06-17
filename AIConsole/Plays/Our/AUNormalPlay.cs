@@ -20,8 +20,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
         const double markRegion = -3.5;
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
-            //return false;
-            return Status == GameDefinitions.GameStatus.Normal;
+            return false;
+            //return Status == GameDefinitions.GameStatus.Normal;
         }
 
         public override PlayResult QueryPlayResult()
@@ -171,17 +171,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 {
                     Robotfield = 2;
                 }
-                if (Model.Opponents[oppAttackerIds[i]].Location.Y >= -0.18 && Model.Opponents[oppAttackerIds[i]].Location.Y <= 0.18)
-                {
-                    if (Robotfield == 1)
-                    {
-                        Robotfield = 1;
-                    }
-                    if (Robotfield == 2)
-                    {
-                        Robotfield = 2;
-                    }
-                }
+                
             }
             //if (field.HasValue && Robotfield.HasValue)
             //{

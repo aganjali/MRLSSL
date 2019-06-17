@@ -3956,7 +3956,32 @@ namespace MRL.SSL.AIConsole.Engine
 
             return res;
         }
+        public static Dictionary<int,Position2D> OverlapSolvingOnlinRoles( Position2D zeroKeyPos , Position2D firstKeyPos)
+        {
+            Dictionary<int, Position2D> ret = new Dictionary<int, Position2D>();
+            double robotRedius = RobotParameters.OurRobotParams.Diameter / 2;
+            Circle c1 = new Circle(zeroKeyPos, robotRedius);
+            Circle c2 = new Circle(firstKeyPos, robotRedius);
 
+            if (c1.Intersect(c2).Count <0)
+            {
+                ret.Add(0,zeroKeyPos);
+                ret.Add(1,firstKeyPos);
+            }
+            else
+            {
+                Position2D middlePos = Position2D.Interpolate(zeroKeyPos, firstKeyPos, 0.5);
+                Vector2D extend = (firstKeyPos - zeroKeyPos).GetNormalizeToCopy(robotRedius + 0.01);
+                ret.Add(0, middlePos + extend);
+                ret.Add(1, middlePos - extend);
+                DrawingObjects.AddObject(middlePos);
+                DrawingObjects.AddObject(new Circle(ret[0],robotRedius,new Pen(Color.Red,0.01f)));
+                DrawingObjects.AddObject(new Circle(ret[1], robotRedius, new Pen(Color.Red, 0.01f)));
+
+                // create vecor and add to positions and add positions into ret dict
+            }
+            return ret;
+        }
         public static List<DefenceInfo> OverLapSolving(WorldModel Model, List<DefenceInfo> infos, Dictionary<Type, bool> FirstCornertoRemove, Dictionary<Type, bool> MarkerstoRemove, Dictionary<Type, bool> OtherstoRemove, bool OverLapIFirstDefender, bool OverLapIMarkerDefender, bool OverLapOthers)
         {
             List<DefenceInfo> res = new List<DefenceInfo>();
@@ -5212,7 +5237,7 @@ namespace MRL.SSL.AIConsole.Engine
                     {
                         Position2D t = GameParameters.OurGoalRight + new Vector2D(0, RobotParameters.OurRobotParams.Diameter / 1.5);
                         p.Teta = (p.DefenderPosition.Value - t).AngleInDegrees;
-                    }
+                    } 
 
                 }
             });
