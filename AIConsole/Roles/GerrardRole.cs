@@ -16,7 +16,7 @@ namespace MRL.SSL.AIConsole.Roles
         Position2D p;
         public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID)
         {
-             if (CurrentState == (int)PlayMode.Attack)
+            if (CurrentState == (int)PlayMode.Attack)
             {
 
                 p = new Position2D(6 + (Model.BallState.Location.X), (Model.BallState.Location.Y) / 3);
@@ -33,7 +33,8 @@ namespace MRL.SSL.AIConsole.Roles
                 Dictionary<int, SingleObjectState> leftOpps = Model.Opponents.Where(o => o.Value.Location.X > 0 && o.Value.Location.Y > 0).ToDictionary(o => o.Key, o => o.Value);
 
                 Position2D target = new Position2D();
-                if (Model.BallState.Location.Y <= 0 ) //Gerrard position when ball is in right side
+
+                if (Model.BallState.Location.Y <= 0) //Gerrard position when ball is in right side
                 {
                     if (leftOpps.Count > 0)
                     {
@@ -47,13 +48,18 @@ namespace MRL.SSL.AIConsole.Roles
                                 minDistId = item.Key;
                             }
                         }
-                        target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID , Model , Model.Opponents[minDistId].Location);
-                      
+                        if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
+                        {
+                            target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
+                        }
+                        else
+                            target = Model.OurRobots[robotID].Location;
+
                     }
                     else
                     {
                         target = MarkSkill.ourDangerZoneLeftCorner + (MarkSkill.ourDangerZoneLeftCorner - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);
-                        
+
                     }
                 }
                 else//Gerrard position when ball is in left side
@@ -70,8 +76,12 @@ namespace MRL.SSL.AIConsole.Roles
                                 minDistId = item.Key;
                             }
                         }
-                        target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
-                        
+                        if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
+                        {
+                            target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
+                        }
+                        else
+                            target = Model.OurRobots[robotID].Location;
                     }
                     else
                     {
@@ -80,6 +90,8 @@ namespace MRL.SSL.AIConsole.Roles
                         //target = Position2D.Zero + (Position2D.Zero - new Position2D(2,2));
                     }
                 }
+
+
 
                 Planner.Add(robotID, target, 180, PathType.UnSafe, false, true, true, true, false);
 
@@ -120,6 +132,17 @@ namespace MRL.SSL.AIConsole.Roles
         {
             return new List<RoleBase>() { new PathTestRole() };
         }
+
+        public bool IsInOurDangerZone(Position2D pos)
+        {
+            if (pos.X > 4.8 && pos.Y < 1.2 && pos.Y > -1.2)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
         enum PlayMode
         {
             Attack,

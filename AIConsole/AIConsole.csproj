@@ -196,6 +196,7 @@
     <Compile Include="Roles\Defending\Normal\RightBackMarkerNormalRole.cs" />
     <Compile Include="Roles\Defending\OnLineRoles\OnLineRole1.cs" />
     <Compile Include="Roles\Defending\OnLineRoles\OnLineRole2.cs" />
+    <Compile Include="Roles\Defending\OnLineRoles\OnLineRole3.cs" />
     <Compile Include="Roles\Defending\StaticDefender3.cs" />
     <Compile Include="Roles\GerrardRole.cs" />
     <Compile Include="Roles\GoalieRole\BusGoalieCornerRole.cs" />

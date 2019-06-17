@@ -33,28 +33,38 @@ namespace MRL.SSL.AIConsole.Roles
             Line left = new Line(GameParameters.OurGoalLeft.Extend(0, 0), Model.BallState.Location);
             Line intevallToBall = new Line(Position2D.Interpolate(right.Head, left.Head, 0.5), Model.BallState.Location);
 
-            double distToPenaltyAreaThreshold = 0.07;
-            Line l1 = new Line(GameParameters.OurGoalLeft.Extend(-1.30, 0.70 + distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(0, 0.70 + distToPenaltyAreaThreshold));
-            Line l2 = new Line(GameParameters.OurGoalRight.Extend(-1.30 - distToPenaltyAreaThreshold, -0.7 - distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(-1.30 - distToPenaltyAreaThreshold, 0.7 + distToPenaltyAreaThreshold));
-            Line l3 = new Line(GameParameters.OurGoalRight.Extend(-1.30 - distToPenaltyAreaThreshold, -0.7 - distToPenaltyAreaThreshold), GameParameters.OurGoalRight.Extend(0, -0.70 - distToPenaltyAreaThreshold));
+            double distToPenaltyAreaThreshold = 0.00;
+            Line l1 = new Line(GameParameters.OurGoalLeft.Extend(-1.20, 0.60 + distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(0, 0.60 + distToPenaltyAreaThreshold));
+            Line l2 = new Line(GameParameters.OurGoalRight.Extend(-1.20 - distToPenaltyAreaThreshold, -0.6 - distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(-1.20 - distToPenaltyAreaThreshold, 0.6 + distToPenaltyAreaThreshold));
+            Line l3 = new Line(GameParameters.OurGoalRight.Extend(-1.20 - distToPenaltyAreaThreshold, -0.6 - distToPenaltyAreaThreshold), GameParameters.OurGoalRight.Extend(0, -0.60 - distToPenaltyAreaThreshold));
             Position2D centerRobot = new Position2D();
             DrawingObjects.AddObject(intevallToBall);
-            if (GameParameters.SegmentIntersect(intevallToBall, l1).HasValue)
+            if (GameParameters.SegmentIntersect(intevallToBall, l1).HasValue) // left
             {
-
-                centerRobot = l1.IntersectWithLine(intevallToBall).Value;
-                DrawingObjects.AddObject(l1);
+                if (!IsInOurDangerZone(Model.BallState.Location))
+                {
+                    centerRobot = l1.IntersectWithLine(intevallToBall).Value;
+                }
 
             }
-            else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue)
+            else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
             {
-                centerRobot = l3.IntersectWithLine(intevallToBall).Value;
-                DrawingObjects.AddObject(l3);
+                if (!IsInOurDangerZone(Model.BallState.Location))
+                {
+                    centerRobot = l3.IntersectWithLine(intevallToBall).Value;
+                }
+
             }
-            else
+            else //top
             {
-                centerRobot = l2.IntersectWithLine(intevallToBall).Value;
-                DrawingObjects.AddObject(l2);
+                if (!IsInOurDangerZone(Model.BallState.Location))
+                {
+                    centerRobot = l2.IntersectWithLine(intevallToBall).Value;
+                }
+                else
+                    centerRobot = Model.OurRobots[RobotID].Location;
+
+
             }
 
 
@@ -110,21 +120,21 @@ namespace MRL.SSL.AIConsole.Roles
                     CurState += " ballFrame < robotFrame";
                     pos = centerRobot;
                     //pos = centerRobot + v;
-                    DrawingObjects.AddObject(new Line(Model.OurRobots[RobotID].Location, pos, new Pen(Color.White, 0.1f)), "Asgharnane");
+                    //DrawingObjects.AddObject(new Line(Model.OurRobots[RobotID].Location, pos, new Pen(Color.White, 0.1f)), "Asgharnane");
                 }
                 else
                 {
                     CurState += " ballFrame > robotFrame";
                     pos = centerRobot;
                     //pos = centerRobot + v;
-                    DrawingObjects.AddObject(new Line(Model.OurRobots[RobotID].Location, pos, new Pen(Color.White, 0.1f)), "Asgharnane");
+                    //DrawingObjects.AddObject(new Line(Model.OurRobots[RobotID].Location, pos, new Pen(Color.White, 0.1f)), "Asgharnane");
 
 
                 }
             }
             var angle = (Model.BallState.Location - pos).AngleInDegrees;
             Planner.Add(RobotID, pos, angle, PathType.UnSafe, false, true, true, true, false);
-            DrawingObjects.AddObject(new StringDraw(CurState, new Position2D(3, 0)));
+           // DrawingObjects.AddObject(new StringDraw(CurState, new Position2D(3, 0)));
             //Planner.Add(RobotID, pos, 0, false);
         }
 
@@ -165,6 +175,15 @@ namespace MRL.SSL.AIConsole.Roles
         public override bool Evaluate(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
             return true;
+        }
+        public bool IsInOurDangerZone(Position2D pos)
+        {
+            if (pos.X > 4.8 && pos.Y < 1.2 && pos.Y > -1.2)
+            {
+                return true;
+            }
+            else
+                return false;
         }
     }
 }
