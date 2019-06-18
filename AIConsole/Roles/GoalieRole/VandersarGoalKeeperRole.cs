@@ -39,7 +39,7 @@ namespace MRL.SSL.AIConsole.Roles
                 //NormalSharedState
                 Position2D p1 = Position2D.Interpolate(GameParameters.OurGoalLeft, GameParameters.OurGoalRight, 0.33);
                 Position2D p2 = Position2D.Interpolate(GameParameters.OurGoalRight, GameParameters.OurGoalLeft, 0.33);
-                double eXx = GetVisibleWidth(Model, new List<Position2D> { Model.OurRobots[6].Location, Model.OurRobots[7].Location }, new Line(p1, p2));
+                double eXx = GetVisibleWidth(Model, new List<Position2D> { Model.OurRobots[0].Location, Model.OurRobots[1].Location }, new Line(p1, p2));
                 double distanceFromCenter = Map(eXx, 0, 0.4, 0.1, 0.6);
                 DrawingObjects.AddObject(new StringDraw(eXx.ToString(), new Position2D(2.7, 0)));
                 posToGo = GameParameters.OurGoalCenter + (Model.BallState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(distanceFromCenter);
@@ -98,7 +98,7 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 CurrentState = (int)state.ballTarget;
             }
-            CurrentState = stateCalculator(CurrentState, Model);
+            //CurrentState = stateCalculator(CurrentState, Model);
 
 
         }

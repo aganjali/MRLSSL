@@ -943,6 +943,8 @@ namespace MRL.SSL.Planning.MotionPlanner
                 if (!Model.OurRobots.ContainsKey(item))
                 {
                     mustRemove.Add(item);
+                    if (!lastVelResetCounter.ContainsKey(item))
+                        lastVelResetCounter[item] = 0;
                     lastVelResetCounter[item]++;
                 }
                 else

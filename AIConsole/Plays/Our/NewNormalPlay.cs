@@ -15,8 +15,8 @@ namespace MRL.SSL.AIConsole.Plays
         bool Debug = true;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
-            //return false;
-            return Status == GameDefinitions.GameStatus.Normal;
+            return false;
+           // return Status == GameDefinitions.GameStatus.Normal;
         }
         public SingleObjectState ballState = new SingleObjectState();
         public SingleObjectState ballStateFast = new SingleObjectState();

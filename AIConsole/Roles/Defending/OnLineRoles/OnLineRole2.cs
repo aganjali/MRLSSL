@@ -41,7 +41,7 @@ namespace MRL.SSL.AIConsole.Roles
             DrawingObjects.AddObject(intevallToBall);
             if (GameParameters.SegmentIntersect(intevallToBall, l1).HasValue) // left
             {
-                if (!IsInOurDangerZone(Model.BallState.Location))
+                if (!IsInOurDangerZone(Model.BallState.Location) && GameParameters.IsInField(Model.BallState.Location, 0))
                 {
                     centerRobot = l1.IntersectWithLine(intevallToBall).Value;
                 }
@@ -49,7 +49,7 @@ namespace MRL.SSL.AIConsole.Roles
             }
             else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
             {
-                if (!IsInOurDangerZone(Model.BallState.Location))
+                if (!IsInOurDangerZone(Model.BallState.Location) && GameParameters.IsInField(Model.BallState.Location, 0))
                 {
                     centerRobot = l3.IntersectWithLine(intevallToBall).Value;
                 }
@@ -57,7 +57,7 @@ namespace MRL.SSL.AIConsole.Roles
             }
             else //top
             {
-                if (!IsInOurDangerZone(Model.BallState.Location))
+                if (!IsInOurDangerZone(Model.BallState.Location) && GameParameters.IsInField(Model.BallState.Location, 0))
                 {
                     centerRobot = l2.IntersectWithLine(intevallToBall).Value;
                 }
@@ -133,6 +133,7 @@ namespace MRL.SSL.AIConsole.Roles
                 }
             }
             var angle = (Model.BallState.Location - pos).AngleInDegrees;
+            NormalSharedState.CommonInfo.OnlineRole2Target = pos;
             Planner.Add(RobotID, pos, angle, PathType.UnSafe, false, true, true, true, false);
            // DrawingObjects.AddObject(new StringDraw(CurState, new Position2D(3, 0)));
             //Planner.Add(RobotID, pos, 0, false);
@@ -164,12 +165,14 @@ namespace MRL.SSL.AIConsole.Roles
 
         public override double CalculateCost(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return RobotID;
+            return Model.OurRobots[RobotID].Location.DistanceFrom(NormalSharedState.CommonInfo.OnlineRole2Target);
+
         }
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return new List<RoleBase>();
+            return new List<RoleBase>() { new OnLineRole1(), new OnLineRole2(), new OnLineRole3() };
+
         }
 
         public override bool Evaluate(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
