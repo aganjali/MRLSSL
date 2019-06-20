@@ -47,6 +47,8 @@ namespace MRL.SSL.AIConsole.Roles
                     centerRobot = l1.IntersectWithLine(intevallToBall).Value;
                     lastCenterRobot = centerRobot;
                 }
+                else
+                    centerRobot = Model.OurRobots[RobotID].Location;
 
             }
             else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
@@ -56,6 +58,8 @@ namespace MRL.SSL.AIConsole.Roles
                     centerRobot = l3.IntersectWithLine(intevallToBall).Value;
                     lastCenterRobot = centerRobot;
                 }
+                else
+                    centerRobot = Model.OurRobots[RobotID].Location;
 
             }
             else //top

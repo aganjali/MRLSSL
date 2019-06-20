@@ -53,10 +53,10 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
 
-            int robotId0 = 9;
-            int robotId1 = 10;
+            int robotId0 = 0;
+            int robotId1 = 1;
             int robotId3 = 6;
-            int robotId4 = 6;
+            int robotId4 = 2;
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId0, typeof(OnLineRole1)))
                 Functions[robotId0] = (eng, wmd) => GetRole<OnLineRole1>(robotId0).Perform(engine, Model, robotId0);
 
@@ -67,8 +67,8 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
                 Functions[robotId3] = (eng, wmd) => GetRole<VandersarGoalKeeperRole>(robotId3).Run(engine, Model, robotId3);
 
 
-            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId4, typeof(OnLineRole3)))
-            //    Functions[robotId4] = (eng, wmd) => GetRole<OnLineRole3>(robotId4).Perform(engine, Model, robotId4);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId4, typeof(OnLineRole3)))
+                Functions[robotId4] = (eng, wmd) => GetRole<OnLineRole3>(robotId4).Perform(engine, Model, robotId4);
 
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId4, typeof(GerrardRole)))
             //    Functions[robotId4] = (eng, wmd) => GetRole<GerrardRole>(robotId4).Perform(eng, wmd, robotId4);

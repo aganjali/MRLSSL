@@ -45,6 +45,8 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     centerRobot = l1.IntersectWithLine(intevallToBall).Value;
                 }
+                else
+                    centerRobot = Model.OurRobots[RobotID].Location;
 
             }
             else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
@@ -53,6 +55,8 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     centerRobot = l3.IntersectWithLine(intevallToBall).Value;
                 }
+                else
+                    centerRobot = Model.OurRobots[RobotID].Location;
 
             }
             else //top
@@ -65,6 +69,10 @@ namespace MRL.SSL.AIConsole.Roles
                     centerRobot = Model.OurRobots[RobotID].Location;
 
 
+            }
+            if (OppFreeKickDefenceUtils.BallKickedToGoal(engine, Model))
+            {
+                centerRobot = OppFreeKickDefenceUtils.Dive(engine, Model, RobotID);
             }
             var angle = (Model.BallState.Location - centerRobot).AngleInDegrees;
             NormalSharedState.CommonInfo.OnlineRole3Target = centerRobot;

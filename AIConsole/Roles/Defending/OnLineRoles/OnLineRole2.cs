@@ -11,6 +11,7 @@ using System.IO;
 using System.Drawing;
 using Enterprise;
 
+
 namespace MRL.SSL.AIConsole.Roles
 {
     class OnLineRole2 : RoleBase
@@ -45,6 +46,8 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     centerRobot = l1.IntersectWithLine(intevallToBall).Value;
                 }
+                else
+                    centerRobot = Model.OurRobots[RobotID].Location;
 
             }
             else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
@@ -53,6 +56,8 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     centerRobot = l3.IntersectWithLine(intevallToBall).Value;
                 }
+                else
+                    centerRobot = Model.OurRobots[RobotID].Location;
 
             }
             else //top
@@ -132,6 +137,7 @@ namespace MRL.SSL.AIConsole.Roles
 
                 }
             }
+
             var angle = (Model.BallState.Location - pos).AngleInDegrees;
             NormalSharedState.CommonInfo.OnlineRole2Target = pos;
             Planner.Add(RobotID, pos, angle, PathType.UnSafe, false, true, true, true, false);
