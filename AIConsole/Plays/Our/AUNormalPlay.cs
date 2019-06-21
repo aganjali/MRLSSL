@@ -20,8 +20,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
         const double markRegion = -3.5;
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
-            return false;
-            //return Status == GameDefinitions.GameStatus.Normal;
+            //return false;
+            return Status == GameDefinitions.GameStatus.Normal;
         }
 
         public override PlayResult QueryPlayResult()
@@ -339,6 +339,9 @@ namespace MRL.SSL.AIConsole.Plays.Our
                 OppToMarkID1 = oppValue1[0];
                 OppToMarkID2 = oppValue2[0];
             }
+            NormalSharedState.CommonInfo.OnlineRole1Id = on1.HasValue? on1.Value : -1 ;
+            NormalSharedState.CommonInfo.OnlineRole2Id = on2.HasValue ? on2.Value : -1;
+
             #endregion
             #region Assigner
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, goalie, typeof(VandersarGoalKeeperRole)))
