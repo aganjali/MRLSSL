@@ -46,7 +46,7 @@ namespace MRL.SSL.AIConsole.Roles
                     centerRobot = l1.IntersectWithLine(intevallToBall).Value;
                 }
                 else
-                    centerRobot = Model.OurRobots[RobotID].Location;
+                    centerRobot = Model.BallState.Location.Extend( 0, 0.20);
 
             }
             else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
@@ -56,7 +56,8 @@ namespace MRL.SSL.AIConsole.Roles
                     centerRobot = l3.IntersectWithLine(intevallToBall).Value;
                 }
                 else
-                    centerRobot = Model.OurRobots[RobotID].Location;
+                    centerRobot = Model.BallState.Location.Extend( 0, -0.20);
+
 
             }
             else //top
@@ -66,7 +67,12 @@ namespace MRL.SSL.AIConsole.Roles
                     centerRobot = l2.IntersectWithLine(intevallToBall).Value;
                 }
                 else
-                    centerRobot = Model.OurRobots[RobotID].Location;
+                {
+                    centerRobot = Model.BallState.Location.Extend(-1.2, 0);
+
+                }
+
+
 
 
             }
@@ -74,9 +80,9 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 centerRobot = OppFreeKickDefenceUtils.Dive(engine, Model, RobotID);
             }
-            var angle = (Model.BallState.Location - centerRobot).AngleInDegrees;
+            var angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
             NormalSharedState.CommonInfo.OnlineRole3Target = centerRobot;
-
+            Planner.AddKick(RobotID, kickPowerType.Speed, true, 3);
             Planner.Add(RobotID, centerRobot, angle, PathType.UnSafe, false, true, true, true, false);
 
         }
