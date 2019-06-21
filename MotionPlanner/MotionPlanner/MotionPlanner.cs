@@ -830,7 +830,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 double lastWW = lastW;
                 // try
                 {
-                    commands[item] = controllers[item].CalculateTargetSpeed(Model, item, paths[item][paths[item].Count - 2].Location, (double)goals[item].Angle, paths[item], (UseDefultParams.ContainsKey(item)) ? UseDefultParams[item] : false, ref lastV, ref lastW);
+                    commands[item] = controllers[item].CalculateTargetSpeed(Model, item, paths[item][Math.Max(0, paths[item].Count - 2)].Location, (double)goals[item].Angle, paths[item], (UseDefultParams.ContainsKey(item)) ? UseDefultParams[item] : false, ref lastV, ref lastW);
                 }
 
                 //catch (Exception e)
@@ -943,6 +943,8 @@ namespace MRL.SSL.Planning.MotionPlanner
                 if (!Model.OurRobots.ContainsKey(item))
                 {
                     mustRemove.Add(item);
+                    if (!lastVelResetCounter.ContainsKey(item))
+                        lastVelResetCounter[item] = 0;
                     lastVelResetCounter[item]++;
                 }
                 else

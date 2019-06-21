@@ -41,39 +41,55 @@ namespace MRL.SSL.AIConsole.Roles
             DrawingObjects.AddObject(l3);
             if (GameParameters.SegmentIntersect(intevallToBall, l1).HasValue) // left
             {
-                if (!IsInOurDangerZone(Model.BallState.Location))
+                if (!IsInOurDangerZone(Model.BallState.Location) && GameParameters.IsInField(Model.BallState.Location, 0))
                 {
                     centerRobot = l1.IntersectWithLine(intevallToBall).Value;
                 }
+                else
+                    centerRobot = Model.BallState.Location.Extend( 0, 0.20);
 
             }
             else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
             {
-                if (!IsInOurDangerZone(Model.BallState.Location))
+                if (!IsInOurDangerZone(Model.BallState.Location) && GameParameters.IsInField(Model.BallState.Location, 0))
                 {
                     centerRobot = l3.IntersectWithLine(intevallToBall).Value;
                 }
+                else
+                    centerRobot = Model.BallState.Location.Extend( 0, -0.20);
+
 
             }
             else //top
             {
-                if (!IsInOurDangerZone(Model.BallState.Location))
+                if (!IsInOurDangerZone(Model.BallState.Location) && GameParameters.IsInField(Model.BallState.Location, 0))
                 {
                     centerRobot = l2.IntersectWithLine(intevallToBall).Value;
                 }
                 else
-                    centerRobot = Model.OurRobots[RobotID].Location;
+                {
+                    centerRobot = Model.BallState.Location.Extend(-1.2, 0);
+
+                }
+
+
 
 
             }
-            var angle = (Model.BallState.Location - centerRobot).AngleInDegrees;
+            if (OppFreeKickDefenceUtils.BallKickedToGoal(engine, Model))
+            {
+                centerRobot = OppFreeKickDefenceUtils.Dive(engine, Model, RobotID);
+            }
+            var angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
+            NormalSharedState.CommonInfo.OnlineRole3Target = centerRobot;
+            Planner.AddKick(RobotID, kickPowerType.Speed, true, 3);
             Planner.Add(RobotID, centerRobot, angle, PathType.UnSafe, false, true, true, true, false);
 
         }
 
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return RobotID;
+            return Model.OurRobots[RobotID].Location.DistanceFrom(NormalSharedState.CommonInfo.OnlineRole3Target);
         }
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
@@ -93,7 +109,8 @@ namespace MRL.SSL.AIConsole.Roles
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return new List<RoleBase>();
+            return new List<RoleBase>() { new OnLineRole1(), new OnLineRole2(), new OnLineRole3() };
+
         }
 
         public bool IsInOurDangerZone(Position2D pos)

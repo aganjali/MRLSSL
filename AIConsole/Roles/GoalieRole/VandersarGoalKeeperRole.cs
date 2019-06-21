@@ -44,6 +44,7 @@ namespace MRL.SSL.AIConsole.Roles
                 Position2D p1 = Position2D.Interpolate(GameParameters.OurGoalLeft, GameParameters.OurGoalRight, 0.33);
                 Position2D p2 = Position2D.Interpolate(GameParameters.OurGoalRight, GameParameters.OurGoalLeft, 0.33);
                 double eXx = GetVisibleWidth(Model, engine);
+
                 double distanceFromCenter = Map(eXx, 0, 0.4, 0.1, 0.6);
                 DrawingObjects.AddObject(new StringDraw(eXx.ToString(), new Position2D(2.7, 0)));
                 posToGo = GameParameters.OurGoalCenter + (Model.BallState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(distanceFromCenter);
@@ -103,7 +104,7 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 CurrentState = (int)state.ballTarget;
             }
-            CurrentState = stateCalculator(CurrentState, Model);
+            //CurrentState = stateCalculator(CurrentState, Model);
 
 
         }
