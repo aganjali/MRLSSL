@@ -44,11 +44,12 @@ namespace MRL.SSL.AIConsole.Roles
                 Position2D p1 = Position2D.Interpolate(GameParameters.OurGoalLeft, GameParameters.OurGoalRight, 0.33);
                 Position2D p2 = Position2D.Interpolate(GameParameters.OurGoalRight, GameParameters.OurGoalLeft, 0.33);
                 double eXx = GetVisibleWidth(Model, engine);
-
-                double distanceFromCenter = Map(eXx, 0, 0.4, 0.1, 0.6);
-                DrawingObjects.AddObject(new StringDraw(eXx.ToString(), new Position2D(2.7, 0)));
+                eXx = Math.Min(eXx, 1.2);
+                double distanceFromCenter = Math.Round( Map(eXx, 0, 1.2, 0.1, 0.6),2);
+                DrawingObjects.AddObject(new StringDraw(distanceFromCenter.ToString(), new Position2D(6, 1)));
                 posToGo = GameParameters.OurGoalCenter + (Model.BallState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(distanceFromCenter);
                 angle = (ball.Location - posToGo).AngleInDegrees;
+                Planner.Add(RobotID, posToGo, angle, PathType.UnSafe, false, false, false, true, false);
             }
             else if (CurrentState == (int)state.robotTarget)
             {
@@ -58,15 +59,21 @@ namespace MRL.SSL.AIConsole.Roles
 
                 posToGo = RobotToPosIntersect(neearestOppToBall, new Line(GameParameters.OurGoalLeft, GameParameters.OurGoalRight)).Value;
                 angle = (ball.Location - posToGo).AngleInDegrees;
+                Planner.Add(RobotID, posToGo, angle, PathType.UnSafe, false, false, false, true, false);
             }
             else if (CurrentState == (int)state.dive)
             {
                 GetSkill<GoalieDiveSkill2017>().vandersarDive(engine, Model, RobotID, ref posToGo, ref angle);
             }
-            Vector2D extended = Model.BallState.Location - GameParameters.OurGoalCenter;
-            extended = extended.GetNormalizeToCopy(0);
+            else if (CurrentState == (int)state.inPenaltyArea)
+            {
+                GetBallSkill getBallSkill = new GetBallSkill();
+                getBallSkill.SetAvoidDangerZone(false,true);
+                Position2D target = new Position2D();
+                getBallSkill.Perform(engine, Model, RobotID, target);
+            }
+            //Vector2D extended = Model.BallState.Location - GameParameters.OurGoalCenter;
 
-            Planner.Add(RobotID, posToGo + extended, angle, PathType.UnSafe, false, false, false, true, false);
         }
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
@@ -92,6 +99,8 @@ namespace MRL.SSL.AIConsole.Roles
             }
             Position2D? intersectGoal = null;
             intersectGoal = RobotToPosIntersect(neearestOppToBall, new Line(GameParameters.OurGoalLeft, GameParameters.OurGoalRight));
+            double dist = 0, distFromBorder = 0 ;
+
             if (Model.Opponents.Count > 0 && minOppToBall < 0.14 && ball.Speed.Size < 0.5 && intersectGoal.HasValue && Position2D.IsBetween(intervalPos[0], intervalPos[1], intersectGoal.Value))
             {
                 CurrentState = (int)state.robotTarget;
@@ -99,6 +108,12 @@ namespace MRL.SSL.AIConsole.Roles
             else if (BallKickedToOurGoal(Model))
             {
                 CurrentState = (int)state.dive;
+            }
+            else if (GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0, out dist, out distFromBorder)
+                && Model.BallState.Speed.Size < 1
+                )
+            {
+                CurrentState = (int)state.inPenaltyArea;
             }
             else
             {
