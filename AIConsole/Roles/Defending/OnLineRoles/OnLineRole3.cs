@@ -18,57 +18,62 @@ namespace MRL.SSL.AIConsole.Roles
     {
 
 
-
+        Position2D lastBallPos = new Position2D();
         public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID)
         {
             Position2D p1 = Position2D.Interpolate(GameParameters.OurGoalLeft, GameParameters.OurGoalRight, 0.33);
 
             Line right = new Line(GameParameters.OurGoalRight, Model.BallState.Location);
             Line left = new Line(GameParameters.OurGoalLeft.Extend(0, 0), Model.BallState.Location);
-            Line intevallToBall = new Line(Position2D.Interpolate(right.Head, left.Head, 0.5), Model.BallState.Location , new Pen(Color.Yellow , 0.02f));
 
-            DrawingObjects.AddObject(intevallToBall);
-            double distToPenaltyAreaThreshold = 0.00;
-            double RectWidth = 1.50;
-            double RectHeight = 0.90;
+            double distToPenaltyAreaThreshold = 0.0;
+            double RectWidth = 1.55;
+            double RectHeight = 0.95;
             Line l1 = new Line(GameParameters.OurGoalLeft.Extend(-RectWidth, RectHeight + distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(0, RectHeight + distToPenaltyAreaThreshold));
             Line l2 = new Line(GameParameters.OurGoalRight.Extend(-RectWidth - distToPenaltyAreaThreshold, -RectHeight - distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(-RectWidth - distToPenaltyAreaThreshold, RectHeight + distToPenaltyAreaThreshold));
             Line l3 = new Line(GameParameters.OurGoalRight.Extend(-RectWidth - distToPenaltyAreaThreshold, -RectHeight - distToPenaltyAreaThreshold), GameParameters.OurGoalRight.Extend(0, -RectHeight - distToPenaltyAreaThreshold));
             Position2D centerRobot = new Position2D();
-            DrawingObjects.AddObject(intevallToBall);
             DrawingObjects.AddObject(l1);
             DrawingObjects.AddObject(l2);
             DrawingObjects.AddObject(l3);
+
+            if (GameParameters.IsInField(Model.BallState.Location, 0))
+            {
+                lastBallPos = Model.BallState.Location;
+            }
+            Line intevallToBall = new Line(Position2D.Interpolate(right.Head, left.Head, 0.5), lastBallPos , new Pen(Color.BlueViolet , 0.01f));
+            DrawingObjects.AddObject(intevallToBall);
+            //dance dance
             if (GameParameters.SegmentIntersect(intevallToBall, l1).HasValue) // left
             {
-                if (!IsInOurDangerZone(Model.BallState.Location) && GameParameters.IsInField(Model.BallState.Location, 0))
+                if (!IsInOurDangerZone(lastBallPos))
                 {
                     centerRobot = l1.IntersectWithLine(intevallToBall).Value;
                 }
                 else
-                    centerRobot = Model.BallState.Location.Extend( 0, 0.20);
+                    centerRobot = lastBallPos.Extend( 0, 0.20);
 
             }
             else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
             {
-                if (!IsInOurDangerZone(Model.BallState.Location) && GameParameters.IsInField(Model.BallState.Location, 0))
+                if (!IsInOurDangerZone(lastBallPos))
                 {
                     centerRobot = l3.IntersectWithLine(intevallToBall).Value;
                 }
                 else
-                    centerRobot = Model.BallState.Location.Extend( 0, -0.20);
+                    centerRobot = lastBallPos.Extend( 0, -0.20);
 
 
             }
             else //top
             {
-                if (!IsInOurDangerZone(Model.BallState.Location) && GameParameters.IsInField(Model.BallState.Location, 0))
+                if (!IsInOurDangerZone(lastBallPos))
                 {
                     centerRobot = l2.IntersectWithLine(intevallToBall).Value;
                 }
                 else
                 {
-                    centerRobot = Model.BallState.Location.Extend(-1.2, 0);
+                    centerRobot = lastBallPos.Extend(-1.2, 0);
 
                 }
 
@@ -80,7 +85,9 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 centerRobot = OppFreeKickDefenceUtils.Dive(engine, Model, RobotID);
             }
-            var angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
+            DrawingObjects.AddObject(new Circle(centerRobot, 0.09, new Pen(Color.Purple, 0.01f)));
+
+            var angle = (lastBallPos - Model.OurRobots[RobotID].Location).AngleInDegrees;
             NormalSharedState.CommonInfo.OnlineRole3Target = centerRobot;
             Planner.AddKick(RobotID, kickPowerType.Speed, true, 3);
             Planner.Add(RobotID, centerRobot, angle, PathType.UnSafe, false, true, true, true, false);

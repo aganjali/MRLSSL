@@ -99,47 +99,51 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
             if (obs.Type == ObstacleType.Circle)
             {
-                AddCircle(obs.State, obs.R.X, id);
+                AddCircle(obs.State, obs.R.X, obs.Margin, id);
             }
             else if(obs.Type == ObstacleType.Rectangle)
             {
-                AddRectangle(obs.State, obs.R.X , obs.R.Y , id);
+                AddRectangle(obs.State, obs.R.X , obs.R.Y, obs.Margin, id);
             }
         }
-        public void AddCircle(Position2D p, double Radi, int id)
+        public void AddCircle(Position2D p, double Radi, double margin, int id)
         {
             id = (id > -8) ? -8 : id;
             Obstacle obs = new Obstacle();
             obs.Type = ObstacleType.Circle;
             obs.R = new Vector2D(Radi, Radi);
+            obs.Margin = margin;
             obs.State = new SingleObjectState(p, new Vector2D(), null);
             obstaclesList[id] =  obs;
         }
-        public void AddCircle(SingleObjectState s, double Radi, int id)
+        public void AddCircle(SingleObjectState s, double Radi, double margin, int id)
         {
             id = (id > -8) ? -8 : id;
             Obstacle obs = new Obstacle();
             obs.Type = ObstacleType.Circle;
             obs.R = new Vector2D(Radi, Radi);
+            obs.Margin = margin;
             obs.State = new SingleObjectState(s);
             obstaclesList[id] = obs;
         }
     
-        public void AddRectangle(Position2D p, double width, double height, int id)
+        public void AddRectangle(Position2D p, double width, double height, double margin, int id)
         {
             id = (id > -8) ? -8 : id;
             Obstacle obs = new Obstacle();
+            obs.Margin = margin;
             obs.Type = ObstacleType.Rectangle;
             obs.R = new Vector2D(width / 2, height / 2);
             obs.State = new SingleObjectState(p, new Vector2D(), null);
             obstaclesList[id] = obs;
         }
-        public void AddRectangle(SingleObjectState s, double width, double height, int id)
+        public void AddRectangle(SingleObjectState s, double width, double height, double margin, int id)
         {
             id = (id > -8) ? -8 : id;
             Obstacle obs = new Obstacle();
             obs.Type = ObstacleType.Rectangle;
             obs.R = new Vector2D(width / 2, height / 2);
+            obs.Margin = margin;
             obs.State = new SingleObjectState(s);
             obstaclesList[id] = obs;
         }
@@ -151,7 +155,8 @@ namespace MRL.SSL.Planning.MotionPlanner
             avoidRobots = 1;
             Obstacle obs = new Obstacle();
             obs.Type = (Our) ? ObstacleType.OurRobot : ObstacleType.OppRobot;
-            obs.R = new Vector2D(MotionPlannerParameters.RobotRadi + marginRobot, MotionPlannerParameters.RobotRadi + marginRobot);
+            obs.Margin = marginRobot;
+            obs.R = new Vector2D(MotionPlannerParameters.RobotRadi , MotionPlannerParameters.RobotRadi );
             obs.State = new SingleObjectState(s);
             obstaclesList[id] = obs ;
         }
@@ -161,8 +166,9 @@ namespace MRL.SSL.Planning.MotionPlanner
             id = (Our) ? id : id + 16;
             avoidRobots = 1;
             Obstacle obs = new Obstacle();
+            obs.Margin = marginRobot;
             obs.Type = (Our) ? ObstacleType.OurRobot : ObstacleType.OppRobot;
-            obs.R = new Vector2D(MotionPlannerParameters.RobotRadi + marginRobot, MotionPlannerParameters.RobotRadi + marginRobot);
+            obs.R = new Vector2D(MotionPlannerParameters.RobotRadi , MotionPlannerParameters.RobotRadi);
             obs.State = new SingleObjectState(s.Location + kSpeedRobot * s.Speed, s.Speed, 0);
             obstaclesList[id] = obs;
         }
@@ -172,8 +178,9 @@ namespace MRL.SSL.Planning.MotionPlanner
             id = (Our) ? id : id + 16;
             avoidRobots = 1;
             Obstacle obs = new Obstacle();
+            obs.Margin = marginRobot;
             obs.Type = (Our) ? ObstacleType.OurRobot : ObstacleType.OppRobot;
-            obs.R = new Vector2D(MotionPlannerParameters.RobotRadi + marginRobot, MotionPlannerParameters.RobotRadi + marginRobot);
+            obs.R = new Vector2D(MotionPlannerParameters.RobotRadi , MotionPlannerParameters.RobotRadi);
             obs.State = new SingleObjectState(p, new Vector2D(), null);
             obstaclesList[id] = obs;
         }
@@ -184,12 +191,13 @@ namespace MRL.SSL.Planning.MotionPlanner
             avoidBall = 1;
             Obstacle obs = new Obstacle();
             obs.Type = ObstacleType.Ball;
+            obs.Margin = +marginBall;
             if (!stopBall)
             {
-                obs.R = new Vector2D(MotionPlannerParameters.BallRadi + marginBall, MotionPlannerParameters.BallRadi + marginBall);    
+                obs.R = new Vector2D(MotionPlannerParameters.BallRadi , MotionPlannerParameters.BallRadi );    
             }
             else
-                obs.R = new Vector2D(MotionPlannerParameters.StopBallRadi + marginBall, MotionPlannerParameters.StopBallRadi + marginBall);
+                obs.R = new Vector2D(MotionPlannerParameters.StopBallRadi , MotionPlannerParameters.StopBallRadi );
             obs.State = new SingleObjectState(p, new Vector2D(), null);
             obstaclesList[id] = obs;
         }
@@ -199,12 +207,13 @@ namespace MRL.SSL.Planning.MotionPlanner
             avoidBall = 1;
             Obstacle obs = new Obstacle();
             obs.Type = ObstacleType.Ball;
+            obs.Margin = +marginBall;
             if (!stopBall)
             {
-                obs.R = new Vector2D(MotionPlannerParameters.BallRadi + marginBall, MotionPlannerParameters.BallRadi + marginBall);
+                obs.R = new Vector2D(MotionPlannerParameters.BallRadi , MotionPlannerParameters.BallRadi );
             }
             else
-                obs.R = new Vector2D(MotionPlannerParameters.StopBallRadi + marginBall, MotionPlannerParameters.StopBallRadi + marginBall);
+                obs.R = new Vector2D(MotionPlannerParameters.StopBallRadi , MotionPlannerParameters.StopBallRadi );
             obs.State = new SingleObjectState(s);
             obstaclesList[id] = obs;
         }
@@ -214,12 +223,13 @@ namespace MRL.SSL.Planning.MotionPlanner
             avoidBall = 1;
             Obstacle obs = new Obstacle();
             obs.Type = ObstacleType.Ball;
+            obs.Margin = +marginBall;
             if (!stopBall)
             {
-                obs.R = new Vector2D(MotionPlannerParameters.BallRadi + marginBall, MotionPlannerParameters.BallRadi + marginBall);
+                obs.R = new Vector2D(MotionPlannerParameters.BallRadi , MotionPlannerParameters.BallRadi );
             }
             else
-                obs.R = new Vector2D(MotionPlannerParameters.StopBallRadi + marginBall, MotionPlannerParameters.StopBallRadi + marginBall);
+                obs.R = new Vector2D(MotionPlannerParameters.StopBallRadi , MotionPlannerParameters.StopBallRadi );
             obs.State = new SingleObjectState(s.Location + kSpeedBall * s.Speed, s.Speed, 0);
             obstaclesList[id] = obs;
         }
@@ -230,6 +240,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             Obstacle obs = new Obstacle();
             int id = -2;
             obs.Type = ObstacleType.ZoneRectangle;
+            obs.Margin = 0;
             obs.R = new Vector2D(MotionPlannerParameters.DangerZoneH / 2, MotionPlannerParameters.DangerZoneW / 2);
             obs.State = new SingleObjectState(GameParameters.OurGoalCenter - new Vector2D(MotionPlannerParameters.DangerZoneH / 2, 0), new Vector2D(), null);
             obstaclesList[id] = (obs);
@@ -262,7 +273,8 @@ namespace MRL.SSL.Planning.MotionPlanner
             Obstacle obs = new Obstacle();
             int id = -5;
             obs.Type = ObstacleType.ZoneRectangle;
-            obs.R = new Vector2D(MotionPlannerParameters.DangerZoneH / 2 + marginOppZone , MotionPlannerParameters.DangerZoneW / 2 + marginOppZone );
+            obs.Margin = marginOppZone;
+            obs.R = new Vector2D(MotionPlannerParameters.DangerZoneH / 2  , MotionPlannerParameters.DangerZoneW / 2 );
             obs.State = new SingleObjectState(GameParameters.OppGoalCenter + new Vector2D(MotionPlannerParameters.DangerZoneH / 2, 0), new Vector2D(), null);
             obstaclesList[id] = (obs);
 
@@ -389,41 +401,41 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
         }
         
-        public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi)
+        public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi, bool useMargin = false)
         {
             int i = 0;
-            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi))
+            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi, useMargin))
             {
                 i++;
             }
             return (i != obstaclesList.Count);
         }
-        public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi, out int idx)
+        public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi, out int idx, bool useMargin = false)
         {
             int i = 0;
             idx = -1000;
-            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi))
+            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi, useMargin))
             {
                 i++;
             }
             idx = (i < obstaclesList.Count) ? obstaclesList.ElementAt(i).Key : -1000;
             return (i != obstaclesList.Count);
         }
-        public bool MeetDangerZone(SingleObjectState From, SingleObjectState To, double obstacleRadi)
+        public bool MeetDangerZone(SingleObjectState From, SingleObjectState To, double obstacleRadi, bool useMargin = false)
         {
             foreach (var item in obstaclesList.Keys)
             {
                 if (item > -2 || item < -4)
                     continue;
-                if (obstaclesList[item].Meet(From, To, obstacleRadi))
+                if (obstaclesList[item].Meet(From, To, obstacleRadi, useMargin))
                     return true;
             }
             return false;
         }
-        public bool Meet(SingleObjectState S1, double obstacleRadi)
+        public bool Meet(SingleObjectState S1, double obstacleRadi, bool useMargin = false)
         {
             int i = 0;
-            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(S1, obstacleRadi)) 
+            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(S1, obstacleRadi, useMargin)) 
             {
                 i++;
             }

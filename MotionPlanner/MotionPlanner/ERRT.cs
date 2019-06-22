@@ -110,7 +110,7 @@ namespace MRL.SSL.Planning.MotionPlanner
            
             Line li = new Line(Nearest.Location, res.Location);
            
-            if (obs.Meet(Nearest, res, MotionPlannerParameters.RobotRadi))
+            if (obs.Meet(Nearest, res, MotionPlannerParameters.RobotRadi, true))
                 return null;
             else
                 return res;
@@ -215,7 +215,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                     NearestState = new SingleObjectState(Path[1]);
                 //SingleObjectState fromGoalNearestState = new SingleObjectState(goal);
 
-                if (!obs.Meet(init, goal, MotionPlannerParameters.RobotRadi))
+                if (!obs.Meet(init, goal, MotionPlannerParameters.RobotRadi, true))
                 {
                     res.Add(goal);
                     //FPath[2 * PathCount] = (float)goal.Location.X;
@@ -239,19 +239,19 @@ namespace MRL.SSL.Planning.MotionPlanner
                 else
                 {
                     int nodes2try = 0;
-                    do
-                    {
+                    //do
+                    //{
                         float[] d = { (float)init.Location.X, (float)init.Location.Y };
                         init.ParentState = null;
-                        if (nodes2try >= maxNodes)
-                        {
-                            // tree = new KDTree(2);
-                            tree = new KdTree<float, SingleObjectState>(2, new FloatMath(), AddDuplicateBehavior.Skip);
+                        //if (nodes2try >= maxNodes)
+                        //{
+                        //    // tree = new KDTree(2);
+                        //    tree = new KdTree<float, SingleObjectState>(2, new FloatMath(), AddDuplicateBehavior.Skip);
 
-                            NearestState = new SingleObjectState(init);
-                            obs.Clear();
-                            obs.AddObstacle(0, 0, 1, 0, null, null, StopBall);
-                        }
+                        //    NearestState = new SingleObjectState(init);
+                        //    obs.Clear();
+                        //    obs.AddObstacle(0, 0, 1, 0, null, null, StopBall);
+                        //}
                         if (!Failed)
                         {
                             //   tree.insert(d, init);
@@ -289,7 +289,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                             }
                         }
 
-                    } while ((NearestState.Location != goal.Location && nodes2try >= maxNodes2Try && obs.MeetDangerZone(NearestState, goal, MotionPlannerParameters.RobotRadi)));
+                   // } while ((NearestState.Location != goal.Location && nodes2try >= maxNodes2Try && obs.MeetDangerZone(NearestState, goal, MotionPlannerParameters.RobotRadi)));
 
                     if (NearestState.Location != goal.Location)
                     {
@@ -418,10 +418,10 @@ namespace MRL.SSL.Planning.MotionPlanner
                 {
                     if (item.Value.Type != ObstacleType.ZoneCircle && item.Value.Type != ObstacleType.ZoneRectangle)
                     {
-                        if (ii == 1 && item.Value.Meet(Init, MotionPlannerParameters.RobotRadi))
+                        if (ii == 1 && item.Value.Meet(Init, MotionPlannerParameters.RobotRadi, true))
                             mustRemoveObstacles.Add(item.Key);
                         
-                        if (item.Value.Meet(Goal, MotionPlannerParameters.RobotRadi))
+                        if (item.Value.Meet(Goal, MotionPlannerParameters.RobotRadi, true))
                         {
                             //if(tmpid == item.Key)
                             jj++;
@@ -573,7 +573,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                     SingleObjectState end = ppat[eKey];
 
 
-                    if (!obs.Meet(start, end, MotionPlannerParameters.RobotRadi))
+                    if (!obs.Meet(start, end, MotionPlannerParameters.RobotRadi, true))
                     {
                         int min = (sKey < eKey) ? sKey : eKey;
                         int max = (sKey > eKey) ? sKey : eKey;
@@ -582,6 +582,39 @@ namespace MRL.SSL.Planning.MotionPlanner
                     }
                 }
 
+            }
+            if (ppat.Count > 2)
+            {
+                //double step = 0.2;
+                //for (int i = 1; i < ppat.Count - 1; i++)
+                //{
+                //    SingleObjectState next = ppat[i + 1];
+                //    SingleObjectState prev = ppat[i - 1];
+                //    SingleObjectState current = ppat[i];
+                //    Vector2D nextCurrent = current.Location - next.Location;
+                //    Vector2D prevCurrent = current.Location - prev.Location;
+                //    int count = (int)Math.Max(nextCurrent.Size / step, prevCurrent.Size / step);
+                //    double nextStep = nextCurrent.Size / count, prevStep = prevCurrent.Size / count;
+                //    for (int j = 1; j < count; j++)
+                //    {
+                //        SingleObjectState n = new SingleObjectState(next.Location + nextCurrent.GetNormalizeToCopy(j * nextStep), Vector2D.Zero, 0);
+                //        SingleObjectState p = new SingleObjectState(prev.Location + prevCurrent.GetNormalizeToCopy(j * prevStep), Vector2D.Zero, 0);
+                //        if (!obs.Meet(p, n, MotionPlannerParameters.RobotRadi))
+                //        {
+                //            ppat.RemoveAt(i);
+                //            if (!obs.Meet(p, next, MotionPlannerParameters.RobotRadi, true))
+                //            {
+                //                ppat.Insert(i, p);
+                //            }
+                //            else
+                //            {
+                //                ppat.Insert(i, p);
+                //                ppat.Insert(i + 1, n);
+                //            }
+                //            break;
+                //        }
+                //    }
+                //}
             }
             //if (!justInitChanged)
             //{
