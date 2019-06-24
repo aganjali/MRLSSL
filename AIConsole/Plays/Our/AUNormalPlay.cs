@@ -96,8 +96,9 @@ namespace MRL.SSL.AIConsole.Plays.Our
             r = typeof(Marker2Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 0.1, 0));
 
-            
-            
+
+            r = typeof(GerrardRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
 
             Dictionary<int, RoleBase> matched;
 
