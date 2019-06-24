@@ -204,7 +204,7 @@ namespace MRL.SSL.AIConsole.Engine
             Logger.WriteInfo("visualizer port");
             if (_comcont != null)
                 _comcont.Dispose();
-            _comcont = new CommunicationController("any", AISettings.Default.x, AISettings.Default.VisName, AISettings.Default.VisPort);
+            _comcont = new CommunicationController("any", AISettings.Default.AiPort, AISettings.Default.VisName, AISettings.Default.VisPort);
 
         }
         RobotCommands tmpCmd;

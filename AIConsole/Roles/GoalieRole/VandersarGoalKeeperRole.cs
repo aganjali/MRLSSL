@@ -83,8 +83,8 @@ namespace MRL.SSL.AIConsole.Roles
         {
 
             SingleObjectState ball = Model.BallState;
-            intervalPos = engine.GameInfo.IntervalSelect(engine.GameInfo.GetVisibleIntervals(Model, ball.Location, GameParameters.OurGoalLeft, GameParameters.OurGoalRight, true, true, null, new int[3] { RobotID, 1, 2 }));
-            List<VisibleGoalInterval> vsi = engine.GameInfo.GetVisibleIntervals(Model, ball.Location, GameParameters.OurGoalLeft, GameParameters.OurGoalRight, true, true, null, new int[3] { RobotID, 1, 2 });
+            intervalPos = engine.GameInfo.IntervalSelect(engine.GameInfo.GetVisibleIntervals(Model, ball.Location, GameParameters.OurGoalLeft, GameParameters.OurGoalRight, true, true, null, new int[1] { RobotID }));
+            List<VisibleGoalInterval> vsi = engine.GameInfo.GetVisibleIntervals(Model, ball.Location, GameParameters.OurGoalLeft, GameParameters.OurGoalRight, true, true, null, new int[1] { RobotID });
             for (int i = 0; i < intervalPos.Count; i++)
             {
                 intervalPos[i] = new Position2D(-intervalPos[i].X, intervalPos[i].Y);

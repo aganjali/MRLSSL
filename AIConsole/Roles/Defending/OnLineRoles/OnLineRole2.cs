@@ -146,7 +146,7 @@ namespace MRL.SSL.AIConsole.Roles
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return new List<RoleBase>() { new OnLineRole1(), new OnLineRole2(), new OnLineRole3() };
+            return new List<RoleBase>() { new OnLineRole1(), new OnLineRole2(), new GerrardRole() };
 
         }
 

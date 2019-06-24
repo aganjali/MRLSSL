@@ -51,18 +51,6 @@ namespace MRL.SSL.AIConsole.Plays.Our
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
 
             List<int> oppAttackerIds = new List<int>();
-            if (DefenceTest.BallTest)
-            {
-                ballState = DefenceTest.currentBallState;
-                ballStateFast = DefenceTest.currentBallState;
-            }
-            else
-            {
-                ballState = Model.BallState;
-                ballStateFast = Model.BallStateFast;
-            }
-            FreekickDefence.ballState = ballState;
-            FreekickDefence.ballStateFast = ballStateFast;
             
             List<int> activeIDs = new List<int>();
             int pID;
@@ -96,19 +84,20 @@ namespace MRL.SSL.AIConsole.Plays.Our
             r = typeof(OnLineRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 1, 0));
 
+            r = typeof(GerrardRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
             //r = typeof(NewSupporter2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             //roles.Add(new RoleInfo(r,.1, 0.1));
 
 
 
-            //r = typeof(Marker1Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            //roles.Add(new RoleInfo(r, 0.1, 0));
+            r = typeof(Marker1Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 0.1, 0));
+            r = typeof(Marker2Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 0.1, 0));
 
-            r = typeof(OnLineRole3).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(r, 1, 0));
-
-            r = typeof(VandersarGoalKeeperRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(r, 1, 0));
+            
+            
 
             Dictionary<int, RoleBase> matched;
 
@@ -120,13 +109,13 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
             int? goalie = Model.GoalieID;
 
-            int? getballID = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(ActiveRole2017)))
-                getballID = matched.Where(w => w.Value.GetType() == typeof(ActiveRole2017)).First().Key;
+            //int? getballID = null;
+            //if (matched.Any(w => w.Value.GetType() == typeof(ActiveRole2017)))
+            //    getballID = matched.Where(w => w.Value.GetType() == typeof(ActiveRole2017)).First().Key;
 
-            int? supportID = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(NewSupporter2Role)))
-                supportID = matched.Where(w => w.Value.GetType() == typeof(NewSupporter2Role)).First().Key;
+            //int? supportID = null;
+            //if (matched.Any(w => w.Value.GetType() == typeof(NewSupporter2Role)))
+            //    supportID = matched.Where(w => w.Value.GetType() == typeof(NewSupporter2Role)).First().Key;
             //if (matched.Any(w => w.Value.GetType() == typeof(NewMarkerRole)))
             //    supportID = matched.Where(w => w.Value.GetType() == typeof(NewMarkerRole)).First().Key;
 
@@ -150,15 +139,15 @@ namespace MRL.SSL.AIConsole.Plays.Our
             if (matched.Any(w => w.Value.GetType() == typeof(OnLineRole2)))
                 on2 = matched.Where(w => w.Value.GetType() == typeof(OnLineRole2)).First().Key;
             int? staticDef3 = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(OnLineRole3)))
-                staticDef3 = matched.Where(w => w.Value.GetType() == typeof(OnLineRole3)).First().Key;
+            if (matched.Any(w => w.Value.GetType() == typeof(GerrardRole)))
+                staticDef3 = matched.Where(w => w.Value.GetType() == typeof(GerrardRole)).First().Key;
             //FreekickDefence.Static1ID = st1;
             //FreekickDefence.Static2ID = st2;
 
 
             #endregion
-            NormalSharedState.CommonInfo.ActiveID = getballID;
-            NormalSharedState.CommonInfo.SupporterID = supportID;
+            //NormalSharedState.CommonInfo.ActiveID = getballID;
+            //NormalSharedState.CommonInfo.SupporterID = supportID;
             NormalSharedState.CommonInfo.AttackerID = attackerID;
             #region BullShits
             for (int i = 0; i < oppAttackerIds.Count; i++)
@@ -366,8 +355,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacker2ID, typeof(Marker2Normal8Robot)))
             //    Functions[attacker2ID.Value] = (eng, wmd) => GetRole<Marker2Normal8Robot>(attacker2ID.Value).Perform(engine, Model, attacker2ID.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2, field);
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, staticDef3, typeof(OnLineRole3)))
-                Functions[staticDef3.Value] = (eng, wmd) => GetRole<OnLineRole3>(staticDef3.Value).Perform(engine,Model, staticDef3.Value);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, staticDef3, typeof(GerrardRole)))
+                Functions[staticDef3.Value] = (eng, wmd) => GetRole<GerrardRole>(staticDef3.Value).Perform(engine,Model, staticDef3.Value);
             #endregion
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             //DefenceTest.MakeOutPut();
