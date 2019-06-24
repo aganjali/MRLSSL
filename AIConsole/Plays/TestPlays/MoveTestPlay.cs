@@ -9,24 +9,30 @@ using MRL.SSL.GameDefinitions;
 using MRL.SSL.Planning.MotionPlanner;
 using System.Drawing;
 using MRL.SSL.GameDefinitions.General_Settings;
+using Newtonsoft.Json;
+using System.IO;
 //using Newtonsoft.Json;
 
 namespace MRL.SSL.AIConsole.Plays
 {
-    public class jWrapper
+    public class BallDataWrapper
     {
-        public jWrapper(int f, double x, double y)
+        public BallDataWrapper(int f, int cameraID, double x, double y, double pixelX, double pixelY)
         {
             Frame = f;
+            CameraID = cameraID;
             X = x;
             Y = y;
+            PixelX = pixelX;
+            PixelY = pixelY;
         }
         public int Frame { get; set; }
+        public int CameraID { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
-        public double Vx { get; set; }
-        public double Vy { get; set; }
-        
+        public double PixelX { get; set; }
+        public double PixelY { get; set; }
+
     }
     public static class testInfo
     {
@@ -34,7 +40,7 @@ namespace MRL.SSL.AIConsole.Plays
         public static double Vy = 0;
         public static int robotId = 9;
 
-    
+
     }
     public class MoveTestPlay : PlayBase
     {
@@ -58,13 +64,12 @@ namespace MRL.SSL.AIConsole.Plays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
-            
-            //jWrapper jw = new jWrapper(counter, Model.OurRobots[robotId].Location.X, Model.OurRobots[robotId].Location.Y);
+
 
             //var time = Planner.GetMotionTime(Model, 6, Position2D.Zero, new Position2D(2, 2), ActiveParameters.RobotMotionCoefs);
             //DrawingObjects.AddObject(new StringDraw(time.ToString(), new Position2D(2.1, 2)));
             //Planner.Add(6, new Position2D(2, 2),0);
-            
+
             //Planner.AddKick(0,4,kickPowerType.Speed);
             //double theta = Model.OurRobots[robotId].Angle.Value;
             //float Angle = Model.OurRobots[robotId].Angle.Value;
@@ -87,27 +92,53 @@ namespace MRL.SSL.AIConsole.Plays
             //}
 
 
-            //if (path == "")
-            //{
-            //    string time = DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString();
-            //    string temp = "visionData" + "-" + time + ".txt";
-            //    path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), temp);
-            //}
-            //string textStr;
-            //JsonSerializer jSerializer = new JsonSerializer();
-            //textStr = jw.Frame.ToString("0000") + "  ";
-            //textStr += jw.X.ToString("0.000000") + "  ";
-            //textStr += jw.Y.ToString("0.000000") + "  ";
-            //textStr += testInfo.Vx.ToString("0.000000") + "  ";
-            //textStr += testInfo.Vy.ToString("0.000000");
+            if (true)
+            {
+                if (path == "")
+                {
+                    string time = DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString();
+                    string temp = "Vision Data"+/* + " " + time + */".txt";
+                    path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), temp);
+                }
+                string textStr;
+                JsonSerializer jSerializer = new JsonSerializer();
+                List<messages_robocup_ssl_wrapper.SSL_WrapperPacket> packets = new List<messages_robocup_ssl_wrapper.SSL_WrapperPacket>()
+            {
+                Model.CurrentVisionPacket0,Model.CurrentVisionPacket1,Model.CurrentVisionPacket2,Model.CurrentVisionPacket3,
+                Model.CurrentVisionPacket4,Model.CurrentVisionPacket5,Model.CurrentVisionPacket6,Model.CurrentVisionPacket7
+            };
+                foreach (var item in packets)
+                {
+                    if (item.detection != null && item.detection.balls.Count > 0)
+                    {
+                        foreach (var ball in item.detection.balls)
+                        {
+                            BallDataWrapper jw = new BallDataWrapper(counter, (int)item.detection.camera_id, ball.x, ball.y, ball.pixel_x, ball.pixel_y);
+                            textStr = JsonConvert.SerializeObject(jw, Formatting.None);
+                            System.IO.File.AppendAllLines(path, new List<string>() { textStr });
+                        }
+                    }
+                }
+                counter++;
 
-            
-            ////textStr = JsonConvert.SerializeObject(jw, Formatting.None);
-            //System.IO.File.AppendAllLines(path, new List<string>() { textStr }) ;
+            }
+            else
+            {
+                path = "data.txt";//put the file on desktop
+                path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), path);
+                List<BallDataWrapper> list = new List<BallDataWrapper>();
+                var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                {
+                    string line;
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        BallDataWrapper ballData = JsonConvert.DeserializeObject<BallDataWrapper>(line);
+                        list.Add(ballData);
+                    }
+                }
 
-
-            //counter++;
-
+            }
             #region ScoreColor
             //if (isFirst)
             //{

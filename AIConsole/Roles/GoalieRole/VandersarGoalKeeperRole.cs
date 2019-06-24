@@ -21,6 +21,7 @@ namespace MRL.SSL.AIConsole.Roles
         }
         #region variables
         bool firstFlag = true;
+        bool goRogue = true;
         List<Position2D> intervalPos = new List<Position2D>();
         #endregion
         public void Run(GameStrategyEngine engine, WorldModel Model, int RobotID)
@@ -54,7 +55,7 @@ namespace MRL.SSL.AIConsole.Roles
             else if (CurrentState == (int)state.robotTarget)
             {
                 SingleObjectState neearestOppToBall = new SingleObjectState();
-                if (Model.Opponents.Count > 0)
+                if (Model.Opponents.Count > 0) 
                     neearestOppToBall = Model.Opponents.OrderBy(o => o.Value.Location.DistanceFrom(ball.Location)).ToList()[0].Value;
 
                 posToGo = RobotToPosIntersect(neearestOppToBall, new Line(GameParameters.OurGoalLeft, GameParameters.OurGoalRight)).Value;
@@ -127,14 +128,17 @@ namespace MRL.SSL.AIConsole.Roles
         private int stateCalculator(int currentState,WorldModel model)
         {
             int ret = 0;
-            int def1ID= NormalSharedState.CommonInfo.OnlineRole1Id;
+            double dist = 0, distFromBorder = 0;
+            int def1ID = NormalSharedState.CommonInfo.OnlineRole1Id;
             int def2ID = NormalSharedState.CommonInfo.OnlineRole2Id;
             Position2D def1Target = NormalSharedState.CommonInfo.OnlineRole1Target;
             Position2D def2Target = NormalSharedState.CommonInfo.OnlineRole2Target;
-            const double fullyTresh = 0.04;
-            const double almostTresh = 0.10;
             Position2D def1CurrentPos = model.OurRobots[def1ID].Location;
             Position2D def2CurrentPos = model.OurRobots[def2ID].Location;
+            const double fullyTresh = 0.04;
+            const double almostTresh = 0.10;
+            const double inPenaltyAreaSpeedTresh = 1;// m/s
+            
 
             bool DefsFullyArrived = def1CurrentPos.DistanceFrom(def1Target) < fullyTresh 
                                     && def2CurrentPos.DistanceFrom(def2Target) < fullyTresh;
@@ -143,12 +147,13 @@ namespace MRL.SSL.AIConsole.Roles
 
             bool def1missing = def1ID == -1;
             bool def2missing = def2ID == -1;
-            bool setBallTarget = true ;
             bool setDive = BallKickedToOurGoal(model);
+            bool setInPenaltyArea = GameParameters.IsInDangerousZone(model.BallState.Location, false, 0, out dist, out distFromBorder)
+                && model.BallState.Speed.Size < inPenaltyAreaSpeedTresh;
+            bool setRobotTarget = false;
             #region preDive Configs
             int? oppBallOwner = model.Opponents.OrderBy(t => t.Value.Location.DistanceFrom(model.BallState.Location)).Select(y => y.Key).FirstOrDefault();
             bool ballIsInFront = false;
-            bool goRogue = false;
             if (oppBallOwner.HasValue && model.Opponents.ContainsKey(oppBallOwner.Value))
             {
                 int oppBallOwnerID = oppBallOwner.Value;
@@ -223,46 +228,112 @@ namespace MRL.SSL.AIConsole.Roles
                 //    }
                 //}
             }
-            if (FreekickDefence.Static2ID == -1 || FreekickDefence.Static1ID == -1)
-            {
-                goRogue = true;
-            }
+
             #endregion
+            if (def1ID == -1 || def2ID == -1)
+                goRogue = true;
+            if (currentState == (int)state.ballTarget)
+            {
+                if (setDive)
+                {
+                    ret = (int)state.dive;
+                }
+                else if (setRobotTarget)  
+                {
+                    ret = (int)state.robotTarget;
+                }
+                else if (setInPenaltyArea)
+                {
+                    ret = (int)state.inPenaltyArea;
+                }
+            }
+            else if (currentState == (int)state.robotTarget)
+            {
+                if (setDive)
+                {
+                    ret = (int)state.dive;
+                }
+                else if (setInPenaltyArea)
+                {
+                    ret = (int)state.inPenaltyArea;
+                }
+                else
+                {
+                    ret = (int)state.ballTarget;
 
-            //if (currentState == (int)state.ballTarget)
-            //{
-            //    if (setDive)
-            //    {
-            //        ret = (int)state.dive;
-            //    }
-            //    else if (true)
-            //    {
-            //        ret = (int)state.robotTarget;
-            //    }
-            //    else if (true)
-            //    {
+                }
+            }
+            else if (currentState == (int)state.inPenaltyArea)
+            {
+                if (setDive)
+                {
+                    ret = (int)state.dive;
+                }
+                else if (setRobotTarget)
+                {
+                    ret = (int)state.robotTarget;
+                }
+                else
+                {
+                    ret = (int)state.ballTarget;
 
-            //    }
-            //}
-            //else if (currentState == (int)state.robotTarget)
-            //{
+                }
 
-            //}
-            //else if (currentState == (int)state.inPenaltyArea)
-            //{
+            }
+            else if (currentState == (int)state.dive)
+            {
+                if (setInPenaltyArea)
+                {
+                    ret = (int)state.inPenaltyArea;
+                } 
+                else if (setRobotTarget)
+                {
+                    ret = (int)state.robotTarget;
+                }
+                else
+                {
+                    ret = (int)state.ballTarget;
 
-            
-            //}
-            //else if (currentState == (int)state.dive)
-            //{
-
-            //}
+                }
+            }
             return ret;
         }
+        private int? calculatePass(WorldModel model) {
+            int? passRecieverID = null;
+            const double movingSpeedTresh = 1.2;
+            const double staticRadiusTresh = 0.13;
 
+            Dictionary<int, SingleObjectState> staticOpps = new Dictionary<int, SingleObjectState>();
+            Dictionary<int, SingleObjectState> movingOpps = new Dictionary<int, SingleObjectState>();
+            Dictionary<int, double> times = new Dictionary<int, double>();
+            foreach (var item in model.Opponents)
+            {
+                if (item.Value.Speed.Size > movingSpeedTresh)
+                {
+                    movingOpps.Add(item.Key,item.Value);
+                }
+                else
+                {
+                    staticOpps.Add(item.Key,item.Value);
+                }
+            }
+            #region static opps
+            foreach (var item in staticOpps)
+            {
+                Circle Robot = new Circle(item.Value.Location, staticRadiusTresh);
+
+            }
+            #endregion
+            #region moving opps
+
+            #endregion
+
+
+            return passRecieverID;
+        }
         public override double CalculateCost(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return 0.1;
+            return 10;
         }
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
