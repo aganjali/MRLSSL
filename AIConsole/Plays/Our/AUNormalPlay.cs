@@ -104,7 +104,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
             //r = typeof(Marker1Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             //roles.Add(new RoleInfo(r, 0.1, 0));
 
-            r = typeof(OnLineRole3).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            r = typeof(GerrardRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 1, 0));
 
             r = typeof(VandersarGoalKeeperRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
@@ -150,8 +150,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
             if (matched.Any(w => w.Value.GetType() == typeof(OnLineRole2)))
                 on2 = matched.Where(w => w.Value.GetType() == typeof(OnLineRole2)).First().Key;
             int? staticDef3 = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(OnLineRole3)))
-                staticDef3 = matched.Where(w => w.Value.GetType() == typeof(OnLineRole3)).First().Key;
+            if (matched.Any(w => w.Value.GetType() == typeof(GerrardRole)))
+                staticDef3 = matched.Where(w => w.Value.GetType() == typeof(GerrardRole)).First().Key;
             //FreekickDefence.Static1ID = st1;
             //FreekickDefence.Static2ID = st2;
 
@@ -366,8 +366,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacker2ID, typeof(Marker2Normal8Robot)))
             //    Functions[attacker2ID.Value] = (eng, wmd) => GetRole<Marker2Normal8Robot>(attacker2ID.Value).Perform(engine, Model, attacker2ID.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2, field);
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, staticDef3, typeof(OnLineRole3)))
-                Functions[staticDef3.Value] = (eng, wmd) => GetRole<OnLineRole3>(staticDef3.Value).Perform(engine,Model, staticDef3.Value);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, staticDef3, typeof(GerrardRole)))
+                Functions[staticDef3.Value] = (eng, wmd) => GetRole<GerrardRole>(staticDef3.Value).Perform(engine,Model, staticDef3.Value);
             #endregion
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             //DefenceTest.MakeOutPut();
