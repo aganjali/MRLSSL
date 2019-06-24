@@ -100,7 +100,7 @@ namespace MRL.SSL.Visualizer.Classes
         /// <summary>
         /// main cimmonication controller
         /// </summary>
-        public static CommunicationController _comcontroller = new CommunicationController(AISettings.Default.VisName, AISettings.Default.VisPort, AISettings.Default.AiName, AISettings.Default.AiPort);
+        public static CommunicationController _comcontroller = new CommunicationController(AISettings.Default.VisName, AISettings.Default.VisPort, AISettings.Default.AiName, AISettings.Default.x);
         public static CommunicationController _comcontrollervision;
         //public static CommunicationController _sharedVisionConnection = new CommunicationController(AISettings.Default.SSLVisionIP, AISettings.Default.SSLVisionPort);
         /// <summary>

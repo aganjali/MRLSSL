@@ -585,36 +585,36 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
             if (ppat.Count > 2)
             {
-                //double step = 0.2;
-                //for (int i = 1; i < ppat.Count - 1; i++)
-                //{
-                //    SingleObjectState next = ppat[i + 1];
-                //    SingleObjectState prev = ppat[i - 1];
-                //    SingleObjectState current = ppat[i];
-                //    Vector2D nextCurrent = current.Location - next.Location;
-                //    Vector2D prevCurrent = current.Location - prev.Location;
-                //    int count = (int)Math.Max(nextCurrent.Size / step, prevCurrent.Size / step);
-                //    double nextStep = nextCurrent.Size / count, prevStep = prevCurrent.Size / count;
-                //    for (int j = 1; j < count; j++)
-                //    {
-                //        SingleObjectState n = new SingleObjectState(next.Location + nextCurrent.GetNormalizeToCopy(j * nextStep), Vector2D.Zero, 0);
-                //        SingleObjectState p = new SingleObjectState(prev.Location + prevCurrent.GetNormalizeToCopy(j * prevStep), Vector2D.Zero, 0);
-                //        if (!obs.Meet(p, n, MotionPlannerParameters.RobotRadi))
-                //        {
-                //            ppat.RemoveAt(i);
-                //            if (!obs.Meet(p, next, MotionPlannerParameters.RobotRadi, true))
-                //            {
-                //                ppat.Insert(i, p);
-                //            }
-                //            else
-                //            {
-                //                ppat.Insert(i, p);
-                //                ppat.Insert(i + 1, n);
-                //            }
-                //            break;
-                //        }
-                //    }
-                //}
+                double step = 0.2;
+                for (int i = 1; i < ppat.Count - 1; i++)
+                {
+                    SingleObjectState next = ppat[i + 1];
+                    SingleObjectState prev = ppat[i - 1];
+                    SingleObjectState current = ppat[i];
+                    Vector2D nextCurrent = current.Location - next.Location;
+                    Vector2D prevCurrent = current.Location - prev.Location;
+                    int count = (int)Math.Max(nextCurrent.Size / step, prevCurrent.Size / step);
+                    double nextStep = nextCurrent.Size / count, prevStep = prevCurrent.Size / count;
+                    for (int j = 1; j < count; j++)
+                    {
+                        SingleObjectState n = new SingleObjectState(next.Location + nextCurrent.GetNormalizeToCopy(j * nextStep), Vector2D.Zero, 0);
+                        SingleObjectState p = new SingleObjectState(prev.Location + prevCurrent.GetNormalizeToCopy(j * prevStep), Vector2D.Zero, 0);
+                        if (!obs.Meet(p, n, MotionPlannerParameters.RobotRadi, true))
+                        {
+                            ppat.RemoveAt(i);
+                            if (!obs.Meet(p, next, MotionPlannerParameters.RobotRadi, true))
+                            {
+                                ppat.Insert(i, p);
+                            }
+                            else
+                            {
+                                ppat.Insert(i, p);
+                                ppat.Insert(i + 1, n);
+                            }
+                            break;
+                        }
+                    }
+                }
             }
             //if (!justInitChanged)
             //{
