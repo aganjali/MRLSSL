@@ -174,7 +174,7 @@ namespace MRL.SSL.AIConsole.Engine
             Console.ForegroundColor = ConsoleColor.Red;
 
             Console.Write("\nAI Name: " + AISettings.Default.AiName);
-            Console.Write("\nAI Port: " + AISettings.Default.AiPort.ToString());
+            Console.Write("\nAI Port: " + AISettings.Default.x.ToString());
             Console.Write("\nCommand & Monitor Name: " + AISettings.Default.VisName);
             Console.Write("\nCommand & Monitor Port: " + AISettings.Default.VisPort.ToString());
             Console.Write("\nReferee mnulticast IP: " + AISettings.Default.RefIP);
