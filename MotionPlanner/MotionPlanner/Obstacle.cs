@@ -12,6 +12,7 @@ namespace MRL.SSL.Planning.MotionPlanner
        
         ObstacleType type;
         Vector2D r;
+        double margin;
         SingleObjectState state;
 
         public SingleObjectState State
@@ -30,27 +31,29 @@ namespace MRL.SSL.Planning.MotionPlanner
             set { type = value; }
         }
 
-        public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi)
+        public double Margin { get => margin; set => margin = value; }
+
+        public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi, bool useMargin = false)
         {
 
             bool c = (type == ObstacleType.Circle || type == ObstacleType.OurRobot || type == ObstacleType.OppRobot || type == ObstacleType.ZoneCircle || type == ObstacleType.Ball);
             if (c)
-                return MeetCircle(From, To, obstacleRadi);
+                return MeetCircle(From, To, obstacleRadi, useMargin);
             else 
-                return MeetRectangle(From, To, obstacleRadi);
+                return MeetRectangle(From, To, obstacleRadi, useMargin);
         }
-        public bool Meet(SingleObjectState S1, double obstacleRadi)
+        public bool Meet(SingleObjectState S1, double obstacleRadi, bool useMargin = false)
         {
             // TODO: must check for rectangle
             Vector2D v = S1.Location - state.Location;
             bool c = (type == ObstacleType.Circle || type == ObstacleType.OurRobot || type == ObstacleType.OppRobot || type == ObstacleType.ZoneCircle || type == ObstacleType.Ball);
             if (c)
-                return (v.Size < obstacleRadi + r.X);
+                return (v.Size < obstacleRadi + r.X + (useMargin ? margin : 0));
             else
-                return (Math.Abs(v.X) < r.X + obstacleRadi && Math.Abs(v.Y) < r.Y + obstacleRadi);
+                return (Math.Abs(v.X) < r.X + obstacleRadi + (useMargin ? margin : 0) && Math.Abs(v.Y) < r.Y + obstacleRadi + (useMargin ? margin : 0));
         }
 
-        private bool MeetRectangle(SingleObjectState From, SingleObjectState To, double obstacleRadi)
+        private bool MeetRectangle(SingleObjectState From, SingleObjectState To, double obstacleRadi, bool useMargin)
         {
             Position2D N = From.Location;
             Position2D T = To.Location;
@@ -67,14 +70,14 @@ namespace MRL.SSL.Planning.MotionPlanner
                 d = distance_seg_to_seg(N, T, c[i], c[(i + 1) % 4]);
                 if (d < obstacleRadi) return (true);
             }
-            return (Meet(new SingleObjectState(N, Vector2D.Zero, null), obstacleRadi) || Meet(new SingleObjectState(T, Vector2D.Zero, null), obstacleRadi));
+            return (Meet(new SingleObjectState(N, Vector2D.Zero, null), obstacleRadi, useMargin) || Meet(new SingleObjectState(T, Vector2D.Zero, null), obstacleRadi, useMargin));
         }
-        private bool MeetCircle(SingleObjectState From, SingleObjectState To, double obstacleRadi)
+        private bool MeetCircle(SingleObjectState From, SingleObjectState To, double obstacleRadi, bool useMargin)
         {
             Position2D p = point_on_segment(From.Location,To.Location,state.Location);
 
             double d = p.DistanceFrom(state.Location);
-            return (d <= r.X + obstacleRadi);
+            return (d <= r.X + obstacleRadi + (useMargin ? margin : 0));
            
         }
 

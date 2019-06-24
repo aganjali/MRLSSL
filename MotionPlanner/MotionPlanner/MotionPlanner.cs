@@ -37,6 +37,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         private static Dictionary<int, bool> SpinBacks = new Dictionary<int, bool>();
         private static Dictionary<int, bool> ReCalculateTeta = new Dictionary<int, bool>();
         private static Dictionary<int, List<Obstacle>> VirtualObstacles = new Dictionary<int, List<Obstacle>>();
+
         private static Random rand = new Random();
         public static ParameterList defultParams = new ParameterList();
         private static Dictionary<int, Vector2D> lastVs = new Dictionary<int, Vector2D>();

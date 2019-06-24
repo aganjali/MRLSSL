@@ -54,6 +54,8 @@ namespace MRL.SSL.AIConsole.Roles
             }
             else if (CurrentState == (int)state.robotTarget)
             {
+                DrawingObjects.AddObject(new StringDraw("robot Target ", new Position2D(6, 1.5)));
+
                 SingleObjectState neearestOppToBall = new SingleObjectState();
                 if (Model.Opponents.Count > 0) 
                     neearestOppToBall = Model.Opponents.OrderBy(o => o.Value.Location.DistanceFrom(ball.Location)).ToList()[0].Value;
@@ -65,6 +67,7 @@ namespace MRL.SSL.AIConsole.Roles
             else if (CurrentState == (int)state.dive)
             {
                 GetSkill<GoalieDiveSkill2017>().vandersarDive(engine, Model, RobotID, ref posToGo, ref angle);
+                DrawingObjects.AddObject(new StringDraw("Dive ",new Position2D(6,1.5)));
             }
             else if (CurrentState == (int)state.inPenaltyArea)
             {
@@ -104,7 +107,7 @@ namespace MRL.SSL.AIConsole.Roles
 
             if (Model.Opponents.Count > 0 && minOppToBall < 0.14 && ball.Speed.Size < 0.5 && intersectGoal.HasValue && Position2D.IsBetween(intervalPos[0], intervalPos[1], intersectGoal.Value))
             {
-                CurrentState = (int)state.robotTarget;
+                CurrentState = (int)state.ballTarget;
             }
             else if (BallKickedToOurGoal(Model))
             {
