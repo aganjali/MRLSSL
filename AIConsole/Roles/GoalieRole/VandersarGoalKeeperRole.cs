@@ -49,6 +49,7 @@ namespace MRL.SSL.AIConsole.Roles
                 double distanceFromCenter = Math.Round( Map(eXx, 0, 1.2, 0.1, 0.6),2);
                 DrawingObjects.AddObject(new StringDraw(distanceFromCenter.ToString(), new Position2D(6, 1)));
                 posToGo = GameParameters.OurGoalCenter + (Model.BallState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(distanceFromCenter);
+                posToGo.X = Math.Min(posToGo.X,5.9);
                 angle = (ball.Location - posToGo).AngleInDegrees;
                 Planner.Add(RobotID, posToGo, angle, PathType.UnSafe, false, false, false, true, false);
             }
@@ -114,8 +115,7 @@ namespace MRL.SSL.AIConsole.Roles
                 CurrentState = (int)state.dive;
             }
             else if (GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0, out dist, out distFromBorder)
-                && Model.BallState.Speed.Size < 1
-                )
+                && Model.BallState.Speed.Size < 1 )
             {
                 CurrentState = (int)state.inPenaltyArea;
             }

@@ -53,20 +53,23 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
 
-            int robotId0 = 13;
-            int robotId1 = 12;
-            int robotId3 = 11;
-            int robotId4 = 10;
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId0, typeof(OnLineRole1)))
-                Functions[robotId0] = (eng, wmd) => GetRole<OnLineRole1>(robotId0).Perform(engine, Model, robotId0);
+            //int robotId0 = 13;
+            //int robotId1 = 12;
+            int robotId3 = Model.GoalieID.Value;
+            //int robotId4 = 10;
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId0, typeof(OnLineRole1)))
+            //    Functions[robotId0] = (eng, wmd) => GetRole<OnLineRole1>(robotId0).Perform(engine, Model, robotId0);
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId1, typeof(OnLineRole2)))
-                Functions[robotId1] = (eng, wmd) => GetRole<OnLineRole2>(robotId1).Perform(engine, Model, robotId1);
-
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId1, typeof(OnLineRole2)))
+            //    Functions[robotId1] = (eng, wmd) => GetRole<OnLineRole2>(robotId1).Perform(engine, Model, robotId1);
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId3, typeof(VandersarGoalKeeperRole)))
                 Functions[robotId3] = (eng, wmd) => GetRole<VandersarGoalKeeperRole>(robotId3).Run(engine, Model, robotId3);
+            Position2D center = TuneVariables.Default.GetValue<Position2D>("ComeHereArea");
 
-
+            Vector2D goalVec = GameParameters.OurGoalLeft - GameParameters.OurGoalRight;
+            Vector2D vec = center - Model.BallState.Location;
+            string angleBetween = Vector2D.AngleBetweenInDegrees(vec, goalVec).ToString() ;
+            DrawingObjects.AddObject(new StringDraw(angleBetween,Color.Red,new Position2D(5,0)));
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId4, typeof(OnLineRole3)))
             //    Functions[robotId4] = (eng, wmd) => GetRole<OnLineRole3>(robotId4).Perform(engine, Model, robotId4);
             #region comments

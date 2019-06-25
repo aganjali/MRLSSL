@@ -111,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Engine\CommonDelegate.cs" />
+    <Compile Include="Engine\DefenceMatchers\DefenceManager.cs" />
     <Compile Include="Engine\DefenceMatchers\DefenceTest.cs" />
     <Compile Include="Engine\DefenceMatchers\FreeKickDefence.cs" />
     <Compile Include="Engine\DefenceMatchers\NormalDefenceAssigner.cs" />
