@@ -131,7 +131,7 @@ namespace MRL.SSL.AIConsole.Roles
                 inf = FreekickDefence.CurrentInfos.Where(w => w.RoleType == this.GetType()).First();
             double distfromborder, dist;
             double teta = 180;
-            if (Model.Status == GameStatus.BallPlace_Opponent && (GameParameters.IsInDangerousZone(ballState.Location, false, .5, out dist, out distfromborder) || GameParameters.IsInDangerousZone(StaticVariables.ballPlacementPos, false, .5, out dist, out distfromborder))/* &&(GameParameters.OurGoalCenter.DistanceFrom(StaticVariables.ballPlacementPos) < 1 || GameParameters.OurGoalCenter.DistanceFrom(Model.BallState.Location) < 1)*/)
+            if ((Model.Status == GameStatus.BallPlace_Opponent || Model.Status == GameStatus.BallPlace_OurTeam)&& (GameParameters.IsInDangerousZone(ballState.Location, false, .5, out dist, out distfromborder) || GameParameters.IsInDangerousZone(StaticVariables.ballPlacementPos, false, .5, out dist, out distfromborder))/* &&(GameParameters.OurGoalCenter.DistanceFrom(StaticVariables.ballPlacementPos) < 1 || GameParameters.OurGoalCenter.DistanceFrom(Model.BallState.Location) < 1)*/)
             {
                 Line Stop1 = new Line(GameParameters.OurGoalCenter.Extend(0, -.3), GameParameters.OurGoalCenter.Extend(0, -.3) + (ballState.Location - GameParameters.OurGoalCenter.Extend(0, -.3)));
                 Circle Circl = new Circle(ballState.Location, .5);
@@ -313,7 +313,7 @@ namespace MRL.SSL.AIConsole.Roles
                     }
                 }
             }
-            else if (Model.Status == GameStatus.BallPlace_Opponent)
+            else if ((Model.Status == GameStatus.BallPlace_Opponent  || Model.Status == GameStatus.BallPlace_OurTeam))
             {
                 //Line Stop1 = new Line(GameParameters.OurGoalCenter.Extend(0, -.3), GameParameters.OurGoalCenter.Extend(0, -.3) + (ballState.Location - GameParameters.OurGoalCenter.Extend(0, -.3)));
                 //Vector2D jdh = ((GameParameters.OurGoalCenter.Extend(0, -.3) + (ballState.Location - GameParameters.OurGoalCenter.Extend(0, -.3))) - GameParameters.OurGoalCenter.Extend(0, -.3));
@@ -722,7 +722,7 @@ namespace MRL.SSL.AIConsole.Roles
         }
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            List<RoleBase> res = new List<RoleBase>() { new palcment1(), new palcment2() };
+            List<RoleBase> res = new List<RoleBase>() { new palcment1()/*, new palcment2()*/ };
             //SingleObjectState defender2 = null, defender1= Model.OurRobots[RobotID];
             //if (previouslyAssignedRoles.Any(a => a.Value is DefenderNormalRole2))
             //    defender2 = Model.OurRobots[previouslyAssignedRoles.First(a => a.Value is DefenderNormalRole2).Key];

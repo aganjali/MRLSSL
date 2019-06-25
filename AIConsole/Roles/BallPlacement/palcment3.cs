@@ -13,12 +13,8 @@ namespace MRL.SSL.AIConsole.Roles
 {
     class palcment3 : RoleBase
     {
-        Position2D firstBallPos = Position2D.Zero;
-        bool first = true;
-        bool t = true;
         bool flag = true;
-        int cunter;
-
+        public static Position2D targetOverLap3;
         public SingleObjectState ballState = new SingleObjectState();
         public SingleObjectState ballStateFast = new SingleObjectState();
         public SingleWirelessCommand RunRole(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID)
@@ -36,7 +32,14 @@ namespace MRL.SSL.AIConsole.Roles
 
             Planner.ChangeDefaulteParams(RobotID, false);
             Planner.SetParameter(RobotID, 1, 1);
-            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, true);
+            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2, false, true, false, new List<Obstacle>() {
+                    new Obstacle()
+                    {
+                        State = new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0),
+                        R = new Vector2D(2, 4),
+                        Type = ObstacleType.Rectangle
+                    }
+                });
         }
 
         public SingleWirelessCommand RotateRun(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID)
@@ -68,7 +71,14 @@ namespace MRL.SSL.AIConsole.Roles
 
             if (!isOppNear)
             {
-                return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, true);
+                return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2, false, true, false, new List<Obstacle>() {
+                    new Obstacle()
+                    {
+                        State = new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0),
+                        R = new Vector2D(2, 4),
+                        Type = ObstacleType.Rectangle
+                    }
+                });
             }
             else
             {
@@ -76,13 +86,27 @@ namespace MRL.SSL.AIConsole.Roles
                 ballOppVec.NormalizeTo(StopDistFromBall);
                 Position2D target = Model.BallState.Location + ballOppVec;
                 if (!GameParameters.IsInField(target, 0.01))
-                    return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, Model.OurRobots[RobotID].Location, (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, true);
-                return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, target, (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, true);
+                    return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, Model.OurRobots[RobotID].Location, (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2, false, true, false, new List<Obstacle>() {
+                    new Obstacle()
+                    {
+                        State = new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0),
+                        R = new Vector2D(2, 4),
+                        Type = ObstacleType.Rectangle
+                    }
+                });
+                return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, target, (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2, false, true, false, new List<Obstacle>() {
+                    new Obstacle()
+                    {
+                        State = new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0),
+                        R = new Vector2D(2, 4),
+                        Type = ObstacleType.Rectangle
+                    }
+                });
             }
 
         }
 
-        public SingleWirelessCommand RunRoleStop(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID)
+        public SingleWirelessCommand RunRoleStop(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID, Position2D Target)
         {
             if (Model.Status == GameStatus.BallPlace_Opponent)
             {
@@ -96,9 +120,43 @@ namespace MRL.SSL.AIConsole.Roles
             }
             List<int> ourRobot = new List<int>();
 
+
+
+            Line ourGoalBall = new Line();
+            Line line1 = new Line();
+            Line ll = new Line();
+            Line line2 = new Line();
+            Line line11 = new Line();
+            Line line22 = new Line();
+            Vector2D vec = StaticVariables.ballPlacementPos - Model.BallState.Location;
+            Vector2D exVec1 = Vector2D.FromAngleSize(vec.AngleInRadians + Math.PI / 2, 0.5);
+            Vector2D exVec2 = Vector2D.FromAngleSize(vec.AngleInRadians - Math.PI / 2, 0.5);
+            Vector2D exVec11 = Vector2D.FromAngleSize(vec.AngleInRadians + Math.PI, 0.5);
+            Vector2D exVec22 = Vector2D.FromAngleSize(vec.AngleInRadians - Math.PI, 0.5);
+            Vector2D vecc = Model.BallState.Location - StaticVariables.ballPlacementPos;
+            Vector2D exVec111 = Vector2D.FromAngleSize(vecc.AngleInRadians + Math.PI, 0.5);
+            Vector2D exVec222 = Vector2D.FromAngleSize(vecc.AngleInRadians - Math.PI, 0.5);
+            line11 = new Line(Model.BallState.Location + exVec1 + exVec11, Model.BallState.Location + exVec2 + exVec22);
+            line22 = new Line(StaticVariables.ballPlacementPos + exVec1 + exVec111, StaticVariables.ballPlacementPos + exVec2 + exVec222);
+            line1 = new Line(Model.BallState.Location + exVec1 + exVec11, StaticVariables.ballPlacementPos + exVec1 + exVec111);
+            line2 = new Line(Model.BallState.Location + exVec2 + exVec22, StaticVariables.ballPlacementPos + exVec2 + exVec222);
+            ll = new Line(StaticVariables.ballPlacementPos, Model.BallState.Location);
+            ourGoalBall = new Line(GameParameters.OurGoalCenter, StaticVariables.ballPlacementPos);
+            double distLine22, distLine2;
+            distLine2 = (Model.BallState.Location + exVec2 + exVec22).DistanceFrom(StaticVariables.ballPlacementPos + exVec2 + exVec222);
+            distLine22 = (StaticVariables.ballPlacementPos + exVec1 + exVec111).DistanceFrom(StaticVariables.ballPlacementPos + exVec2 + exVec222);
+
+
             Planner.ChangeDefaulteParams(RobotID, false);
             Planner.SetParameter(RobotID, 1);
-            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, false);
+            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 2, false, true, false, new List<Obstacle>() {
+                    new Obstacle()
+                    {
+                        State = new SingleObjectState(new Position2D(distLine22/2, distLine2/2), Vector2D.Zero, 0),
+                        R = new Vector2D(distLine22/2, distLine2/2),
+                        Type = ObstacleType.Rectangle
+                    }
+                });
         }
 
         public SingleWirelessCommand LongStop(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID)
@@ -235,8 +293,13 @@ namespace MRL.SSL.AIConsole.Roles
             //line2 = new Line(Model.BallState.Location + exVec2 + exVec22, StaticVariables.ballPlacementPos + exVec2 + exVec222);
             //ll = new Line(StaticVariables.ballPlacementPos, Model.BallState.Location);
             //ourGoalBall = new Line(GameParameters.OurGoalCenter, StaticVariables.ballPlacementPos);
-
-
+            //double distLine22, distLine2;
+            //distLine2 = (Model.BallState.Location + exVec2 + exVec22).DistanceFrom(StaticVariables.ballPlacementPos + exVec2 + exVec222);
+            //distLine22 = (StaticVariables.ballPlacementPos + exVec1 + exVec111).DistanceFrom(StaticVariables.ballPlacementPos + exVec2 + exVec222);
+            //Position2D ffff = new Position2D();
+            //double g =(Model.BallState.Location + exVec1 + exVec11).DistanceFrom(Model.BallState.Location + exVec2 + exVec22);
+            //double hhhh = (Model.BallState.Location + exVec1 + exVec11).DistanceFrom(StaticVariables.ballPlacementPos + exVec1 + exVec111);
+            //ffff = new Position2D(g,);
             //ll = new Line(StaticVariables.ballPlacementPos, Model.BallState.Location);
             //Position2D? p = (ll).PerpenducilarLineToPoint(Model.OurRobots[RobotID].Location).IntersectWithLine(ll).Value;
             //if (p.HasValue)
@@ -529,7 +592,7 @@ namespace MRL.SSL.AIConsole.Roles
             //{
             //    tar = p2;
             //}
-
+            targetOverLap3 = tar;
             DrawingObjects.AddObject(new Circle(tar, 0.06, new Pen(Color.Black, 0.01f)), "tar3");
             return tar;
         }
