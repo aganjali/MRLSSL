@@ -193,7 +193,9 @@ namespace MRL.SSL.AIConsole.Roles
                 avoidance = true;
                 robotAvoidance = true;
             }
-            Planner.Add(RobotID, Target, teta, PathType.UnSafe, false, robotAvoidance, avoidance, avoidance);
+            var angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
+
+            Planner.Add(RobotID, Target, angle, PathType.UnSafe, false, robotAvoidance, avoidance, avoidance);
 
             return new SingleWirelessCommand();
 

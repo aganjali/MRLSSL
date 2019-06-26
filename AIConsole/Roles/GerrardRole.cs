@@ -70,7 +70,8 @@ namespace MRL.SSL.AIConsole.Roles
 
         private Position2D CalculateTarget(WorldModel Model, int RobotID)
         {
-
+            var st1ID = FreekickDefence.Static1ID;
+            var st2ID = FreekickDefence.Static2ID;
             Position2D target = new Position2D();
             if (CurrentState == (int)PlayMode.Attack)
             {
@@ -119,7 +120,20 @@ namespace MRL.SSL.AIConsole.Roles
                         }
                         if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
                         {
-                            target = GetSkill<MarkSkill>().OnDangerZoneMark(RobotID, Model, Model.Opponents[minDistId].Location);
+
+                            if (true)
+                            {
+                                target = GetSkill<MarkSkill>().OnDangerZoneMark(RobotID, Model, Model.Opponents[minDistId].Location);
+                                Vector2D v = new Vector2D();
+                                double margin = 0.05;
+                                Position2D st2 = Model.OurRobots[st2ID.Value].Location;
+                                v = target - Model.OurRobots[st2ID.Value].Location;
+                                if (target.Y < st2.Y + 0.2)
+                                {
+                                    target = new Position2D(Model.OurRobots[RobotID].Location.X , st2.Y + 0.20);
+                                }
+                            }
+
                         }
                         else
                             target = Model.OurRobots[RobotID].Location;
@@ -131,11 +145,8 @@ namespace MRL.SSL.AIConsole.Roles
 
                     }
 
-                    //side = (int)Side.right;
-                    //tempSide = side;
-
                 }
-                else //if (Model.BallState.Location.Y > -0.5 && right)//Gerrard position when ball is in left side
+                else //Gerrard position when ball is in left side
                 {
                     if (rightOpps.Count > 0)
                     {
@@ -160,7 +171,6 @@ namespace MRL.SSL.AIConsole.Roles
                     {
                         DrawingObjects.AddObject(new Circle(MarkSkill.ourDangerZoneRightCorner, 0.1, new Pen(Color.Red, 0.01f)));
                         target = MarkSkill.ourDangerZoneRightCorner + (MarkSkill.ourDangerZoneRightCorner - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);
-                        //target = Position2D.Zero + (Position2D.Zero - new Position2D(2,2));
                     }
 
                 }

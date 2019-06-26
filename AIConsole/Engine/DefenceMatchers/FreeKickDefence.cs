@@ -717,7 +717,7 @@ namespace MRL.SSL.AIConsole.Engine
 
                 return tempMode;
             }
-            #region
+        #region
             //public int? OppRobotsInleftBackArea(GameStrategyEngine Engine, WorldModel Model)
             //{
             //    List<int> temp = new List<int>();
@@ -787,7 +787,7 @@ namespace MRL.SSL.AIConsole.Engine
             //    }
             //    return retID;
             //}
-            #endregion
+        #endregion
             bool markMAxScore = false;
             int markSide = (int)SelectSide.center;
             int lastMarkSide = (int)SelectSide.left;
@@ -819,7 +819,7 @@ namespace MRL.SSL.AIConsole.Engine
                 int? retIdFakeLeft = null;
                 if (oppRobots.Count > 0)
                 {
-                    #region opp count = 1
+        #region opp count = 1
                     if (oppRobots.Count == 1)
                     {
                         if (Model.Opponents[oppRobots[0]].Location.Y > 0.5)
@@ -944,14 +944,14 @@ namespace MRL.SSL.AIConsole.Engine
                             retID = null;
                         }
                     }
-                    #endregion
-                    #region opp count > 1
+        #endregion
+        #region opp count > 1
                     else if (oppRobots.Count > 1)
                     {
                         /// markin with side
                         if (LeftSide)
                         {
-                            #region we have two merker
+        #region we have two merker
                             if (FreekickDefence.StaticRBID.HasValue && Model.OurRobots.ContainsKey(FreekickDefence.StaticRBID.Value))
                             {
                                 List<int> temp = new List<int>();
@@ -979,10 +979,10 @@ namespace MRL.SSL.AIConsole.Engine
                                         }
                                     }
                                 }
-                                #region temp
+        #region temp
                                 if (temp.Count == 1)
                                 {
-                                    #region count ==1
+        #region count ==1
                                     retID = Engine.GameInfo.OppTeam.Scores.Where(q => temp.Contains(q.Key)).OrderByDescending(w => w.Value).ElementAt(0).Key;//.Last().Key;//.ElementAt(0).Key;
                                     if (OppToMark2.HasValue && retID.HasValue && OppToMark2.Value != retID.Value)
                                     {
@@ -1017,11 +1017,11 @@ namespace MRL.SSL.AIConsole.Engine
                                             OppToMark1 = retID.Value;
                                         }
                                     }
-                                    #endregion
+        #endregion
                                 }
                                 else if (temp.Count > 1)
                                 {
-                                    #region count ==2
+        #region count ==2
                                     retID = Engine.GameInfo.OppTeam.Scores.Where(q => temp.Contains(q.Key)).OrderByDescending(w => w.Value).ElementAt(0).Key;//.Last().Key;//.ElementAt(0).Key;
                                     if (OppToMark2.HasValue && retID.HasValue && OppToMark2.Value != retID.Value)
                                     {
@@ -1071,11 +1071,11 @@ namespace MRL.SSL.AIConsole.Engine
                                             OppToMark1Fake = null;
                                         }
                                     }
-                                    #endregion
+        #endregion
                                 }
-                                #endregion
+        #endregion
 
-                                #region tempRegion
+        #region tempRegion
                                 if (tempRegionRight.Count > 0)
                                 {
                                     retIDRegion = Engine.GameInfo.OppTeam.Scores.Where(q => tempRegionRight.Contains(q.Key)).OrderByDescending(w => w.Value).ElementAt(0).Key;
@@ -1107,11 +1107,11 @@ namespace MRL.SSL.AIConsole.Engine
                                         OppToMarkRegion = null;
                                     }
                                 }
-                                #endregion
+        #endregion
 
                             }
-                            #endregion
-                            #region we have one marker
+        #endregion
+        #region we have one marker
                             else
                             {
                                 mostSignificateLeftSideOpp = oppRobots.ToList();
@@ -1159,13 +1159,13 @@ namespace MRL.SSL.AIConsole.Engine
                                     }
                                 }
                             }
-                            #endregion
+        #endregion
 
                             //return retID;
                         }
                         if (RightSide)
                         {
-                            #region we have two merker
+        #region we have two merker
                             if (FreekickDefence.StaticLBID.HasValue && Model.OurRobots.ContainsKey(FreekickDefence.StaticLBID.Value))
                             {
                                 List<int> temp = new List<int>();
@@ -1194,11 +1194,11 @@ namespace MRL.SSL.AIConsole.Engine
                                     }
                                 }
 
-                                #region temp
+        #region temp
                                 //oppCountRight = temp.Count;
                                 if (temp.Count == 1)
                                 {
-                                    #region count==1
+        #region count==1
                                     retID = Engine.GameInfo.OppTeam.Scores.Where(q => temp.Contains(q.Key)).OrderByDescending(w => w.Value).ElementAt(0).Key;//.Last().Key;//.ElementAt(0).Key;
                                     if (OppToMark1.HasValue && retID.HasValue && OppToMark1.Value != retID.Value)
                                     {
@@ -1233,11 +1233,11 @@ namespace MRL.SSL.AIConsole.Engine
                                             OppToMark2 = retID.Value;
                                         }
                                     }
-                                    #endregion
+        #endregion
                                 }
                                 else if (temp.Count > 1)
                                 {
-                                    #region count ==2
+        #region count ==2
                                     retID = Engine.GameInfo.OppTeam.Scores.Where(q => temp.Contains(q.Key)).OrderByDescending(w => w.Value).ElementAt(0).Key;
                                     if (OppToMark1.HasValue && retID.HasValue && OppToMark1.Value != retID.Value)
                                     {
@@ -1288,11 +1288,11 @@ namespace MRL.SSL.AIConsole.Engine
                                             OppToMark2Fake = null;
                                         }
                                     }
-                                    #endregion
+        #endregion
                                 }
-                                #endregion
+        #endregion
 
-                                #region tempRegion
+        #region tempRegion
                                 if (tempRegionLeft.Count > 0)
                                 {
                                     retIDRegion = Engine.GameInfo.OppTeam.Scores.Where(q => tempRegionLeft.Contains(q.Key)).OrderByDescending(w => w.Value).ElementAt(0).Key;
@@ -1321,10 +1321,10 @@ namespace MRL.SSL.AIConsole.Engine
                                     //    retID = retIDRegion.Value;
                                     //}
                                 }
-                                #endregion
+        #endregion
                             }
-                            #endregion
-                            #region we have one marker
+        #endregion
+        #region we have one marker
                             else
                             {
                                 mostSignificateRightSideOpp = oppRobots.ToList();
@@ -1368,14 +1368,14 @@ namespace MRL.SSL.AIConsole.Engine
                                     }
                                 }
                             }
-                            #endregion
+        #endregion
                             //return retID;
                         }
                     }
-                    #endregion
+        #endregion
                 }
 
-                #region region markID To opp markID
+        #region region markID To opp markID
                 //if (retIDRegion.HasValue)
                 //{
                 //    if (!OppToMark1.HasValue)
@@ -1401,7 +1401,7 @@ namespace MRL.SSL.AIConsole.Engine
                 //{
                 //    retID = null;
                 //}
-                #endregion
+        #endregion
 
 
                 return retID;
@@ -3956,17 +3956,17 @@ namespace MRL.SSL.AIConsole.Engine
 
             return res;
         }
-        public static Dictionary<int,Position2D> OverlapSolvingOnlinRoles( Position2D zeroKeyPos , Position2D firstKeyPos)
+        public static Dictionary<int, Position2D> OverlapSolvingOnlinRoles(Position2D zeroKeyPos, Position2D firstKeyPos)
         {
             Dictionary<int, Position2D> ret = new Dictionary<int, Position2D>();
             double robotRedius = RobotParameters.OurRobotParams.Diameter / 2;
             Circle c1 = new Circle(zeroKeyPos, robotRedius);
             Circle c2 = new Circle(firstKeyPos, robotRedius);
 
-            if (c1.Intersect(c2).Count <0)
+            if (c1.Intersect(c2).Count < 0)
             {
-                ret.Add(0,zeroKeyPos);
-                ret.Add(1,firstKeyPos);
+                ret.Add(0, zeroKeyPos);
+                ret.Add(1, firstKeyPos);
             }
             else
             {
@@ -3975,7 +3975,7 @@ namespace MRL.SSL.AIConsole.Engine
                 ret.Add(0, middlePos + extend);
                 ret.Add(1, middlePos - extend);
                 DrawingObjects.AddObject(middlePos);
-                DrawingObjects.AddObject(new Circle(ret[0],robotRedius,new Pen(Color.Red,0.01f)));
+                DrawingObjects.AddObject(new Circle(ret[0], robotRedius, new Pen(Color.Red, 0.01f)));
                 DrawingObjects.AddObject(new Circle(ret[1], robotRedius, new Pen(Color.Red, 0.01f)));
 
                 // create vecor and add to positions and add positions into ret dict
@@ -5237,14 +5237,14 @@ namespace MRL.SSL.AIConsole.Engine
                     {
                         Position2D t = GameParameters.OurGoalRight + new Vector2D(0, RobotParameters.OurRobotParams.Diameter / 1.5);
                         p.Teta = (p.DefenderPosition.Value - t).AngleInDegrees;
-                    } 
+                    }
 
                 }
             });
             return res;
 
         }
-        private static DefenceInfo CalculateFirstStatic(WorldModel Model, SingleObjectState state, int? oppid)
+        private static DefenceInfo CalculateFirstStatic( WorldModel Model, SingleObjectState state, int? oppid)
         {
             SingleWirelessCommand SWC = new SingleWirelessCommand();
             Position2D DefencePos = new Position2D();
@@ -5301,13 +5301,15 @@ namespace MRL.SSL.AIConsole.Engine
                 Line l3 = new Line(GameParameters.OurGoalRight.Extend(-1.20 - distToPenaltyAreaThreshold, -0.6 - distToPenaltyAreaThreshold), GameParameters.OurGoalRight.Extend(0, -0.60 - distToPenaltyAreaThreshold));
                 Position2D centerRobot = new Position2D();
                 double dist, distFrom;
-                bool IsInOurDangerZone = GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0,out dist, out distFrom);
-                DrawingObjects.AddObject(l1);
+                bool IsInOurDangerZone = GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0, out dist, out distFrom);
+              //  DrawingObjects.AddObject(l1);
                 //DrawingObjects.AddObject(l3);
                 //if (GameParameters.IsInField(Model.BallState.Location, 0))
                 //{
                 //    lastBallPos = Model.BallState.Location;
                 //}
+               
+
                 Line intevallToBall = new Line(Position2D.Interpolate(right.Head, left.Head, 0.5), Model.BallState.Location);
                 // DrawingObjects.AddObject(intevallToBall);
 
@@ -5346,7 +5348,7 @@ namespace MRL.SSL.AIConsole.Engine
                 {
                     centerRobot = Model.BallState.Location;
                 }
-                DefencePos = centerRobot ;
+                DefencePos = centerRobot;
             }
             else
             {
@@ -5369,31 +5371,31 @@ namespace MRL.SSL.AIConsole.Engine
             //}
             if (ballState.Location.Y > 0)
             {
-                Vector2D l1 = ball - GameParameters.OurGoalCenter;
-                Vector2D l2 = GameParameters.OurLeftCorner - GameParameters.OurGoalCenter;
-                if (Math.Abs(Vector2D.AngleBetweenInDegrees(l1, l2)) < 13)
-                {
-                    Line tmpL = new Line(st, GameParameters.OurGoalCenter.Extend(0, 0.005));
-                    List<Position2D> poses = C1.Intersect(tmpL);
-                    minDist = double.MaxValue;
-                    for (int i = 0; i < poses.Count; i++)
-                    {
-                        if ((poses[i].DistanceFrom(state.Location) < minDist))
-                        {
-                            DefencePos = poses[i];
-                            minDist = poses[i].DistanceFrom(state.Location);
-                        }
-                    };
-                }
+                //Vector2D l1 = ball - GameParameters.OurGoalCenter;
+                //Vector2D l2 = GameParameters.OurLeftCorner - GameParameters.OurGoalCenter;
+                //if (Math.Abs(Vector2D.AngleBetweenInDegrees(l1, l2)) < 13)
+                //{
+                //    Line tmpL = new Line(st, GameParameters.OurGoalCenter.Extend(0, 0.005));
+                //    List<Position2D> poses = C1.Intersect(tmpL);
+                //    minDist = double.MaxValue;
+                //    for (int i = 0; i < poses.Count; i++)
+                //    {
+                //        if ((poses[i].DistanceFrom(state.Location) < minDist))
+                //        {
+                //            DefencePos = poses[i];
+                //            minDist = poses[i].DistanceFrom(state.Location);
+                //        }
+                //    };
+                //}
             }
             else
             {
-                Vector2D l1 = ball - GameParameters.OurGoalCenter;
-                Vector2D l2 = GameParameters.OurRightCorner - GameParameters.OurGoalCenter;
-                if (Math.Abs(Vector2D.AngleBetweenInDegrees(l1, l2)) < 13 || ball.X > GameParameters.OurGoalCenter.X - 0.09)
-                {
-                    DefencePos = GameParameters.OurGoalCenter + Vector2D.FromAngleSize(-1.79, radi);
-                }
+                //Vector2D l1 = ball - GameParameters.OurGoalCenter;
+                //Vector2D l2 = GameParameters.OurRightCorner - GameParameters.OurGoalCenter;
+                //if (Math.Abs(Vector2D.AngleBetweenInDegrees(l1, l2)) < 13 || ball.X > GameParameters.OurGoalCenter.X - 0.09)
+                //{
+                //    DefencePos = GameParameters.OurGoalCenter + Vector2D.FromAngleSize(-1.79, radi);
+                //}
             }
             //}
             //else
@@ -5564,32 +5566,32 @@ namespace MRL.SSL.AIConsole.Engine
 
             if (ball.Y < 0)
             {
-                Vector2D l1 = ball - GameParameters.OurGoalCenter;
-                Vector2D l2 = GameParameters.OurRightCorner - GameParameters.OurGoalCenter;
-                if (Math.Abs(Vector2D.AngleBetweenInDegrees(l1, l2)) < 13)
-                {
-                    Line tmpL = new Line(st, GameParameters.OurGoalCenter.Extend(0, 0.005));
-                    List<Position2D> poses = C1.Intersect(tmpL);
-                    minDist = double.MaxValue;
-                    for (int i = 0; i < poses.Count; i++)
-                    {
-                        if ((poses[i].DistanceFrom(state.Location) < minDist))
-                        {
-                            DefencePos = poses[i];
-                            minDist = poses[i].DistanceFrom(st);
-                        }
-                    };
+                //Vector2D l1 = ball - GameParameters.OurGoalCenter;
+                //Vector2D l2 = GameParameters.OurRightCorner - GameParameters.OurGoalCenter;
+                //if (Math.Abs(Vector2D.AngleBetweenInDegrees(l1, l2)) < 13)
+                //{
+                //    Line tmpL = new Line(st, GameParameters.OurGoalCenter.Extend(0, 0.005));
+                //    List<Position2D> poses = C1.Intersect(tmpL);
+                //    minDist = double.MaxValue;
+                //    for (int i = 0; i < poses.Count; i++)
+                //    {
+                //        if ((poses[i].DistanceFrom(state.Location) < minDist))
+                //        {
+                //            DefencePos = poses[i];
+                //            minDist = poses[i].DistanceFrom(st);
+                //        }
+                //    };
 
-                }
+                //}
             }
             else
             {
-                Vector2D l1 = ballState.Location - GameParameters.OurGoalCenter;
-                Vector2D l2 = GameParameters.OurLeftCorner - GameParameters.OurGoalCenter;
-                if (Math.Abs(Vector2D.AngleBetweenInDegrees(l1, l2)) < 13 || ball.X > GameParameters.OurGoalCenter.X - 0.09)
-                {
-                    DefencePos = GameParameters.OurGoalCenter + Vector2D.FromAngleSize(1.79, radi);
-                }
+                //Vector2D l1 = ballState.Location - GameParameters.OurGoalCenter;
+                //Vector2D l2 = GameParameters.OurLeftCorner - GameParameters.OurGoalCenter;
+                //if (Math.Abs(Vector2D.AngleBetweenInDegrees(l1, l2)) < 13 || ball.X > GameParameters.OurGoalCenter.X - 0.09)
+                //{
+                //    DefencePos = GameParameters.OurGoalCenter + Vector2D.FromAngleSize(1.79, radi);
+                //}
 
             }
             //}
