@@ -140,6 +140,7 @@
     <Compile Include="Merger and Tracker\GlobalMerger.cs" />
     <Compile Include="Merger and Tracker\HiddenBallGuesser.cs" />
     <Compile Include="Merger and Tracker\NewMerger\Merger.cs" />
+    <Compile Include="Merger and Tracker\NewMerger\MergerObjects.cs" />
     <Compile Include="Merger and Tracker\Utillity.cs" />
     <Compile Include="Plays\ComeHereNewPlay.cs" />
     <Compile Include="Plays\ComponentsTestPlay.cs" />

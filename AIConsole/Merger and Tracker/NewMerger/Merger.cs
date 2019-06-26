@@ -476,7 +476,8 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         int firstRunCounter = 0;
         Dictionary<int, double> diffTimes = new Dictionary<int, double>();
         List<int> lastAvailableCameras = new List<int>();
-        public bool Merge(SSL_WrapperPacket Packet, ref frame Frame, ref frame newFrame, bool isYellow)
+        CmuMerger cmuMerger = new CmuMerger();
+        public bool Merge(SSL_WrapperPacket Packet, ref frame Frame, ref frame newFrame, bool isYellow, Position2D selectedBall, bool selectedBallChanged)
         {
             //DrawingObjects.AddObject(new Circle(Vision2AI(new Position2D(-1994, -487), false), StaticVariables.BALL_RADIUS, new Pen(Color.Red, 0.01f)), "badssdddscdsll");
             //DrawingObjects.AddObject(new Circle(Vision2AI(new Position2D(-1984, -427), false), StaticVariables.BALL_RADIUS, new Pen(Color.Red, 0.01f)), "badscsdll");
@@ -527,6 +528,9 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 else
                     sslPackets.Add(Packet.detection.camera_id, Packet);
             }
+
+         
+
             if (sslPackets.Count < MergerParameters.AvailableCamIds.Count)
                 return false;
 
@@ -585,7 +589,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             }
             if (sslPackets.Count > 0)
                 Frame.timeofcapture /= (double)sslPackets.Count;
-            
+
             #endregion
 
             int counterBall = 0;
@@ -595,6 +599,13 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             Balls = new Dictionary<uint, vraw>();
             foreach (var pack in sslPackets)
             {
+                cmuMerger.UpdateVision(pack.Value.detection, isYellow, selectedBall, selectedBallChanged);
+                if (cmuMerger.World.Balls.Count > 0)
+                {
+                    var ball = cmuMerger.World.Balls[0].vision.pos;
+                    ball = Vision2AI(ball, false);
+                    DrawingObjects.AddObject(new Circle(ball, 0.04, new Pen(Color.RosyBrown, 0.01f)), "cmu ball");
+                }
                 List<SSL_DetectionRobot> ourRobotsPacket, oppRobotsPacket;
                 if (isYellow)
                 {
@@ -740,7 +751,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                     MathMatrix ourRobotPos;
 
                     double confidence = 0;
-                    double time =0;
+                    double time = 0;
                     double x = 0, y = 0;
                     foreach (var ball in item)
                     {

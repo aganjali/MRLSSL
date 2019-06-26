@@ -42,6 +42,8 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         PointF lastShadow_Location;
         WorldModel Model = null;
         public uint selectedBall_Index;
+        private bool ballIndexChanged;
+        private Position2D selectedBall_Loc;
         private bool cameras_notset = true;
         private int shadow_counter = 0;
         private Dictionary<uint, vball> OtherBalls = new Dictionary<uint, vball>(10);
@@ -109,6 +111,8 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             if (ballIndex.HasValue)
             {
                 selectedBall_Index = (uint)ballIndex.Value;
+                ballIndexChanged = true;
+                selectedBall_Loc = pos;
             }
             else
             {
@@ -724,7 +728,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             WorldModel model = null;
             frame newFrame = new frame();
             CameraParameters(Packet);
-            bool merged = merger.Merge(Packet, ref Frame, ref newFrame, isYellow);
+            bool merged = merger.Merge(Packet, ref Frame, ref newFrame, isYellow, Position2D.Zero, false);
 
             if (merged)
             {
@@ -770,7 +774,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             // try
             // {
             //merged = merger.Merge4cam(Packet, ref Frame, ref newFrame, isYellow);
-            merged = merger.Merge(Packet, ref Frame, ref newFrame, isYellow);
+            merged = merger.Merge(Packet, ref Frame, ref newFrame, isYellow, selectedBall_Loc, ballIndexChanged);
             //}
             //catch (Exception ex)
             //{
@@ -779,6 +783,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             //}
             if (merged)
             {
+                ballIndexChanged = false;
                 visionFrame = Frame;
                 if (RobotType == TrackerType.Accurate || BallType == TrackerType.Accurate)
                 {

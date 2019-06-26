@@ -18,8 +18,8 @@ namespace MRL.SSL.GameDefinitions
         public static double MaxPredictTime = 10;
         public static int MaxBalls = 16;
         public static double LATENCY_DELAY = 0.01666666666666666666666666666667;
-        public static double FRAME_RATE = 60.0;
-        public static double FRAME_PERIOD = (1.0 / FRAME_RATE);
+        public static float FRAME_RATE = 60.0f;
+        public static float FRAME_PERIOD = (1.0f / FRAME_RATE);
         public static double ROBOT_PRINT_KALMAN_ERROR = 0;
         public static int ROBOT_FAST_PREDICT = 0;
         public static int ROBOT_USE_AVERAGES_IN_PROPAGATION = 0;
