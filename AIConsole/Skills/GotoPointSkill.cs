@@ -13,6 +13,7 @@ namespace MRL.SSL.AIConsole.Skills
     {
         SingleWirelessCommand SRC;
         public bool IsInFieald = true;
+        private static Dictionary<int, List<Obstacle>> VirtualObstacles = new Dictionary<int, List<Obstacle>>();
         public GotoPointSkill()
         {
             SRC = new SingleWirelessCommand();
@@ -27,7 +28,7 @@ namespace MRL.SSL.AIConsole.Skills
 
         public SingleWirelessCommand GotoPoint(WorldModel Model, int RobotID, Position2D TargetLocation, double Teta, bool AvoidObstacles, bool AvoidBall)
         {
-            Planner.Add(RobotID, new SingleObjectState(TargetLocation, Vector2D.Zero, (float)Teta), PathType.UnSafe, AvoidBall, AvoidObstacles, true,true);
+            Planner.Add(RobotID, new SingleObjectState(TargetLocation, Vector2D.Zero, (float)Teta), PathType.UnSafe, AvoidBall, AvoidObstacles, true, true);
             return SRC;
         }
 
@@ -38,10 +39,14 @@ namespace MRL.SSL.AIConsole.Skills
             Planner.Add(RobotID, new SingleObjectState(TargetLocation, Vector2D.Zero, (float)Teta), PathType.UnSafe, AvoidBall, AvoidObstacles, IsInFieald);
             return SRC;
         }
-
         public SingleWirelessCommand GotoPoint(WorldModel Model, int RobotID, Position2D TargetLocation, double Teta, bool AvoidObstacles, bool AvoidBall, double MaxSpeed, bool DontGoInDangerZone)
         {
             Planner.Add(RobotID, new SingleObjectState(TargetLocation, Vector2D.Zero, (float)Teta), PathType.UnSafe, AvoidBall, AvoidObstacles, DontGoInDangerZone);
+            return SRC;
+        }
+        public SingleWirelessCommand GotoPoint(WorldModel Model, int RobotID, Position2D TargetLocation, double Teta, bool AvoidObstacles, bool AvoidBall, double MaxSpeed, bool DontGoInDangerZone, bool DontGoInDangerZoneOpp, bool Spin, List<Obstacle> otherObs)
+        {
+            Planner.Add(RobotID, TargetLocation, Teta, PathType.Safe, AvoidBall, AvoidObstacles, DontGoInDangerZone, DontGoInDangerZoneOpp, Spin, otherObs);
             return SRC;
         }
         public SingleWirelessCommand GotoPointTrack(WorldModel Model, int RobotID, Position2D TargetLocation, double Teta, bool AvoidObstacles, bool AvoidBall, Vector2D finalv)

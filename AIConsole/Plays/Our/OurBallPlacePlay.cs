@@ -180,8 +180,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 catchBool = true;
                 Planner.ChangeDefaulteParams(catcherID.Value, false);
                 Planner.SetParameter(catcherID.Value, 3, 1.5);
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, catcherID, typeof(BallPalcementCatcher)))
-                    Functions[catcherID.Value] = (eng, wmd) => GetRole<BallPalcementCatcher>(catcherID.Value).Perform(engine, Model, catcherID.Value);
+                //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, catcherID, typeof(BallPalcementCatcher)))
+                //    Functions[catcherID.Value] = (eng, wmd) => GetRole<BallPalcementCatcher>(catcherID.Value).Perform(engine, Model, catcherID.Value,sho);
             }
 
             List<int> tempDick = new List<int>(); 

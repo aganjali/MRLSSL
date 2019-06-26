@@ -15,21 +15,15 @@ namespace MRL.SSL.AIConsole.Plays
 {
     class ourBallPalcmentPlay : PlayBase
     {
-        bool flag = true;
-        bool first = true, passed = true;
-        int? CatcherID, ShooterID;
-        const double faildBallMovedDist = 0.06;
-        Position2D firstBallPos;
+        Vector2D vec1 = new Vector2D();
+        const double faildBallMovedDist = 0.06, initDist = 0.22;
+        Position2D jj;
+        public int CurrentState;
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
-            if (Model.Status == GameStatus.BallPlace_OurTeam)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+                //return Model.Status == GameStatus.Normal;
+
+            return Model.Status == GameStatus.BallPlace_OurTeam;
         }
         #region comment
         /* private void AssignIDs(GameStrategyEngine engine, WorldModel Model, Dictionary<int, SingleObjectState> att)
@@ -64,117 +58,131 @@ namespace MRL.SSL.AIConsole.Plays
         #endregion
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
+           // StaticVariables.ballPlacementPos = new Position2D(-4, -1);
+            DrawingObjects.AddObject(new Circle(StaticVariables.ballPlacementPos, 0.7, new Pen(Color.HotPink, 0.01f)), "asghar");
+            DrawingObjects.AddObject(new Circle(StaticVariables.ballPlacementPos, 0.1, new Pen(Color.White, 0.01f)), "akbar");
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
-            firstBallPos = Model.BallState.Location;
-            #region First
-            if (flag)
-            {
-                if (Model.BallState.Location.DistanceFrom(firstBallPos) > faildBallMovedDist)
-                {
-                    flag = false;
-                }
-                //if (Model.FieldIsInverted)
-                //    StaticVariables.ballPlacementPos = new Position2D(-StaticVariables.ballPlacementPos.X / 1000, StaticVariables.ballPlacementPos.Y / 1000);
-                //else
-                //    StaticVariables.ballPlacementPos = new Position2D(StaticVariables.ballPlacementPos.X / 1000, -StaticVariables.ballPlacementPos.Y / 1000);
-                CatcherID = null;
-                ShooterID = null;
-                double min = double.MaxValue;
-                foreach (var item in Model.OurRobots.Keys)
-                {
-                    if (!(Model.GoalieID.HasValue && item == Model.GoalieID.Value))
-                    {
-                        if (Model.OurRobots[item].Location.DistanceFrom(Model.BallState.Location) < min)
-                        {
-                            min = Model.OurRobots[item].Location.DistanceFrom(Model.BallState.Location);
-                            ShooterID = item;
-                        }
-                    }
-                }
-                min = double.MaxValue;
-                foreach (var item in Model.OurRobots.Keys)
-                {
-                    if (!(Model.GoalieID.HasValue && item == Model.GoalieID.Value) && !(ShooterID.HasValue && item == ShooterID.Value))
-                    {
-                        if (Model.OurRobots[item].Location.DistanceFrom(StaticVariables.ballPlacementPos) < min)
-                        {
-                            min = Model.OurRobots[item].Location.DistanceFrom(StaticVariables.ballPlacementPos);
-                            CatcherID = item;
-                        }
-                    }
-                }
 
-                DrawingObjects.AddObject(new StringDraw("ShooterID= " + ShooterID, new Position2D(4.5, 5)), "ShooterID");
-                DrawingObjects.AddObject(new StringDraw("CatcherID= " + CatcherID, new Position2D(4, 5)), "CatcherID");
+            Circle ballToAvoid = new Circle();
+            Circle targetToAvoid = new Circle();
+            Circle ballPlacementPos = new Circle();
+            Line lineToAvoid = new Line();
+            Line line1 = new Line();
+            Line line2 = new Line();
+            Line line11 = new Line();
+            Line line22 = new Line();
+            Line ourGoalBall = new Line();
+            #region m
+            Vector2D vec = StaticVariables.ballPlacementPos - Model.BallState.Location;
+            Vector2D exVec1 = Vector2D.FromAngleSize(vec.AngleInRadians + Math.PI / 2, 0.5);
+            Vector2D exVec2 = Vector2D.FromAngleSize(vec.AngleInRadians - Math.PI / 2, 0.5);
+            Vector2D exVec11 = Vector2D.FromAngleSize(vec.AngleInRadians + Math.PI, 0.5);
+            Vector2D exVec22 = Vector2D.FromAngleSize(vec.AngleInRadians - Math.PI, 0.5);
+            Vector2D vecc = Model.BallState.Location - StaticVariables.ballPlacementPos;
+            Vector2D exVec111 = Vector2D.FromAngleSize(vecc.AngleInRadians + Math.PI, 0.5);
+            Vector2D exVec222 = Vector2D.FromAngleSize(vecc.AngleInRadians - Math.PI, 0.5);
+            line11 = new Line(Model.BallState.Location + exVec1 + exVec11, Model.BallState.Location + exVec2 + exVec22);
+            line22 = new Line(StaticVariables.ballPlacementPos + exVec1 + exVec111, StaticVariables.ballPlacementPos + exVec2 + exVec222);
+            line1 = new Line(Model.BallState.Location + exVec1 + exVec11, StaticVariables.ballPlacementPos + exVec1 + exVec111);
+            line2 = new Line(Model.BallState.Location + exVec2 + exVec22, StaticVariables.ballPlacementPos + exVec2 + exVec222);
+            ourGoalBall = new Line(GameParameters.OurGoalCenter, StaticVariables.ballPlacementPos);
+            #region Debug
+            if (true)
+            {
+                line1.DrawPen = new Pen(Color.Red, 0.02f);
+                line2.DrawPen = new Pen(Color.Blue, 0.02f);
+                DrawingObjects.AddObject(line1);
+                DrawingObjects.AddObject(line2);
+                line11.DrawPen = new Pen(Color.Black, 0.02f);
+                line22.DrawPen = new Pen(Color.Pink, 0.02f);
+                DrawingObjects.AddObject(line11);
+                DrawingObjects.AddObject(line22);
+                DrawingObjects.AddObject(new Circle(Model.BallState.Location + exVec22, 0.04, new Pen(Color.Blue, 0.01f)), "ballcirc");
+                DrawingObjects.AddObject(new Circle(StaticVariables.ballPlacementPos + exVec222, 0.04, new Pen(Color.Black, 0.01f)), "ballcircl");
+            }
             #endregion
-                double d = Model.OurRobots[ShooterID.Value].Location.DistanceFrom(StaticVariables.ballPlacementPos);
-                Planner.Add(ShooterID.Value, Model.BallState.Location, (StaticVariables.ballPlacementPos - Model.BallState.Location).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-                if (d < 5)
-                {
-                    Planner.AddKick(ShooterID.Value, d);
-                    DrawingObjects.AddObject(new StringDraw("d1= " + CatcherID, new Position2D(4, 5)), "d1");
-                }
-                else
-                {
-                    Planner.AddKick(ShooterID.Value, 5);
-                    DrawingObjects.AddObject(new StringDraw("d2= " + CatcherID, new Position2D(4, 5)), "d2");
-                }
-
-                Position2D p1, p2;
-                double dist1, dist2;
-                Position2D tar;
-                Circle C = new Circle(StaticVariables.ballPlacementPos, 0.7);
-                DrawingObjects.AddObject(new Circle(StaticVariables.ballPlacementPos, 0.7, new Pen(Color.Red, 0.01f)), "C");
-                Line line = new Line(Model.BallState.Location, StaticVariables.ballPlacementPos);
-                List<Position2D> pos = C.Intersect(line);
-                p1 = pos.First();
-                p2 = pos.Last();
-
-                dist1 = Model.BallState.Location.DistanceFrom(p1);
-                dist2 = Model.BallState.Location.DistanceFrom(p2);
-                if (dist1 < dist2)
-                {
-                    tar = p2;
-                    DrawingObjects.AddObject(new Circle(p2, 0.04, new Pen(Color.Yellow, 0.01f)), "p2c");
-                }
-                else
-                {
-                    tar = p1;
-                    DrawingObjects.AddObject(new Circle(p1, 0.04, new Pen(Color.White, 0.01f)), "p1c");
-                }
-
-                Planner.Add(CatcherID.Value, tar, (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-            }
-            if (!flag)
-            {
-                if (Model.BallState.Location.DistanceFrom(Model.OurRobots[ShooterID.Value].Location) > 0.9)
-                {
-                    Planner.Add(ShooterID.Value, Model.BallState.Location, (StaticVariables.ballPlacementPos - Model.BallState.Location).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-                    Planner.Add(CatcherID.Value, Model.BallState.Location, (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-                    if (Model.OurRobots[ShooterID.Value].Location.DistanceFrom(Model.BallState.Location) < 0.1 && Model.OurRobots[CatcherID.Value].Location.DistanceFrom(Model.BallState.Location) < 0.1 && Model.OurRobots[CatcherID.Value].Location.DistanceFrom(Model.OurRobots[ShooterID.Value].Location) < 0.2)
-                    {
-                        Planner.Add(ShooterID.Value, StaticVariables.ballPlacementPos, (StaticVariables.ballPlacementPos - Model.BallState.Location).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-                        Planner.Add(CatcherID.Value, StaticVariables.ballPlacementPos, (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-                    }
-                }
-            }
-            //if (Model.BallState.Location.DistanceFrom(Model.OurRobots[ShooterID.Value].Location) > 0.9)
-            //{
-            //    Planner.Add(ShooterID.Value, Model.BallState.Location, (StaticVariables.ballPlacementPos - Model.BallState.Location).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-            //    Planner.Add(CatcherID.Value, Model.BallState.Location, (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-            //    if (Model.OurRobots[ShooterID.Value].Location.DistanceFrom(Model.BallState.Location) < 0.1 && Model.OurRobots[CatcherID.Value].Location.DistanceFrom(Model.BallState.Location) < 0.1 && Model.OurRobots[CatcherID.Value].Location.DistanceFrom(Model.OurRobots[ShooterID.Value].Location) < 0.2)
-            //    {
-            //        Planner.Add(ShooterID.Value, StaticVariables.ballPlacementPos, (StaticVariables.ballPlacementPos - Model.BallState.Location).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-            //        Planner.Add(CatcherID.Value, StaticVariables.ballPlacementPos, (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-            //    }
-            //}
+            #endregion
+            NormalDefenceAssigner def = new Engine.NormalDefenceAssigner();
             Dictionary<RoleBase, Position2D?> Positions = new Dictionary<RoleBase, Position2D?>();
             Dictionary<RoleBase, double> Angles = new Dictionary<RoleBase, double>();
             bool isInDangerZone = false;
-            double d1, d2;
-            if (GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out d1, out d2))
+            double d, d2;
+            RoleBase rt;
+            List<RoleInfo> roles = new List<RoleInfo>();
+            if (GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out d, out d2))
                 isInDangerZone = true;
+            rt = typeof(BallPalcementCatcher).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 2, 0));
+            rt = typeof(BallPalcementShooter).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 2, 0));
+            if (!isInDangerZone)
+            {
+                def.Assign(engine, Model, out Positions, out Angles, false, false, false, false);
+                rt = typeof(palcment1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                roles.Add(new RoleInfo(rt, 1, 0));
+                rt = typeof(palcment2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                roles.Add(new RoleInfo(rt, 1, 0));
+            }
+            else
+            {
+                rt = typeof(DefenderStopRole1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                roles.Add(new RoleInfo(rt, 1, 0));
+                rt = typeof(DefenderStopRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                roles.Add(new RoleInfo(rt, 1, 0));
+            }
+            rt = typeof(palcment3).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 1, 0));
+
+            rt = typeof(palcment4).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 1, 0));
+
+            rt = typeof(palcment5).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 1, 0));
+            
+
+            Dictionary<int, RoleBase> matched;
+
+            if (Model.GoalieID.HasValue)
+                matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.Where(w => w != Model.GoalieID.Value).ToList(), roles, PreviouslyAssignedRoles);
+            else
+                matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.ToList(), roles, PreviouslyAssignedRoles);
+
+            int? Defender1ID = null;
+
+            if (!isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(palcment1)))
+                Defender1ID = matched.Where(w => w.Value.GetType() == typeof(palcment1)).First().Key;
+            else if (isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(DefenderStopRole1)))
+                Defender1ID = matched.Where(w => w.Value.GetType() == typeof(DefenderStopRole1)).First().Key;
+
+            int? Defender2ID = null;
+            if (!isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(palcment2)))
+                Defender2ID = matched.Where(w => w.Value.GetType() == typeof(palcment2)).First().Key;
+            else if (isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(DefenderStopRole2)))
+                Defender2ID = matched.Where(w => w.Value.GetType() == typeof(DefenderStopRole2)).First().Key;
+
+
+            int? stop1 = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(palcment3)))
+                stop1 = matched.Where(w => w.Value.GetType() == typeof(palcment3)).First().Key;
+
+            int? stop2 = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(palcment4)))
+                stop2 = matched.Where(w => w.Value.GetType() == typeof(palcment4)).First().Key;
+
+            int? stop3 = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(palcment5)))
+                stop3 = matched.Where(w => w.Value.GetType() == typeof(palcment5)).First().Key;
+
+            int? CatcherID = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(BallPalcementCatcher)))
+                CatcherID = matched.Where(w => w.Value.GetType() == typeof(BallPalcementCatcher)).First().Key;
+
+            int? ShooterID = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(BallPalcementShooter)))
+                ShooterID = matched.Where(w => w.Value.GetType() == typeof(BallPalcementShooter)).First().Key;
+
+            
 
             if (!isInDangerZone)
             {
@@ -185,12 +193,96 @@ namespace MRL.SSL.AIConsole.Plays
                 if (Angles.Any(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)))
                     gteta = Angles.Where(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)).First().Value;
 
+                Position2D Def1Pos = new Position2D();
+                double d1teta = 0;
+                if (Positions.Any(w => w.Key.GetType() == typeof(palcment1)))
+                    Def1Pos = Positions.Where(w => w.Key.GetType() == typeof(palcment1)).First().Value.Value;
+                if (Angles.Any(w => w.Key.GetType() == typeof(palcment1)))
+                    d1teta = Angles.Where(w => w.Key.GetType() == typeof(palcment1)).First().Value;
+
+                Position2D Def2Pos = new Position2D();
+                double d2teta = 0;
+                if (Positions.Any(w => w.Key.GetType() == typeof(palcment2)))
+                    Def2Pos = Positions.Where(w => w.Key.GetType() == typeof(palcment2)).First().Value.Value;
+                if (Angles.Any(w => w.Key.GetType() == typeof(palcment2)))
+                    d2teta = Angles.Where(w => w.Key.GetType() == typeof(palcment2)).First().Value;
+
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, ShooterID, typeof(BallPalcementShooter)))
+                    Functions[ShooterID.Value] = (eng, wmd) => GetRole<BallPalcementShooter>(ShooterID.Value).Perform(eng, wmd, ShooterID.Value, CatcherID.Value, 0);
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, CatcherID, typeof(BallPalcementCatcher)))
+                    Functions[CatcherID.Value] = (eng, wmd) => GetRole<BallPalcementCatcher>(CatcherID.Value).Perform(eng, wmd, CatcherID.Value, ShooterID.Value, 1);
+
+
+
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(GoaliBallPalcmentRole)))
                     Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<GoaliBallPalcmentRole>(Model.GoalieID.Value).RunStop(eng, wmd, Model.GoalieID.Value, GoaliPos, (Model.BallState.Location - Model.OurRobots[Model.GoalieID.Value].Location).AngleInDegrees);
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender1ID, typeof(palcment1)))
+                {
+
+                    Planner.ChangeDefaulteParams(Defender1ID.Value, false);
+                    Planner.SetParameter(Defender1ID.Value, 1.2);
+                    Functions[Defender1ID.Value] = (eng, wmd) => GetRole<palcment1>(Defender1ID.Value).RunStop(eng, wmd, Defender1ID.Value, Def1Pos, d1teta);
+
+                }
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender2ID, typeof(palcment2)))
+                {
+                    Planner.ChangeDefaulteParams(Defender2ID.Value, false);
+                    Planner.SetParameter(Defender2ID.Value, 1.2);
+                    Functions[Defender2ID.Value] = (eng, wmd) => GetRole<palcment2>(Defender2ID.Value).RunStop(eng, wmd, Defender2ID.Value, Def2Pos, d2teta);
+
+                }
             }
+            else
+            {
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(GoalieStopRole)))
+                    Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<GoalieStopRole>(Model.GoalieID.Value).PositioningStop(eng, wmd, Model.GoalieID.Value);
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender1ID, typeof(DefenderStopRole1)))
+                    Functions[Defender1ID.Value] = (eng, wmd) => GetRole<DefenderStopRole1>(Defender1ID.Value).PositioningStop(engine, Model, Defender1ID.Value, true, 150);
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender2ID, typeof(DefenderStopRole2)))
+                    Functions[Defender2ID.Value] = (eng, wmd) => GetRole<DefenderStopRole2>(Defender2ID.Value).PositioningStop(engine, Model, Defender2ID.Value, true, 150);
+            }
+            if (palcment3.targetOverLap3.DistanceFrom(palcment4.targetOverLap4) < 0.12)
+            {
+                vec1 = palcment3.targetOverLap3 - palcment4.targetOverLap4;
+                jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.12) + palcment4.targetOverLap4);
+                palcment4.targetOverLap4 = jj;
+                DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Pink, 0.01f)), "targetoverlap");
+            }
+            //
+            if (palcment3.targetOverLap3.DistanceFrom(palcment5.targetOverLap5) < 0.12)
+            {
+                vec1 = palcment3.targetOverLap3 - palcment5.targetOverLap5;
+                jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.12) + palcment5.targetOverLap5);
+                palcment5.targetOverLap5 = jj;
+                DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Red, 0.01f)), "targetoverlap");
+            }
+            if (palcment4.targetOverLap4.DistanceFrom(palcment5.targetOverLap5) < 0.12)
+            {
+                vec1 = palcment4.targetOverLap4 - palcment5.targetOverLap5;
+                jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.12) + palcment5.targetOverLap5);
+                palcment5.targetOverLap5 = jj;
+                DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Black, 0.01f)), "targetoverlap");
+            }
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop1, typeof(palcment3)))
+                Functions[stop1.Value] = (eng, wmd) => GetRole<palcment3>(stop1.Value).RunRoleStop(eng, wmd, stop1.Value, palcment3.targetOverLap3);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop2, typeof(palcment4)))
+                Functions[stop2.Value] = (eng, wmd) => GetRole<palcment4>(stop2.Value).RunRoleStop(eng, wmd, stop2.Value, palcment4.targetOverLap4);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop3, typeof(palcment5)))
+                Functions[stop3.Value] = (eng, wmd) => GetRole<palcment5>(stop3.Value).RunRoleStop(eng, wmd, stop3.Value);
+
+         
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             return CurrentlyAssignedRoles;
         }
+
 
         public override Dictionary<int, RoleBase> RoleAssigner(GameStrategyEngine engine, WorldModel Model)
         {
@@ -204,9 +296,21 @@ namespace MRL.SSL.AIConsole.Plays
 
         public override void ResetPlay(WorldModel Model, GameStrategyEngine engine)
         {
-            flag = true;
+           
             //StaticVariables.ballPlacementPos=Position2D.Zero;
-
+            CurrentState = (int)State.id1;
+            //if (catcherID.HasValue)
+            //    GetRole<BallPalcementCatcher>(placerID.Value).Reset();
+        }
+        enum State
+        {
+            id1,
+            positionning,
+            pass,
+            id2,
+            eatBall,
+            moveToBalll,
+            fainal
         }
     }
 }

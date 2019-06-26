@@ -27,7 +27,7 @@ namespace MRL.SSL.AIConsole.Skills
 
         #endregion
 
-        public void perform(GameStrategyEngine engine, WorldModel Model, int catcherID, bool PassIsChip, Position2D incomingBallTarget, bool IsSpin,int finishDelay = 60,double distanceToStartRollBack = 0.5, double rollBackLength = 0.15 )
+        public void perform(GameStrategyEngine engine, WorldModel Model, int catcherID, bool PassIsChip, Position2D incomingBallTarget, bool IsSpin, int finishDelay = 60, double distanceToStartRollBack = 0.5, double rollBackLength = 0.15)
         {
             Planner.ChangeDefaulteParams(catcherID, false);
             Planner.SetParameter(catcherID, 3, 1.5);
@@ -35,7 +35,7 @@ namespace MRL.SSL.AIConsole.Skills
             if (startFlag)
                 processOnce(Model, incomingBallTarget);
             MyCurrentState = ((state)currentState).ToString();
-            findPassLoc(Model, catcherID,  incomingBallTarget);
+            findPassLoc(Model, catcherID, incomingBallTarget);
             //drawOBJ(Model, catcherID);
             if (currentState == (int)state.goToPassTarget)
             {
@@ -56,8 +56,8 @@ namespace MRL.SSL.AIConsole.Skills
                 isSpinBack = true;
                 angle = (finalPassVec).AngleInDegrees;
                 target = PredictedBallPos;
-                Math.Exp(-(Model.BallState.Speed.Size - 0.02) * (Model.BallState.Speed.Size - 0.02) / (ActiveParameters.KpxVySide * ActiveParameters.KpxVySide));
-                roleBackVec = (Model.BallState.Speed.Size < 2.2  || PassIsChip ) ? (-finalPassVec).GetNormalizeToCopy(-0.05) : (-finalPassVec).GetNormalizeToCopy(rollBackLength);
+                //Math.Exp(-(Model.BallState.Speed.Size - 0.02) * (Model.BallState.Speed.Size - 0.02) / (ActiveParameters.KpxVySide * ActiveParameters.KpxVySide));
+                roleBackVec = (Model.BallState.Speed.Size < 0.7 || PassIsChip) ? (-finalPassVec).GetNormalizeToCopy(-0.05) : (-finalPassVec).GetNormalizeToCopy(rollBackLength);
 
                 if (Model.BallState.Location.DistanceFrom(Model.OurRobots[catcherID].Location) < distanceToStartRollBack)
                 {
@@ -78,10 +78,10 @@ namespace MRL.SSL.AIConsole.Skills
                 //isSpinBack = IsSpin;
                 //if (Model.OurRobots[catcherID].Location.DistanceFrom(target) < 0.15)
                 //{
-                    
+
                 //}
                 if ((Model.BallState.Speed.Size < 1.5 && Model.BallState.Location.DistanceFrom(Model.OurRobots[catcherID].Location) < .125
-                    && Model.OurRobots[catcherID].Location.DistanceFrom(target) < 0.10 && Model.OurRobots[catcherID].Speed.Size < 0.1 ) || Model.BallState.Speed.Size < .5)
+                    && Model.OurRobots[catcherID].Location.DistanceFrom(target) < 0.10 && Model.OurRobots[catcherID].Speed.Size < 0.1) || Model.BallState.Speed.Size < .5)
                 {
                     isSpinBack = true;
                     if (stateCounter > finishDelay)
@@ -105,7 +105,7 @@ namespace MRL.SSL.AIConsole.Skills
 
             if (currentState != (int)state.finished && currentState != (int)state.failed)
             {
-                Planner.Add(catcherID, target, angle, PathType.UnSafe, false, true, true, true,true /* isSpinBack */);
+                Planner.Add(catcherID, target, angle, PathType.UnSafe, false, true, false, false, false /* isSpinBack */);
             }
 
         }
@@ -120,10 +120,12 @@ namespace MRL.SSL.AIConsole.Skills
                 {
                     Vector2D vec = new Vector2D();
                     vec = lastBallPos.Last() - Model.BallState.Location;
-                    finalPassVec += (counter / 2) * vec + counter * 5 * (Model.PredictedBall[3 / 60].Location - Model.BallState.Location);
+                    finalPassVec += (counter / 2) * vec + counter / 2 * (Model.PredictedBall[1 / 60].Location - Model.BallState.Location);
                 }
             }
-            //finalPassVec = finalPassVec.GetNormalizeToCopy(1);
+            finalPassVec = finalPassVec.GetNormalizeToCopy(2);
+            DrawingObjects.AddObject(new Line(Model.BallState.Location, Model.BallState.Location + finalPassVec, new Pen(Color.White, 0.01f)));
+            DrawingObjects.AddObject(new Circle(Model.PredictedBall[1 / 60].Location, 0.025, new Pen(Color.White, 0.01f)));
             PredictedBallPos = finalPassVec.PrependecularPoint(Model.BallState.Location, passTarget);
 
         }

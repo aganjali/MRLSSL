@@ -121,7 +121,7 @@ namespace MRL.SSL.AIConsole.Roles
                 inf = FreekickDefence.CurrentInfos.Where(w => w.RoleType == this.GetType()).First();
             double dist, distfromborder;
 
-            if (Model.Status == GameStatus.BallPlace_Opponent && GameParameters.IsInDangerousZone(ballState.Location, false, .5, out dist, out distfromborder) || GameParameters.IsInDangerousZone(StaticVariables.ballPlacementPos, false, .5, out dist, out distfromborder)/* && GameParameters.IsInDangerousZone(ballState.Location, false, .3, out dist, out distfromborder)*/)
+            if ((Model.Status == GameStatus.BallPlace_Opponent  || Model.Status == GameStatus.BallPlace_OurTeam) && GameParameters.IsInDangerousZone(ballState.Location, false, .5, out dist, out distfromborder) || GameParameters.IsInDangerousZone(StaticVariables.ballPlacementPos, false, .5, out dist, out distfromborder)/* && GameParameters.IsInDangerousZone(ballState.Location, false, .3, out dist, out distfromborder)*/)
             {
                 Line ll = new Line();
                 Line line1 = new Line();
@@ -304,7 +304,7 @@ namespace MRL.SSL.AIConsole.Roles
 
 
             }
-            else if (Model.Status == GameStatus.BallPlace_Opponent)
+            else if ((Model.Status == GameStatus.BallPlace_Opponent || Model.Status == GameStatus.BallPlace_OurTeam))
             {
                 //Line Stop1 = new Line(GameParameters.OurGoalCenter.Extend(0, .3), GameParameters.OurGoalCenter.Extend(0, .3) + (ballState.Location - GameParameters.OurGoalCenter.Extend(0, .3)));
                 //Vector2D jdh = ((GameParameters.OurGoalCenter.Extend(0, .3) + (ballState.Location - GameParameters.OurGoalCenter.Extend(0, .3))) - GameParameters.OurGoalCenter.Extend(0, .3));
@@ -637,7 +637,7 @@ namespace MRL.SSL.AIConsole.Roles
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            List<RoleBase> res = new List<RoleBase>() { new palcment2(), new palcment1() };
+            List<RoleBase> res = new List<RoleBase>() { new palcment2()/*, new palcment1()*/ };
 
             return res;
         }
