@@ -12,12 +12,12 @@ namespace MRL.SSL.GameDefinitions
     /// </summary>
     public class GameParameters
     {
-        public static double BorderWidth = 0.01, GoalMouth = 1.00, GoalDepth = 0.18, BallDiameter = 0.043, FieldMarkerDiameter = 0.05, FieldCenterCircleDiameter = 1, DefenceAreaHeight = 1.2, DefenceAreaWidth = 2.4;
+        public static double BorderWidth = 0.01, GoalWidth = 1.2, GoalMouth = 1.00, GoalDepth = 0.18, BallDiameter = 0.043, FieldMarkerDiameter = 0.05, FieldCenterCircleDiameter = 1, DefenceAreaHeight = 1.2, DefenceAreaWidth = 2.4;
         public static double RobotFrontLineAngle = Convert.ToSingle(Math.PI * 180 / (Math.PI * 3)), RobotCenterMarkerRadii = 0.025f;
         public static double PenaltyDistanceFromGoalLine = 1.1;
         public static Color FieldColor = Color.Green, BallColor = Color.Orange, TeamMatesCenterColor = Color.Blue, OpponentCenterColor = Color.Yellow;
 
-        
+
         public static Position2D OurLeftCorner = new Position2D(6, 4.5), OurRightCorner = new Position2D(6, -4.5);
         public static Position2D OppLeftCorner = new Position2D(-6, -4.5), OppRightCorner = new Position2D(-6, 4.5);
 
@@ -46,7 +46,8 @@ namespace MRL.SSL.GameDefinitions
             }
             return FieldLines;
         }
-        public static Position2D? SegmentIntersect(Line l1, Line l2) {
+        public static Position2D? SegmentIntersect(Line l1, Line l2)
+        {
 
             Position2D? intersect = l1.IntersectWithLine(l2);
             if (!intersect.HasValue)
@@ -276,8 +277,9 @@ namespace MRL.SSL.GameDefinitions
         //}
 
         //TODO: DANGER_ZONE CHECK
-        public static double SafeRadi(SingleObjectState target, double margin) {
-            margin  = margin + 0.1;
+        public static double SafeRadi(SingleObjectState target, double margin)
+        {
+            margin = margin + 0.1;
 
 
             Position2D intersect = IntersectWithDangerZone(target.Location, true, margin);
@@ -448,27 +450,27 @@ namespace MRL.SSL.GameDefinitions
             if (TargetLine != null && TargetLine.Head != null)
             {
                 Line leftBound = new Line(new Position2D(GameParameters.OurGoalCenter.X, GameParameters.DefenceAreaWidth / 2)
-                    , new Position2D(GameParameters.OurGoalCenter.X - (GameParameters.DefenceAreaHeight), GameParameters.DefenceAreaWidth / 2 ));
-                Line rightBound = new Line(new Position2D(GameParameters.OurGoalCenter.X, -(GameParameters.DefenceAreaWidth / 2 ))
-                        , new Position2D(GameParameters.OurGoalCenter.X - (GameParameters.DefenceAreaHeight ), -(GameParameters.DefenceAreaWidth / 2)));
+                    , new Position2D(GameParameters.OurGoalCenter.X - (GameParameters.DefenceAreaHeight), GameParameters.DefenceAreaWidth / 2));
+                Line rightBound = new Line(new Position2D(GameParameters.OurGoalCenter.X, -(GameParameters.DefenceAreaWidth / 2))
+                        , new Position2D(GameParameters.OurGoalCenter.X - (GameParameters.DefenceAreaHeight), -(GameParameters.DefenceAreaWidth / 2)));
                 Line frontBound = new Line(leftBound.Tail, rightBound.Tail);
-                
+
                 Position2D? leftIntersect = TargetLine.IntersectWithLine(leftBound);
                 Position2D? rightIntersect = TargetLine.IntersectWithLine(rightBound);
                 Position2D? frontIntersect = TargetLine.IntersectWithLine(frontBound);
-                if (leftIntersect.HasValue 
-                    && Position2D.IsBetween(leftBound.Head, leftBound.Tail, leftIntersect.Value) 
+                if (leftIntersect.HasValue
+                    && Position2D.IsBetween(leftBound.Head, leftBound.Tail, leftIntersect.Value)
                     && Position2D.IsBetween(TargetLine.Head, TargetLine.Tail, leftIntersect.Value))
                     retpos.Add(leftIntersect.Value);
-                
-                if (rightIntersect.HasValue 
+
+                if (rightIntersect.HasValue
                     && Position2D.IsBetween(rightBound.Head, rightBound.Tail, rightIntersect.Value)
                     && Position2D.IsBetween(TargetLine.Head, TargetLine.Tail, rightIntersect.Value))
                     retpos.Add(rightIntersect.Value);
 
-                 if (frontIntersect.HasValue 
-                    && Position2D.IsBetween(frontBound.Head, frontBound.Tail, frontIntersect.Value)
-                    && Position2D.IsBetween(TargetLine.Head, TargetLine.Tail, frontIntersect.Value))
+                if (frontIntersect.HasValue
+                   && Position2D.IsBetween(frontBound.Head, frontBound.Tail, frontIntersect.Value)
+                   && Position2D.IsBetween(TargetLine.Head, TargetLine.Tail, frontIntersect.Value))
                     retpos.Add(frontIntersect.Value);
 
             }
@@ -500,7 +502,7 @@ namespace MRL.SSL.GameDefinitions
         }
         public static double AngleModeR(double a)
         {
-            if (a > Math.PI )
+            if (a > Math.PI)
             {
                 while (a > Math.PI)
                     a -= Math.PI * 2;
@@ -513,7 +515,7 @@ namespace MRL.SSL.GameDefinitions
 
             return a;
         }
-        public static Position2D? RobotHeadPosition(WorldModel Model,int RobotID,bool draw)
+        public static Position2D? RobotHeadPosition(WorldModel Model, int RobotID, bool draw)
         {
             Position2D? p = null;
             bool RobotAngle = Model.OurRobots[RobotID].Angle.HasValue ? true : false;
