@@ -15,7 +15,7 @@ namespace MRL.SSL.AIConsole.Plays
         bool Debug = true;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
-            return false;
+            //return false;
             return Status == GameDefinitions.GameStatus.Normal;
         }
         public SingleObjectState ballState = new SingleObjectState();
@@ -92,11 +92,17 @@ namespace MRL.SSL.AIConsole.Plays
             r = typeof(StaticDefender1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 1, 0));
 
-            if (!NormalSharedState.CommonInfo.AttackerMode)
-            {
-                r = typeof(StaticDefender2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-                roles.Add(new RoleInfo(r, 1, 0));
-            }
+            r = typeof(GerrardRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
+
+            r = typeof(StaticDefender2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
+
+            //if (!NormalSharedState.CommonInfo.AttackerMode)
+            //{
+            //    r = typeof(StaticDefender2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //    roles.Add(new RoleInfo(r, 1, 0));
+            //}
 
 
             if (NormalSharedState.CommonInfo.PickIsFeasible)
@@ -111,21 +117,28 @@ namespace MRL.SSL.AIConsole.Plays
             }
 
 
-            if (!NormalSharedState.CommonInfo.AttackerMode)
-            {
-                r = typeof(NewAttackerRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-                roles.Add(new RoleInfo(r, 0.1, 0));
-            }
-            else
-            {
-                r = typeof(NewAttacker3Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-                roles.Add(new RoleInfo(r, 0.1, 0));
 
-                r = typeof(NewAttacker2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-                roles.Add(new RoleInfo(r, 0.1, 0));
-            }
-            r = typeof(NewRegionalRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(r, 0.1, 0.1));
+            r = typeof(NewAttacker2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 0.1, 0));
+
+            r = typeof(NewAttackerRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 0.1, 0));
+
+            //if (!NormalSharedState.CommonInfo.AttackerMode)
+            //{
+            //    r = typeof(NewAttackerRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //    roles.Add(new RoleInfo(r, 0.1, 0));
+            //}
+            //else
+            //{
+            //    r = typeof(NewAttacker3Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //    roles.Add(new RoleInfo(r, 0.1, 0));
+
+            //    r = typeof(NewAttacker2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //    roles.Add(new RoleInfo(r, 0.1, 0));
+            //}
+            //r = typeof(NewRegionalRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //roles.Add(new RoleInfo(r, 0.1, 0.1));
             //      GameParameters.SafeRadi(new SingleObjectState(new Position2D(2.5, 0), Vector2D.Zero, 0), 0);
 
             Dictionary<int, RoleBase> matched;
@@ -162,11 +175,11 @@ namespace MRL.SSL.AIConsole.Plays
 
 
             int? attacke2ID = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(AttackerRole2017)))
-                attacke2ID = matched.Where(w => w.Value.GetType() == typeof(AttackerRole2017)).First().Key;
-            int? attacker3ID = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(NewAttacker3Role)))
-                attacker3ID = matched.Where(w => w.Value.GetType() == typeof(NewAttacker3Role)).First().Key;
+            if (matched.Any(w => w.Value.GetType() == typeof(NewAttacker2Role)))
+                attacke2ID = matched.Where(w => w.Value.GetType() == typeof(NewAttacker2Role)).First().Key;
+            //int? attacker3ID = null;
+            //if (matched.Any(w => w.Value.GetType() == typeof(NewAttacker3Role)))
+            //    attacker3ID = matched.Where(w => w.Value.GetType() == typeof(NewAttacker3Role)).First().Key;
 
             int? st1 = null;
             if (matched.Any(w => w.Value.GetType() == typeof(StaticDefender1)))
@@ -175,6 +188,11 @@ namespace MRL.SSL.AIConsole.Plays
             int? st2 = null;
             if (matched.Any(w => w.Value.GetType() == typeof(StaticDefender2)))
                 st2 = matched.Where(w => w.Value.GetType() == typeof(StaticDefender2)).First().Key;
+
+
+            int? gerrard = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(GerrardRole)))
+                gerrard = matched.Where(w => w.Value.GetType() == typeof(GerrardRole)).First().Key;
 
             int? nrg = null;
             if (matched.Any(w => w.Value.GetType() == typeof(NewRegionalRole)))
@@ -186,7 +204,7 @@ namespace MRL.SSL.AIConsole.Plays
             #endregion
             NormalSharedState.CommonInfo.ActiveID = getballID;
             NormalSharedState.CommonInfo.SupporterID = supportID;
-            if (!NormalSharedState.CommonInfo.AttackerMode)
+            if (false && !NormalSharedState.CommonInfo.AttackerMode)
             {
                 NormalSharedState.CommonInfo.AttackerID = attackerID;
             }
@@ -213,8 +231,11 @@ namespace MRL.SSL.AIConsole.Plays
             if (st1.HasValue && Model.OurRobots.ContainsKey(st1.Value))
                 DefenceTest.DefenderStaticRole1 = Model.OurRobots[st1.Value].Location;
             DefenceTest.WeHaveDefenderStaticRole1 = true;
+
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, st2, typeof(StaticDefender2)))
                 Functions[st2.Value] = (eng, wmd) => GetRole<StaticDefender2>(st2.Value).Run(engine, Model, st2.Value, second.DefenderPosition.Value, second.Teta, CurrentlyAssignedRoles);
+
+
             if (st2.HasValue && Model.OurRobots.ContainsKey(st2.Value))
                 DefenceTest.DefenderStaticRole2 = Model.OurRobots[st2.Value].Location;
 
@@ -222,8 +243,11 @@ namespace MRL.SSL.AIConsole.Plays
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, supportID, typeof(NewSupporter2Role)))
                 Functions[supportID.Value] = (eng, wmd) => GetRole<NewSupporter2Role>(supportID.Value).Perform(eng, wmd, supportID.Value);
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacke2ID, typeof(AttackerRole2017)))
-                Functions[attacke2ID.Value] = (eng, wmd) => GetRole<AttackerRole2017>(attacke2ID.Value).Perform(eng, wmd, attacke2ID.Value);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacke2ID, typeof(NewAttacker2Role)))
+                Functions[attacke2ID.Value] = (eng, wmd) => GetRole<NewAttacker2Role>(attacke2ID.Value).Perform(eng, wmd, attacke2ID.Value);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, gerrard, typeof(GerrardRole)))
+                Functions[gerrard.Value] = (eng, wmd) => GetRole<GerrardRole>(gerrard.Value).Perform(engine, Model, gerrard.Value);
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, pickerID, typeof(NewPickerRole)))
             {
@@ -240,10 +264,10 @@ namespace MRL.SSL.AIConsole.Plays
 
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacke2ID, typeof(NewAttacker2Role)))
             //    Functions[attacke2ID.Value] = (eng, wmd) => GetRole<NewAttacker2Role>(attacke2ID.Value).Perform(eng, wmd, attacke2ID.Value);
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacker3ID, typeof(NewAttacker3Role)))
-                Functions[attacker3ID.Value] = (eng, wmd) => GetRole<NewAttacker3Role>(attacker3ID.Value).Perform(eng, wmd, attacker3ID.Value);
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, nrg, typeof(NewRegionalRole)))
-                Functions[ nrg.Value] = (eng, wmd) => GetRole<NewRegionalRole>( nrg.Value).Perform(engine,Model,FreekickDefence.Static1ID.Value,FreekickDefence.Static2ID.Value,nrg.Value);
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacker3ID, typeof(NewAttacker3Role)))
+            //    Functions[attacker3ID.Value] = (eng, wmd) => GetRole<NewAttacker3Role>(attacker3ID.Value).Perform(eng, wmd, attacker3ID.Value);
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, nrg, typeof(NewRegionalRole)))
+            //    Functions[ nrg.Value] = (eng, wmd) => GetRole<NewRegionalRole>( nrg.Value).Perform(engine,Model,FreekickDefence.Static1ID.Value,FreekickDefence.Static2ID.Value,nrg.Value);
             #endregion
             FreekickDefence.CalculateStaticPos(engine, Model, CurrentlyAssignedRoles);
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
