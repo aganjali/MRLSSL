@@ -97,8 +97,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
             roles.Add(new RoleInfo(r, 0.1, 0));
 
 
-            r = typeof(GerrardRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(r, 1, 0));
+            //r = typeof(GerrardRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //roles.Add(new RoleInfo(r, 1, 0));
 
             Dictionary<int, RoleBase> matched;
 
@@ -334,8 +334,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
             #endregion
             #region Assigner
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, goalie, typeof(VandersarGoalKeeperRole)))
-                Functions[goalie.Value] = (eng, wmd) => GetRole<VandersarGoalKeeperRole>(goalie.Value).Run(engine, Model, goalie.Value);
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, goalie, typeof(VandersarGoalKeeperRole)))
+            //    Functions[goalie.Value] = (eng, wmd) => GetRole<VandersarGoalKeeperRole>(goalie.Value).Run(engine, Model, goalie.Value);
 
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, getballID, typeof(ActiveRole2017)))
             //    Functions[getballID.Value] = (eng, wmd) => GetRole<ActiveRole2017>(getballID.Value).Perform(engine, Model, getballID.Value, false);

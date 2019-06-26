@@ -214,7 +214,7 @@ namespace MRL.SSL.AIConsole.Skills.GoalieSkills
                 {
                     //11/25/2017 added vahid
                     Position2D? target = null;
-                    if (Math.Acos(Vector2D.InnerProduct((GameParameters.OurGoalRight - GameParameters.OurGoalLeft), -Model.BallState.Speed) / Model.BallState.Speed.Size).ToDegree() <= 145)
+                    if (Math.Acos(Vector2D.InnerProduct((GameParameters.OurGoalRight - GameParameters.OurGoalLeft), -Model.BallState.Speed) / ( Model.BallState.Speed.Size * GameParameters.GoalWidth)).ToDegree() <= 145)
                     {
                         target = GameParameters.OurGoalRight.Extend(-0.12, 0.02);
                     }
@@ -225,18 +225,18 @@ namespace MRL.SSL.AIConsole.Skills.GoalieSkills
                     if (target.HasValue)
                     {
                         DrawingObjects.AddObject(new Circle(target.Value, .13, new System.Drawing.Pen(Brushes.HotPink, .02f)));
-                        //Planner.Add(RobotID, target.Value, (Model.BallState.Location - robotLoc).AngleInDegrees, false);
+                        Planner.Add(RobotID, target.Value, (Model.BallState.Location - robotLoc).AngleInDegrees, false);
                         pos2Go = target.Value;
                         angle = (Model.BallState.Location - robotLoc).AngleInDegrees;
                         return;
                     }
                 }
-                if (robotLoc.Y < intWithGoalLine.Value.Y &&
+                else if (robotLoc.Y < intWithGoalLine.Value.Y &&
                     intWithGoalLine.Value.Y > GameParameters.OurGoalLeft.Y)
                 {
                     //11/25/2017 added vahid
                     Position2D? target = null;
-                    if (Math.Acos(Vector2D.InnerProduct((GameParameters.OurGoalLeft - GameParameters.OurGoalRight), -Model.BallState.Speed) / Model.BallState.Speed.Size).ToDegree() <= 145)
+                    if (Math.Acos(Vector2D.InnerProduct((GameParameters.OurGoalLeft - GameParameters.OurGoalRight), -Model.BallState.Speed) / (Model.BallState.Speed.Size).ToDegree() * GameParameters.GoalWidth) <= 145)
                     {
                         target = GameParameters.OurGoalLeft.Extend(-0.12, -0.02);
                     }
@@ -247,7 +247,7 @@ namespace MRL.SSL.AIConsole.Skills.GoalieSkills
                     if (target.HasValue)
                     {
                         DrawingObjects.AddObject(new Circle(target.Value, .20, new System.Drawing.Pen(Brushes.HotPink, .02f)));
-                        //Planner.Add(RobotID, target.Value, (Model.BallState.Location - robotLoc).AngleInDegrees, false);
+                        Planner.Add(RobotID, target.Value, (Model.BallState.Location - robotLoc).AngleInDegrees, false);
                         pos2Go = target.Value;
                         angle = (Model.BallState.Location - robotLoc).AngleInDegrees;
                         return;
@@ -263,7 +263,7 @@ namespace MRL.SSL.AIConsole.Skills.GoalieSkills
                 horizontalToPrepVec.NormalizeTo(horizontalToPrepVec.Size * 0.2);
                 if ((goalieYLineWithBallSpeedIntersect.Value + horizontalToPrepVec).X < robotLoc.X)
                 {
-                    double tBall = PrepWithBallSpeedIntersect.Value.DistanceFrom(ballLoc) / Model.BallState.Speed.Size;
+                    double tBall = PrepWithBallSpeedIntersect.Value.DistanceFrom(ballLoc) / Model.BallState.Speed.Size ;
                     double tRobot = CalculateTime(Model.OurRobots[RobotID], PrepWithBallSpeedIntersect.Value, 2.2, 3.3);
 
                     if (tRobot <= tBall)
@@ -283,7 +283,7 @@ namespace MRL.SSL.AIConsole.Skills.GoalieSkills
                 if (!Position2D.IsBetween(GameParameters.OurGoalRight, GameParameters.OurGoalLeft, posToGo.Value))
                 {
 
-                    Position2D dangerZoneLineCenter = new Position2D(GameParameters.OurGoalCenter.X - 1, 0);
+                    Position2D dangerZoneLineCenter = new Position2D(GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight, 0);
                     Line RightLine = new Line(GameParameters.OurGoalRight.Extend(-0.05, -0.13), dangerZoneLineCenter);
                     Line LeftLine = new Line(GameParameters.OurGoalLeft.Extend(-0.05, 0.13), dangerZoneLineCenter);
                     if (PrepWithBallSpeedIntersect.HasValue && PrepWithBallSpeedIntersect.Value.X > GameParameters.OurGoalCenter.X - 0.80 && PrepWithBallSpeedIntersect.Value.X < GameParameters.OurGoalCenter.X - 0.12 &&
@@ -293,8 +293,8 @@ namespace MRL.SSL.AIConsole.Skills.GoalieSkills
                     }//todo
                     else
                     {
-                        if (Vector2D.InnerProduct((GameParameters.OurGoalLeft - GameParameters.OurGoalRight), Model.BallState.Speed) / Model.BallState.Speed.Size >= 0 &&
-                        Vector2D.InnerProduct((GameParameters.OurGoalLeft - GameParameters.OurGoalRight), Model.BallState.Speed) / Model.BallState.Speed.Size <= 1)
+                        if (Vector2D.InnerProduct((GameParameters.OurGoalLeft - GameParameters.OurGoalRight), Model.BallState.Speed) / (Model.BallState.Speed.Size * GameParameters.GoalWidth) >= 0 &&
+                        Vector2D.InnerProduct((GameParameters.OurGoalLeft - GameParameters.OurGoalRight), Model.BallState.Speed) / (Model.BallState.Speed.Size * GameParameters.GoalWidth) <= 1)
                         {
                             posToGo = ballSpeedLine.IntersectWithLine(RightLine);
                             DrawingObjects.AddObject(RightLine);
@@ -348,7 +348,7 @@ namespace MRL.SSL.AIConsole.Skills.GoalieSkills
                         //    posToGoExtended = new Position2D(posToGoExtended.X, -posToGoExtended.Y);
                         //    a *= -1;
                         //}
-                        //Planner.Add(RobotID, posToGo.Value, (Model.BallState.Location - robotLoc).AngleInDegrees, false);
+                        Planner.Add(RobotID, posToGo.Value, (Model.BallState.Location - robotLoc).AngleInDegrees, false);
                         Planner.AddKick(RobotID, kickPowerType.Speed, true, 3);
                         pos2Go = posToGo.Value;
                         angle = (Model.BallState.Location - robotLoc).AngleInDegrees;
@@ -367,7 +367,7 @@ namespace MRL.SSL.AIConsole.Skills.GoalieSkills
                 Planner.SetParameter(RobotID, a, 5);
 
 
-                //Planner.Add(RobotID, posToGoExtended, Model.OurRobots[RobotID].Angle.Value, false);
+                Planner.Add(RobotID, posToGoExtended, Model.OurRobots[RobotID].Angle.Value, false);
                 pos2Go = posToGoExtended;
                 angle = Model.OurRobots[RobotID].Angle.Value;
                 Planner.AddKick(RobotID, kickPowerType.Speed, true, 3);
