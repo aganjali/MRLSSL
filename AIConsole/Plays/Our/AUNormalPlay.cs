@@ -20,7 +20,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
         const double markRegion = -3.5;
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
-            //return false;
+            return false;
             return Status == GameDefinitions.GameStatus.Normal;
         }
 

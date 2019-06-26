@@ -14,8 +14,12 @@ namespace MRL.SSL.AIConsole.Roles
     class GerrardRole : RoleBase
     {
         Position2D p;
+        bool temp = true;
+        bool right = true;
+
         public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID)
         {
+
             if (CurrentState == (int)PlayMode.Attack)
             {
 
@@ -27,14 +31,29 @@ namespace MRL.SSL.AIConsole.Roles
                 Planner.Add(robotID, p, 180, PathType.UnSafe, false, true, true, true, false);
 
             }
+            
             else if (CurrentState == (int)PlayMode.Defence)
             {
+                //Hysteresis
+                if (Model.BallState.Location.Y > 0.1 && right)
+                {
+                    right = false;
+                    temp = right;
+                }
+                else if (Model.BallState.Location.Y < -0.1 && !right)
+                {
+                    right = true;
+                    temp = right;
+                }
+                else
+                    right = temp;
+         
+
                 Dictionary<int, SingleObjectState> rightOpps = Model.Opponents.Where(o => o.Value.Location.X > 0 && o.Value.Location.Y < 0).ToDictionary(o => o.Key, o => o.Value);
                 Dictionary<int, SingleObjectState> leftOpps = Model.Opponents.Where(o => o.Value.Location.X > 0 && o.Value.Location.Y > 0).ToDictionary(o => o.Key, o => o.Value);
 
                 Position2D target = new Position2D();
-
-                if (Model.BallState.Location.Y <= 0) //Gerrard position when ball is in right side
+                if (right) //Gerrard position when ball is in right side
                 {
                     if (leftOpps.Count > 0)
                     {
@@ -61,8 +80,12 @@ namespace MRL.SSL.AIConsole.Roles
                         target = MarkSkill.ourDangerZoneLeftCorner + (MarkSkill.ourDangerZoneLeftCorner - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);
 
                     }
+                    
+                    //side = (int)Side.right;
+                    //tempSide = side;
+               
                 }
-                else//Gerrard position when ball is in left side
+                else //if (Model.BallState.Location.Y > -0.5 && right)//Gerrard position when ball is in left side
                 {
                     if (rightOpps.Count > 0)
                     {
@@ -89,9 +112,9 @@ namespace MRL.SSL.AIConsole.Roles
                         target = MarkSkill.ourDangerZoneRightCorner + (MarkSkill.ourDangerZoneRightCorner - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);
                         //target = Position2D.Zero + (Position2D.Zero - new Position2D(2,2));
                     }
+                   
                 }
-
-
+              
 
                 Planner.Add(robotID, target, 180, PathType.UnSafe, false, true, true, true, false);
 
@@ -105,17 +128,23 @@ namespace MRL.SSL.AIConsole.Roles
         {
             return 1;
         }
+        int tempState = 0;
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            if (Model.BallState.Location.X < 0)
+            if (Model.BallState.Location.X < -0.1 && CurrentState == (int)PlayMode.Defence)
             {
                 CurrentState = (int)PlayMode.Attack;
+                tempState = CurrentState;
             }
-            else if (Model.BallState.Location.X > 0)
+            else if (Model.BallState.Location.X > 0.1 && CurrentState == (int)PlayMode.Attack)
             {
                 CurrentState = (int)PlayMode.Defence;
+                tempState = CurrentState;
+
             }
+            else
+                CurrentState = tempState;
         }
 
         public override bool Evaluate(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
@@ -147,6 +176,11 @@ namespace MRL.SSL.AIConsole.Roles
         {
             Attack,
             Defence
+        }
+        enum Side
+        {
+            right,
+            left
         }
     }
 }

@@ -30,13 +30,13 @@ namespace MRL.SSL.AIConsole.Roles
 
             Line left = new Line(p1, Model.BallState.Location);
             Line right = new Line(GameParameters.OurGoalRight.Extend(0, 0), Model.BallState.Location);
-            
+
             double distToPenaltyAreaThreshold = 0.00;
             Line l1 = new Line(GameParameters.OurGoalLeft.Extend(-1.20, 0.60 + distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(0, 0.60 + distToPenaltyAreaThreshold));
             Line l2 = new Line(GameParameters.OurGoalRight.Extend(-1.20 - distToPenaltyAreaThreshold, -0.6 - distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(-1.20 - distToPenaltyAreaThreshold, 0.6 + distToPenaltyAreaThreshold));
             Line l3 = new Line(GameParameters.OurGoalRight.Extend(-1.20 - distToPenaltyAreaThreshold, -0.6 - distToPenaltyAreaThreshold), GameParameters.OurGoalRight.Extend(0, -0.60 - distToPenaltyAreaThreshold));
             Position2D centerRobot = new Position2D();
-            
+
             DrawingObjects.AddObject(l1);
             //DrawingObjects.AddObject(l3);
             if (GameParameters.IsInField(Model.BallState.Location, 0))
@@ -44,7 +44,7 @@ namespace MRL.SSL.AIConsole.Roles
                 lastBallPos = Model.BallState.Location;
             }
             Line intevallToBall = new Line(Position2D.Interpolate(right.Head, left.Head, 0.5), lastBallPos);
-           // DrawingObjects.AddObject(intevallToBall);
+            // DrawingObjects.AddObject(intevallToBall);
 
             if (GameParameters.SegmentIntersect(intevallToBall, l1).HasValue) // left
             {
@@ -73,7 +73,7 @@ namespace MRL.SSL.AIConsole.Roles
                     centerRobot = l2.IntersectWithLine(intevallToBall).Value.Extend(-0.1, 0);
                 }
                 else
-                    centerRobot = lastBallPos.Extend(0 ,-0.10 );
+                    centerRobot = lastBallPos.Extend(0, -0.10);
 
 
             }
@@ -102,7 +102,7 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 centerRobot = OppFreeKickDefenceUtils.Dive(engine, Model, RobotID);
             }
-            DrawingObjects.AddObject(new Circle(centerRobot, 0.09 ,  new Pen(Color.Purple, 0.01f)));
+            DrawingObjects.AddObject(new Circle(centerRobot, 0.09, new Pen(Color.Purple, 0.01f)));
             var angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
             NormalSharedState.CommonInfo.OnlineRole1Target = pos;
             Planner.AddKick(RobotID, kickPowerType.Speed, true, 3);
@@ -143,7 +143,7 @@ namespace MRL.SSL.AIConsole.Roles
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return new List<RoleBase>() {new OnLineRole1(),new OnLineRole2(),new GerrardRole() };
+            return new List<RoleBase>() { new OnLineRole1(), new OnLineRole2(), new GerrardRole() };
         }
 
         public override bool Evaluate(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)

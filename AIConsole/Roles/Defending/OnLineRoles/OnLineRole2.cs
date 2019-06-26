@@ -48,32 +48,32 @@ namespace MRL.SSL.AIConsole.Roles
 
             if (GameParameters.SegmentIntersect(intevallToBall, l1).HasValue) // left4
             {
-            //    if (!IsInOurDangerZone(lastBallPos))
-            //    {
-            //        centerRobot = l1.IntersectWithLine(intevallToBall).Value.Extend(0, 0.1);
-            //    }
-            //    else
-            //        centerRobot = lastBallPos.Extend(0.10, 0);
+                if (!IsInOurDangerZone(lastBallPos))
+                {
+                    centerRobot = l1.IntersectWithLine(intevallToBall).Value.Extend(0, 0.1);
+                }
+                else
+                    centerRobot = lastBallPos.Extend(0.10, 0);
 
-            //}
-            //else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
-            //{
-            //    if (!IsInOurDangerZone(lastBallPos))
-            //    {
-            //        centerRobot = l3.IntersectWithLine(intevallToBall).Value.Extend(0, -0.1);
-            //    }
-            //    else
-            //        centerRobot = lastBallPos.Extend(0.10, 0);
+            }
+            else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
+            {
+                if (!IsInOurDangerZone(lastBallPos))
+                {
+                    centerRobot = l3.IntersectWithLine(intevallToBall).Value.Extend(0, -0.1);
+                }
+                else
+                    centerRobot = lastBallPos.Extend(0.10, 0);
 
-            //}
-            //else if (GameParameters.SegmentIntersect(intevallToBall, l2).HasValue)//top
-            //{
-            //    if (!IsInOurDangerZone(lastBallPos))
-            //    {
-            //        centerRobot = l2.IntersectWithLine(intevallToBall).Value.Extend(-0.1 , 0);
-            //    }
-            //    else
-            //        centerRobot = lastBallPos.Extend(0, 0.10);
+            }
+            else if (GameParameters.SegmentIntersect(intevallToBall, l2).HasValue)//top
+            {
+                if (!IsInOurDangerZone(lastBallPos))
+                {
+                    centerRobot = l2.IntersectWithLine(intevallToBall).Value.Extend(-0.1, 0);
+                }
+                else
+                    centerRobot = lastBallPos.Extend(0, 0.10);
 
 
             }
@@ -114,20 +114,7 @@ namespace MRL.SSL.AIConsole.Roles
             //Planner.Add(RobotID, pos, 0, false);
 
         }
-        public double CalBallFrames(double dist)
-        {
-            double speed = 6.5;
-            return (60 * dist) / speed;
-        }
-        public double CalRobotFrames(double d)
-        {
-            return (15 * d) / 0.13;
 
-        }
-        public double RichTheBall(double frame)
-        {
-            return (frame * 0.13) / 15;
-        }
         public override RoleCategory QueryCategory()
         {
             return RoleCategory.Test;
@@ -154,6 +141,29 @@ namespace MRL.SSL.AIConsole.Roles
         {
             return true;
         }
-        
+
+        public bool IsInOurDangerZone(Position2D pos)
+        {
+            if (pos.X > 4.8 && pos.Y < 1.2 && pos.Y > -1.2)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        public double CalBallFrames(double dist)
+        {
+            double speed = 6.5;
+            return (60 * dist) / speed;
+        }
+        public double CalRobotFrames(double d)
+        {
+            return (15 * d) / 0.13;
+
+        }
+        public double RichTheBall(double frame)
+        {
+            return (frame * 0.13) / 15;
+        }
     }
 }
