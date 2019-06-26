@@ -596,7 +596,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 myDrawCollection.AddObject(new Circle(GameParameters.OurRightCorner, cornerPoints, new Pen(cornerColor, 0.01f)) { IsShown = false });
                 myDrawCollection.AddObject(new Circle(GameParameters.OurGoalCenter, cornerPoints, new Pen(cornerColor, 0.01f)) { IsShown = false });
 
-                foreach (var h in Frame.Balls)
+                foreach (var h in Frame.OtherBalls)
                 {
                     ballsViwed.Add((int)h.Key, Vision2AI(h.Value.vision.pos));
                 }
@@ -628,7 +628,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 myDrawCollection.AddObject(new Circle(GameParameters.OurRightCorner.Reverse(), cornerPoints, new Pen(cornerColor, 0.01f)) { IsShown = false });
                 myDrawCollection.AddObject(new Circle(GameParameters.OurGoalCenter.Reverse(), cornerPoints, new Pen(cornerColor, 0.01f)) { IsShown = false });
 
-                foreach (var h in Frame.Balls)
+                foreach (var h in Frame.OtherBalls)
                 {
                     Position2D newPos = Vision2AI(h.Value.vision.pos);
                     ballsViwed.Add((int)h.Key, new Position2D(-newPos.X, -newPos.Y));
@@ -728,7 +728,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             WorldModel model = null;
             frame newFrame = new frame();
             CameraParameters(Packet);
-            bool merged = merger.Merge(Packet, ref Frame, ref newFrame, isYellow, Position2D.Zero, false);
+            bool merged = merger.Merge(Packet, ref Frame, ref newFrame, isYellow, Position2D.Zero, ref ballIndexChanged, isReverseSide);
 
             if (merged)
             {
@@ -777,7 +777,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             // try
             // {
             //merged = merger.Merge4cam(Packet, ref Frame, ref newFrame, isYellow);
-            merged = merger.Merge(Packet, ref Frame, ref newFrame, isYellow, selectedBall_Loc, ballIndexChanged);
+            merged = merger.Merge(Packet, ref Frame, ref newFrame, isYellow, selectedBall_Loc, ref ballIndexChanged, isReverseSide);
             //}
             //catch (Exception ex)
             //{
@@ -786,7 +786,6 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             //}
             if (merged)
             {
-                ballIndexChanged = false;
                 visionFrame = Frame;
                 if (RobotType == TrackerType.Accurate || BallType == TrackerType.Accurate)
                 {

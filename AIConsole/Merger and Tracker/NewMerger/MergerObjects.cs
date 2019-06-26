@@ -63,13 +63,32 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 int last_affinity = affinity;
                 if (affinity < 0 || !obs[affinity].Valid)
                 {
+                    if(affinity >= 0)
+                    {
+
+                    }
+
                     affinity = -1;
+                    double minDist = double.MaxValue;
                     for (int o = 0; o < MaxCameras; o++)
                     {
                         if (obs[o].Valid)
                         {
-                            affinity = o;
-                            break;
+                            if (last_affinity >= 0)
+                            {
+                                double d = obs[last_affinity].Loc.DistanceFrom(obs[o].Loc);
+                                if(d < minDist)
+                                {
+                                    minDist = d;
+                                    affinity = o;
+                                }
+                            }
+                            else
+                            {
+                                affinity = o;
+                                break;
+                            }
+                            
                         }
                     }
                 }
@@ -102,6 +121,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         ObjectMerger[,] robots = new ObjectMerger[StaticVariables.NUM_TEAMS, StaticVariables.MAX_ROBOT_ID];
 
         ObjectMerger ball;
+        private Dictionary<uint, List<SSL_DetectionBall>> balls= new Dictionary<uint, List<SSL_DetectionBall>>();
 
         public CmuMerger()
         {
@@ -140,7 +160,8 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                             conf = (true || obs.Last_valid < 2) ? obs.Conf : 0,
                             pos = obs.Loc,
                             angle = obs.Angle,
-                            camera = (uint)robot.Affinity
+                            camera = (uint)robot.Affinity,
+                            timestamp = obs.Time
                         };
 
                         if ((team == 0 && !isYellow) || (team == 1 && isYellow))
@@ -163,7 +184,8 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                     conf = (true || obs.Last_valid < 2) ? obs.Conf : 0,
                     pos = obs.Loc,
                     angle = obs.Angle,
-                    camera = (uint)ball.Affinity
+                    camera = (uint)ball.Affinity,
+                    timestamp = obs.Time
                 };
                 world.Balls[0] = new vball(wb, new SingleObjectState());
 
@@ -172,7 +194,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         }
 
         // returns whether a new referee message is available
-        public void UpdateVision(SSL_DetectionFrame d, bool isYellow, Position2D selectedBall, bool selectedBallChanged)
+        public void UpdateVision(SSL_DetectionFrame d, bool isYellow, Position2D selectedBall,ref bool selectedBallChanged, bool isReverse)
         {
             uint camera = d.camera_id;
 
@@ -237,6 +259,10 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                     max_dist = 10000 * StaticVariables.FRAME_PERIOD * last_ball.Last_valid * 100;
                     last_ball_loc = last_ball.Loc;
                 }
+                else
+                {
+
+                }
                 
             }
             else
@@ -248,49 +274,48 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 bool found = false;
                 float min_dist = float.MaxValue;
                 SSL_DetectionBall closest = new SSL_DetectionBall();
-                foreach(var b in d.balls) {
-                    if (!selectedBallChanged)
+                foreach (var b in d.balls)
+                {
+                    if (!balls.ContainsKey(camera))
+                        balls[camera] = new List<SSL_DetectionBall>();
+                    balls[camera].Add(b);
+                    if (selectedBallChanged)
+                        last_ball_loc = AI2Vision( selectedBall, isReverse);
+                    
+                    float dist = (float)last_ball_loc.DistanceFrom(new Position2D(b.x, b.y));
+                    if (dist < min_dist && dist < max_dist)
                     {
-                        float dist = (float)last_ball_loc.DistanceFrom(new Position2D(b.x, b.y));
-                        if (dist < min_dist && dist < max_dist)
+                        if (GameParameters.IsInField(Vision2AI(new Position2D(b.x, b.y), isReverse), 0))
                         {
                             closest = b;
                             min_dist = dist;
                             found = true;
                         }
                     }
-                    else
-                    {
-                        float dist = (float)selectedBall.DistanceFrom(new Position2D(b.x, b.y));
-                        if (dist < min_dist )
-                        {
-                            closest = b;
-                        }
-                    }
-                }
-                if (!selectedBallChanged)
-                {
-                    if (found)
-                    {
-                        Observation obs = ball.Obs[camera];
-                        obs.Valid = true;
-                        // obs.last_valid = 0;
-                        obs.Time = time;
-                        obs.Conf = closest.confidence;
-                        obs.Loc = new Position2D(closest.x, closest.y);
 
-                    }
+
                 }
-                else
+                if (found)
                 {
-                    for (int i = 0; i < ball.Obs.Length; i++)
-                    {
-                        Observation obs = ball.Obs[i];
-                        obs.Valid = false;
-                        obs.Last_valid = 0;
-                    }
-                    ball.Affinity = (int)camera;
+                    Observation obs = ball.Obs[camera];
+                    obs.Valid = true;
+                     //obs.Last_valid = 0;
+                    obs.Time = time;
+                    obs.Conf = closest.confidence;
+                    obs.Loc = new Position2D(closest.x, closest.y);
+
                 }
+               
+
+            }
+            else
+            {
+                //if(camera == ball.Affinity)
+                //{
+                //    Observation obs = ball.Obs[camera];
+                //    obs.Valid = true;
+                //    obs.Last_valid ++;
+                //}
             }
 
             if (!cameras_seen[camera])
@@ -304,14 +329,52 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             {
                if(selectedBallChanged)
                 {
+                    float min_dist = float.MaxValue;
+                    SSL_DetectionBall closest = new SSL_DetectionBall();
+                    int cam = -1;
+                    foreach (var item in balls.Keys)
+                    {
+                        foreach (var b in balls[item])
+                        {
+                            float dist = (float)AI2Vision(selectedBall, isReverse).DistanceFrom(new Position2D(b.x, b.y));
+                            if (dist < min_dist)
+                            {
+                                closest = b;
+                                min_dist = dist;
+                                cam = (int)item;
+                            }
+                        }
+                    }
+                    ball.Affinity = cam;
                     ball.Obs[ball.Affinity].Valid = true;
                     ball.Obs[ball.Affinity].Last_valid = 1;
+                    for (int i = 0; i < ball.Obs.Length; i++)
+                    {
+                        if (i != cam)
+                        {
+                            var obs = ball.Obs[i];
+                            obs.Valid = false;
+                            obs.Last_valid = 0;
+                        }
+                    }
+                    selectedBallChanged = false;
+                    
                 }
+
+                world = new frame();
                 // condense all observations and convert to World object
                 MakeWorld(isYellow);
-
+                uint c = 0;
+                foreach (var item in balls.Keys)
+                {
+                    foreach (var b in balls[item])
+                    {
+                        world.OtherBalls.Add(c++, new vball(new vraw(0, new Position2D(b.x, b.y), 0, 1, item), new SingleObjectState()));
+                    }
+                }
+                balls = new Dictionary<uint, List<SSL_DetectionBall>>();
                 // forget all previous observations
-                for(int i = 0; i < robots.GetLength(0); i++)
+                for (int i = 0; i < robots.GetLength(0); i++)
                 {
                     for (int j = 0; j < robots.GetLength(1); j++)
                     {
@@ -351,6 +414,16 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 }
                 num_cameras_seen = 0;
             }
+        }
+        private Position2D Vision2AI(Position2D pos, bool isReverse)
+        {
+            int sgn = (isReverse) ? -1 : 1;
+            return new Position2D(pos.X * sgn/ 1000, -pos.Y * sgn / 1000);
+        }
+        private Position2D AI2Vision(Position2D pos, bool isReverse)
+        {
+            int sgn = (isReverse) ? -1 : 1;
+            return new Position2D(pos.X * sgn * 1000, -pos.Y * sgn * 1000);
         }
         public bool Ready { get => ready; }
         public frame World { get => world; }

@@ -479,7 +479,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         Dictionary<int, double> diffTimes = new Dictionary<int, double>();
         List<int> lastAvailableCameras = new List<int>();
         CmuMerger cmuMerger = new CmuMerger();
-        public bool Merge(SSL_WrapperPacket Packet, ref frame Frame, ref frame newFrame, bool isYellow, Position2D selectedBall, bool selectedBallChanged)
+        public bool Merge(SSL_WrapperPacket Packet, ref frame Frame, ref frame newFrame, bool isYellow, Position2D selectedBall,ref bool selectedBallChanged, bool isReverse)
         {
             //DrawingObjects.AddObject(new Circle(Vision2AI(new Position2D(-1994, -487), false), StaticVariables.BALL_RADIUS, new Pen(Color.Red, 0.01f)), "badssdddscdsll");
             //DrawingObjects.AddObject(new Circle(Vision2AI(new Position2D(-1984, -427), false), StaticVariables.BALL_RADIUS, new Pen(Color.Red, 0.01f)), "badscsdll");
@@ -601,270 +601,284 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             Balls = new Dictionary<uint, vraw>();
             foreach (var pack in sslPackets)
             {
-                cmuMerger.UpdateVision(pack.Value.detection, isYellow, selectedBall, selectedBallChanged);
-                if (cmuMerger.World.Balls.Count > 0)
-                {
-                    var ball = cmuMerger.World.Balls[0].vision.pos;
-                    ball = Vision2AI(ball, false);
-                    DrawingObjects.AddObject(new Circle(ball, 0.04, new Pen(Color.RosyBrown, 0.01f)), "cmu ball");
-                }
-                List<SSL_DetectionRobot> ourRobotsPacket, oppRobotsPacket;
-                if (isYellow)
-                {
-                    ourRobotsPacket = pack.Value.detection.robots_yellow;
-                    oppRobotsPacket = pack.Value.detection.robots_blue;
-                }
-                else
-                {
-                    ourRobotsPacket = pack.Value.detection.robots_blue;
-                    oppRobotsPacket = pack.Value.detection.robots_yellow;
-                }
-                foreach (var our in ourRobotsPacket)
-                {
-                    ourRobots.Add(counterOur, new mRobot(our.confidence, our.robot_id, pack.Value.detection.t_capture, our.orientation, our.x, our.y, pack.Value.detection.camera_id));
-                    counterOur++;
-                }
-                foreach (var opp in oppRobotsPacket)
-                {
-                    oppRobots.Add(counterOpp, new mRobot(opp.confidence, opp.robot_id, pack.Value.detection.t_capture, opp.orientation, opp.x, opp.y, pack.Value.detection.camera_id));
-                    counterOpp++;
-                }
-                //List<SSL_DetectionBall> balls = pack.Value.detection.balls;
-                for (int j = 0; j < pack.Value.detection.balls.Count && j < StaticVariables.MaxBalls; j++)
-                {
-                    var b = pack.Value.detection.balls[j];
-                    if (b.confidence > minConfidence)
-                        balls.Add(balls.Count, new mBall(b.confidence, pack.Value.detection.t_capture, b.x, b.y, (int)pack.Value.detection.camera_id));
-                }
+                cmuMerger.UpdateVision(pack.Value.detection, isYellow, selectedBall,ref selectedBallChanged, isReverse);
+                Frame.OtherBalls = cmuMerger.World.OtherBalls;
+                //////////List<SSL_DetectionRobot> ourRobotsPacket, oppRobotsPacket;
+                //////////if (isYellow)
+                //////////{
+                //////////    ourRobotsPacket = pack.Value.detection.robots_yellow;
+                //////////    oppRobotsPacket = pack.Value.detection.robots_blue;
+                //////////}
+                //////////else
+                //////////{
+                //////////    ourRobotsPacket = pack.Value.detection.robots_blue;
+                //////////    oppRobotsPacket = pack.Value.detection.robots_yellow;
+                //////////}
+                //////////foreach (var our in ourRobotsPacket)
+                //////////{
+                //////////    ourRobots.Add(counterOur, new mRobot(our.confidence, our.robot_id, pack.Value.detection.t_capture, our.orientation, our.x, our.y, pack.Value.detection.camera_id));
+                //////////    counterOur++;
+                //////////}
+                //////////foreach (var opp in oppRobotsPacket)
+                //////////{
+                //////////    oppRobots.Add(counterOpp, new mRobot(opp.confidence, opp.robot_id, pack.Value.detection.t_capture, opp.orientation, opp.x, opp.y, pack.Value.detection.camera_id));
+                //////////    counterOpp++;
+                //////////}
+                ////////////List<SSL_DetectionBall> balls = pack.Value.detection.balls;
+                //////////for (int j = 0; j < pack.Value.detection.balls.Count && j < StaticVariables.MaxBalls; j++)
+                //////////{
+                //////////    var b = pack.Value.detection.balls[j];
+                //////////    if (b.confidence > minConfidence)
+                //////////        balls.Add(balls.Count, new mBall(b.confidence, pack.Value.detection.t_capture, b.x, b.y, (int)pack.Value.detection.camera_id));
+                //////////}
+            }
+            if (cmuMerger.World.Balls.Count > 0)
+            {
+                var ball = cmuMerger.World.Balls[0].vision.pos;
+                ball = Vision2AI(ball, isReverse);
+                DrawingObjects.AddObject(new Circle(ball, 0.04, new Pen(Color.RosyBrown, 0.01f)), "cmu ball");
             }
             uint count = 0;
-            #region Ball
-            StaticVariables.FrameHasBall = false;
-            if (balls.Count > 0)
-            {
-                List<mBall> finalBall = new List<mBall>();
-                List<List<mBall>> selectedBallList = new List<List<mBall>>();
-                List<int> selectedBallIdList = new List<int>();
-                foreach (var ball in balls)
-                {
-                    if (!selectedBallIdList.Contains(ball.Key))
-                    {
-                        List<mBall> ballList = new List<mBall>();
-                        ballList.Add(ball.Value);
-                        selectedBallIdList.Add(ball.Key);
-                        foreach (var ball2 in balls)
-                        {
-                            if (!selectedBallIdList.Contains(ball2.Key) && ball.Value.CamID != ball2.Value.CamID && ball.Value.Pos.DistanceFrom(ball2.Value.Pos) < disEps)
-                            {
-                                ballList.Add(ball2.Value);
-                                selectedBallIdList.Add(ball2.Key);
-                            }
-                        }
-                        selectedBallList.Add(ballList);
-                    }
-                }
+            #region comment
+            ////////#region Ball
+            ////////StaticVariables.FrameHasBall = false;
+            ////////if (balls.Count > 0)
+            ////////{
+            ////////    List<mBall> finalBall = new List<mBall>();
+            ////////    List<List<mBall>> selectedBallList = new List<List<mBall>>();
+            ////////    List<int> selectedBallIdList = new List<int>();
+            ////////    foreach (var ball in balls)
+            ////////    {
+            ////////        if (!selectedBallIdList.Contains(ball.Key))
+            ////////        {
+            ////////            List<mBall> ballList = new List<mBall>();
+            ////////            ballList.Add(ball.Value);
+            ////////            selectedBallIdList.Add(ball.Key);
+            ////////            foreach (var ball2 in balls)
+            ////////            {
+            ////////                if (!selectedBallIdList.Contains(ball2.Key) && ball.Value.CamID != ball2.Value.CamID && ball.Value.Pos.DistanceFrom(ball2.Value.Pos) < disEps)
+            ////////                {
+            ////////                    ballList.Add(ball2.Value);
+            ////////                    selectedBallIdList.Add(ball2.Key);
+            ////////                }
+            ////////            }
+            ////////            selectedBallList.Add(ballList);
+            ////////        }
+            ////////    }
 
-                foreach (var item in selectedBallList)
-                {
-                    MathMatrix coefMat;
-                    MathMatrix commonMat;
-                    MathMatrix ballPos;
+            ////////    foreach (var item in selectedBallList)
+            ////////    {
+            ////////        MathMatrix coefMat;
+            ////////        MathMatrix commonMat;
+            ////////        MathMatrix ballPos;
 
-                    double confidence = 0;
-                    double time = 0;
-                    double x = 0, y = 0;
-                    foreach (var ball in item)
-                    {
-                        commonMat = MatrixMaker(ball.Pos, ball.CamID, out coefMat);
-                        if (coefMat == null)
-                            continue;
-                        ballPos = coefMat * commonMat.Transpose;
-                        x += ballPos[0, 0];
-                        y += ballPos[1, 0];
-                        confidence += ball.Confidence;
-                        time += ball.Time;
-                    }
-                    confidence /= (double)item.Count;
-                    time /= (double)item.Count;
-                    x /= (double)item.Count;
-                    y /= (double)item.Count;
-                    int key = 0;
-                    List<int> ids = new List<int>();
-                    foreach (var id in item)
-                        ids.Add(id.CamID);
-                    foreach (var id in ids)
-                    {
-                        key *= 10;
-                        key += id;
-                    }
-                    finalBall.Add(new mBall(confidence, time, x, y, ids[0])); // final merged balls
-                }
-                StaticVariables.BallPositions = new List<Position2D>();
+            ////////        double confidence = 0;
+            ////////        double time = 0;
+            ////////        double x = 0, y = 0;
+            ////////        foreach (var ball in item)
+            ////////        {
+            ////////            commonMat = MatrixMaker(ball.Pos, ball.CamID, out coefMat);
+            ////////            if (coefMat == null)
+            ////////                continue;
+            ////////            ballPos = coefMat * commonMat.Transpose;
+            ////////            x += ballPos[0, 0];
+            ////////            y += ballPos[1, 0];
+            ////////            confidence += ball.Confidence;
+            ////////            time += ball.Time;
+            ////////        }
+            ////////        confidence /= (double)item.Count;
+            ////////        time /= (double)item.Count;
+            ////////        x /= (double)item.Count;
+            ////////        y /= (double)item.Count;
+            ////////        int key = 0;
+            ////////        List<int> ids = new List<int>();
+            ////////        foreach (var id in item)
+            ////////            ids.Add(id.CamID);
+            ////////        foreach (var id in ids)
+            ////////        {
+            ////////            key *= 10;
+            ////////            key += id;
+            ////////        }
+            ////////        finalBall.Add(new mBall(confidence, time, x, y, ids[0])); // final merged balls
+            ////////    }
+            ////////    StaticVariables.BallPositions = new List<Position2D>();
 
-                foreach (var item in finalBall)
-                {
-                    if (IsInField(item.Pos, 100))
-                    {
-                        StaticVariables.FrameHasBall = true;
-                        Balls.Add(count, new vraw(item.Time, item.Pos, 0, (float)item.Confidence, (uint)item.CamID));
-                        StaticVariables.BallPositions.Add(item.Pos);
-                        count++;
-                    }
-                }
-                //foreach (var item in balls)
-                //{
-                //    DrawingObjects.AddObject(new Circle(Vision2AI(item.Value.Pos, false), StaticVariables.BALL_RADIUS, new Pen(Color.GreenYellow, 0.01f)), "ball" + item.Value.Pos.toString());
-                //    //Balls.Add(count, new vraw(item.Value.Time, item.Value.Pos, 0, (float)item.Value.Confidence, (uint)item.Value.CamID));
-                //    StaticVariables.BallPositions = new List<Position2D>();
-                //    StaticVariables.BallPositions.Add(item.Value.Pos);
-                //    count++;
-                //}
-            }
+            ////////    foreach (var item in finalBall)
+            ////////    {
+            ////////        if (IsInField(item.Pos, 100))
+            ////////        {
+            ////////            StaticVariables.FrameHasBall = true;
+            ////////            Balls.Add(count, new vraw(item.Time, item.Pos, 0, (float)item.Confidence, (uint)item.CamID));
+            ////////            StaticVariables.BallPositions.Add(item.Pos);
+            ////////            count++;
+            ////////        }
+            ////////    }
+            ////////    //foreach (var item in balls)
+            ////////    //{
+            ////////    //    DrawingObjects.AddObject(new Circle(Vision2AI(item.Value.Pos, false), StaticVariables.BALL_RADIUS, new Pen(Color.GreenYellow, 0.01f)), "ball" + item.Value.Pos.toString());
+            ////////    //    //Balls.Add(count, new vraw(item.Value.Time, item.Value.Pos, 0, (float)item.Value.Confidence, (uint)item.Value.CamID));
+            ////////    //    StaticVariables.BallPositions = new List<Position2D>();
+            ////////    //    StaticVariables.BallPositions.Add(item.Value.Pos);
+            ////////    //    count++;
+            ////////    //}
+            ////////}
+            ////////#endregion
+
+            ////////#region our
+            ////////if (ourRobots.Count > 0)
+            ////////{
+            ////////    List<mRobot> finalRobot = new List<mRobot>();
+            ////////    List<List<mRobot>> selectedOurRobotList = new List<List<mRobot>>();
+            ////////    List<int> selectedOurRobotIdList = new List<int>();
+            ////////    foreach (var robot in ourRobots)
+            ////////    {
+            ////////        if (!selectedOurRobotIdList.Contains(robot.Key))
+            ////////        {
+            ////////            List<mRobot> ourList = new List<mRobot>();
+            ////////            ourList.Add(robot.Value);
+            ////////            selectedOurRobotIdList.Add(robot.Key);
+            ////////            foreach (var robot2 in ourRobots)
+            ////////            {
+            ////////                if (!selectedOurRobotIdList.Contains(robot2.Key) && robot.Value.CamID != robot2.Value.CamID && robot.Value.RobotID == robot2.Value.RobotID)
+            ////////                {
+            ////////                    ourList.Add(robot2.Value);
+            ////////                    selectedOurRobotIdList.Add(robot2.Key);
+            ////////                }
+            ////////            }
+            ////////            selectedOurRobotList.Add(ourList);
+            ////////        }
+            ////////    }
+            ////////    foreach (var item in selectedOurRobotList)
+            ////////    {
+            ////////        MathMatrix coefMat;
+            ////////        MathMatrix commonMat;
+            ////////        MathMatrix ourRobotPos;
+
+            ////////        double confidence = 0;
+            ////////        double time = 0;
+            ////////        double x = 0, y = 0;
+            ////////        foreach (var ball in item)
+            ////////        {
+            ////////            commonMat = MatrixMaker(ball.Pos, ball.CamID, out coefMat);
+            ////////            if (coefMat == null)
+            ////////                continue;
+            ////////            ourRobotPos = coefMat * commonMat.Transpose;
+            ////////            x += ourRobotPos[0, 0];
+            ////////            y += ourRobotPos[1, 0];
+            ////////            confidence += ball.Confidence;
+            ////////            //if (ball.Time  < time)
+            ////////            //{
+            ////////            //    time = ball.Time;
+            ////////            //}
+            ////////            time += ball.Time;
+            ////////        }
+            ////////        confidence /= (double)item.Count;
+            ////////        time /= (double)item.Count;
+            ////////        x /= (double)item.Count;
+            ////////        y /= (double)item.Count;
+            ////////        int key = 0;
+            ////////        List<int> ids = new List<int>();
+            ////////        foreach (var id in item)
+            ////////            ids.Add(id.CamID);
+            ////////        foreach (var id in ids)
+            ////////        {
+            ////////            key *= 10;
+            ////////            key += id;
+            ////////        }
+            ////////        finalRobot.Add(new mRobot(confidence, item[0].RobotID, time, item[0].Oriention, x, y, ids[0]));
+            ////////    }
+            ////////    foreach (var item in finalRobot)
+            ////////    {
+            ////////        Frame.OurRobots[(uint)item.RobotID] = new vrobot(new vraw(item.Time, item.Pos, (float)item.Oriention, (float)item.Confidence, (uint)item.CamID), new SingleObjectState());
+            ////////        newFrame.OurRobots[(uint)item.RobotID] = new vrobot(new vraw(item.Time, item.Pos, (float)item.Oriention, (float)item.Confidence, (uint)item.CamID), new SingleObjectState());
+            ////////    }
+            ////////}
+            ////////#endregion
+            ////////#region opp
+            ////////if (oppRobots.Count > 0)
+            ////////{
+            ////////    List<mRobot> finalRobot = new List<mRobot>();
+            ////////    List<List<mRobot>> selectedOppRobotList = new List<List<mRobot>>();
+            ////////    List<int> selectedOppRobotIdList = new List<int>();
+            ////////    foreach (var robot in oppRobots)
+            ////////    {
+            ////////        if (!selectedOppRobotIdList.Contains(robot.Key))
+            ////////        {
+            ////////            List<mRobot> ourList = new List<mRobot>();
+            ////////            ourList.Add(robot.Value);
+            ////////            selectedOppRobotIdList.Add(robot.Key);
+            ////////            foreach (var robot2 in oppRobots)
+            ////////            {
+            ////////                if (!selectedOppRobotIdList.Contains(robot2.Key) && robot.Value.CamID != robot2.Value.CamID && robot.Value.RobotID == robot2.Value.RobotID)
+            ////////                {
+            ////////                    ourList.Add(robot2.Value);
+            ////////                    selectedOppRobotIdList.Add(robot2.Key);
+            ////////                }
+            ////////            }
+            ////////            selectedOppRobotList.Add(ourList);
+            ////////        }
+            ////////    }
+            ////////    foreach (var item in selectedOppRobotList)
+            ////////    {
+            ////////        MathMatrix coefMat;
+            ////////        MathMatrix commonMat;
+            ////////        MathMatrix ourRobotPos;
+
+            ////////        double confidence = 0;
+            ////////        double time = 0;
+            ////////        double x = 0, y = 0;
+            ////////        foreach (var ball in item)
+            ////////        {
+            ////////            commonMat = MatrixMaker(ball.Pos, ball.CamID, out coefMat);
+            ////////            if (coefMat == null)
+            ////////                continue;
+            ////////            ourRobotPos = coefMat * commonMat.Transpose;
+            ////////            x += ourRobotPos[0, 0];
+            ////////            y += ourRobotPos[1, 0];
+            ////////            confidence += ball.Confidence;
+            ////////            time += ball.Time;
+            ////////        }
+            ////////        confidence /= (double)item.Count;
+            ////////        time /= (double)item.Count;
+            ////////        x /= (double)item.Count;
+            ////////        y /= (double)item.Count;
+            ////////        int key = 0;
+            ////////        List<int> ids = new List<int>();
+            ////////        foreach (var id in item)
+            ////////            ids.Add(id.CamID);
+            ////////        foreach (var id in ids)
+            ////////        {
+            ////////            key *= 10;
+            ////////            key += id;
+            ////////        }
+            ////////        finalRobot.Add(new mRobot(confidence, item[0].RobotID, time, item[0].Oriention, x, y, ids[0]));
+            ////////    }
+            ////////    foreach (var item in finalRobot)
+            ////////    {
+            ////////        Frame.OppRobots[(uint)item.RobotID] = new vrobot(new vraw(item.Time, item.Pos, (float)item.Oriention, (float)item.Confidence, (uint)item.CamID), new SingleObjectState());
+            ////////        newFrame.OppRobots[(uint)item.RobotID] = new vrobot(new vraw(item.Time, item.Pos, (float)item.Oriention, (float)item.Confidence, (uint)item.CamID), new SingleObjectState());
+            ////////    }
+            ////////}
+            ////////#endregion
             #endregion
-
-            #region our
-            if (ourRobots.Count > 0)
+            newFrame = cmuMerger.World;
+            foreach (var item in cmuMerger.World.OurRobots)
             {
-                List<mRobot> finalRobot = new List<mRobot>();
-                List<List<mRobot>> selectedOurRobotList = new List<List<mRobot>>();
-                List<int> selectedOurRobotIdList = new List<int>();
-                foreach (var robot in ourRobots)
-                {
-                    if (!selectedOurRobotIdList.Contains(robot.Key))
-                    {
-                        List<mRobot> ourList = new List<mRobot>();
-                        ourList.Add(robot.Value);
-                        selectedOurRobotIdList.Add(robot.Key);
-                        foreach (var robot2 in ourRobots)
-                        {
-                            if (!selectedOurRobotIdList.Contains(robot2.Key) && robot.Value.CamID != robot2.Value.CamID && robot.Value.RobotID == robot2.Value.RobotID)
-                            {
-                                ourList.Add(robot2.Value);
-                                selectedOurRobotIdList.Add(robot2.Key);
-                            }
-                        }
-                        selectedOurRobotList.Add(ourList);
-                    }
-                }
-                foreach (var item in selectedOurRobotList)
-                {
-                    MathMatrix coefMat;
-                    MathMatrix commonMat;
-                    MathMatrix ourRobotPos;
-
-                    double confidence = 0;
-                    double time = 0;
-                    double x = 0, y = 0;
-                    foreach (var ball in item)
-                    {
-                        commonMat = MatrixMaker(ball.Pos, ball.CamID, out coefMat);
-                        if (coefMat == null)
-                            continue;
-                        ourRobotPos = coefMat * commonMat.Transpose;
-                        x += ourRobotPos[0, 0];
-                        y += ourRobotPos[1, 0];
-                        confidence += ball.Confidence;
-                        //if (ball.Time  < time)
-                        //{
-                        //    time = ball.Time;
-                        //}
-                        time += ball.Time;
-                    }
-                    confidence /= (double)item.Count;
-                    time /= (double)item.Count;
-                    x /= (double)item.Count;
-                    y /= (double)item.Count;
-                    int key = 0;
-                    List<int> ids = new List<int>();
-                    foreach (var id in item)
-                        ids.Add(id.CamID);
-                    foreach (var id in ids)
-                    {
-                        key *= 10;
-                        key += id;
-                    }
-                    finalRobot.Add(new mRobot(confidence, item[0].RobotID, time, item[0].Oriention, x, y, ids[0]));
-                }
-                foreach (var item in finalRobot)
-                {
-                    Frame.OurRobots[(uint)item.RobotID] = new vrobot(new vraw(item.Time, item.Pos, (float)item.Oriention, (float)item.Confidence, (uint)item.CamID), new SingleObjectState());
-                    newFrame.OurRobots[(uint)item.RobotID] = new vrobot(new vraw(item.Time, item.Pos, (float)item.Oriention, (float)item.Confidence, (uint)item.CamID), new SingleObjectState());
-                }
+                Frame.OurRobots[(uint)item.Key] = new vrobot(new vraw(item.Value.vision), new SingleObjectState());
             }
-            #endregion
-            #region opp
-            if (oppRobots.Count > 0)
+            foreach (var item in cmuMerger.World.OppRobots)
             {
-                List<mRobot> finalRobot = new List<mRobot>();
-                List<List<mRobot>> selectedOppRobotList = new List<List<mRobot>>();
-                List<int> selectedOppRobotIdList = new List<int>();
-                foreach (var robot in oppRobots)
-                {
-                    if (!selectedOppRobotIdList.Contains(robot.Key))
-                    {
-                        List<mRobot> ourList = new List<mRobot>();
-                        ourList.Add(robot.Value);
-                        selectedOppRobotIdList.Add(robot.Key);
-                        foreach (var robot2 in oppRobots)
-                        {
-                            if (!selectedOppRobotIdList.Contains(robot2.Key) && robot.Value.CamID != robot2.Value.CamID && robot.Value.RobotID == robot2.Value.RobotID)
-                            {
-                                ourList.Add(robot2.Value);
-                                selectedOppRobotIdList.Add(robot2.Key);
-                            }
-                        }
-                        selectedOppRobotList.Add(ourList);
-                    }
-                }
-                foreach (var item in selectedOppRobotList)
-                {
-                    MathMatrix coefMat;
-                    MathMatrix commonMat;
-                    MathMatrix ourRobotPos;
-
-                    double confidence = 0;
-                    double time = 0;
-                    double x = 0, y = 0;
-                    foreach (var ball in item)
-                    {
-                        commonMat = MatrixMaker(ball.Pos, ball.CamID, out coefMat);
-                        if (coefMat == null)
-                            continue;
-                        ourRobotPos = coefMat * commonMat.Transpose;
-                        x += ourRobotPos[0, 0];
-                        y += ourRobotPos[1, 0];
-                        confidence += ball.Confidence;
-                        time += ball.Time;
-                    }
-                    confidence /= (double)item.Count;
-                    time /= (double)item.Count;
-                    x /= (double)item.Count;
-                    y /= (double)item.Count;
-                    int key = 0;
-                    List<int> ids = new List<int>();
-                    foreach (var id in item)
-                        ids.Add(id.CamID);
-                    foreach (var id in ids)
-                    {
-                        key *= 10;
-                        key += id;
-                    }
-                    finalRobot.Add(new mRobot(confidence, item[0].RobotID, time, item[0].Oriention, x, y, ids[0]));
-                }
-                foreach (var item in finalRobot)
-                {
-                    Frame.OppRobots[(uint)item.RobotID] = new vrobot(new vraw(item.Time, item.Pos, (float)item.Oriention, (float)item.Confidence, (uint)item.CamID), new SingleObjectState());
-                    newFrame.OppRobots[(uint)item.RobotID] = new vrobot(new vraw(item.Time, item.Pos, (float)item.Oriention, (float)item.Confidence, (uint)item.CamID), new SingleObjectState());
-                }
+                Frame.OppRobots[(uint)item.Key] = new vrobot(new vraw(item.Value.vision), new SingleObjectState());
             }
-            #endregion
-
+            Balls = new Dictionary<uint, vraw>();
+            if (cmuMerger.World.Balls.Count > 0)
+                Balls.Add(0, new vraw(cmuMerger.World.Balls[0].vision));
             sslPackets = new Dictionary<uint, SSL_WrapperPacket>();
             lastColorIsYellow = isYellow;
             lastAvailableCameras = MergerParameters.AvailableCamIds.ToList();
             return true;
         }
-
+   
         private int GetCameraPC(uint id)
         {
             int cameraPerPc = StaticVariables.CameraCount / StaticVariables.VisionPcCounts;
