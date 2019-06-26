@@ -38,23 +38,71 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
 
         PreDefinedPath Skill = new PreDefinedPath();
         CircularMotionSkill circleSkill = new CircularMotionSkill();
-        private void findPoints(out List<Position2D> squarePoints, Position2D center, double lenght)
-        {
-            squarePoints = new List<Position2D>();
-            squarePoints.Add(new Position2D(center.X + lenght, center.Y + lenght));
-            squarePoints.Add(new Position2D(center.X + lenght, center.Y - lenght));
-            squarePoints.Add(new Position2D(center.X - lenght, center.Y - lenght));
-            squarePoints.Add(new Position2D(center.X - lenght, center.Y + lenght));
-        }
+        //private void findPoints(out List<Position2D> squarePoints, Position2D center, double lenght)
+        //{
+        //    //squarePoints = new List<Position2D>();
+        //    squarePoints.Add(new Position2D(center.X + lenght, center.Y + lenght));
+        //    squarePoints.Add(new Position2D(center.X + lenght, center.Y - lenght));
+        //    squarePoints.Add(new Position2D(center.X - lenght, center.Y - lenght));
+        //    squarePoints.Add(new Position2D(center.X - lenght, center.Y + lenght));
+        //}
         int i = 0;
 
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-            int robotId = 0;
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(PathTestRole)))
-                Functions[robotId] = (eng, wmd) => GetRole<PathTestRole>(robotId).Perform(eng, wmd, robotId);
+
+            int robotId2 = 3;
+            int robotId1 = 2;
+            int robotId3 = Model.GoalieID.Value;
+            int robotId0 = 1;
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId2, typeof(OnLineRole1)))
+                Functions[robotId2] = (eng, wmd) => GetRole<OnLineRole1>(robotId2).Perform(engine, Model, robotId2);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId1, typeof(OnLineRole2)))
+                Functions[robotId1] = (eng, wmd) => GetRole<OnLineRole2>(robotId1).Perform(engine, Model, robotId1);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId0, typeof(GerrardRole)))
+                Functions[robotId0] = (eng, wmd) => GetRole<GerrardRole>(robotId0).Perform(engine, Model, robotId0);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId3, typeof(VandersarGoalKeeperRole)))
+                Functions[robotId3] = (eng, wmd) => GetRole<VandersarGoalKeeperRole>(robotId3).Run(engine, Model, robotId3);
+            Position2D center = TuneVariables.Default.GetValue<Position2D>("ComeHereArea");
+
+            Vector2D goalVec = GameParameters.OurGoalLeft - GameParameters.OurGoalRight;
+            Vector2D vec = center - Model.BallState.Location;
+            string angleBetween = Vector2D.AngleBetweenInDegrees(vec, goalVec).ToString() ;
+            DrawingObjects.AddObject(new StringDraw(angleBetween,Color.Red,new Position2D(5,0)));
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId4, typeof(OnLineRole3)))
+            //    Functions[robotId4] = (eng, wmd) => GetRole<OnLineRole3>(robotId4).Perform(engine, Model, robotId4);
+            #region comments
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId4, typeof(GerrardRole)))
+            //    Functions[robotId4] = (eng, wmd) => GetRole<GerrardRole>(robotId4).Perform(eng, wmd, robotId4);
+            //int robotId = 0;
+            //var geo = Model.SslVisionGeometry;
+            //var packet = Model.CurrentVisionPacket5;
+            //int camId = 5;
+            //if (geo != null)
+            //{
+            //    var camGeo = geo.calib.Where(w => w.camera_id == camId).FirstOrDefault();
+            //    if (camGeo != null)
+            //    {
+            //        camGeo.
+            //        Quater q = new Quater(camGeo.q1, camGeo.q2, camGeo.q2, camGeo.q0);
+            //        MathMatrix rotation = q.GetMatrix();
+            //        if (packet != null && packet.detection != null && packet.detection.balls.Count > 0)
+            //        {
+
+            //            var ball = packet.detection.balls[0];
+            //            var pixel = new MathMatrix(3, 1);
+
+
+            //        }
+            //    }
+            //}
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(PathTestRole)))
+            //    Functions[robotId] = (eng, wmd) => GetRole<PathTestRole>(robotId).Perform(eng, wmd, robotId);
 
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId, typeof(TestRole)))
             //    Functions[robotId] = (eng, wmd) => GetRole<TestRole>(robotId).GetData(Model, robotId, 0.5, 30);
@@ -173,7 +221,7 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             //Planner.AddRotate(Model, ControlParameters.GoalieID, GameParameters.OppGoalCenter, 0, kickPowerType.Speed, 3, false);
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, 8, typeof(TestRole)))
             //    Functions[8] = (eng, wmd) => GetRole<TestRole>(8).GetData(Model, 8, 0.5, 30);
-
+            #endregion
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             return CurrentlyAssignedRoles;
 
@@ -194,9 +242,9 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             //GetRole<NewCutBallTestRole>(5).Reset();
         }
 
-        enum state
-        {
+        //enum state
+        //{
 
-        }
+        //}
     }
 }

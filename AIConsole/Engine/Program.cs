@@ -93,7 +93,7 @@ namespace MRL.SSL.AIConsole.Engine
             RefereeConnection rc = new RefereeConnection(StaticVariables.OldRefbox);
             while (true)
             {
-                        string command = Console.ReadLine();
+                            string command = Console.ReadLine();
                 if (command.Trim().ToLower() == "exit")
                 {
                     break;

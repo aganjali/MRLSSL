@@ -118,7 +118,7 @@ namespace MRL.SSL.AIConsole.Roles
             #region Normal
             if (CurrentState == (int)GoalieStates.Normal)
             {
-
+                //
                 Position2D postoGo = GameParameters.OurGoalCenter + (GameParameters.OurGoalCenter - defenceSate.Location).GetNormalizeToCopy(-0.4);
                 //WC2017
                 if (postoGo.X > GameParameters.OppGoalCenter.X - 0.11)

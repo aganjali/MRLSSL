@@ -22,6 +22,7 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -34,7 +35,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -111,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Engine\CommonDelegate.cs" />
+    <Compile Include="Engine\DefenceMatchers\DefenceManager.cs" />
     <Compile Include="Engine\DefenceMatchers\DefenceTest.cs" />
     <Compile Include="Engine\DefenceMatchers\FreeKickDefence.cs" />
     <Compile Include="Engine\DefenceMatchers\NormalDefenceAssigner.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Plays\Opp\OppKickOffPlay.cs" />
     <Compile Include="Plays\Opp\OppPenaltyPlay.cs" />
     <Compile Include="Plays\Opp\OppNewPenaltyPlay.cs" />
+    <Compile Include="Plays\Our\AUNormalPlay.cs" />
     <Compile Include="Plays\Our\NewNormal8Robot.cs" />
     <Compile Include="Plays\Our\NewPassingNormalPlay.cs" />
     <Compile Include="Plays\Our\NewNormalPlay.cs" />
@@ -194,11 +196,16 @@
     <Compile Include="Roles\Defending\Normal\NormalMarkerRole1.cs" />
     <Compile Include="Roles\Defending\Normal\NormalMarkerRole2.cs" />
     <Compile Include="Roles\Defending\Normal\RightBackMarkerNormalRole.cs" />
+    <Compile Include="Roles\Defending\OnLineRoles\OnLineRole1.cs" />
+    <Compile Include="Roles\Defending\OnLineRoles\OnLineRole2.cs" />
+    <Compile Include="Roles\Defending\OnLineRoles\OnLineRole3.cs" />
     <Compile Include="Roles\Defending\StaticDefender3.cs" />
+    <Compile Include="Roles\GerrardRole.cs" />
     <Compile Include="Roles\GoalieRole\BusGoalieCornerRole.cs" />
     <Compile Include="Roles\GoalieRole\GoalieCornerRole.cs" />
     <Compile Include="Roles\GoalieRole\NewStaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\StaticGoalieRole.cs" />
+    <Compile Include="Roles\GoalieRole\VandersarGoalKeeperRole.cs" />
     <Compile Include="Roles\Stop\RotationalStopCover.cs" />
     <Compile Include="Roles\Stop\StopRole4.cs" />
     <Compile Include="Roles\Stop\StopRole5.cs" />
@@ -315,9 +322,11 @@
     <Compile Include="Skills\GotoPointSkill.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Skills\MarkSkill.cs" />
     <Compile Include="Skills\rotatedrible.cs" />
     <Compile Include="Skills\RotateWheelsSkill.cs" />
     <Compile Include="Skills\StarkCatchSkill.cs" />
+    <Compile Include="Skills\TestSkill\GerrardTestSkill.cs" />
     <Compile Include="Skills\TestSkill\NewCutBallSkill.cs" />
     <Compile Include="Skills\TestSkill\PathTestSkill.cs" />
     <Compile Include="Skills\TestSkill\PreDefinedPath.cs" />

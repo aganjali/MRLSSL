@@ -129,7 +129,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             for (int i = 0; i <  Count; i++)
             {
                 int id = RobotIds[i];
-                if (errts[i].Obstacles.Meet(errts[i].SmoothPath[0], errts[i].SmoothPath[1], MotionPlannerParameters.RobotRadi))
+                if (errts[i].Obstacles.Meet(errts[i].SmoothPath[0], errts[i].SmoothPath[1], MotionPlannerParameters.RobotRadi, true))
                 {
                     errts[i].SmoothPath.RemoveAt(0);
                 }
@@ -216,13 +216,13 @@ namespace MRL.SSL.Planning.MotionPlanner
             for (int i = Path.Count - 1; i > 1; i--)
             {
                 
-                if (!met && obs.Meet(Path[i], Path[i - 1], MotionPlannerParameters.RobotRadi - 0.01))
+                if (!met && obs.Meet(Path[i], Path[i - 1], MotionPlannerParameters.RobotRadi - 0.01, true))
                     met = true;
                 if (!metZone && 
                     (
-                        (obs.ObstaclesList.ContainsKey(-2) && obs.ObstaclesList[-2].Meet(Path[i], Path[i - 1], MotionPlannerParameters.RobotRadi - 0.01))
-                        || (obs.ObstaclesList.ContainsKey(-3) && obs.ObstaclesList[-3].Meet(Path[i], Path[i - 1], MotionPlannerParameters.RobotRadi - 0.01))
-                        || (obs.ObstaclesList.ContainsKey(-4) && obs.ObstaclesList[-4].Meet(Path[i], Path[i - 1], MotionPlannerParameters.RobotRadi - 0.01))
+                        (obs.ObstaclesList.ContainsKey(-2) && obs.ObstaclesList[-2].Meet(Path[i], Path[i - 1], MotionPlannerParameters.RobotRadi - 0.01, true))
+                        || (obs.ObstaclesList.ContainsKey(-3) && obs.ObstaclesList[-3].Meet(Path[i], Path[i - 1], MotionPlannerParameters.RobotRadi - 0.01, true))
+                        || (obs.ObstaclesList.ContainsKey(-4) && obs.ObstaclesList[-4].Meet(Path[i], Path[i - 1], MotionPlannerParameters.RobotRadi - 0.01, true))
                     )
                    )
                     metZone = true;
@@ -232,21 +232,21 @@ namespace MRL.SSL.Planning.MotionPlanner
                 angle += Math.Abs(Vector2D.AngleBetweenInRadians(Vec, Vec2));
             }
             Vec = Path[1].Location - Path[0].Location;
-            if (!met && obs.Meet(Path[1], Path[0], MotionPlannerParameters.RobotRadi- 0.01))
+            if (!met && obs.Meet(Path[1], Path[0], MotionPlannerParameters.RobotRadi- 0.01, true))
                 met = true;
              if (!metZone && 
                     (
-                        (obs.ObstaclesList.ContainsKey(-2) && obs.ObstaclesList[-2].Meet(Path[1], Path[0], MotionPlannerParameters.RobotRadi - 0.01))
-                        || (obs.ObstaclesList.ContainsKey(-3) && obs.ObstaclesList[-3].Meet(Path[1], Path[0], MotionPlannerParameters.RobotRadi - 0.01))
-                        || (obs.ObstaclesList.ContainsKey(-4) && obs.ObstaclesList[-4].Meet(Path[1], Path[0], MotionPlannerParameters.RobotRadi - 0.01))
+                        (obs.ObstaclesList.ContainsKey(-2) && obs.ObstaclesList[-2].Meet(Path[1], Path[0], MotionPlannerParameters.RobotRadi - 0.01, true))
+                        || (obs.ObstaclesList.ContainsKey(-3) && obs.ObstaclesList[-3].Meet(Path[1], Path[0], MotionPlannerParameters.RobotRadi - 0.01, true))
+                        || (obs.ObstaclesList.ContainsKey(-4) && obs.ObstaclesList[-4].Meet(Path[1], Path[0], MotionPlannerParameters.RobotRadi - 0.01, true))
                     )
                    )
                     metZone = true;
              if (
                      (
-                         (obs.ObstaclesList.ContainsKey(-2) && obs.ObstaclesList[-2].Meet(Path[0], MotionPlannerParameters.RobotRadi - 0.01))
-                         || (obs.ObstaclesList.ContainsKey(-3) && obs.ObstaclesList[-3].Meet(Path[0], MotionPlannerParameters.RobotRadi - 0.01))
-                         || (obs.ObstaclesList.ContainsKey(-4) && obs.ObstaclesList[-4].Meet(Path[0], MotionPlannerParameters.RobotRadi - 0.01))
+                         (obs.ObstaclesList.ContainsKey(-2) && obs.ObstaclesList[-2].Meet(Path[0], MotionPlannerParameters.RobotRadi - 0.01, true))
+                         || (obs.ObstaclesList.ContainsKey(-3) && obs.ObstaclesList[-3].Meet(Path[0], MotionPlannerParameters.RobotRadi - 0.01, true))
+                         || (obs.ObstaclesList.ContainsKey(-4) && obs.ObstaclesList[-4].Meet(Path[0], MotionPlannerParameters.RobotRadi - 0.01, true))
                      )
                     )
              {
@@ -259,7 +259,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             if(met)
                 return (100000 + _angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length);
             if ((Goal.Location - Path[0].Location).Size > 0.01)
-                return (50000 + _angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length + (Goal.Location - Path[0].Location).Size * 10);
+                return (50000 + _angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length + (Goal.Location - Path[0].Location).Size * 100);
             return (_angleWeight * angle + _countWeight * Path.Count + _speedWieght * speed + _lengthWieght * length);
         }
       

@@ -9,7 +9,7 @@ using MRL.SSL.Planning.MotionPlanner;
 using System.Drawing;
 using MRL.SSL.Planning.GamePlanner.Types;
 
-namespace MRL.SSL.AIConsole.Roles.Defending.Normal
+namespace MRL.SSL.AIConsole.Roles
 {
     class Marker2Normal8Robot : RoleBase
     {
@@ -41,7 +41,6 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
         double distNear = 0.18;
         Vector2D angle = new Vector2D();
         public List<int> oppAttackerIds = new List<int>();
-        Dictionary<double, int> Closest;
         List<int> liii = new List<int>();
         List<int> opp = new List<int>();
         List<int> oppValue1 = new List<int>();
@@ -60,7 +59,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             //    oppMarkID = null;
 
             target = CalculateTarget(engin, Model, RobotID);
-            if (CurrentState == (int)State.Attack)
+            if (CurrentState == (int)State.attack)
             {
 
                 #region Attack
@@ -152,7 +151,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             }
             DrawingObjects.AddObject(new Circle(target, 0.09, new Pen(Color.DarkBlue, 0.01f)));
             NormalSharedState.CommonInfo.NormalAttackerMarker2Target = target;
-            var angle = (CurrentState == (int)State.Attack) ? (Model.BallState.Location - target).AngleInDegrees : (Model.OurRobots[RobotID].Angle.Value);
+            var angle = (CurrentState == (int)State.attack) ? (Model.BallState.Location - target).AngleInDegrees : (Model.OurRobots[RobotID].Angle.Value);
             if (oppAttackerIds.Count != 0 && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(GameParameters.OurGoalCenter) < 1.8)
             {
                 Vector2D vec = (Model.Opponents[oppMarkID.Value].Location - Model.BallState.Location).GetNormalizeToCopy(-0.3);
@@ -160,12 +159,12 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
 
             }
             Planner.Add(RobotID, target, (Model.OurRobots[RobotID].Angle.Value), PathType.UnSafe, false, true, true, false);
-            if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2 && CurrentState != (int)State.Attack)
+            if (Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.2 && CurrentState != (int)State.attack)
             {
                 if (oppAttackerIds.Count != 0)
                 {
                     Position2D p = (oppMarkID.HasValue ? Model.Opponents[oppMarkID.Value].Location : Model.BallState.Location);
-                    if (CurrentState == (int)State.cutball)
+                    if (CurrentState == (int)State.cutBall)
                         p = Model.BallState.Location;
                     Planner.Add(RobotID, target, (p - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, true, true, false);
                 }
@@ -176,7 +175,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
         {
             if (Model.BallState.Location.X < -0.6 || !oppBallOwner)
             {
-                CurrentState = (int)State.Attack;
+                CurrentState = (int)State.attack;
             }
             else
             {
@@ -191,12 +190,12 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 {
                     if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
                     {
-                        CurrentState = (int)State.marknear;
+                        CurrentState = (int)State.markNear;
                     }
                 }
                 else if (ballIsMove)
                 {
-                    CurrentState = (int)State.marknear;
+                    CurrentState = (int)State.markNear;
                 }
                 if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
                 {
@@ -247,11 +246,11 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                                   && Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.OurRobots[RobotID].Location) < 0.30))
                                   )
                     {
-                        CurrentState = (int)State.Stop;
+                        CurrentState = (int)State.stop;
                     }
                     else if (cutFlag && Model.OurRobots[RobotID].Location.DistanceFrom(intersect) < 0.5)
                     {
-                        CurrentState = (int)State.cutball;
+                        CurrentState = (int)State.cutBall;
                     }
                     else
                     {
@@ -260,11 +259,11 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                             - Model.Opponents[oppMarkID.Value].Location).InnerProduct((Model.Opponents[oppMarkID.Value].Location + Model.Opponents[oppMarkID.Value].Speed) - Model.Opponents[oppMarkID.Value].Location) > 0.00
                             && !cancelInTheWay) && MarkerDistFromGoal < OppDistFromGoal)
                         {
-                            CurrentState = (int)State.IntheWay;
+                            CurrentState = (int)State.inTheWay;
                         }
                         else if (Math.Abs(Vector2D.AngleBetweenInDegrees(Model.Opponents[oppMarkID.Value].Speed, GameParameters.OurGoalCenter - Model.Opponents[oppMarkID.Value].Location)) > 100 && Model.Opponents[oppMarkID.Value].Speed.Size > 0.50 && MarkerDistFromGoal + .1 < OppDistFromGoal)
                         {
-                            CurrentState = (int)State.goback;
+                            CurrentState = (int)State.goBack;
                         }
                         else if (!cutFlag && OppDistFromGoal < MarkerDistFromGoal && Model.Opponents[oppMarkID.Value].Location.X >= Model.OurRobots[RobotID].Location.X)
                         {
@@ -272,17 +271,13 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                         }
                         else if (!cutFlag && Model.Opponents[oppMarkID.Value].Location.X > 0.5 + 0.1 && Model.Opponents[oppMarkID.Value].Speed.Size < 0.5 && OppDistFromGoal + 0.1 > MarkerDistFromGoal)
                         {
-                            CurrentState = (int)State.marknear;
+                            CurrentState = (int)State.markNear;
                         }
-                        //else if (!cutFlag && Model.Opponents[oppMarkID.Value].Location.X < 0.5 - 0.1 && Model.Opponents[oppMarkID.Value].Speed.Size < 0.5 && OppDistFromGoal + 0.1 > MarkerDistFromGoal)
-                        //{
-                        //    CurrentState = (int)State.markfar;
-                        //}
                     }
                 }
                 else
                 {
-                    CurrentState = (int)State.regional;
+                    CurrentState = (int)State.attack;
                 }
             }
         }
@@ -313,7 +308,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             if (!oppBallOwner && engine.GameInfo.OppTeam.BallOwner.HasValue && Model.Opponents[engine.GameInfo.OppTeam.BallOwner.Value].Location.DistanceFrom(Model.BallState.Location) < 0.15)
                 oppBallOwner = true;
 
-            if (CurrentState == (int)State.Attack)
+            if (CurrentState == (int)State.attack)
             {
                 #region Attack
 
@@ -322,13 +317,13 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
             else
             {
                 #region defenc
-                if (CurrentState != (int)State.Stop)
+                if (CurrentState != (int)State.stop)
                 {
                     firstTime = true;
                     //staticAngle = true;
                 }
                 #region marknear
-                if (CurrentState == (int)State.marknear)
+                if (CurrentState == (int)State.markNear)
                 {
                     DrawingObjects.AddObject(new StringDraw("Marknear", Model.OurRobots[RobotID].Location.Extend(0.50, 0.00)), "467");
                     //oppMarkPos = Model.Opponents[oppMarkID.Value].Location;
@@ -341,7 +336,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 }
                 #endregion
                 #region markfar
-                if (CurrentState == (int)State.markfar)
+                if (CurrentState == (int)State.markFar)
                 {
 
                     DrawingObjects.AddObject(new StringDraw("Markfar", Model.OurRobots[RobotID].Location.Extend(0.50, 0.00)), "88467");
@@ -406,7 +401,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 }
                 #endregion
                 #region cutball
-                if (CurrentState == (int)State.cutball)
+                if (CurrentState == (int)State.cutBall)
                 {
                     DrawingObjects.AddObject(new StringDraw("Cut", Model.OurRobots[RobotID].Location.Extend(0.50, 0.00)), "58467");
                     if (Model.Opponents[oppMarkID.Value].Location.DistanceFrom(Model.BallState.Location) < 0.17)
@@ -443,7 +438,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 }
                 #endregion
                 #region Stop
-                if (CurrentState == (int)State.Stop)
+                if (CurrentState == (int)State.stop)
                 {
                     firsttimedanger = true;
                     //DrawingObjects.AddObject(new StringDraw("STOP", Model.OurRobots[RobotID].Location.Extend(.5, 0)), "535132132");
@@ -457,7 +452,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 }
                 #endregion
                 #region InTheWay
-                if (CurrentState == (int)State.IntheWay)
+                if (CurrentState == (int)State.inTheWay)
                 {
                     DrawingObjects.AddObject(new StringDraw("Intheway", Model.OurRobots[RobotID].Location.Extend(0.50, 0.00)), "8638ss63j1322");
                     firsttimedanger = true;
@@ -516,7 +511,7 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
                 }
                 #endregion
                 #region goBack
-                if (CurrentState == (int)State.goback)
+                if (CurrentState == (int)State.goBack)
                 {
                     if (oppMarkID.HasValue && Model.Opponents.ContainsKey(oppMarkID.Value))
                     {
@@ -1022,14 +1017,14 @@ namespace MRL.SSL.AIConsole.Roles.Defending.Normal
         enum State
         {
             regional,
-            Stop,
-            marknear,
-            markfar,
-            cutball,
-            IntheWay,
-            goback,
+            stop,
+            markNear,
+            markFar,
+            cutBall,
+            inTheWay,
+            goBack,
             behind,
-            Attack
+            attack
         }
     }
 }

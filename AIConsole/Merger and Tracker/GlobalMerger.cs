@@ -769,6 +769,9 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             //   BallType = TrackerType.Fast;
             frame newFrame = new frame();
             CameraParameters4Cam(Packet);
+            if (Packet != null && Packet.geometry != null)
+                merger.sslVisionGeometry = Packet.geometry;
+            
             //bool merged = merger.Merge4cam(Packet, ref Frame, ref newFrame, isYellow);
             bool merged;
             // try
@@ -876,6 +879,8 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 model.CurrentVisionPacket5 = merger.sslpacketCam5;
                 model.CurrentVisionPacket6 = merger.sslpacketCam6;
                 model.CurrentVisionPacket7 = merger.sslpacketCam7;
+                model.SslVisionGeometry = merger.sslVisionGeometry;
+                MathMatrix A = new MathMatrix(2 * 4, 4), X = new MathMatrix(4, 1), B = new MathMatrix(8, 1);
 
                 model.TimeElapsed = TimeSpan.FromSeconds(Frame.timeofcapture);
 

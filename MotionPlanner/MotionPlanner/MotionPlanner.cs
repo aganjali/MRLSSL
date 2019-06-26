@@ -37,6 +37,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         private static Dictionary<int, bool> SpinBacks = new Dictionary<int, bool>();
         private static Dictionary<int, bool> ReCalculateTeta = new Dictionary<int, bool>();
         private static Dictionary<int, List<Obstacle>> VirtualObstacles = new Dictionary<int, List<Obstacle>>();
+
         private static Random rand = new Random();
         public static ParameterList defultParams = new ParameterList();
         private static Dictionary<int, Vector2D> lastVs = new Dictionary<int, Vector2D>();
@@ -830,7 +831,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 double lastWW = lastW;
                 // try
                 {
-                    commands[item] = controllers[item].CalculateTargetSpeed(Model, item, paths[item][paths[item].Count - 2].Location, (double)goals[item].Angle, paths[item], (UseDefultParams.ContainsKey(item)) ? UseDefultParams[item] : false, ref lastV, ref lastW);
+                    commands[item] = controllers[item].CalculateTargetSpeed(Model, item, paths[item][Math.Max(0, paths[item].Count - 2)].Location, (double)goals[item].Angle, paths[item], (UseDefultParams.ContainsKey(item)) ? UseDefultParams[item] : false, ref lastV, ref lastW);
                 }
 
                 //catch (Exception e)
@@ -943,6 +944,8 @@ namespace MRL.SSL.Planning.MotionPlanner
                 if (!Model.OurRobots.ContainsKey(item))
                 {
                     mustRemove.Add(item);
+                    if (!lastVelResetCounter.ContainsKey(item))
+                        lastVelResetCounter[item] = 0;
                     lastVelResetCounter[item]++;
                 }
                 else
