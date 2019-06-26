@@ -143,9 +143,9 @@ namespace MRL.SSL.AIConsole.Plays
 
             Dictionary<int, RoleBase> matched;
 
-            //if (Model.GoalieID.HasValue)
-            //    matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.Where(w => w != Model.GoalieID.Value).ToList(), roles, PreviouslyAssignedRoles);
-            //else
+            if (Model.GoalieID.HasValue)
+                matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.Where(w => w != Model.GoalieID.Value).ToList(), roles, PreviouslyAssignedRoles);
+            else
                 matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.ToList(), roles, PreviouslyAssignedRoles);
 
             int? Defender1ID = null;

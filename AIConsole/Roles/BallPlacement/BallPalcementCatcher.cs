@@ -35,97 +35,76 @@ namespace MRL.SSL.AIConsole.Roles
         {
             myOtherID = OtherID;
             GetBallSkill activeSkill = new GetBallSkill();
+            DrawingObjects.AddObject(new StringDraw("CurrentState= " + (states)CurrentState, "bpcatcher_state", Model.OurRobots[RobotID].Location + new Vector2D(1, 1)));
             var speed = Math.Min(Math.Max(0.9, 0.5 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)), 5);
             if (CurrentState == (int)states.pass)
             {
-                DrawingObjects.AddObject(new StringDraw("CurrentState= passca", new Position2D(4.5 + 0.2 * Mode, 5)), "passca");
-                //Vector2D vec1 = Model.BallState.Location - StaticVariables.ballPlacementPos;
-                //target = (Model.BallState.Location - vec1.GetNormalizeToCopy(Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)));
-                //angle = (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees;
-                //avoidBall = true;
-                //avoidRobot = true;
-                if ((Model.OurRobots[RobotID].Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.20 && Model.BallState.Speed.Size > 0.5 )
+
+                if ((Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.20 && Model.BallState.Speed.Size > 0.5)
                     /* && Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.6 */|| Model.BallState.Speed.Size > 1)
                 {
+
                     catchSkill.perform(engine, Model, RobotID, false, StaticVariables.ballPlacementPos, false, 60, 0.2, 0.15);
                     return;
                 }
                 else
                 {
-                    // Vector2D vec1 = Model.BallState.Location - StaticVariables.ballPlacementPos;
-
-                    target = StaticVariables.ballPlacementPos;
-                    //target = (Mode == 0) ? (Model.BallState.Location + vec1.GetNormalizeToCopy(behindBallTresh)) : (Model.BallState.Location - vec1.GetNormalizeToCopy(behindBallTresh));
-                    //OtherTarget = (Mode != 0) ? (Model.BallState.Location + vec1.GetNormalizeToCopy(behindBallTresh)) : (Model.BallState.Location - vec1.GetNormalizeToCopy(behindBallTresh));
-                    // angle = (Mode != 0) ? (target - StaticVariables.ballPlacementPos).AngleInDegrees : (StaticVariables.ballPlacementPos - target).AngleInDegrees;
-                    angle = (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees;
+                    Vector2D vec1 = (StaticVariables.ballPlacementPos - Model.BallState.Location);
+                    target = StaticVariables.ballPlacementPos + vec1.GetNormalizeToCopy(0.15);
+                    DrawingObjects.AddObject(new Circle(target, 0.1, new Pen(Color.Black, 0.01f)), "ci");
+                    DrawingObjects.AddObject(new Line(StaticVariables.ballPlacementPos, Model.BallState.Location, new Pen(Color.Black, 0.01f)), "cwi");
+                    //target = StaticVariables.ballPlacementPos;
+                    angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                     avoidBall = true;
                     avoidRobot = true;
                 }
             }
-            else if (CurrentState == (int)states.positioning)
-            {
-                DrawingObjects.AddObject(new StringDraw("CurrentState= positioning", new Position2D(4.5 + 0.2 * Mode, 5)), "fwainal");
-                Vector2D vec1 = Model.BallState.Location - StaticVariables.ballPlacementPos;
-                target = (Model.BallState.Location - vec1.GetNormalizeToCopy(behindBallTresh));
-                //target = (Mode == 0) ? (Model.BallState.Location + vec1.GetNormalizeToCopy(behindBallTresh)) : (Model.BallState.Location - vec1.GetNormalizeToCopy(behindBallTresh));
-                //OtherTarget = (Mode != 0) ? (Model.BallState.Location + vec1.GetNormalizeToCopy(behindBallTresh)) : (Model.BallState.Location - vec1.GetNormalizeToCopy(behindBallTresh));
-                // angle = (Mode != 0) ? (target - StaticVariables.ballPlacementPos).AngleInDegrees : (StaticVariables.ballPlacementPos - target).AngleInDegrees;
-                angle = (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees;
-                avoidBall = true;
-                avoidRobot = true;
-            }
-            //else if (CurrentState == (int)states.eatBall)
-            //{
-            //    counter = 0;
-            //    DrawingObjects.AddObject(new StringDraw("CurrentState= eatBall", new Position2D(4.5 + 0.2 * Mode, 5)), "fainral");
-            //    Vector2D vec1 = Model.BallState.Location - StaticVariables.ballPlacementPos;
-            //    target = (Model.BallState.Location - vec1.GetNormalizeToCopy(eatBallTresh));
-            //    //target = (Mode == 0) ? (Model.BallState.Location + vec1.GetNormalizeToCopy(eatBallTresh)) : (Model.BallState.Location - vec1.GetNormalizeToCopy(eatBallTresh));
-            //    // OtherTarget = (Mode != 0) ? (Model.BallState.Location + vec1.GetNormalizeToCopy(behindBallTresh)) : (Model.BallState.Location - vec1.GetNormalizeToCopy(behindBallTresh));
-            //    //angle = (Mode != 0) ? (target - StaticVariables.ballPlacementPos).AngleInDegrees : (StaticVariables.ballPlacementPos - target).AngleInDegrees;
-            //    angle = (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees;
-            //    avoidBall = false;
-            //    avoidRobot = false;
-            //}
-            //else if (CurrentState == (int)states.moveBall)
-            //{
-            //    counter = 0;
-            //    DrawingObjects.AddObject(new StringDraw("CurrentState= moveBall", new Position2D(4.5 + 0.2 * Mode, 5)), "fainarl");
-            //    Vector2D vec1 = Model.BallState.Location - StaticVariables.ballPlacementPos;
-            //    target = (StaticVariables.ballPlacementPos - vec1.GetNormalizeToCopy(eatBallTresh));
-            //    // target = (Mode == 0) ? (StaticVariables.ballPlacementPos + vec1.GetNormalizeToCopy(eatBallTresh)) : (StaticVariables.ballPlacementPos - vec1.GetNormalizeToCopy(eatBallTresh));
-            //    //OtherTarget = (Mode != 0) ? (Model.BallState.Location + vec1.GetNormalizeToCopy(behindBallTresh)) : (Model.BallState.Location - vec1.GetNormalizeToCopy(behindBallTresh));
-            //    //angle = (Mode != 0) ? -(StaticVariables.ballPlacementPos - target).AngleInDegrees : (StaticVariables.ballPlacementPos - target).AngleInDegrees;
-            //    angle = (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees;
-            //    avoidBall = false;
-            //    avoidRobot = false;
-            //}
             else if (CurrentState == (int)states.waitForBall)
             {
-                DrawingObjects.AddObject(new StringDraw(((states)CurrentState).ToString(), new Position2D(4.5 + 0.2 * Mode, 5)), "fainarl");
-                Vector2D vec1 = StaticVariables.ballPlacementPos - Model.OurRobots[myOtherID].Location;
-                target = (StaticVariables.ballPlacementPos + vec1.GetNormalizeToCopy(0.09));
-                // target = (Mode == 0) ? (StaticVariables.ballPlacementPos + vec1.GetNormalizeToCopy(eatBallTresh)) : (StaticVariables.ballPlacementPos - vec1.GetNormalizeToCopy(eatBallTresh));
-                //OtherTarget = (Mode != 0) ? (Model.BallState.Location + vec1.GetNormalizeToCopy(behindBallTresh)) : (Model.BallState.Location - vec1.GetNormalizeToCopy(behindBallTresh));
-                //angle = (Mode != 0) ? -(StaticVariables.ballPlacementPos - target).AngleInDegrees : (StaticVariables.ballPlacementPos - target).AngleInDegrees;
-                angle = (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees;
+                //Vector2D vec1 = StaticVariables.ballPlacementPos - Model.OurRobots[myOtherID].Location;
+                //target = (StaticVariables.ballPlacementPos + vec1.GetNormalizeToCopy(0.09));
+                //angle = (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees;
+                Vector2D vec1 = StaticVariables.ballPlacementPos - Model.BallState.Location;
+                target = StaticVariables.ballPlacementPos + vec1.GetNormalizeToCopy(0.15);
+                angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                 avoidBall = false;
                 avoidRobot = false;
+                if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
+                {
+                    Planner.Add(RobotID, Model.OurRobots[RobotID]);
+                    return;
+                }
             }
             else if (CurrentState == (int)states.finish)
             {
-                DrawingObjects.AddObject(new StringDraw("CurrentState= finish", new Position2D(4.5 + 0.2 * Mode, 5)), "faisnarl");
-                Vector2D vec1 = Model.BallState.Location - StaticVariables.ballPlacementPos;
-                target = (StaticVariables.ballPlacementPos - vec1.GetNormalizeToCopy(finishTresh));
-                // target = (Mode == 0) ? (StaticVariables.ballPlacementPos + vec1.GetNormalizeToCopy(finishTresh)) : (StaticVariables.ballPlacementPos - vec1.GetNormalizeToCopy(finishTresh));
-                //OtherTarget = (Mode != 0) ? (Model.BallState.Location + vec1.GetNormalizeToCopy(finishTresh)) : (Model.BallState.Location - vec1.GetNormalizeToCopy(finishTresh));
-                //angle = (Mode != 0) ? -(StaticVariables.ballPlacementPos - target).AngleInDegrees : (StaticVariables.ballPlacementPos - target).AngleInDegrees;
-                angle = (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees;
+                if (Model.BallConfidenc<0.5)
+                {
+                    Vector2D vec2 = (Model.OurRobots[RobotID].Location - StaticVariables.ballPlacementPos);
+                    target = StaticVariables.ballPlacementPos + vec2.GetNormalizeToCopy(0.5);
+                    angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
+                }
+                else if (Model.BallConfidenc>=0.5)
+                {
+                    Vector2D vec2 = (Model.OurRobots[RobotID].Location - Model.BallState.Location);
+                    target = Model.BallState.Location + vec2.GetNormalizeToCopy(0.5);
+                    angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
+                }
+               
+               
+                DrawingObjects.AddObject(new Circle(target, 0.1, new Pen(Color.Blue, 0.01f)), "cvi");
+                // DrawingObjects.AddObject(new Line(StaticVariables.ballPlacementPos, Model.BallState.Location, new Pen(Color.Blue)), "cwvi");
+
+
+                //DrawingObjects.AddObject(new StringDraw("CurrentState= finish", new Position2D(4.5 + 0.2 * Mode, 5)), "faisnarl");
+                //Vector2D vec1 = (Model.BallState.Location - StaticVariables.ballPlacementPos).GetNormalizeToCopy(0.30);
+                //target = (StaticVariables.ballPlacementPos - vec1);
+                //GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, target, false, .35, true);
+                //angle = (StaticVariables.ballPlacementPos - Model.OurRobots[RobotID].Location).AngleInDegrees;
                 avoidBall = true;
                 avoidRobot = true;
+
             }
-            DrawingObjects.AddObject(new Line(StaticVariables.ballPlacementPos, target, new Pen(Color.Red, 0.02f)), "jdv");
+            //DrawingObjects.AddObject(new Line(StaticVariables.ballPlacementPos, target, new Pen(Color.Red, 0.02f)), "jdv");
 
             Planner.SetParameter(RobotID, 0.4);
             Planner.Add(RobotID, target, angle, PathType.UnSafe, avoidBall, avoidRobot, false, false, false);
@@ -148,7 +127,7 @@ namespace MRL.SSL.AIConsole.Roles
                 else if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
                 {
                     counter++;
-                    if (counter >= 140)
+                    if (counter >= 70)
                     {
                         CurrentState = (int)states.finish;
                         counter = 0;
@@ -170,13 +149,13 @@ namespace MRL.SSL.AIConsole.Roles
                 else if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
                 {
                     counter++;
-                    if (counter>=140)
+                    if (counter >= 30)
                     {
                         CurrentState = (int)states.finish;
                         counter = 0;
                     }
-                    
-                    
+
+
                 }
             }
             //else if (CurrentState == (int)states.positioning)
@@ -245,7 +224,7 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     CurrentState = (int)states.pass;
                 }
-                else if (Model.BallConfidenc > 0.95 && Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) >= 0.1)
+                else if (Model.BallConfidenc > 0.8 && Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) >= 0.1)
                 {
                     CurrentState = (int)states.waitForBall;
                 }

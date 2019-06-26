@@ -97,7 +97,7 @@ namespace MRL.SSL.AIConsole.Skills
             AvoidOppDangerZone = avoidOpp;
         }
 
-        public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID, ref Position2D Target, SingleObjectState passerState, bool isPassChip, double passSpeed, bool isFromAPassState, MRL.SSL.AIConsole.Engine.NormalSharedState.ActivePassKind passKind, bool useDefaultBackBall = true, double backBall = 0.1)
+        public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID, ref Position2D Target, SingleObjectState passerState, bool isPassChip, double passSpeed, bool isFromAPassState, MRL.SSL.AIConsole.Engine.NormalSharedState.ActivePassKind passKind, bool useDefaultBackBall = true, double backBall = 0.1, bool ballPlacement = false)
         {
             DrawingObjects.AddObject(new StringDraw(passKind.ToString(), Position2D.Zero + new Vector2D(0.35, 0.25)), "passkind");
             //      Planner.ChangeDefaulteParams(robotID, false);
@@ -148,11 +148,11 @@ namespace MRL.SSL.AIConsole.Skills
                     DrawingObjects.AddObject(new StringDraw((outgoingSide) ? "Side" : "Back", Position2D.Zero + new Vector2D(0.25, 0.25)));
                 if (outgoingSide)
                 {
-                    OutGoingSideTrack(Model, robotID, Target, useDefaultBackBall, backBall);
+                    OutGoingSideTrack(Model, robotID, Target, useDefaultBackBall, backBall, ballPlacement );
                 }
                 else
                 {
-                    OutGoingBackTrack(engine, Model, robotID, Target, useDefaultBackBall, backBall);
+                    OutGoingBackTrack(engine, Model, robotID, Target, useDefaultBackBall, backBall, ballPlacement);
                 }
             }
             else if (CurrentState == GetBallState.Static)
@@ -165,9 +165,9 @@ namespace MRL.SSL.AIConsole.Skills
                 oneTouch.Reset();
             }
         }
-        public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID, Position2D Target, bool useDefaultBackBall = true, double backBall = 0.1)
+        public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID, Position2D Target, bool useDefaultBackBall = true, double backBall = 0.1, bool ballPlacement = false)
         {
-            Perform(engine, Model, robotID, ref Target, null, false, 0, false, NormalSharedState.ActivePassKind.OneTouch, useDefaultBackBall, backBall);
+            Perform(engine, Model, robotID, ref Target, null, false, 0, false, NormalSharedState.ActivePassKind.OneTouch, useDefaultBackBall, backBall, ballPlacement);
         }
 
         public void PerformForStrategy(GameStrategyEngine engine, WorldModel Model, int robotID, Position2D Target, bool useDefaultBackBall = true, double backBall = 0.1)
@@ -418,7 +418,7 @@ namespace MRL.SSL.AIConsole.Skills
             return false;
         }
         int ctr = 0;
-        public void OutGoingSideTrack(WorldModel Model, int RobotID, Position2D Target, bool useDefaultBackBall = true, double backB = 0.1)
+        public void OutGoingSideTrack(WorldModel Model, int RobotID, Position2D Target, bool useDefaultBackBall = true, double backB = 0.1, bool ballPlacement = false)
         {
             double BallSpeedCoef = 0.9;
             double BallDistanceTresh = 0.5;
@@ -561,7 +561,7 @@ namespace MRL.SSL.AIConsole.Skills
             {
                 if (Debug)
                     DrawingObjects.AddObject(new Circle(Model.BallState.Location, 0.2, new Pen(Color.Black, 0.01f)), "InRef");
-                SideCalculateInRefrence(Model, RobotID, Target, refrenceBackBall);
+                SideCalculateInRefrence(Model, RobotID, Target, refrenceBackBall, ballPlacement);
                 return;
             }
             else
@@ -733,7 +733,7 @@ namespace MRL.SSL.AIConsole.Skills
 
         //    Planner.Add(RobotID, new SingleObjectState(finalPosToGo, Vector2D.Zero, (float)ballTargetVec.AngleInDegrees), PathType.UnSafe, false, true, AvoidOurDangerZone, AvoidOppDangerZone);
         //}
-        public void OutGoingBackTrack(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D Target, bool useDefaultBackBall = true, double backB = 0.1)
+        public void OutGoingBackTrack(GameStrategyEngine engine, WorldModel Model, int RobotID, Position2D Target, bool useDefaultBackBall = true, double backB = 0.1, bool ballPlacement = false)
         {
             double segmentConst = 0.65;
             double rearDistance = 0.09;
@@ -881,7 +881,7 @@ namespace MRL.SSL.AIConsole.Skills
             {
                 if (Debug)
                     DrawingObjects.AddObject(new Circle(Model.BallState.Location, 0.2, new Pen(Color.Black, 0.01f)), "InRef");
-                BackCalculateInRefrence(Model, RobotID, Target, refrenceBackBall);
+                BackCalculateInRefrence(Model, RobotID, Target, refrenceBackBall, ballPlacement);
                 return;
             }
             if (Debug)
@@ -901,7 +901,7 @@ namespace MRL.SSL.AIConsole.Skills
             Planner.Add(RobotID, new SingleObjectState(finalPosToGo, Vector2D.Zero, (float)ballTargetVec.AngleInDegrees), PathType.UnSafe, false, true, AvoidOurDangerZone, AvoidOppDangerZone);
         }
 
-        private void BackCalculateInRefrence(WorldModel Model, int RobotID, Position2D Target, double BackDistance)
+        private void BackCalculateInRefrence(WorldModel Model, int RobotID, Position2D Target, double BackDistance, bool ballPlacement)
         {
 
             pidBackY.Coef = new PIDCoef(ActiveParameters.KpBackY, ActiveParameters.KiBackY, ActiveParameters.KdBackY);
@@ -993,7 +993,7 @@ namespace MRL.SSL.AIConsole.Skills
 
             double pidout = -pidBackX.Calculate(dX, 0);
 
-            double vy = 1.5;
+            double vy = (ballPlacement) ? 0.5 : 1.5;
             double accel = (ActiveParameters.KpTotalVyBack * (1 / (Math.Abs(pidBackY.Calculate(dX, 0)) + ActiveParameters.vyOffsetBack + ActiveParameters.KpxVyBack * Math.Abs(finalSpeed.X))) + Math.Max(ActiveParameters.KpyVyBack * (finalSpeed.Y), 0));
 
             Vtemp = new Vector2D(pidout + ActiveParameters.KpxVxBack * finalSpeed.X, stat.Speed.Y - accel / 60.0);
@@ -1048,7 +1048,7 @@ namespace MRL.SSL.AIConsole.Skills
             return;
             #endregion
         }
-        private void SideCalculateInRefrence(WorldModel Model, int RobotID, Position2D Target, double BackDistance)
+        private void SideCalculateInRefrence(WorldModel Model, int RobotID, Position2D Target, double BackDistance, bool ballPlacement)
         {
 
             pidSideY.Coef = new PIDCoef(ActiveParameters.KpSideY, ActiveParameters.KiSideY, ActiveParameters.KdSideY);
@@ -1163,7 +1163,7 @@ namespace MRL.SSL.AIConsole.Skills
             if (Debug)
                 CharterData.AddData("dX", -(dX));
             double pidout = -pidSideX.Calculate(dX + extX, 0);
-            MaxSpeed.Y = 3;
+            MaxSpeed.Y = (ballPlacement)?00.5:3;
             Vtemp = new Vector2D(pidout, Math.Min(Math.Abs(vy), MaxSpeed.Y) * Math.Sign(vy)); //todo: V OUT
 
             Vector2D p = new Vector2D(Target2GO.X + extX, Target2GO.Y + extY);
