@@ -740,7 +740,7 @@ namespace MRL.SSL.AIConsole.Engine
 
 
                                     // PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
-                                    PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(frame), false);
+                               //     PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(frame), false);
                                     frame++;
                                     if (frame == 60)
                                     {

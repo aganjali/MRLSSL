@@ -299,5 +299,6 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         public double timeofcapture = 0;
         public Dictionary<uint, double> timeList = new Dictionary<uint,double>();
 
+        public Dictionary<uint, vball> OtherBalls = new Dictionary<uint, vball>();
     }
 }

@@ -186,10 +186,11 @@ namespace MRL.SSL.AIConsole.Roles
                 avoidance = true;
                 robotAvoidance = true;
             }
+            var angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
             DrawingObjects.AddObject(new Circle(Model.OurRobots[RobotID].Location, .1, new Pen(Brushes.Silver, .03f)), "565465465456");
             Planner.ChangeDefaulteParams(RobotID, false);
             Planner.SetParameter(RobotID, 10, 10);
-            Planner.Add(RobotID, Target, teta, PathType.UnSafe, false, robotAvoidance, avoidance, avoidance);
+            Planner.Add(RobotID, Target, angle, PathType.UnSafe, false, robotAvoidance, avoidance, avoidance);
             return new SingleWirelessCommand();
         }
       
@@ -558,7 +559,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             Position2D tempball = ballState.Location + ballState.Speed * 0.16;
             double d1, d2;
-            List<RoleBase> res = new List<RoleBase>() { new StaticDefender1(), new StaticDefender2(),new staticDefender3()};
+            List<RoleBase> res = new List<RoleBase>() { new StaticDefender1(), new StaticDefender2(),new staticDefender3(), new GerrardRole() };
             if (FreekickDefence.StaticFirstState == DefenderStates.BallInFront)
             {
                 if (GameParameters.IsInField(tempball, 0.05) && !GameParameters.IsInDangerousZone(tempball, false, 0, out d1, out d2))

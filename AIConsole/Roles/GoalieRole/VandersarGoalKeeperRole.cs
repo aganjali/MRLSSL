@@ -49,7 +49,7 @@ namespace MRL.SSL.AIConsole.Roles
                 double distanceFromCenter = Math.Round( Map(eXx, 0, 1.2, 0.1, 0.6),2);
                 DrawingObjects.AddObject(new StringDraw(distanceFromCenter.ToString(), new Position2D(6, 1)));
                 posToGo = GameParameters.OurGoalCenter + (Model.BallState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(distanceFromCenter);
-                posToGo.X = Math.Min(posToGo.X,5.9);
+                posToGo.X = Math.Min(posToGo.X,5.85);
                 angle = (ball.Location - posToGo).AngleInDegrees;
                 Planner.Add(RobotID, posToGo, angle, PathType.UnSafe, false, false, false, true, false);
             }
@@ -75,7 +75,8 @@ namespace MRL.SSL.AIConsole.Roles
                 GetBallSkill getBallSkill = new GetBallSkill();
                 getBallSkill.SetAvoidDangerZone(false,true);
                 Position2D target = new Position2D();
-                getBallSkill.Perform(engine, Model, RobotID, target);
+                getBallSkill.Perform(engine, Model, RobotID, target,false,0.05);
+                Planner.AddKick(RobotID,kickPowerType.Speed,true,3);
             }
             //Vector2D extended = Model.BallState.Location - GameParameters.OurGoalCenter;
 
