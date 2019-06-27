@@ -15,7 +15,7 @@ namespace MRL.SSL.AIConsole.Plays
         bool Debug = true;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
-            return false;
+            //return false;
             return Status == GameDefinitions.GameStatus.Normal;
         }
         public SingleObjectState ballState = new SingleObjectState();
@@ -86,17 +86,19 @@ namespace MRL.SSL.AIConsole.Plays
             RoleBase r;
             roles = new List<RoleInfo>();
 
-            r = typeof(ActiveRole2017).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(r, 10, 0.04));
+            //r = typeof(ActiveRole2017).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //roles.Add(new RoleInfo(r, 10, 0.04));
 
             r = typeof(StaticDefender1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
+
+            r = typeof(StaticDefender2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 1, 0));
 
             r = typeof(GerrardRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 1, 0));
 
-            r = typeof(StaticDefender2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(r, 1, 0));
+
 
             //if (!NormalSharedState.CommonInfo.AttackerMode)
             //{
@@ -105,24 +107,24 @@ namespace MRL.SSL.AIConsole.Plays
             //}
 
 
-            if (NormalSharedState.CommonInfo.PickIsFeasible)
-            {
-                r = typeof(NewPickerRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-                roles.Add(new RoleInfo(r, 1, 0.1));
-            }
-            else
-            {
-                r = typeof(NewSupporter2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-                roles.Add(new RoleInfo(r, 1, 0.1));
-            }
+            //if (NormalSharedState.CommonInfo.PickIsFeasible)
+            //{
+            //    r = typeof(NewPickerRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //    roles.Add(new RoleInfo(r, 1, 0.1));
+            //}
+            //else
+            //{
+            //    r = typeof(NewSupporter2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //    roles.Add(new RoleInfo(r, 1, 0.1));
+            //}
 
 
 
-            r = typeof(NewAttacker2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(r, 0.1, 0));
+            //r = typeof(NewAttacker2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //roles.Add(new RoleInfo(r, 0.1, 0));
 
-            r = typeof(NewAttackerRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(r, 0.1, 0));
+            //r = typeof(NewAttackerRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //roles.Add(new RoleInfo(r, 0.1, 0));
 
             //if (!NormalSharedState.CommonInfo.AttackerMode)
             //{

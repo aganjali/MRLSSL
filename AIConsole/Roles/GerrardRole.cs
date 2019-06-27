@@ -14,26 +14,29 @@ namespace MRL.SSL.AIConsole.Roles
     class GerrardRole : RoleBase
     {
         Position2D p;
+        int tempState = 0;
+
         //TODO: Shit hack for calculate cost
         static bool temp = true;
         static bool right = true;
 
         public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID)
         {
+            int angle = 180;
             Position2D target = CalculateTarget(Model, robotID);
-            Planner.Add(robotID, target, 180, PathType.UnSafe, false, true, true, true, false);
+            Planner.Add(robotID, target, angle, PathType.UnSafe, false, true, true, true, false);
 
             //if (CurrentState == (int)PlayMode.Attack)
             //{
 
-                
+
             //    Planner.Add(robotID, target, 180, PathType.UnSafe, false, true, true, true, false);
 
             //}
-            
+
             //else if (CurrentState == (int)PlayMode.Defence)
             //{
-               
+
 
             //    Planner.Add(robotID, target, 180, PathType.UnSafe, false, true, true, true, false);
 
@@ -48,26 +51,30 @@ namespace MRL.SSL.AIConsole.Roles
             DetermineNextState(engine, Model, RobotID, previouslyAssignedRoles);
             var tar = CalculateTarget(Model, RobotID);
             double d = Model.OurRobots[RobotID].Location.DistanceFrom(tar);
-            return d*d;
+            return d * d;
         }
-        int tempState = 0;
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            if (Model.BallState.Location.X < -0.1 && CurrentState == (int)PlayMode.Defence)
-            {
-                CurrentState = (int)PlayMode.Attack;
-                tempState = CurrentState;
-            }
-            else if (Model.BallState.Location.X > 0.1 && CurrentState == (int)PlayMode.Attack)
+
+            if (Model.BallState.Location.X > 0.5 && CurrentState == (int)PlayMode.Attack)
             {
                 CurrentState = (int)PlayMode.Defence;
                 tempState = CurrentState;
 
             }
+            else if (Model.BallState.Location.X < -0.5 && CurrentState == (int)PlayMode.Defence)
+            {
+                CurrentState = (int)PlayMode.Attack;
+                tempState = CurrentState;
+            }
             else
                 CurrentState = tempState;
         }
+        private int Calculateangle(WorldModel Model, int RobotID)
+        {
 
+            return 1;
+        }
         private Position2D CalculateTarget(WorldModel Model, int RobotID)
         {
             var st1ID = FreekickDefence.Static1ID;
@@ -121,19 +128,20 @@ namespace MRL.SSL.AIConsole.Roles
                         if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
                         {
 
-                            if (true)
+                            target = GetSkill<MarkSkill>().OnDangerZoneMark(RobotID, Model, Model.Opponents[minDistId].Location);
+                            Vector2D v = new Vector2D();
+                            if (st2ID.HasValue)
                             {
-                                target = GetSkill<MarkSkill>().OnDangerZoneMark(RobotID, Model, Model.Opponents[minDistId].Location);
-                                Vector2D v = new Vector2D();
-                                double margin = 0.05;
                                 Position2D st2 = Model.OurRobots[st2ID.Value].Location;
                                 v = target - Model.OurRobots[st2ID.Value].Location;
                                 if (target.Y < st2.Y + 0.2)
                                 {
-                                    target = new Position2D(Model.OurRobots[RobotID].Location.X , st2.Y + 0.20);
+                                    target = new Position2D(Model.OurRobots[RobotID].Location.X, st2.Y + 0.20);
                                 }
                             }
-
+                            else
+                            {
+                            }
                         }
                         else
                             target = Model.OurRobots[RobotID].Location;
@@ -144,7 +152,6 @@ namespace MRL.SSL.AIConsole.Roles
                         target = MarkSkill.ourDangerZoneLeftCorner + (MarkSkill.ourDangerZoneLeftCorner - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);
 
                     }
-
                 }
                 else //Gerrard position when ball is in left side
                 {
@@ -163,22 +170,41 @@ namespace MRL.SSL.AIConsole.Roles
                         if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
                         {
                             target = GetSkill<MarkSkill>().OnDangerZoneMark(RobotID, Model, Model.Opponents[minDistId].Location);
+                            Vector2D v = new Vector2D();
+                            if (st1ID.HasValue)
+                            {
+                                Position2D st1 = Model.OurRobots[st1ID.Value].Location;
+                                v = target - Model.OurRobots[st1ID.Value].Location;
+                                if (Math.Abs(target.Y) < Math.Abs(st1.Y) + 0.2)
+                                {
+                                    target = new Position2D(Model.OurRobots[RobotID].Location.X, st1.Y - 0.20);
+                                }
+                            }
+                            else
+                            {
+                            }
                         }
                         else
+                        {
                             target = Model.OurRobots[RobotID].Location;
+
+                        }
+
+
                     }
                     else
                     {
                         DrawingObjects.AddObject(new Circle(MarkSkill.ourDangerZoneRightCorner, 0.1, new Pen(Color.Red, 0.01f)));
                         target = MarkSkill.ourDangerZoneRightCorner + (MarkSkill.ourDangerZoneRightCorner - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);
+
                     }
 
                 }
 
             }
             return target;
-        }
 
+        }
         public override bool Evaluate(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
             return true;
@@ -206,8 +232,8 @@ namespace MRL.SSL.AIConsole.Roles
 
         enum PlayMode
         {
-            Attack,
-            Defence
+            Defence,
+            Attack
         }
         enum Side
         {
