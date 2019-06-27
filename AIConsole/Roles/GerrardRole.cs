@@ -14,6 +14,8 @@ namespace MRL.SSL.AIConsole.Roles
     class GerrardRole : RoleBase
     {
         Position2D p;
+        int tempState = 0;
+
         //TODO: Shit hack for calculate cost
         static bool temp = true;
         static bool right = true;
@@ -47,23 +49,23 @@ namespace MRL.SSL.AIConsole.Roles
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
             DetermineNextState(engine, Model, RobotID, previouslyAssignedRoles);
-            var tar = CalculateTarget(Model, RobotID );
+            var tar = CalculateTarget(Model, RobotID);
             double d = Model.OurRobots[RobotID].Location.DistanceFrom(tar);
             return d * d;
         }
-        int tempState = 0;
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            if (Model.BallState.Location.X < -0.1 && CurrentState == (int)PlayMode.Defence)
-            {
-                CurrentState = (int)PlayMode.Attack;
-                tempState = CurrentState;
-            }
-            else if (Model.BallState.Location.X > 0.1 && CurrentState == (int)PlayMode.Attack)
+
+            if (Model.BallState.Location.X > 0.5 && CurrentState == (int)PlayMode.Attack)
             {
                 CurrentState = (int)PlayMode.Defence;
                 tempState = CurrentState;
 
+            }
+            else if (Model.BallState.Location.X < -0.5 && CurrentState == (int)PlayMode.Defence)
+            {
+                CurrentState = (int)PlayMode.Attack;
+                tempState = CurrentState;
             }
             else
                 CurrentState = tempState;
@@ -187,7 +189,7 @@ namespace MRL.SSL.AIConsole.Roles
                             target = Model.OurRobots[RobotID].Location;
 
                         }
-             
+
 
                     }
                     else
@@ -230,8 +232,8 @@ namespace MRL.SSL.AIConsole.Roles
 
         enum PlayMode
         {
-            Attack,
-            Defence
+            Defence,
+            Attack
         }
         enum Side
         {
