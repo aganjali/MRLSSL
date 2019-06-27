@@ -34,9 +34,8 @@ namespace MRL.SSL.AIConsole.Roles
         const double finishTresh = 0.4;
         double backBall;
         int finishCounter = 0;
-        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, int OtherID, int Mode)
+        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, int Mode)
         {
-            myOtherID = OtherID;
             GetBallSkill activeSkill = new GetBallSkill();
             var speed = Math.Min(Math.Max(0.9, 0.4 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)), 5);
             Planner.ChangeDefaulteParams(RobotID, false);
@@ -44,7 +43,7 @@ namespace MRL.SSL.AIConsole.Roles
             DrawingObjects.AddObject(new StringDraw("CurrentState= " + (states)CurrentState, "bpshooter_state", Model.OurRobots[RobotID].Location + new Vector2D(1, 1)));
             if (CurrentState == (int)states.pass)
             {
-                if (Model.OurRobots[OtherID].Location.DistanceFrom(StaticVariables.ballPlacementPos) > 0.20 /*|| Model.BallState.Speed.Size > 0.2*/)
+                if (Model.OurRobots[RobotID].Location.DistanceFrom(StaticVariables.ballPlacementPos) > 0.20 /*|| Model.BallState.Speed.Size > 0.2*/)
                 {
                     double dist, boarder;
                     if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder)

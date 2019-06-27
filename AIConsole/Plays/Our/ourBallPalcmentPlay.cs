@@ -21,7 +21,7 @@ namespace MRL.SSL.AIConsole.Plays
         public int CurrentState;
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
-                //return Model.Status == GameStatus.Normal;
+            //return Model.Status == GameStatus.Normal;
 
             return Model.Status == GameStatus.BallPlace_OurTeam;
         }
@@ -58,7 +58,13 @@ namespace MRL.SSL.AIConsole.Plays
         #endregion
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
-           // StaticVariables.ballPlacementPos = new Position2D(-4, -1);
+
+            List<int> ourRobot = new List<int>();
+            foreach (var item in Model.OurRobots.Keys)
+            {
+                ourRobot.Add(item);
+            }
+            // StaticVariables.ballPlacementPos = new Position2D(-4, -1);
             DrawingObjects.AddObject(new Circle(StaticVariables.ballPlacementPos, 0.7, new Pen(Color.HotPink, 0.01f)), "asghar");
             DrawingObjects.AddObject(new Circle(StaticVariables.ballPlacementPos, 0.1, new Pen(Color.White, 0.01f)), "akbar");
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
@@ -139,7 +145,7 @@ namespace MRL.SSL.AIConsole.Plays
 
             rt = typeof(palcment5).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(rt, 1, 0));
-            
+
 
             Dictionary<int, RoleBase> matched;
 
@@ -182,17 +188,18 @@ namespace MRL.SSL.AIConsole.Plays
             if (matched.Any(w => w.Value.GetType() == typeof(BallPalcementShooter)))
                 ShooterID = matched.Where(w => w.Value.GetType() == typeof(BallPalcementShooter)).First().Key;
 
-            
 
             if (!isInDangerZone)
             {
                 Position2D GoaliPos = new Position2D();
-                double gteta = 0;
-                if (Positions.Any(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)))
-                    GoaliPos = Positions.Where(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)).First().Value.Value;
-                if (Angles.Any(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)))
-                    gteta = Angles.Where(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)).First().Value;
-
+                if (ourRobot.Count > 2)
+                {
+                    double gteta = 0;
+                    if (Positions.Any(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)))
+                        GoaliPos = Positions.Where(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)).First().Value.Value;
+                    if (Angles.Any(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)))
+                        gteta = Angles.Where(w => w.Key.GetType() == typeof(GoaliBallPalcmentRole)).First().Value;
+                }
                 Position2D Def1Pos = new Position2D();
                 double d1teta = 0;
                 if (Positions.Any(w => w.Key.GetType() == typeof(palcment1)))
@@ -206,18 +213,26 @@ namespace MRL.SSL.AIConsole.Plays
                     Def2Pos = Positions.Where(w => w.Key.GetType() == typeof(palcment2)).First().Value.Value;
                 if (Angles.Any(w => w.Key.GetType() == typeof(palcment2)))
                     d2teta = Angles.Where(w => w.Key.GetType() == typeof(palcment2)).First().Value;
+                if (ourRobot.Count >= 2)
+                {
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, ShooterID, typeof(BallPalcementShooter)))
+                        Functions[ShooterID.Value] = (eng, wmd) => GetRole<BallPalcementShooter>(ShooterID.Value).Perform(eng, wmd, ShooterID.Value, 0);
 
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, CatcherID, typeof(BallPalcementCatcher)))
+                        Functions[CatcherID.Value] = (eng, wmd) => GetRole<BallPalcementCatcher>(CatcherID.Value).Perform(eng, wmd, CatcherID.Value, 1);
 
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, ShooterID, typeof(BallPalcementShooter)))
-                    Functions[ShooterID.Value] = (eng, wmd) => GetRole<BallPalcementShooter>(ShooterID.Value).Perform(eng, wmd, ShooterID.Value, CatcherID.Value, 0);
+                }
+                else if (ourRobot.Count < 2)
+                {
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, ShooterID, typeof(BallPalcementShooter)))
+                        Functions[ShooterID.Value] = (eng, wmd) => GetRole<BallPalcementShooter>(ShooterID.Value).Perform(eng, wmd, ShooterID.Value, 0);
+                }
+                if (ourRobot.Count > 2)
+                {
+                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(GoaliBallPalcmentRole)))
+                        Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<GoaliBallPalcmentRole>(Model.GoalieID.Value).RunStop(eng, wmd, Model.GoalieID.Value, GoaliPos, (Model.BallState.Location - Model.OurRobots[Model.GoalieID.Value].Location).AngleInDegrees);
 
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, CatcherID, typeof(BallPalcementCatcher)))
-                    Functions[CatcherID.Value] = (eng, wmd) => GetRole<BallPalcementCatcher>(CatcherID.Value).Perform(eng, wmd, CatcherID.Value, ShooterID.Value, 1);
-
-
-
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(GoaliBallPalcmentRole)))
-                    Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<GoaliBallPalcmentRole>(Model.GoalieID.Value).RunStop(eng, wmd, Model.GoalieID.Value, GoaliPos, (Model.BallState.Location - Model.OurRobots[Model.GoalieID.Value].Location).AngleInDegrees);
+                }
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender1ID, typeof(palcment1)))
                 {
@@ -278,7 +293,7 @@ namespace MRL.SSL.AIConsole.Plays
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop3, typeof(palcment5)))
                 Functions[stop3.Value] = (eng, wmd) => GetRole<palcment5>(stop3.Value).RunRoleStop(eng, wmd, stop3.Value);
 
-         
+
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             return CurrentlyAssignedRoles;
         }
@@ -296,7 +311,7 @@ namespace MRL.SSL.AIConsole.Plays
 
         public override void ResetPlay(WorldModel Model, GameStrategyEngine engine)
         {
-           
+
             //StaticVariables.ballPlacementPos=Position2D.Zero;
             CurrentState = (int)State.id1;
             //if (catcherID.HasValue)
