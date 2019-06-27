@@ -236,6 +236,7 @@ namespace MRL.SSL.AIConsole.Roles
                     Position2D intersects = intersect.Value;
                     //WC2017
                     //OurGoalRight.Y - .15 
+                    //todo edit
                     if (((intersects.Y > GameParameters.OurGoalLeft.Y + .15 && intersects.Y < 1.15) || (intersects.Y < GameParameters.OurGoalRight.Y - .15 && intersects.Y > -1.15)) && Model.BallState.Speed.Size > .3 && Model.BallState.Speed.InnerProduct(GameParameters.OurGoalCenter - Model.BallState.Location) > 0)
                     {
                         skip = true;
@@ -574,7 +575,7 @@ namespace MRL.SSL.AIConsole.Roles
             else if (CurrentState == (int)GoalieStates.KickToGoal)
             {
                 if (Model.BallState.Speed.InnerProduct(Model.OurRobots[RobotID].Location - Model.BallState.Location) > 0)
-                    SWc = GetSkill<GoaliDiveSkill>().Dive(engine, Model, RobotID, true, 200);
+                    GetSkill<GoalieDiveSkill2017>().Dive(engine, Model, RobotID, true, 200);
                 else
                 {
                     GetSkill<GetBallSkill>().SetAvoidDangerZone(false, true);

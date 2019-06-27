@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MRL.SSL.CommonClasses.MathLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace MRL.SSL.GameDefinitions
         public int TimeOfstage { get; set; }
         public int YellowGoalie { get; set; }
         public int BlueGoalie { get; set; }
+        public Position2D? BallPlacementPosition { get; set; }
 
         public GameEvents()
         {

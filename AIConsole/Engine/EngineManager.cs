@@ -309,9 +309,17 @@ namespace MRL.SSL.AIConsole.Engine
                             {
                                 Model.GoalieID = (Model.OurMarkerISYellow) ? _currentEvents.YellowGoalie : _currentEvents.BlueGoalie;
                             }
+                            if (_currentEvents.BallPlacementPosition.HasValue)
+                            {
+                                if (Model.FieldIsInverted)
+                                    StaticVariables.ballPlacementPos = new Position2D(-_currentEvents.BallPlacementPosition.Value.X / 1000, _currentEvents.BallPlacementPosition.Value.Y / 1000);
+                                else
+                                    StaticVariables.ballPlacementPos = new Position2D(_currentEvents.BallPlacementPosition.Value.X / 1000, -_currentEvents.BallPlacementPosition.Value.Y / 1000);
+                            }
                             int m = (int)(_currentEvents.TimeOfstage / 60);
                             int s = (int)((_currentEvents.TimeOfstage - m * 60));
                             Model.TimeLeft = new TimeSpan(0, m, s);
+                            
                         }
                     }
                 }
@@ -358,6 +366,7 @@ namespace MRL.SSL.AIConsole.Engine
                                 {
                                     _runningEngines[key].Status = GameStatusCalculator.CalculateGameStatus(_runningEngines[key].Status, ch, Model.OurMarkerISYellow);
                                     //TODO: ballPlacement add to model
+                                    //_runningEngines[key]
                                     statusForMerged = _runningEngines[key].Status;
                                 }
                                 _refereeCommandsLock.ExitWriteLock();
@@ -739,7 +748,7 @@ namespace MRL.SSL.AIConsole.Engine
                                     //    Logger.Write(LogType.Info, "0 : " + commands.Commands.ContainsKey(0) + "\t1: " + commands.Commands.ContainsKey(1));
 
 
-                                    // PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
+                                     PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
                                //     PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(frame), false);
                                     frame++;
                                     if (frame == 60)
