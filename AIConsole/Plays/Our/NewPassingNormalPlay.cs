@@ -15,7 +15,7 @@ namespace MRL.SSL.AIConsole.Plays
         bool Debug = true;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
-            return false;
+            //return false;
             return Status == GameDefinitions.GameStatus.Normal;
         }
         public SingleObjectState ballState = new SingleObjectState();
@@ -99,16 +99,17 @@ namespace MRL.SSL.AIConsole.Plays
             }
 
 
-            if (NormalSharedState.CommonInfo.PickIsFeasible)
-            {
-                r = typeof(NewPickerRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-                roles.Add(new RoleInfo(r, 1, 0.2));
-            }
-            else
-            {
-                //r = typeof(NewSupporter2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-                //roles.Add(new RoleInfo(r, 1, 0.1));
-            }
+            //if (NormalSharedState.CommonInfo.PickIsFeasible)
+            //{
+            //    r = typeof(NewPickerRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            //    roles.Add(new RoleInfo(r, 1, 0.2));
+            //}
+            //else
+            //{
+                
+            //}
+            r = typeof(NewSupporter2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0.1));
 
 
             if (!NormalSharedState.CommonInfo.AttackerMode)
@@ -145,9 +146,9 @@ namespace MRL.SSL.AIConsole.Plays
             if (matched.Any(w => w.Value.GetType() == typeof(ActiveRole2017)))
                 getballID = matched.Where(w => w.Value.GetType() == typeof(ActiveRole2017)).First().Key;
 
-            //int? supportID = null;
-            //if (matched.Any(w => w.Value.GetType() == typeof(NewSupporter2Role)))
-            //    supportID = matched.Where(w => w.Value.GetType() == typeof(NewSupporter2Role)).First().Key;
+            int? supportID = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(NewSupporter2Role)))
+                supportID = matched.Where(w => w.Value.GetType() == typeof(NewSupporter2Role)).First().Key;
             //if (matched.Any(w => w.Value.GetType() == typeof(NewMarkerRole)))
             //    supportID = matched.Where(w => w.Value.GetType() == typeof(NewMarkerRole)).First().Key;
 
@@ -220,9 +221,9 @@ namespace MRL.SSL.AIConsole.Plays
             //if (st2.HasValue && Model.OurRobots.ContainsKey(st2.Value))
             //    DefenceTest.DefenderStaticRole2 = Model.OurRobots[st2.Value].Location;
 
-            //DefenceTest.WeHaveDefenderStaticRole2 = true;
-            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, supportID, typeof(NewSupporter2Role)))
-            //    Functions[supportID.Value] = (eng, wmd) => GetRole<NewSupporter2Role>(supportID.Value).Perform(eng, wmd, supportID.Value);
+            DefenceTest.WeHaveDefenderStaticRole2 = true;
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, supportID, typeof(NewSupporter2Role)))
+                Functions[supportID.Value] = (eng, wmd) => GetRole<NewSupporter2Role>(supportID.Value).Perform(eng, wmd, supportID.Value);
 
 
 
