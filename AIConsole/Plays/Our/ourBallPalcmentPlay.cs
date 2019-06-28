@@ -26,35 +26,7 @@ namespace MRL.SSL.AIConsole.Plays
             return Model.Status == GameStatus.BallPlace_OurTeam;
         }
         #region comment
-        /* private void AssignIDs(GameStrategyEngine engine, WorldModel Model, Dictionary<int, SingleObjectState> att)
-        {
-            firstBallPos = Model.BallState.Location;
-            double minDist = double.MaxValue;
-            int minIdx = -1;
-            foreach (var item in Attendance.Keys.ToList())
-            {
-                if (Model.OurRobots.ContainsKey(item) && Model.OurRobots[item].Location.DistanceFrom(Model.BallState.Location) < minDist)
-                {
-                    minDist = Model.OurRobots[item].Location.DistanceFrom(Model.BallState.Location);
-                    minIdx = item;
-                }
-            }
-            if (minIdx == -1)
-                return;
-            CatcherID = minIdx;
-            ShooterID = -1;
-            foreach (var item in Attendance.Keys.ToList())
-            {
-                if (item != CatcherID)
-                {
-                    ShooterID = item;
-                    break;
-                }
-            }
-            if (ShooterID == -1)
-                return;
-            first = false;
-        }*/
+       
         #endregion
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
@@ -118,10 +90,11 @@ namespace MRL.SSL.AIConsole.Plays
             List<RoleInfo> roles = new List<RoleInfo>();
             if (GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out d, out d2))
                 isInDangerZone = true;
+            rt = typeof(BallPalcementShooter).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 3, 0));
             rt = typeof(BallPalcementCatcher).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(rt, 2, 0));
-            rt = typeof(BallPalcementShooter).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(rt, 2, 0));
+
             if (!isInDangerZone)
             {
                 def.Assign(engine, Model, out Positions, out Angles, false, false, false, false);
@@ -154,6 +127,16 @@ namespace MRL.SSL.AIConsole.Plays
             else
                 matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.ToList(), roles, PreviouslyAssignedRoles);
 
+            int? ShooterID = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(BallPalcementShooter)))
+                ShooterID = matched.Where(w => w.Value.GetType() == typeof(BallPalcementShooter)).First().Key;
+
+
+            int? CatcherID = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(BallPalcementCatcher)))
+                CatcherID = matched.Where(w => w.Value.GetType() == typeof(BallPalcementCatcher)).First().Key;
+
+
             int? Defender1ID = null;
 
             if (!isInDangerZone && matched.Any(w => w.Value.GetType() == typeof(palcment1)))
@@ -180,14 +163,7 @@ namespace MRL.SSL.AIConsole.Plays
             if (matched.Any(w => w.Value.GetType() == typeof(palcment5)))
                 stop3 = matched.Where(w => w.Value.GetType() == typeof(palcment5)).First().Key;
 
-            int? CatcherID = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(BallPalcementCatcher)))
-                CatcherID = matched.Where(w => w.Value.GetType() == typeof(BallPalcementCatcher)).First().Key;
-
-            int? ShooterID = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(BallPalcementShooter)))
-                ShooterID = matched.Where(w => w.Value.GetType() == typeof(BallPalcementShooter)).First().Key;
-
+            
 
             if (!isInDangerZone)
             {
@@ -213,26 +189,15 @@ namespace MRL.SSL.AIConsole.Plays
                     Def2Pos = Positions.Where(w => w.Key.GetType() == typeof(palcment2)).First().Value.Value;
                 if (Angles.Any(w => w.Key.GetType() == typeof(palcment2)))
                     d2teta = Angles.Where(w => w.Key.GetType() == typeof(palcment2)).First().Value;
-                if (ourRobot.Count >= 2)
-                {
-                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, ShooterID, typeof(BallPalcementShooter)))
-                        Functions[ShooterID.Value] = (eng, wmd) => GetRole<BallPalcementShooter>(ShooterID.Value).Perform(eng, wmd, ShooterID.Value, 0);
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(GoaliBallPalcmentRole)))
+                    Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<GoaliBallPalcmentRole>(Model.GoalieID.Value).RunStop(eng, wmd, Model.GoalieID.Value, GoaliPos, (Model.BallState.Location - Model.OurRobots[Model.GoalieID.Value].Location).AngleInDegrees);
 
-                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, CatcherID, typeof(BallPalcementCatcher)))
-                        Functions[CatcherID.Value] = (eng, wmd) => GetRole<BallPalcementCatcher>(CatcherID.Value).Perform(eng, wmd, CatcherID.Value, 1);
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, ShooterID, typeof(BallPalcementShooter)))
+                    Functions[ShooterID.Value] = (eng, wmd) => GetRole<BallPalcementShooter>(ShooterID.Value).Perform(eng, wmd, ShooterID.Value, 0);
 
-                }
-                else if (ourRobot.Count < 2)
-                {
-                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, ShooterID, typeof(BallPalcementShooter)))
-                        Functions[ShooterID.Value] = (eng, wmd) => GetRole<BallPalcementShooter>(ShooterID.Value).Perform(eng, wmd, ShooterID.Value, 0);
-                }
-                if (ourRobot.Count > 2)
-                {
-                    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(GoaliBallPalcmentRole)))
-                        Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<GoaliBallPalcmentRole>(Model.GoalieID.Value).RunStop(eng, wmd, Model.GoalieID.Value, GoaliPos, (Model.BallState.Location - Model.OurRobots[Model.GoalieID.Value].Location).AngleInDegrees);
-
-                }
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, CatcherID, typeof(BallPalcementCatcher)))
+                    Functions[CatcherID.Value] = (eng, wmd) => GetRole<BallPalcementCatcher>(CatcherID.Value).Perform(eng, wmd, CatcherID.Value, 1);
+             
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender1ID, typeof(palcment1)))
                 {
@@ -262,25 +227,25 @@ namespace MRL.SSL.AIConsole.Plays
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender2ID, typeof(DefenderStopRole2)))
                     Functions[Defender2ID.Value] = (eng, wmd) => GetRole<DefenderStopRole2>(Defender2ID.Value).PositioningStop(engine, Model, Defender2ID.Value, true, 150);
             }
-            if (palcment3.targetOverLap3.DistanceFrom(palcment4.targetOverLap4) < 0.12)
+            if (palcment3.targetOverLap3.DistanceFrom(palcment4.targetOverLap4) < 0.18)
             {
                 vec1 = palcment3.targetOverLap3 - palcment4.targetOverLap4;
-                jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.12) + palcment4.targetOverLap4);
+                jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment4.targetOverLap4);
                 palcment4.targetOverLap4 = jj;
                 DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Pink, 0.01f)), "targetoverlap");
             }
             //
-            if (palcment3.targetOverLap3.DistanceFrom(palcment5.targetOverLap5) < 0.12)
+            if (palcment3.targetOverLap3.DistanceFrom(palcment5.targetOverLap5) < 0.18)
             {
                 vec1 = palcment3.targetOverLap3 - palcment5.targetOverLap5;
-                jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.12) + palcment5.targetOverLap5);
+                jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment5.targetOverLap5);
                 palcment5.targetOverLap5 = jj;
                 DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Red, 0.01f)), "targetoverlap");
             }
-            if (palcment4.targetOverLap4.DistanceFrom(palcment5.targetOverLap5) < 0.12)
+            if (palcment4.targetOverLap4.DistanceFrom(palcment5.targetOverLap5) < 0.18)
             {
                 vec1 = palcment4.targetOverLap4 - palcment5.targetOverLap5;
-                jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.12) + palcment5.targetOverLap5);
+                jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment5.targetOverLap5);
                 palcment5.targetOverLap5 = jj;
                 DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Black, 0.01f)), "targetoverlap");
             }

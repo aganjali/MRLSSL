@@ -52,7 +52,7 @@ namespace MRL.SSL.AIConsole.Roles
 
         public SingleWirelessCommand RunRoleStop(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID,Position2D Target)
         {
-            if (Model.Status == GameStatus.BallPlace_Opponent)
+            if (Model.Status == GameStatus.BallPlace_Opponent || Model.Status == GameStatus.BallPlace_OurTeam)
             {
                 ballState = new SingleObjectState(StaticVariables.ballPlacementPos, new Vector2D(), 0);
                 ballStateFast = new SingleObjectState(StaticVariables.ballPlacementPos, new Vector2D(), 0);
@@ -108,7 +108,7 @@ namespace MRL.SSL.AIConsole.Roles
             Line line11 = new Line();
             Line line22 = new Line();
             Line ll = new Line();
-            double StopDistFromBall = .65;
+            double StopDistFromBall = 0.7;
             Position2D ball = ballState.Location;
             Position2D Target = new Position2D();
             Position2D tar = new Position2D();
