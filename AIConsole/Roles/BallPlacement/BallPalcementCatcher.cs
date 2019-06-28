@@ -31,9 +31,8 @@ namespace MRL.SSL.AIConsole.Roles
         const double eatBallTresh = 0.07;
         const double finishTresh = 0.4;
 
-        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, int OtherID, int Mode)
+        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, int Mode)
         {
-            myOtherID = OtherID;
             GetBallSkill activeSkill = new GetBallSkill();
             DrawingObjects.AddObject(new StringDraw("CurrentState= " + (states)CurrentState, "bpcatcher_state", Model.OurRobots[RobotID].Location + new Vector2D(1, 1)));
             var speed = Math.Min(Math.Max(0.9, 0.5 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)), 5);

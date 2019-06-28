@@ -236,7 +236,10 @@ namespace MRL.SSL.AIConsole.Roles
                     Position2D intersects = intersect.Value;
                     //WC2017
                     //OurGoalRight.Y - .15 
-                    if (((intersects.Y > GameParameters.OurGoalLeft.Y + .15 && intersects.Y < 1.15) || (intersects.Y < GameParameters.OurGoalRight.Y - .15 && intersects.Y > -1.15)) && Model.BallState.Speed.Size > .3 && Model.BallState.Speed.InnerProduct(GameParameters.OurGoalCenter - Model.BallState.Location) > 0)
+                    
+                    // y between 0.75 and 1.15 or between negetive
+                    if (((intersects.Y > GameParameters.OurGoalLeft.Y + .15 && intersects.Y < GameParameters.BorderWidth/2) || (intersects.Y < GameParameters.OurGoalRight.Y - .15 && intersects.Y > -GameParameters.BorderWidth / 2))
+                        && Model.BallState.Speed.Size > .3 && Model.BallState.Speed.InnerProduct(GameParameters.OurGoalCenter - Model.BallState.Location) > 0)
                     {
                         skip = true;
                     }
@@ -258,6 +261,7 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     goActive = false;
                 }
+                //TODO edit
                 if ((inpenaltyMode == InPenaltyMode.GoIntersect && acceptable2 < ballSpeed.Size) || (inpenaltyMode != InPenaltyMode.GoIntersect && acceptable2 * 1.2 < ballSpeed.Size))
                 {
                     Gointersect = true;
@@ -275,7 +279,9 @@ namespace MRL.SSL.AIConsole.Roles
                     Position2D SkipIntersect = ballSkipLine.IntersectWithLine(goalerSkipLine).Value;
                     Position2D targetforSkip = new Position2D();
 
-                    if (SkipIntersect.DistanceFrom(intersect.Value) > Model.BallState.Location.DistanceFrom(intersect.Value) + 0.15 || SkipIntersect.DistanceFrom(GameParameters.OurGoalCenter) > Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter) + 0.15)
+                    //
+                    if (SkipIntersect.DistanceFrom(intersect.Value) > Model.BallState.Location.DistanceFrom(intersect.Value) + 0.15
+                        || SkipIntersect.DistanceFrom(GameParameters.OurGoalCenter) > Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter) + 0.15)
                     {
                         targetforSkip = GameParameters.OurGoalCenter.Extend(-.2, 0);
                     }
@@ -564,7 +570,7 @@ namespace MRL.SSL.AIConsole.Roles
                 obs.AddObstacle(1, 0, 0, 0, new List<int>() { RobotID }, null);
                 Vector2D v = Vector2D.FromAngleSize(Model.OurRobots[RobotID].Angle.Value * Math.PI / 180, 0.35);
                 double kickSpeed = 1;
-
+                //TODO edit
                 if (Model.BallState.Location.X > GameParameters.OurGoalCenter.X - 0.1 || Math.Abs(Model.OurRobots[RobotID].Angle.Value) < 100 || obs.Meet(Model.BallState, new SingleObjectState(Model.BallState.Location + v, Vector2D.Zero, 0), 0.022))
                     kickSpeed = 0;
                 Planner.AddKick(RobotID, kickPowerType.Speed, kickSpeed, (kickSpeed > 0) ? true : false, false);
@@ -574,7 +580,7 @@ namespace MRL.SSL.AIConsole.Roles
             else if (CurrentState == (int)GoalieStates.KickToGoal)
             {
                 if (Model.BallState.Speed.InnerProduct(Model.OurRobots[RobotID].Location - Model.BallState.Location) > 0)
-                    SWc = GetSkill<GoaliDiveSkill>().Dive(engine, Model, RobotID, true, 200);
+                    GetSkill<GoalieDiveSkill2017>().Dive(engine, Model, RobotID, true, 200);
                 else
                 {
                     GetSkill<GetBallSkill>().SetAvoidDangerZone(false, true);
@@ -699,11 +705,11 @@ namespace MRL.SSL.AIConsole.Roles
 
                 if (Defender2Delayed)
                 {
-                    delayedrobot = inf1;
+                    delayedrobot = inf2;
                 }
                 else if (Defender1Delayed)
                 {
-                    delayedrobot = inf2;
+                    delayedrobot = inf1;
                 }
                 else
                 {
@@ -743,6 +749,8 @@ namespace MRL.SSL.AIConsole.Roles
 
                 }
 
+                //DrawingObjects.AddObject(new Line(defenceSate.Location, tempintersect2.Value));
+                //DrawingObjects.AddObject(new Line(GameParameters.OurGoalLeft , defenceSate.Location));
 
                 if (Defender1Delayed && tempintersect2.HasValue)
                 {
@@ -759,7 +767,9 @@ namespace MRL.SSL.AIConsole.Roles
                     leftVector = GameParameters.OurGoalLeft - defenceSate.Location;
                     rightVector = GameParameters.OurGoalRight - defenceSate.Location;
                 }
+                //bisector line from a position
                 Line bisector = Vector2D.Bisector(leftVector, rightVector, defenceSate.Location);
+                DrawingObjects.AddObject(bisector,"bisicktiir");
                 mainuntersect = goalcenter.Intersect(bisector).Where(y => y.X < GameParameters.OurGoalCenter.X).OrderBy(y => y.DistanceFrom(defenceSate.Location)).FirstOrDefault();
 
                 #region Normal
@@ -772,7 +782,7 @@ namespace MRL.SSL.AIConsole.Roles
                 Vector2D targetvector = defenceSate.Location - posongoal;
 
                 Planner.ChangeDefaulteParams(RobotID, false);
-                Planner.SetParameter(RobotID, 8, 4);
+                Planner.SetParameter(RobotID, 8, 4);//to change
                 Position2D normalprep = targetvector.PrependecularPoint(posongoal, currentPos);
                 Position2D perp = (normalprep.X > GameParameters.OurGoalCenter.X) ? posongoal + targetvector.GetNormalizeToCopy(.2) : normalprep;
                 perp = new Position2D(Math.Min(GameParameters.OurGoalCenter.X - .1, perp.X), perp.Y);

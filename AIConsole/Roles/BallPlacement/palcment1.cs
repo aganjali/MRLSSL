@@ -131,7 +131,7 @@ namespace MRL.SSL.AIConsole.Roles
                 inf = FreekickDefence.CurrentInfos.Where(w => w.RoleType == this.GetType()).First();
             double distfromborder, dist;
             double teta = 180;
-            if ((Model.Status == GameStatus.BallPlace_Opponent || Model.Status == GameStatus.BallPlace_OurTeam)&& (GameParameters.IsInDangerousZone(ballState.Location, false, .5, out dist, out distfromborder) || GameParameters.IsInDangerousZone(StaticVariables.ballPlacementPos, false, .5, out dist, out distfromborder))/* &&(GameParameters.OurGoalCenter.DistanceFrom(StaticVariables.ballPlacementPos) < 1 || GameParameters.OurGoalCenter.DistanceFrom(Model.BallState.Location) < 1)*/)
+            if ((Model.Status == GameStatus.BallPlace_Opponent || Model.Status == GameStatus.BallPlace_OurTeam) && (GameParameters.IsInDangerousZone(ballState.Location, false, .5, out dist, out distfromborder) || GameParameters.IsInDangerousZone(StaticVariables.ballPlacementPos, false, .5, out dist, out distfromborder))/* &&(GameParameters.OurGoalCenter.DistanceFrom(StaticVariables.ballPlacementPos) < 1 || GameParameters.OurGoalCenter.DistanceFrom(Model.BallState.Location) < 1)*/)
             {
                 Line Stop1 = new Line(GameParameters.OurGoalCenter.Extend(0, -.3), GameParameters.OurGoalCenter.Extend(0, -.3) + (ballState.Location - GameParameters.OurGoalCenter.Extend(0, -.3)));
                 Circle Circl = new Circle(ballState.Location, .5);

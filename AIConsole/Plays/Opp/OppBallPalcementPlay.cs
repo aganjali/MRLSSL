@@ -16,6 +16,7 @@ namespace MRL.SSL.AIConsole.Plays
     class OppBallPalcementPlay : PlayBase
     {
         Position2D target;
+        Position2D jj;
         bool t = true;
         bool FirstBall = true;
         Circle ballToAvoid = new Circle();
@@ -54,12 +55,12 @@ namespace MRL.SSL.AIConsole.Plays
                 tempOpp = engine.GameInfo.OppTeam.Scores;
                 tempOpp.OrderByDescending(t => t.Value);
             }
-            List<int> oppAttackerIds = new List<int>();
-            oppAttackerIds = new List<int>();
-            for (int i = 0; i < tempOpp.Count; i++)
-            {
-                oppAttackerIds.Add(tempOpp.ElementAt(i).Key);
-            }
+            //List<int> oppAttackerIds = new List<int>();
+            //oppAttackerIds = new List<int>();
+            //for (int i = 0; i < tempOpp.Count; i++)
+            //{
+            //    oppAttackerIds.Add(tempOpp.ElementAt(i).Key);
+            //}
             if (true)
             {
                 FirstBallPos = Model.BallState.Location;
@@ -145,9 +146,9 @@ namespace MRL.SSL.AIConsole.Plays
 
                 Dictionary<int, RoleBase> matched;
 
-                if (Model.GoalieID.HasValue)
-                    matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.Where(w => w != Model.GoalieID.Value).ToList(), roles, PreviouslyAssignedRoles);
-                else
+                //if (Model.GoalieID.HasValue)
+                //    matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.Where(w => w != Model.GoalieID.Value).ToList(), roles, PreviouslyAssignedRoles);
+                //else
                     matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.ToList(), roles, PreviouslyAssignedRoles);
 
                 int? Defender1ID = null;
@@ -237,12 +238,84 @@ namespace MRL.SSL.AIConsole.Plays
                     if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender2ID, typeof(DefenderStopRole2)))
                         Functions[Defender2ID.Value] = (eng, wmd) => GetRole<DefenderStopRole2>(Defender2ID.Value).PositioningStop(engine, Model, Defender2ID.Value, true, 150);
                 }
-
+                if (palcment3.targetOverLap3.DistanceFrom(palcment4.targetOverLap4) < 0.18)
+                {
+                    vec1 = palcment3.targetOverLap3 - palcment4.targetOverLap4;
+                    jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment4.targetOverLap4);
+                    palcment4.targetOverLap4 = jj;
+                    DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Pink, 0.01f)), "targetoverlap");
+                }
+                //
+                if (palcment3.targetOverLap3.DistanceFrom(palcment5.targetOverLap5) < 0.18)
+                {
+                    vec1 = palcment3.targetOverLap3 - palcment5.targetOverLap5;
+                    jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment5.targetOverLap5);
+                    palcment5.targetOverLap5 = jj;
+                    DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Red, 0.01f)), "targetoverlap");
+                }
+                if (palcment4.targetOverLap4.DistanceFrom(palcment5.targetOverLap5) < 0.18)
+                {
+                    vec1 = palcment4.targetOverLap4 - palcment5.targetOverLap5;
+                    jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment5.targetOverLap5);
+                    palcment5.targetOverLap5 = jj;
+                    DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Black, 0.01f)), "targetoverlap");
+                }
+                //
+                //if (palcment3.targetOverLap3.DistanceFrom(palcment6.targetOverLap6) < 0.18)
+                //{
+                //    vec1 = palcment3.targetOverLap3 - palcment6.targetOverLap6;
+                //    jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment6.targetOverLap6);
+                //    palcment6.targetOverLap6 = jj;
+                //    DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Black, 0.01f)), "targetoverlap");
+                //}
+                //if (palcment4.targetOverLap4.DistanceFrom(palcment6.targetOverLap6) < 0.18)
+                //{
+                //    vec1 = palcment4.targetOverLap4 - palcment6.targetOverLap6;
+                //    jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment6.targetOverLap6);
+                //    palcment6.targetOverLap6 = jj;
+                //    DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Black, 0.01f)), "targetoverlap");
+                //}
+                //if (palcment5.targetOverLap5.DistanceFrom(palcment6.targetOverLap6) < 0.18)
+                //{
+                //    vec1 = palcment5.targetOverLap5 - palcment6.targetOverLap6;
+                //    jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment6.targetOverLap6);
+                //    palcment6.targetOverLap6 = jj;
+                //    DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Black, 0.01f)), "targetoverlap");
+                //}
+                ////
+                //if (palcment3.targetOverLap3.DistanceFrom(palcment7.targetOverLap7) < 0.18)
+                //{
+                //    vec1 = palcment3.targetOverLap3 - palcment7.targetOverLap7;
+                //    jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment7.targetOverLap7);
+                //    palcment7.targetOverLap7 = jj;
+                //    DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Black, 0.01f)), "targetoverlap");
+                //}
+                //if (palcment4.targetOverLap4.DistanceFrom(palcment7.targetOverLap7) < 0.18)
+                //{
+                //    vec1 = palcment4.targetOverLap4 - palcment7.targetOverLap7;
+                //    jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment7.targetOverLap7);
+                //    palcment7.targetOverLap7 = jj;
+                //    DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Black, 0.01f)), "targetoverlap");
+                //}
+                //if (palcment5.targetOverLap5.DistanceFrom(palcment7.targetOverLap7) < 0.18)
+                //{
+                //    vec1 = palcment5.targetOverLap5 - palcment7.targetOverLap7;
+                //    jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment7.targetOverLap7);
+                //    palcment7.targetOverLap7 = jj;
+                //    DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Black, 0.01f)), "targetoverlap");
+                //}
+                //if (palcment6.targetOverLap6.DistanceFrom(palcment7.targetOverLap7) < 0.18)
+                //{
+                //    vec1 = palcment6.targetOverLap6 - palcment7.targetOverLap7;
+                //    jj = (vec1.GetNormalizeToCopy(vec1.Size + 0.2) + palcment7.targetOverLap7);
+                //    palcment7.targetOverLap7 = jj;
+                //    DrawingObjects.AddObject(new Circle(jj, 0.04, new Pen(Color.Black, 0.01f)), "targetoverlap");
+                //}
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop1, typeof(palcment3)))
-                    Functions[stop1.Value] = (eng, wmd) => GetRole<palcment3>(stop1.Value).RunRoleStop(eng, wmd, stop1.Value);
+                    Functions[stop1.Value] = (eng, wmd) => GetRole<palcment3>(stop1.Value).RunRoleStop(eng, wmd, stop1.Value,palcment3.targetOverLap3);
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop2, typeof(palcment4)))
-                    Functions[stop2.Value] = (eng, wmd) => GetRole<palcment4>(stop2.Value).RunRoleStop(eng, wmd, stop2.Value);
+                    Functions[stop2.Value] = (eng, wmd) => GetRole<palcment4>(stop2.Value).RunRoleStop(eng, wmd, stop2.Value,palcment4.targetOverLap4);
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop3, typeof(palcment5)))
                     Functions[stop3.Value] = (eng, wmd) => GetRole<palcment5>(stop3.Value).RunRoleStop(eng, wmd, stop3.Value);
