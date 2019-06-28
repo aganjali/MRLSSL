@@ -56,7 +56,7 @@ namespace MRL.SSL.AIConsole.Roles
             DefenceInfo inf1 = null;
             if (FreekickDefence.CurrentInfos.Any(a => a.RoleType == typeof(StaticDefender1)))
                 inf1 = FreekickDefence.CurrentInfos.Where(w => w.RoleType == typeof(StaticDefender1)).First();
-            DrawingObjects.AddObject(new Circle(inf2.DefenderPosition.Value, 0.13, new System.Drawing.Pen((inf2.OppID.HasValue) ? System.Drawing.Color.Blue : System.Drawing.Color.Orange, 0.01f)));
+            DrawingObjects.AddObject(new Circle(inf2.DefenderPosition.Value, 0.13, new System.Drawing.Pen((inf2.OppID.HasValue) ? System.Drawing.Color.Blue : System.Drawing.Color.DarkBlue, 0.01f)));
 
 
             bool robotAvoidance = false;
