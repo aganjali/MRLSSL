@@ -2103,7 +2103,7 @@ namespace MRL.SSL.AIConsole.Engine
                 Position2D maxpos = GameParameters.OurGoalCenter + (Target - GameParameters.OurGoalCenter).GetNormalizeToCopy(Command.MarkMaximumDist);
                 if (GameParameters.OurGoalCenter.DistanceFrom(Target) > GameParameters.OurGoalCenter.DistanceFrom(maxpos))
                     //Target = maxpos;
-                    Target.DrawColor = System.Drawing.Color.Crimson;
+                    Target.DrawColor = System.Drawing.Color.Blue;
                 DrawingObjects.AddObject(Target);
             }
             Target = CommonDefenceUtils.CheckForStopZone(BallIsMoved, Target, Model);

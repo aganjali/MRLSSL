@@ -22,6 +22,7 @@ namespace MRL.SSL.AIConsole.Plays
         public SingleObjectState ballStateFast = new SingleObjectState();
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
+            DrawingObjects.AddObject(new StringDraw("Ball Speed: "+Model.BallState.Speed.Size.ToString(), new Position2D(1 , -5)), "idppp");
             Functions = new Dictionary<int, CommonDelegate>();
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             List<DefenderCommand> defence = new List<DefenderCommand>();
