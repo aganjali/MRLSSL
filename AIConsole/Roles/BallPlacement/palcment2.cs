@@ -16,6 +16,7 @@ namespace MRL.SSL.AIConsole.Roles
         public Position2D Target = new Position2D();
         public Position2D TargetFainal = new Position2D();
         public Position2D target = new Position2D();
+        public static Position2D targetOverLap2;
         public SingleObjectState ballState = new SingleObjectState();
         public SingleObjectState ballStateFast = new SingleObjectState();
 
@@ -126,7 +127,7 @@ namespace MRL.SSL.AIConsole.Roles
                 Line ll = new Line();
                 Line line1 = new Line();
                 Line Stop1 = new Line(GameParameters.OurGoalCenter.Extend(0, .3), GameParameters.OurGoalCenter.Extend(0, .3) + (ballState.Location - GameParameters.OurGoalCenter.Extend(0, .3)));
-                Circle Circl = new Circle(ballState.Location, .5);
+                Circle Circl = new Circle(ballState.Location, .7);
                 target = Circl.Intersect(Stop1).OrderBy(t => t.DistanceFrom(GameParameters.OurGoalCenter)).First();
                 TargetFainal = target;
 
@@ -357,6 +358,7 @@ namespace MRL.SSL.AIConsole.Roles
                     TargetFainal = new Position2D(2.9, Target.Y);
                 }
             }
+            targetOverLap2 = TargetFainal;
             FreekickDefence.PreviousPositions[typeof(DefenderMarkerNormalRole2)] = TargetFainal;
             SingleWirelessCommand SWC = new SingleWirelessCommand();
             if (Model.Status == GameStatus.BallPlace_Opponent)

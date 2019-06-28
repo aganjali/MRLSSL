@@ -184,6 +184,7 @@
     <Compile Include="Roles\BallPlacement\palcment5.cs" />
     <Compile Include="Roles\BallPlacement\palcment6.cs" />
     <Compile Include="Roles\BallPlacement\palcment7.cs" />
+    <Compile Include="Roles\BallPlacement\palcment8.cs" />
     <Compile Include="Roles\Defending\BusDefenceRoles\BusBase.cs" />
     <Compile Include="Roles\Defending\BusDefenceRoles\BusRole1.cs" />
     <Compile Include="Roles\Defending\BusDefenceRoles\BusRole2.cs" />

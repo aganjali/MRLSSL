@@ -31,7 +31,7 @@ namespace MRL.SSL.AIConsole.Roles
         const double eatBallTresh = 0.07;
         const double finishTresh = 0.4;
 
-        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, int Mode)
+        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID,int OtherRobot,int Mode)
         {
             GetBallSkill activeSkill = new GetBallSkill();
             DrawingObjects.AddObject(new StringDraw("CurrentState= " + (states)CurrentState, "bpcatcher_state", Model.OurRobots[RobotID].Location + new Vector2D(1, 1)));
@@ -79,13 +79,13 @@ namespace MRL.SSL.AIConsole.Roles
                 if (Model.BallConfidenc<0.5)
                 {
                     Vector2D vec2 = (Model.OurRobots[RobotID].Location - StaticVariables.ballPlacementPos);
-                    target = StaticVariables.ballPlacementPos + vec2.GetNormalizeToCopy(0.5);
+                    target = StaticVariables.ballPlacementPos + vec2.GetNormalizeToCopy(0.6);
                     angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                 }
                 else if (Model.BallConfidenc>=0.5)
                 {
                     Vector2D vec2 = (Model.OurRobots[RobotID].Location - Model.BallState.Location);
-                    target = Model.BallState.Location + vec2.GetNormalizeToCopy(0.5);
+                    target = Model.BallState.Location + vec2.GetNormalizeToCopy(0.6);
                     angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                 }
                
@@ -105,15 +105,15 @@ namespace MRL.SSL.AIConsole.Roles
             }
             //DrawingObjects.AddObject(new Line(StaticVariables.ballPlacementPos, target, new Pen(Color.Red, 0.02f)), "jdv");
 
-            Planner.SetParameter(RobotID, 0.4);
+            Planner.SetParameter(RobotID, 0.8);
             Planner.Add(RobotID, target, angle, PathType.UnSafe, avoidBall, avoidRobot, false, false, false);
         }
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            if (myOtherID == -1)
-            {
-                return;
-            }
+            //if (myOtherID == -1)
+            //{
+            //    return;
+            //}
             bool eatFailed = Model.BallConfidenc > 0.5 && Model.BallState.Location.DistanceFrom(Model.OurRobots[RobotID].Location) > behindBallTresh;
             bool moveFinished = Model.BallConfidenc > 0.5 && target.DistanceFrom(Model.OurRobots[RobotID].Location) < 0.10;
 
