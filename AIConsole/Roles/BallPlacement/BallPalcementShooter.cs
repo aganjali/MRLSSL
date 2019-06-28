@@ -49,10 +49,12 @@ namespace MRL.SSL.AIConsole.Roles
                     if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder)
                            || GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.20, out dist, out boarder))
                     {
-                        activeSkill.SetAvoidDangerZone(false, false);
+                        //activeSkill.SetAvoidDangerZone(false, false);
+                        GetSkill<GetBallSkill>().SetAvoidDangerZone(false, false);
                     }
-
-                    GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, StaticVariables.ballPlacementPos, false, 0.2, true);
+                    //activeSkill.SetAvoidDangerZone(false, false);
+                    GetSkill<GetBallSkill>().SetAvoidDangerZone(false, false);
+                    GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, StaticVariables.ballPlacementPos, false, 0.1, true);
                     return;
                 }
                 else
@@ -61,7 +63,7 @@ namespace MRL.SSL.AIConsole.Roles
                     if (GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.20, out dist, out boarder)
                            || GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.20, out dist, out boarder))
                     {
-                        //activeSkill.SetAvoidDangerZone(false, false);
+                       // activeSkill.SetAvoidDangerZone(false, false);
                         GetSkill<GetBallSkill>().SetAvoidDangerZone(false, false);
                     }
 
@@ -89,6 +91,7 @@ namespace MRL.SSL.AIConsole.Roles
                 avoidBall = true;
                 avoidRobot = true;
                 backBall = behindBallTresh;
+               // backBall = 0.1;
                 Planner.ChangeDefaulteParams(RobotID, false);
                 Planner.SetParameter(RobotID, 6, 1);
             }
@@ -103,6 +106,7 @@ namespace MRL.SSL.AIConsole.Roles
                 avoidBall = false;
                 avoidRobot = false;
                 backBall = eatBallTresh;
+                //backBall = 0.1;
                 Planner.ChangeDefaulteParams(RobotID, false);
                 Planner.SetParameter(RobotID, 6,1);
 
@@ -118,6 +122,7 @@ namespace MRL.SSL.AIConsole.Roles
                 avoidBall = false;
                 avoidRobot = false;
                 backBall = eatBallTresh;
+               // backBall = 0.1;
                 double dist = Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos);
                 //if (dist >= 0.15 && dist < 10 && stopCounter++ < 120 )
                 //{
@@ -133,13 +138,13 @@ namespace MRL.SSL.AIConsole.Roles
                 if (Model.BallConfidenc < 0.5)
                 {
                     Vector2D vec22 = Model.OurRobots[RobotID].Location - StaticVariables.ballPlacementPos;
-                    target = StaticVariables.ballPlacementPos + vec22.GetNormalizeToCopy(0.5);
+                    target = StaticVariables.ballPlacementPos + vec22.GetNormalizeToCopy(0.6);
                     angle = (Model.BallState.Location - target).AngleInDegrees;
                 }
                 else if (Model.BallConfidenc >= 0.5)
                 {
                     Vector2D vec22 = Model.OurRobots[RobotID].Location - Model.BallState.Location;
-                    target = Model.BallState.Location + vec22.GetNormalizeToCopy(0.5);
+                    target = Model.BallState.Location + vec22.GetNormalizeToCopy(0.6);
                     angle = (Model.BallState.Location - target).AngleInDegrees;
                 }
 
@@ -147,24 +152,15 @@ namespace MRL.SSL.AIConsole.Roles
                 avoidBall = true;
                 avoidRobot = true;
                 backBall = finishTresh;
-               
+                //backBall = 0.1;
                 Planner.ChangeDefaulteParams(RobotID, false);
                 Planner.SetParameter(RobotID, 6, 0.5);
                 Planner.Add(RobotID, target, angle, PathType.UnSafe, avoidBall, avoidRobot, false, false, false);
                     return;
             }
 
-            //if (CurrentState != (int)states.pass/* && CurrentState != (int)states.positioning*/)
-            //{
-            //    Planner.ChangeDefaulteParams(RobotID, false);
-            //    Planner.SetParameter(RobotID, 0.4);
-            //}
-            ////Planner.Add(RobotID, target, angle, PathType.UnSafe, avoidBall, avoidRobot, false, false, false);
-
-            //Planner.ChangeDefaulteParams(RobotID, false);
-            //Planner.SetParameter(RobotID, 1);
-
-         
+            // activeSkill.SetAvoidDangerZone(false, false);
+            GetSkill<GetBallSkill>().SetAvoidDangerZone(false, false);
             GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, StaticVariables.ballPlacementPos, false, backBall, true);
         }
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
@@ -197,7 +193,7 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     CurrentState = (int)states.eatBall;
                 }
-                else if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
+                else if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.13)
                 {
                     CurrentState = (int)states.finish;
                 }
@@ -216,7 +212,7 @@ namespace MRL.SSL.AIConsole.Roles
                 //{
                 //    CurrentState = (int)states.positioning;
                 //}
-                else if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
+                else if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.13)
                 {
                     CurrentState = (int)states.finish;
                 }
@@ -235,7 +231,7 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     CurrentState = (int)states.positioning;
                 }
-                else if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1 || (Model.BallConfidenc < 0.09 && Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.1))
+                else if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.13 || (Model.BallConfidenc < 0.09 && Model.OurRobots[RobotID].Location.DistanceFrom(target) < 0.1))
                 {
                     counter++;
                     if (counter >= 20)

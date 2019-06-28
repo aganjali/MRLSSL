@@ -79,13 +79,13 @@ namespace MRL.SSL.AIConsole.Roles
                 if (Model.BallConfidenc<0.5)
                 {
                     Vector2D vec2 = (Model.OurRobots[RobotID].Location - StaticVariables.ballPlacementPos);
-                    target = StaticVariables.ballPlacementPos + vec2.GetNormalizeToCopy(0.5);
+                    target = StaticVariables.ballPlacementPos + vec2.GetNormalizeToCopy(0.6);
                     angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                 }
                 else if (Model.BallConfidenc>=0.5)
                 {
                     Vector2D vec2 = (Model.OurRobots[RobotID].Location - Model.BallState.Location);
-                    target = Model.BallState.Location + vec2.GetNormalizeToCopy(0.5);
+                    target = Model.BallState.Location + vec2.GetNormalizeToCopy(0.6);
                     angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                 }
                
