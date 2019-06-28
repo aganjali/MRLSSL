@@ -94,9 +94,6 @@ namespace MRL.SSL.AIConsole.Engine
                     EngineManager.Manager.FillEvents(new GameEvents() { BlueScore = (int)c[2], YellowScore = (int)c[3], TimeOfstage = (int)BitConverter.ToUInt16(f, 0) });
                     EngineManager.Manager.EnqueueCommand(c[0]);
                 }
-
-
-
             }
         }
         private void refreePacketRun()
@@ -119,7 +116,16 @@ namespace MRL.SSL.AIConsole.Engine
                     int bG = (sslReferee.blue != null) ? (int)sslReferee.blue.goalie : lastEvent.BlueGoalie;
                     int yG = (sslReferee.yellow != null) ? (int)sslReferee.yellow.goalie : lastEvent.YellowGoalie;
                     //TODO: receive ballplacement position
-                    lastEvent = new GameEvents() { BlueScore = bS, YellowScore = yS, TimeOfstage = tS, BlueGoalie = bG, YellowGoalie = yG };
+                    if (sslReferee.designated_position != null && sslReferee.designated_position.x != null)
+                    {
+                        Position2D bP = new Position2D(sslReferee.designated_position.x, sslReferee.designated_position.y);
+                        lastEvent = new GameEvents() { BlueScore = bS, YellowScore = yS, TimeOfstage = tS, BlueGoalie = bG, YellowGoalie = yG, BallPlacementPosition = bP };
+                    }
+                    else
+                    {
+                        lastEvent = new GameEvents() { BlueScore = bS, YellowScore = yS, TimeOfstage = tS, BlueGoalie = bG, YellowGoalie = yG, BallPlacementPosition = null };
+
+                    }
 
                     EngineManager.Manager.FillEvents(lastEvent);
                     EngineManager.Manager.EnqueueCommand(ProtoCommand2Char(sslReferee));
