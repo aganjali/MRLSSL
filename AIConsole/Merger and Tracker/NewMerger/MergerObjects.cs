@@ -77,7 +77,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                             if (last_affinity >= 0)
                             {
                                 double d = obs[last_affinity].Loc.DistanceFrom(obs[o].Loc);
-                                if(d < minDist)
+                                if (d < minDist)
                                 {
                                     minDist = d;
                                     affinity = o;
@@ -88,7 +88,9 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                                 affinity = o;
                                 break;
                             }
-                            
+                            //affinity = o;
+                            //break;
+
                         }
                     }
                 }
@@ -101,7 +103,53 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                
                 return affinity;
             }
+            public int MergeObservations(int ballAffinity)
+            {
+                int last_affinity = affinity;
+                if (ballAffinity >= 0 && affinity != ballAffinity && obs[ballAffinity].Valid)
+                    affinity = ballAffinity;
+                else if (affinity < 0 || !obs[affinity].Valid)
+                {
+                    if (affinity >= 0)
+                    {
 
+                    }
+
+                    affinity = -1;
+                    double minDist = double.MaxValue;
+                    for (int o = 0; o < MaxCameras; o++)
+                    {
+                        if (obs[o].Valid)
+                        {
+                            if (last_affinity >= 0)
+                            {
+                                double d = obs[last_affinity].Loc.DistanceFrom(obs[o].Loc);
+                                if (d < minDist)
+                                {
+                                    minDist = d;
+                                    affinity = o;
+                                }
+                            }
+                            else
+                            {
+                                affinity = o;
+                                break;
+                            }
+                            //affinity = o;
+                            //break;
+
+                        }
+                    }
+                }
+
+                if (affinity < 0 && last_affinity >= 0 && obs[last_affinity].Last_valid < AFFINITY_PERSIST)
+                {
+                    affinity = last_affinity;
+                }
+
+
+                return affinity;
+            }
         };
 
 
@@ -147,12 +195,27 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         public void MakeWorld(bool isYellow)
         {
             world.timeofcapture = last_capture_time;  // GetTimeMicros() / 1e6;
+            if (ball.MergeObservations() >= 0)
+            {
+                Observation obs = ball.Obs[ball.Affinity];
+                vraw wb = new vraw
+                {
+                    conf = (true || obs.Last_valid < 2) ? obs.Conf : 0,
+                    pos = obs.Loc,
+                    angle = obs.Angle,
+                    camera = (uint)ball.Affinity,
+                    timestamp = obs.Time
+                };
+                world.Balls[0] = new vball(wb, new SingleObjectState());
+
+            }
+
             for (int team = 0; team < StaticVariables.NUM_TEAMS; team++)
             {
                 for (int id = 0; id < StaticVariables.MAX_ROBOT_ID; id++)
                 {
                     ObjectMerger robot = robots[team, id];
-                    if (robot.MergeObservations() >= 0)
+                    if (robot.MergeObservations(ball.Affinity) >= 0)
                     {
                         Observation obs = robot.Obs[robot.Affinity];
                         vraw wr = new vraw
@@ -176,20 +239,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 }
             }
 
-            if (ball.MergeObservations() >= 0)
-            {
-                Observation obs = ball.Obs[ball.Affinity];
-                vraw wb = new vraw
-                {
-                    conf = (true || obs.Last_valid < 2) ? obs.Conf : 0,
-                    pos = obs.Loc,
-                    angle = obs.Angle,
-                    camera = (uint)ball.Affinity,
-                    timestamp = obs.Time
-                };
-                world.Balls[0] = new vball(wb, new SingleObjectState());
-
-            }
+         
           
         }
 

@@ -19,7 +19,7 @@ namespace MRL.SSL.AIConsole.Roles
         const double FieldLength = 5, FieldWidth = 3;
         const int haltCount = 60;
         bool first = true;
-        int count = 0;
+        int LCounter = 0;
         Position2D center = new Position2D(0, 0);
         Position2D randomPoint = Position2D.Zero;
         int haltCounter = haltCount;
@@ -48,7 +48,7 @@ namespace MRL.SSL.AIConsole.Roles
         private bool getFirstLoc = true;
         public void GetData(WorldModel Model, int RobotID, int dataCount)
         {
-            if (count < dataCount)
+            if (LCounter < dataCount)
             {
                 if (first || Model.OurRobots[RobotID].Location.DistanceFrom(randomPoint) < 0.01)
                 {
@@ -60,7 +60,7 @@ namespace MRL.SSL.AIConsole.Roles
                             if (!first)
                             {
                                 ht.Stop();
-                                data[count] = new ActiveData()
+                                data[LCounter] = new ActiveData()
                                 {
                                     time = ht.Duration * 1000,
                                     R = r
@@ -71,7 +71,7 @@ namespace MRL.SSL.AIConsole.Roles
                             r = randomPoint - Model.OurRobots[RobotID].Location;
                             haltCounter = 0;
                             newRand = true;
-                            count++;
+                            LCounter++;
                             ht = new HiPerfTimer();
                             ht.Start();
                         }
@@ -112,7 +112,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             tetaCount = (int)(180 / TetaStep) + 1;
             LCount = (int)(5 / Lstep);
-            if (count < LCount)
+            if (LCounter < LCount)
             {
                 if (tetaCounter <= tetaCount)
                 {
@@ -138,7 +138,7 @@ namespace MRL.SSL.AIConsole.Roles
                             getTime = true;
                             if (back)
                             {
-                                r = Vector2D.FromAngleSize(((tetaCounter) * TetaStep) * Math.PI / 180, (count + 1) * Lstep);
+                                r = Vector2D.FromAngleSize(((tetaCounter) * TetaStep) * Math.PI / 180, (LCounter + 1) * Lstep);
                                 //if (r.Size > 3)
                                 //{
                                 //    center = (Position2D.Zero + r.GetNormalizeToCopy(3)) - r;
@@ -158,7 +158,7 @@ namespace MRL.SSL.AIConsole.Roles
                                 back = true;
                                 if (tetaCounter >= tetaCount)
                                 {
-                                    count++;
+                                    LCounter++;
                                     //r = Vector2D.FromAngleSize(((tetaCounter) * TetaStep) * Math.PI / 180, (count + 1) * Lstep);
                                     //if (r.Size > 3)
                                     //{
@@ -167,7 +167,7 @@ namespace MRL.SSL.AIConsole.Roles
                                     //}
                                     tetaCounter = 0;
                                 }
-                                var tmpR = Vector2D.FromAngleSize(((tetaCounter) * TetaStep) * Math.PI / 180, (count + 1) * Lstep);
+                                var tmpR = Vector2D.FromAngleSize(((tetaCounter) * TetaStep) * Math.PI / 180, (LCounter + 1) * Lstep);
                                 if (tmpR.Size > 3)
                                 {
                                     center = (Position2D.Zero + tmpR.GetNormalizeToCopy(3)) - tmpR;
@@ -196,6 +196,113 @@ namespace MRL.SSL.AIConsole.Roles
                 StreamWriter sw = new StreamWriter(ms);
                 sw.Write("RobotID\tIndex\tRSize\tRAngle\tTime\n");
                 foreach (var item in data)
+                {
+                    sw.Write(RobotID.ToString() + "\t");
+                    sw.Flush();
+                    sw.Write(item.Key.ToString() + "\t");
+                    sw.Flush();
+                    sw.Write(item.Value.R.Size.ToString() + "\t");
+                    sw.Flush();
+                    sw.Write(item.Value.R.AngleInDegrees.ToString() + "\t");
+                    sw.Flush();
+                    sw.Write(item.Value.time.ToString() + "\t\n");
+                    sw.Flush();
+                }
+                FileStream fs = new FileStream(@"d:\MotionData.txt", FileMode.Create);
+                fs.Write(ms.ToArray(), 0, (int)ms.Length);
+                fs.Close();
+                sw.Close();
+                saved = true;
+            }
+        }
+        public void GetDataVisionFix(WorldModel Model, int RobotID, double Lstep, double TetaStep,ref Dictionary<int, ActiveData> motionData,ref int TetaCounter,ref int LengthCounter)
+        {
+            tetaCount = (int)(180 / TetaStep) + 1;
+            LCount = (int)(5 / Lstep);
+            if (LengthCounter < LCount)
+            {
+                if (TetaCounter <= tetaCount)
+                {
+                    if (Model.OurRobots[RobotID].Location.DistanceFrom(randomPoint) < 0.03)
+                    {
+
+                        if (!back && getTime)
+                        {
+                            //ht.Stop();
+                            startMotion = false;
+                            motionData[Totalcounter] = new ActiveData()
+                            {
+                                time = motionTimer,
+                                R = r
+                            };
+                            Totalcounter++;
+                            getTime = false;
+                            motionTimer = 0;
+                        }
+                        haltCounter++;
+                        if (haltCounter >= haltCount)
+                        {
+                            getTime = true;
+                            if (back)
+                            {
+                                r = Vector2D.FromAngleSize(((TetaCounter) * TetaStep) * Math.PI / 180, (LengthCounter + 1) * Lstep);
+                                //if (r.Size > 3)
+                                //{
+                                //    center = (Position2D.Zero + r.GetNormalizeToCopy(3)) - r;
+                                //}
+                                randomPoint = center + r;
+                                haltCounter = 0;
+                                TetaCounter++;
+                                //ht = new HiPerfTimer();
+                                //ht.Start();
+                                startMotion = true;
+                                back = false;
+                            }
+                            else
+                            {
+
+                                haltCounter = 0;
+                                back = true;
+                                if (TetaCounter >= tetaCount)
+                                {
+                                    LengthCounter++;
+                                    //r = Vector2D.FromAngleSize(((TetaCounter) * TetaStep) * Math.PI / 180, (count + 1) * Lstep);
+                                    //if (r.Size > 3)
+                                    //{
+                                    //    center = (Position2D.Zero + r.GetNormalizeToCopy(3)) - r;
+                                    //    randomPoint = center;
+                                    //}
+                                    TetaCounter = 0;
+                                }
+                                var tmpR = Vector2D.FromAngleSize(((TetaCounter) * TetaStep) * Math.PI / 180, (LengthCounter + 1) * Lstep);
+                                if (tmpR.Size > 3)
+                                {
+                                    center = (Position2D.Zero + tmpR.GetNormalizeToCopy(3)) - tmpR;
+                                }
+                                randomPoint = center;
+                            }
+
+                        }
+
+                    }
+
+                }
+                if (startMotion)
+                    motionTimer++;
+                if (debug)
+                {
+                    DrawingObjects.AddObject(new StringDraw("startMotion " + startMotion.ToString(), new Position2D(2, 2)), "dfsadf");
+                    DrawingObjects.AddObject(new StringDraw("back " + back.ToString(), new Position2D(2 + 0.2, 2)), "dfsadfsdfsd");
+                    DrawingObjects.AddObject(new StringDraw("Time " + motionTimer.ToString(), new Position2D(2 + 0.4, 2)), "dfsdfdfsadf");
+                }
+                Planner.Add(RobotID, randomPoint, 0, false);
+            }
+            else if (!saved)
+            {
+                MemoryStream ms = new MemoryStream();
+                StreamWriter sw = new StreamWriter(ms);
+                sw.Write("RobotID\tIndex\tRSize\tRAngle\tTime\n");
+                foreach (var item in motionData)
                 {
                     sw.Write(RobotID.ToString() + "\t");
                     sw.Flush();
@@ -291,7 +398,7 @@ namespace MRL.SSL.AIConsole.Roles
                 }
                 if (Model.BallState.Speed.Size < 0.3)
                 {
-                    count++;
+                    LCounter++;
                     if (!getData)
                     {
                     }

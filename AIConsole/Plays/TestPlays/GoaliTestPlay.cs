@@ -47,16 +47,31 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         //    squarePoints.Add(new Position2D(center.X - lenght, center.Y + lenght));
         //}
         int i = 0;
-
+        Dictionary<int, ActiveData> data = new Dictionary<int, ActiveData>();
+        int TetaCounter = 0;
+        int LengthCounter = 0;
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-            Planner.AddKick(0,kickPowerType.Speed,false, 1);
-            int robotId2 = 3;
-            int robotId1 = 2;
-            int robotId3 = Model.GoalieID.Value;
-            int robotId0 = 1;
+            int RobotID = 9;
+            double Lstep = 1, thetaStep = 30;
+            if (Model.OurRobots.ContainsKey(RobotID))
+            {
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(TestRole)))
+                    Functions[RobotID] = (eng, wmd) => GetRole<TestRole>(RobotID).GetDataVisionFix(Model, RobotID, Lstep, thetaStep, ref data, ref TetaCounter, ref LengthCounter);
+
+            }
+            else
+            {
+
+            }
+            //Planner.AddKick(0,kickPowerType.Speed,false, 1);
+            //int robotId2 = 3;
+            //int robotId1 = 2;
+            //int robotId3 = Model.GoalieID.Value;
+            //int robotId0 = 1;
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId2, typeof(OnLineRole1)))
             //    Functions[robotId2] = (eng, wmd) => GetRole<OnLineRole1>(robotId2).Perform(engine, Model, robotId2);
 
@@ -73,7 +88,7 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             //Vector2D goalVec = GameParameters.OurGoalLeft - GameParameters.OurGoalRight;
             //Vector2D vec = center - Model.BallState.Location;
             //string angleBetween = Vector2D.AngleBetweenInDegrees(vec, goalVec).ToString() ;
-           // DrawingObjects.AddObject(new StringDraw(angleBetween,Color.Red,new Position2D(5,0)));
+            // DrawingObjects.AddObject(new StringDraw(angleBetween,Color.Red,new Position2D(5,0)));
             //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, robotId4, typeof(OnLineRole3)))
             //    Functions[robotId4] = (eng, wmd) => GetRole<OnLineRole3>(robotId4).Perform(engine, Model, robotId4);
             #region comments

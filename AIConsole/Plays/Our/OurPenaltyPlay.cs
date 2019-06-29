@@ -18,6 +18,7 @@ namespace MRL.SSL.AIConsole.Plays
             double dist, DistFromBorder;
             if (LastState == GameStatus.Penalty_OurTeam_Go && !GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.07, out dist, out DistFromBorder))
             {
+                LastState = GameStatus.Normal;
                 Status = GameStatus.Normal;
                 return false;
             }
