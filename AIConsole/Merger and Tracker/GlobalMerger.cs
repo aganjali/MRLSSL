@@ -777,7 +777,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             // try
             // {
             //merged = merger.Merge4cam(Packet, ref Frame, ref newFrame, isYellow);
-            merged = merger.Merge(Packet, ref Frame, ref newFrame, isYellow, selectedBall_Loc, ref ballIndexChanged, isReverseSide);
+            merged = merger.Merge(Packet, ref Frame, ref newFrame, isYellow, selectedBall_Loc, ref ballIndexChanged, isReverseSide );
             //}
             //catch (Exception ex)
             //{
