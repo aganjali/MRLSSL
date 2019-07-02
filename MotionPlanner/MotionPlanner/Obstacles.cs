@@ -401,43 +401,56 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
         }
         
-        public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi, bool useMargin = false)
+        public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi, Dictionary<int, double> margins = null, bool useMargin = false)
         {
             int i = 0;
-            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi, useMargin))
+            double margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi + margin, useMargin))
             {
                 i++;
+                margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
             }
             return (i != obstaclesList.Count);
         }
-        public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi, out int idx, bool useMargin = false)
+        public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi, out int idx, Dictionary<int, double> margins = null, bool useMargin = false)
         {
             int i = 0;
             idx = -1000;
-            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi, useMargin))
+            double margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+
+            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi + margin, useMargin))
             {
                 i++;
+                margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+
             }
             idx = (i < obstaclesList.Count) ? obstaclesList.ElementAt(i).Key : -1000;
             return (i != obstaclesList.Count);
         }
-        public bool MeetDangerZone(SingleObjectState From, SingleObjectState To, double obstacleRadi, bool useMargin = false)
+        public bool MeetDangerZone(SingleObjectState From, SingleObjectState To, double obstacleRadi, Dictionary<int, double> margins = null, bool useMargin = false)
         {
+            double margin = 0;
+
             foreach (var item in obstaclesList.Keys)
             {
                 if (item > -2 || item < -4)
                     continue;
-                if (obstaclesList[item].Meet(From, To, obstacleRadi, useMargin))
+                margin = (margins != null & margins.ContainsKey(item)) ? margins[item] : 0;
+                if (obstaclesList[item].Meet(From, To, obstacleRadi + margin, useMargin))
                     return true;
             }
             return false;
         }
-        public bool Meet(SingleObjectState S1, double obstacleRadi, bool useMargin = false)
+        public bool Meet(SingleObjectState S1, double obstacleRadi, Dictionary<int, double> margins = null, bool useMargin = false)
         {
             int i = 0;
-            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(S1, obstacleRadi, useMargin)) 
+            double margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+
+            while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(S1, obstacleRadi + margin, useMargin)) 
             {
                 i++;
+                margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+
             }
             return (i != obstaclesList.Count);
         }
