@@ -54,19 +54,23 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
             Functions = new Dictionary<int, CommonDelegate>();
-            int RobotID = 9;
+            int RobotID = 4;
             double Lstep = 1, thetaStep = 30;
-            if (Model.OurRobots.ContainsKey(RobotID))
-            {
+            //if (Model.OurRobots.ContainsKey(RobotID))
+            //{
 
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(TestRole)))
-                    Functions[RobotID] = (eng, wmd) => GetRole<TestRole>(RobotID).GetDataVisionFix(Model, RobotID, Lstep, thetaStep, ref data, ref TetaCounter, ref LengthCounter);
+            //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(TestRole)))
+            //        Functions[RobotID] = (eng, wmd) => GetRole<TestRole>(RobotID).GetDataVisionFix(Model, RobotID, Lstep, thetaStep, ref data, ref TetaCounter, ref LengthCounter);
 
-            }
-            else
-            {
+            //}
+            //else
+            //{
 
-            }
+            //}
+
+
+             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(FreeKickAttackerRole)))
+                Functions[RobotID] = (eng, wmd) => GetRole<FreeKickAttackerRole>(RobotID).Perform(engine,Model,RobotID);
             //Planner.AddKick(0,kickPowerType.Speed,false, 1);
             //int robotId2 = 3;
             //int robotId1 = 2;

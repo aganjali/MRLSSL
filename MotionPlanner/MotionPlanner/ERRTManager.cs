@@ -129,7 +129,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             for (int i = 0; i <  Count; i++)
             {
                 int id = RobotIds[i];
-                if (errts[i].Obstacles.Meet(errts[i].SmoothPath[0], errts[i].SmoothPath[1], MotionPlannerParameters.RobotRadi, errts[i].GoalRemovalObs, true))
+                if (errts[i].Obstacles.Meet(errts[i].SmoothPath[0], errts[i].SmoothPath[1], MotionPlannerParameters.RobotRadi,(errts[i].SmoothPath.Count > 2)? errts[i].GoalRemovalObs: errts[i].SumRemovalObs, true))
                 {
                     errts[i].SmoothPath.RemoveAt(0);
                 }

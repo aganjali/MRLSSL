@@ -75,10 +75,13 @@ namespace MRL.SSL.Planning.MotionPlanner
             set { obstacles = value; }
         }
 
-        public Dictionary<int, double> GoalRemovalObs { get => goalRemovalObs; set => goalRemovalObs = value; }
-        public Dictionary<int, double> IniRemovalObs { get => iniRemovalObs; set => iniRemovalObs = value; }
-        
-        public Dictionary<int, double> SumRemovalObs { get => sumRemovalObs; set => sumRemovalObs = value; }
+        public Dictionary<int, double> GoalRemovalObs;
+        public Dictionary<int, double> IniRemovalObs;
+        public Dictionary<int, double> SumRemovalObs;
+
+        Dictionary<int, double> iniRemovalObs = new Dictionary<int, double>();
+        Dictionary<int, double> goalRemovalObs = new Dictionary<int, double>();
+        Dictionary<int, double> sumRemovalObs = new Dictionary<int, double>();
 
         public SingleObjectState RandomState()
         {
@@ -208,9 +211,6 @@ namespace MRL.SSL.Planning.MotionPlanner
                 List<SingleObjectState> res = new List<SingleObjectState>();
                 Init.ParentState = null;
 
-                iniRemovalObs = new Dictionary<int, double>();
-                goalRemovalObs = new Dictionary<int, double>();
-                sumRemovalObs = new Dictionary<int, double>();
                 CheckInitialStates(init, goal, obs, pathType, out iniRemovalObs, out goalRemovalObs, out sumRemovalObs);
                 //foreach (var item in mustRemove)
                 //{
@@ -349,6 +349,14 @@ namespace MRL.SSL.Planning.MotionPlanner
                 else
                     LastSmoothPath = new List<SingleObjectState>();
 
+                IniRemovalObs = iniRemovalObs.ToDictionary(k => k.Key, v => v.Value);
+                GoalRemovalObs = goalRemovalObs.ToDictionary(k => k.Key, v => v.Value);
+                SumRemovalObs = sumRemovalObs.ToDictionary(k => k.Key, v => v.Value);
+
+                iniRemovalObs = new Dictionary<int, double>();
+                goalRemovalObs = new Dictionary<int, double>();
+                sumRemovalObs = new Dictionary<int, double>();
+
                 obstacles = obs;
                 Finished = true;
                 //timer.Stop();
@@ -433,14 +441,14 @@ namespace MRL.SSL.Planning.MotionPlanner
                             if(!item.Value.Meet(Init, MotionPlannerParameters.RobotRadi, false))
                             {
                                 initRemoveObstacles[item.Key] = -item.Value.Margin;
-                                sumRemovalObs[item.Key] = initRemoveObstacles[item.Key];
+                                sumRemoveObstacles[item.Key] = initRemoveObstacles[item.Key];
 
                             }
                             else if (!item.Value.Meet(Init, 0, false))
                             {
 
                                 initRemoveObstacles[item.Key] = - MotionPlannerParameters.RobotRadi - item.Value.Margin;
-                                sumRemovalObs[item.Key] = initRemoveObstacles[item.Key];
+                                sumRemoveObstacles[item.Key] = initRemoveObstacles[item.Key];
                             }
                             else
                                 obs.ObstaclesList.Remove(item.Key);
@@ -459,19 +467,19 @@ namespace MRL.SSL.Planning.MotionPlanner
                                 {
                                     
                                     goalRemoveObstacles[item.Key] = - item.Value.Margin;
-                                    if(sumRemovalObs.ContainsKey(item.Key))
-                                        sumRemovalObs[item.Key] = Math.Min(sumRemovalObs[item.Key], goalRemovalObs[item.Key]);
+                                    if(sumRemoveObstacles.ContainsKey(item.Key))
+                                        sumRemoveObstacles[item.Key] = Math.Min(sumRemoveObstacles[item.Key], goalRemoveObstacles[item.Key]);
                                     else
-                                        sumRemovalObs[item.Key] = goalRemovalObs[item.Key];
+                                        sumRemoveObstacles[item.Key] = goalRemoveObstacles[item.Key];
                                 }
                                 else if (!item.Value.Meet(Goal, 0, false))
                                 {
                                     goalRemoveObstacles[item.Key] = -MotionPlannerParameters.RobotRadi - item.Value.Margin;
 
-                                    if (sumRemovalObs.ContainsKey(item.Key))
-                                        sumRemovalObs[item.Key] = Math.Min(sumRemovalObs[item.Key], goalRemovalObs[item.Key]);
+                                    if (sumRemoveObstacles.ContainsKey(item.Key))
+                                        sumRemoveObstacles[item.Key] = Math.Min(sumRemoveObstacles[item.Key], goalRemoveObstacles[item.Key]);
                                     else
-                                        sumRemovalObs[item.Key] = goalRemovalObs[item.Key];
+                                        sumRemoveObstacles[item.Key] = goalRemoveObstacles[item.Key];
                                 }
                                 else
                                 {
@@ -577,9 +585,6 @@ namespace MRL.SSL.Planning.MotionPlanner
         }
         //---------->\
         List<SingleObjectState> LastPath = null;
-        private Dictionary<int, double> iniRemovalObs;
-        private Dictionary<int, double> sumRemovalObs;
-        private Dictionary<int, double> goalRemovalObs;
 
         public List<SingleObjectState> RandomInterpolateSmoothing(List<SingleObjectState> path, Obstacles obs, SingleObjectState init, SingleObjectState goal, bool justInitChanged)
         {

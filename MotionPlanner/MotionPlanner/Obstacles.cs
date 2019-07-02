@@ -404,7 +404,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi, Dictionary<int, double> margins = null, bool useMargin = false)
         {
             int i = 0;
-            double margin = (margins != null && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+            double margin = (margins != null && i < obstaclesList.Count && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
             while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi + margin, useMargin))
             {
                 i++;
@@ -417,7 +417,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         {
             int i = 0;
             idx = -1000;
-            double margin = (margins != null && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+            double margin = (margins != null && i < obstaclesList.Count && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
 
             while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi + margin, useMargin))
             {
@@ -446,7 +446,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         public bool Meet(SingleObjectState S1, double obstacleRadi, Dictionary<int, double> margins = null, bool useMargin = false)
         {
             int i = 0;
-            double margin = (margins != null && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+            double margin = (margins != null && i < obstaclesList.Count && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
 
             while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(S1, obstacleRadi + margin, useMargin)) 
             {

@@ -387,7 +387,7 @@ namespace MRL.SSL.AIConsole.Plays
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop, typeof(CornerStopRole)))
                     Functions[stop.Value] = (eng, wmd) => GetRole<CornerStopRole>(stop.Value).Run(engine, Model, stop.Value, 80, 180);
-
+                
             }
             #endregion
 
