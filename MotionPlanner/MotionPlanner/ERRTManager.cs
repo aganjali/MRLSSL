@@ -129,7 +129,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             for (int i = 0; i <  Count; i++)
             {
                 int id = RobotIds[i];
-                if (errts[i].Obstacles.Meet(errts[i].SmoothPath[0], errts[i].SmoothPath[1], MotionPlannerParameters.RobotRadi, errts[i].MustRemove, true))
+                if (errts[i].Obstacles.Meet(errts[i].SmoothPath[0], errts[i].SmoothPath[1], MotionPlannerParameters.RobotRadi, errts[i].GoalRemovalObs, true))
                 {
                     errts[i].SmoothPath.RemoveAt(0);
                 }
@@ -137,7 +137,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 {
 
                 }
-                CurrentPathWeightes[id] = PathWeightCalculator(Model, errts[i].SmoothPath, errts[i].MustRemove, id, errts[i].Obstacles, GoalStates[id]);
+                CurrentPathWeightes[id] = PathWeightCalculator(Model, errts[i].SmoothPath, errts[i], id, errts[i].Obstacles, GoalStates[id]);
                 
             }
 
@@ -153,7 +153,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 }
                 else
                 {
-                    LastPathWeightes[id] = PathWeightCalculator(Model, errts[i - Count].LastSmoothPath, errts[i - Count].MustRemove, id, errts[i - Count].Obstacles, GoalStates[id]);
+                    LastPathWeightes[id] = PathWeightCalculator(Model, errts[i - Count].LastSmoothPath, errts[i - Count], id, errts[i - Count].Obstacles, GoalStates[id]);
 
                     if (LastPathWeightes[id] < CurrentPathWeightes[id] + 1)
                     {
@@ -197,7 +197,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             return FinalPathes; 
         }
 
-        private double PathWeightCalculator(WorldModel Model, List<SingleObjectState> Path, Dictionary<int, double> margins, int RobotID, Obstacles obs, SingleObjectState Goal)
+        private double PathWeightCalculator(WorldModel Model, List<SingleObjectState> Path, ERRT eRRT, int RobotID, Obstacles obs, SingleObjectState Goal)
         {
             double speed = 0, angle = 0, length = 0;
             double _angleWeight = 60;
@@ -216,7 +216,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             for (int i = Path.Count - 1; i > 1; i--)
             {
 
-                if (!met && obs.Meet(Path[i], Path[i - 1], MotionPlannerParameters.RobotRadi - 0.01, (i == Path.Count - 1) ? margins : null, true))
+                if (!met && obs.Meet(Path[i], Path[i - 1], MotionPlannerParameters.RobotRadi - 0.01, (i == Path.Count - 1) ? eRRT.IniRemovalObs : null, true))
                     met = true;
                 if (!metZone && 
                     (
@@ -232,7 +232,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 angle += Math.Abs(Vector2D.AngleBetweenInRadians(Vec, Vec2));
             }
             Vec = Path[1].Location - Path[0].Location;
-            if (!met && obs.Meet(Path[1], Path[0], MotionPlannerParameters.RobotRadi- 0.01, margins, true))
+            if (!met && obs.Meet(Path[1], Path[0], MotionPlannerParameters.RobotRadi- 0.01,(Path.Count > 2) ? eRRT.GoalRemovalObs:eRRT.SumRemovalObs, true))
                 met = true;
              if (!metZone && 
                     (

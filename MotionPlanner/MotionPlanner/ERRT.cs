@@ -75,7 +75,10 @@ namespace MRL.SSL.Planning.MotionPlanner
             set { obstacles = value; }
         }
 
-        public Dictionary<int, double> MustRemove { get => mustRemove; set => mustRemove = value; }
+        public Dictionary<int, double> GoalRemovalObs { get => goalRemovalObs; set => goalRemovalObs = value; }
+        public Dictionary<int, double> IniRemovalObs { get => iniRemovalObs; set => iniRemovalObs = value; }
+        
+        public Dictionary<int, double> SumRemovalObs { get => sumRemovalObs; set => sumRemovalObs = value; }
 
         public SingleObjectState RandomState()
         {
@@ -111,8 +114,10 @@ namespace MRL.SSL.Planning.MotionPlanner
             SingleObjectState res = new SingleObjectState(ObjectType.OurRobot, tt, Vector2D.Zero, Vector2D.Zero, null, null);
            
             Line li = new Line(Nearest.Location, res.Location);
-            bool b = (init.Location.DistanceFrom(Nearest.Location) < 0.01 || goal.Location.DistanceFrom(res.Location) <= 0.1);
-            if (obs.Meet(Nearest, res, MotionPlannerParameters.RobotRadi, b ? mustRemove : null, true))
+            bool bi = init.Location.DistanceFrom(Nearest.Location) < 0.01 ;
+            bool bg = goal.Location.DistanceFrom(res.Location) <= 0.1;
+
+            if (obs.Meet(Nearest, res, MotionPlannerParameters.RobotRadi, (bi && bg) ? sumRemovalObs : (bi ? iniRemovalObs : (bg ? goalRemovalObs : null)), true))
                 return null;
             else
                 return res;
@@ -203,8 +208,10 @@ namespace MRL.SSL.Planning.MotionPlanner
                 List<SingleObjectState> res = new List<SingleObjectState>();
                 Init.ParentState = null;
 
-                mustRemove = new Dictionary<int, double>();
-                CheckInitialStates(init, goal, obs, pathType, out mustRemove);
+                iniRemovalObs = new Dictionary<int, double>();
+                goalRemovalObs = new Dictionary<int, double>();
+                sumRemovalObs = new Dictionary<int, double>();
+                CheckInitialStates(init, goal, obs, pathType, out iniRemovalObs, out goalRemovalObs, out sumRemovalObs);
                 //foreach (var item in mustRemove)
                 //{
                 //    if (obs.ObstaclesList.ContainsKey(item))
@@ -217,7 +224,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                     NearestState = new SingleObjectState(Path[1]);
                 //SingleObjectState fromGoalNearestState = new SingleObjectState(goal);
                 
-                if (!obs.Meet(init, goal, MotionPlannerParameters.RobotRadi , mustRemove, true))
+                if (!obs.Meet(init, goal, MotionPlannerParameters.RobotRadi , null, true))
                 {
                     res.Add(goal);
                     //FPath[2 * PathCount] = (float)goal.Location.X;
@@ -351,7 +358,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 eventR.WaitOne();
             }
         }
-        private void CheckInitialStates(SingleObjectState Init, SingleObjectState Goal, Obstacles obs, PathType pathType, out Dictionary<int, double> mustRemoveObstacles)
+        private void CheckInitialStates(SingleObjectState Init, SingleObjectState Goal, Obstacles obs, PathType pathType, out Dictionary<int, double> initRemoveObstacles, out Dictionary<int, double> goalRemoveObstacles, out Dictionary<int, double> sumRemoveObstacles)
         {
             bool goalinzone = false;
             double d1 = 0, d2 = 0, distanceInDangerZone;
@@ -400,8 +407,9 @@ namespace MRL.SSL.Planning.MotionPlanner
                 //oppInit2OurVec.NormalizeTo(d2 + 0.26);
                 //Init.Location = oppInit2OurVec + GameParameters.OppGoalCenter;
             }
-            mustRemoveObstacles = new Dictionary<int, double>();
-       
+            initRemoveObstacles = new Dictionary<int, double>();
+            goalRemoveObstacles = new Dictionary<int, double>();
+            sumRemovalObs = new Dictionary<int, double>();
             var obsdic = obs.ObstaclesList.ToDictionary(k => k.Key,v=>v.Value);
             bool inSomeObs = true;
             bool goalinobs = false;
@@ -424,12 +432,15 @@ namespace MRL.SSL.Planning.MotionPlanner
                         {
                             if(!item.Value.Meet(Init, MotionPlannerParameters.RobotRadi, false))
                             {
-                                mustRemoveObstacles[item.Key] = -item.Value.Margin;
+                                initRemoveObstacles[item.Key] = -item.Value.Margin;
+                                sumRemovalObs[item.Key] = initRemoveObstacles[item.Key];
+
                             }
                             else if (!item.Value.Meet(Init, 0, false))
                             {
 
-                                mustRemoveObstacles[item.Key] = - MotionPlannerParameters.RobotRadi - item.Value.Margin;
+                                initRemoveObstacles[item.Key] = - MotionPlannerParameters.RobotRadi - item.Value.Margin;
+                                sumRemovalObs[item.Key] = initRemoveObstacles[item.Key];
                             }
                             else
                                 obs.ObstaclesList.Remove(item.Key);
@@ -446,13 +457,21 @@ namespace MRL.SSL.Planning.MotionPlanner
                                 //obs.ObstaclesList.Remove(item.Key);
                                 if (!item.Value.Meet(Goal, MotionPlannerParameters.RobotRadi, false))
                                 {
-                                    if (!mustRemoveObstacles.ContainsKey(item.Key))
-                                        mustRemoveObstacles[item.Key] = - item.Value.Margin;
+                                    
+                                    goalRemoveObstacles[item.Key] = - item.Value.Margin;
+                                    if(sumRemovalObs.ContainsKey(item.Key))
+                                        sumRemovalObs[item.Key] = Math.Min(sumRemovalObs[item.Key], goalRemovalObs[item.Key]);
+                                    else
+                                        sumRemovalObs[item.Key] = goalRemovalObs[item.Key];
                                 }
                                 else if (!item.Value.Meet(Goal, 0, false))
                                 {
-                                    mustRemoveObstacles[item.Key] = -MotionPlannerParameters.RobotRadi - item.Value.Margin;
+                                    goalRemoveObstacles[item.Key] = -MotionPlannerParameters.RobotRadi - item.Value.Margin;
 
+                                    if (sumRemovalObs.ContainsKey(item.Key))
+                                        sumRemovalObs[item.Key] = Math.Min(sumRemovalObs[item.Key], goalRemovalObs[item.Key]);
+                                    else
+                                        sumRemovalObs[item.Key] = goalRemovalObs[item.Key];
                                 }
                                 else
                                 {
@@ -558,7 +577,9 @@ namespace MRL.SSL.Planning.MotionPlanner
         }
         //---------->\
         List<SingleObjectState> LastPath = null;
-        private Dictionary<int, double> mustRemove;
+        private Dictionary<int, double> iniRemovalObs;
+        private Dictionary<int, double> sumRemovalObs;
+        private Dictionary<int, double> goalRemovalObs;
 
         public List<SingleObjectState> RandomInterpolateSmoothing(List<SingleObjectState> path, Obstacles obs, SingleObjectState init, SingleObjectState goal, bool justInitChanged)
         {
@@ -601,9 +622,11 @@ namespace MRL.SSL.Planning.MotionPlanner
                     int eKey = nodes[e];
                     SingleObjectState end = ppat[eKey];
 
-                    bool b = (start.Location.DistanceFrom(init.Location) < 0.01 || start.Location.DistanceFrom(goal.Location) < 0.01 ||
-                        end.Location.DistanceFrom(init.Location) < 0.01 || end.Location.DistanceFrom(goal.Location) < 0.01);
-                    if (!obs.Meet(start, end, MotionPlannerParameters.RobotRadi, b ? mustRemove : null, true))
+                    bool bi = (start.Location.DistanceFrom(init.Location) < 0.01 || end.Location.DistanceFrom(init.Location) < 0.01) ;
+
+                    bool bg = (start.Location.DistanceFrom(goal.Location) < 0.01 || end.Location.DistanceFrom(goal.Location) < 0.01);
+
+                    if (!obs.Meet(start, end, MotionPlannerParameters.RobotRadi, (bi && bg) ? sumRemovalObs : (bi ? iniRemovalObs : (bg ? goalRemovalObs : null)), true))
                     {
                         int min = (sKey < eKey) ? sKey : eKey;
                         int max = (sKey > eKey) ? sKey : eKey;
@@ -629,14 +652,16 @@ namespace MRL.SSL.Planning.MotionPlanner
                     {
                         SingleObjectState n = new SingleObjectState(next.Location + nextCurrent.GetNormalizeToCopy(j * nextStep), Vector2D.Zero, 0);
                         SingleObjectState p = new SingleObjectState(prev.Location + prevCurrent.GetNormalizeToCopy(j * prevStep), Vector2D.Zero, 0);
-                        bool b = (p.Location.DistanceFrom(init.Location) < 0.01 || p.Location.DistanceFrom(goal.Location) < 0.01 ||
-                            n.Location.DistanceFrom(init.Location) < 0.01 || n.Location.DistanceFrom(goal.Location) < 0.01);
-                        if (!obs.Meet(p, n, MotionPlannerParameters.RobotRadi, b ? mustRemove : null, true))
+                        bool bi = (p.Location.DistanceFrom(init.Location) < 0.01 || n.Location.DistanceFrom(init.Location) < 0.01);
+                        bool bg = (p.Location.DistanceFrom(goal.Location) < 0.01 || n.Location.DistanceFrom(goal.Location) < 0.01);
+
+                        if (!obs.Meet(p, n, MotionPlannerParameters.RobotRadi, (bi && bg) ? sumRemovalObs : (bi ? iniRemovalObs : (bg ? goalRemovalObs : null)), true))
                         {
                             ppat.RemoveAt(i);
-                            b = (p.Location.DistanceFrom(init.Location) < 0.01 || p.Location.DistanceFrom(goal.Location) < 0.01 ||
-                                next.Location.DistanceFrom(init.Location) < 0.01 || next.Location.DistanceFrom(goal.Location) < 0.01);
-                            if (!obs.Meet(p, next, MotionPlannerParameters.RobotRadi, b ? mustRemove : null, true))
+                            bi = (p.Location.DistanceFrom(init.Location) < 0.01 || next.Location.DistanceFrom(init.Location) < 0.01);
+                            bg = (p.Location.DistanceFrom(goal.Location) < 0.01 || next.Location.DistanceFrom(goal.Location) < 0.01);
+
+                            if (!obs.Meet(p, next, MotionPlannerParameters.RobotRadi, (bi && bg) ? sumRemovalObs : (bi ? iniRemovalObs : (bg ? goalRemovalObs : null)), true))
                             {
                                 ppat.Insert(i, p);
                             }
