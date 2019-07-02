@@ -21,7 +21,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
             return false;
-            return Status == GameDefinitions.GameStatus.Normal;
+            //return Status == GameDefinitions.GameStatus.Normal;
         }
 
         public override PlayResult QueryPlayResult()
