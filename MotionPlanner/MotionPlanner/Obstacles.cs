@@ -404,11 +404,12 @@ namespace MRL.SSL.Planning.MotionPlanner
         public bool Meet(SingleObjectState From, SingleObjectState To, double obstacleRadi, Dictionary<int, double> margins = null, bool useMargin = false)
         {
             int i = 0;
-            double margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+            double margin = (margins != null && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
             while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi + margin, useMargin))
             {
                 i++;
-                margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+                if (i < ObstaclesList.Count)
+                    margin = (margins != null && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
             }
             return (i != obstaclesList.Count);
         }
@@ -416,12 +417,13 @@ namespace MRL.SSL.Planning.MotionPlanner
         {
             int i = 0;
             idx = -1000;
-            double margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+            double margin = (margins != null && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
 
             while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(From, To, obstacleRadi + margin, useMargin))
             {
                 i++;
-                margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+                if (i < ObstaclesList.Count)
+                    margin = (margins != null && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
 
             }
             idx = (i < obstaclesList.Count) ? obstaclesList.ElementAt(i).Key : -1000;
@@ -435,7 +437,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             {
                 if (item > -2 || item < -4)
                     continue;
-                margin = (margins != null & margins.ContainsKey(item)) ? margins[item] : 0;
+                margin = (margins != null && margins.ContainsKey(item)) ? margins[item] : 0;
                 if (obstaclesList[item].Meet(From, To, obstacleRadi + margin, useMargin))
                     return true;
             }
@@ -444,12 +446,13 @@ namespace MRL.SSL.Planning.MotionPlanner
         public bool Meet(SingleObjectState S1, double obstacleRadi, Dictionary<int, double> margins = null, bool useMargin = false)
         {
             int i = 0;
-            double margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+            double margin = (margins != null && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
 
             while (i < obstaclesList.Count && !obstaclesList.ElementAt(i).Value.Meet(S1, obstacleRadi + margin, useMargin)) 
             {
                 i++;
-                margin = (margins != null & margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
+                if (i < ObstaclesList.Count)
+                    margin = (margins != null && margins.ContainsKey(obstaclesList.ElementAt(i).Key)) ? margins[obstaclesList.ElementAt(i).Key] : 0;
 
             }
             return (i != obstaclesList.Count);

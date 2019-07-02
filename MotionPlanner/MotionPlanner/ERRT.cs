@@ -224,7 +224,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                     NearestState = new SingleObjectState(Path[1]);
                 //SingleObjectState fromGoalNearestState = new SingleObjectState(goal);
                 
-                if (!obs.Meet(init, goal, MotionPlannerParameters.RobotRadi , null, true))
+                if (!obs.Meet(init, goal, MotionPlannerParameters.RobotRadi , sumRemovalObs, true))
                 {
                     res.Add(goal);
                     //FPath[2 * PathCount] = (float)goal.Location.X;
@@ -409,7 +409,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
             initRemoveObstacles = new Dictionary<int, double>();
             goalRemoveObstacles = new Dictionary<int, double>();
-            sumRemovalObs = new Dictionary<int, double>();
+            sumRemoveObstacles = new Dictionary<int, double>();
             var obsdic = obs.ObstaclesList.ToDictionary(k => k.Key,v=>v.Value);
             bool inSomeObs = true;
             bool goalinobs = false;
