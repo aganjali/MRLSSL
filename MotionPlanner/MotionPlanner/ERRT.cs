@@ -206,7 +206,9 @@ namespace MRL.SSL.Planning.MotionPlanner
                 foreach (var item in mustRemove)
                 {
                     if (obs.ObstaclesList.ContainsKey(item))
+                    {
                         obs.ObstaclesList.Remove(item);
+                    }
                 }
                 SingleObjectState NearestState ;
                 if (!Failed)
@@ -268,6 +270,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                                 //NearestState = tree.nearest(d2);
                                 NearestState = tree.GetNearestNeighbours(d2, 1).First().Value;
                             }
+                            
                             Extended = Extend(NearestState, target, obs);
                             if (Extended != null)
                             {
@@ -407,7 +410,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             Vector2D vec = new Vector2D();
             Position2D tmpPos = new Position2D();
             int ii = 0;
-            int jj = 0;
+        //    int jj = 0;
             int tmpid = -1000;
             while (inSomeObs && ii < 10)
             {
@@ -419,16 +422,39 @@ namespace MRL.SSL.Planning.MotionPlanner
                     if (item.Value.Type != ObstacleType.ZoneCircle && item.Value.Type != ObstacleType.ZoneRectangle)
                     {
                         if (ii == 1 && item.Value.Meet(Init, MotionPlannerParameters.RobotRadi, true))
-                            mustRemoveObstacles.Add(item.Key);
+                        {
+                            if (!item.Value.Meet(Init, MotionPlannerParameters.RobotRadi, false))
+                            {
+                                item.Value.Margin = 0;
+                            }
+                            else if (!item.Value.Meet(Init, 0, false))
+                            {
+                                item.Value.Margin = -MotionPlannerParameters.RobotRadi;
+                            }
+                            else
+                                mustRemoveObstacles.Add(item.Key);
+
+                        }
                         
                         if (item.Value.Meet(Goal, MotionPlannerParameters.RobotRadi, true))
                         {
                             //if(tmpid == item.Key)
-                            jj++;
-                            inSomeObs = true;
+                            //jj++;
                             if (pathType == PathType.UnSafe)
                             {
-                                obs.ObstaclesList.Remove(item.Key);
+                                if (!item.Value.Meet(Goal, MotionPlannerParameters.RobotRadi, false))
+                                {
+                                    item.Value.Margin = 0;
+
+                                }
+                                else if(!item.Value.Meet(Goal, 0, false))
+                                    item.Value.Margin = -MotionPlannerParameters.RobotRadi;
+                                else
+                                {
+
+                                    inSomeObs = true;
+                                    obs.ObstaclesList.Remove(item.Key);
+                                }
                             }
                             else
                             {
