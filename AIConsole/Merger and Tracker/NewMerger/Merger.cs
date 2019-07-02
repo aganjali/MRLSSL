@@ -46,7 +46,26 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         {
             return new mRobot();
         }
+        bool[] cameras_seen = new bool[StaticVariables.CameraCount];
+        int num_cameras, num_cameras_seen;
+      
 
+
+        uint frames;
+
+        bool ready;
+        public NewMerger()
+        {
+            num_cameras = 0;
+            num_cameras_seen = 0;
+        
+            ready = false;
+            frames = 0;
+            for (int i = 0; i < cameras_seen.Length; i++)
+            {
+                cameras_seen[i] = false;
+            }
+        }
         //public bool Merge(SSL_WrapperPacket Packet, ref frame Frame, ref frame newFrame, bool isYellow)
         //{
         //    //DrawingObjects.AddObject(new Circle(Vision2AI(new Position2D(-1994, -487), false), StaticVariables.BALL_RADIUS, new Pen(Color.Red, 0.01f)), "badssdddscdsll");
@@ -491,6 +510,46 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
             if (Packet == null || Packet.detection == null)
                 return false;
+            // count how many cameras are sending, at first
+            uint camera = Packet.detection.camera_id;
+            if (!lastAvailableCameras.All(a => MergerParameters.AvailableCamIds.Contains(a))
+                || !MergerParameters.AvailableCamIds.All(a => lastAvailableCameras.Contains(a)))
+            {
+                firstRunCounter = 0;
+                num_cameras = 0;
+                frames = 0;
+                for (int i = 0; i < cameras_seen.Length; i++)
+                {
+                    cameras_seen[i] = false;
+                }
+                num_cameras_seen = 0;
+            }
+            lastAvailableCameras = MergerParameters.AvailableCamIds.ToList();
+            if (!MergerParameters.AvailableCamIds.Contains((int)Packet.detection.camera_id))
+                return false;
+            if (num_cameras <= 0)
+            {
+                if (!cameras_seen[camera])
+                {
+                    num_cameras_seen++;
+                    cameras_seen[camera] = true;
+                }
+
+                if (frames++ >= 100)
+                {
+                    num_cameras = num_cameras_seen;
+
+                    for (int i = 0; i < cameras_seen.Length; i++)
+                    {
+                        cameras_seen[i] = false;
+                    }
+                    num_cameras_seen = 0;
+                }
+                else
+                {
+                    return false;
+                }
+            }
 
             if (Packet.detection.camera_id == 0)
             {
@@ -521,28 +580,34 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             {
                 sslpacketCam7 = Packet;
             }
-            if (MergerParameters.AvailableCamIds.Contains((int)Packet.detection.camera_id))
+            
+
+            
+            if (sslPackets.ContainsKey(Packet.detection.camera_id))
             {
-                if (sslPackets.ContainsKey(Packet.detection.camera_id))
-                {
-                    sslPackets[Packet.detection.camera_id] = Packet;
-                }
-                else
-                    sslPackets.Add(Packet.detection.camera_id, Packet);
+                sslPackets[Packet.detection.camera_id] = Packet;
+            }
+            else
+                sslPackets.Add(Packet.detection.camera_id, Packet);
+            
+
+            if (!cameras_seen[camera])
+            {
+                num_cameras_seen++;
+                cameras_seen[camera] = true;
             }
 
-         
-
-            if (sslPackets.Count < MergerParameters.AvailableCamIds.Count)
+            ready = (num_cameras_seen == num_cameras);
+            if (!ready)
                 return false;
+            
+            //if (sslPackets.Count < MergerParameters.AvailableCamIds.Count)
+            //    return false;
 
-            if (!lastAvailableCameras.All(a=>MergerParameters.AvailableCamIds.Contains(a)) 
-                || !MergerParameters.AvailableCamIds.All(a=>lastAvailableCameras.Contains(a)))
+            
+            if (firstRunCounter < 10)
             {
-                firstRunCounter = 0;
-            }
-            if (firstRunCounter++ < 10)
-            {
+                firstRunCounter++;
                 if (firstRunCounter == 1)
                 {
                     diffTimes.Clear();
@@ -599,9 +664,11 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             int counterOpp = 0;
 
             Balls = new Dictionary<uint, vraw>();
+            int cameras = 0;
             foreach (var pack in sslPackets)
             {
-                cmuMerger.UpdateVision(pack.Value.detection, isYellow, selectedBall,ref selectedBallChanged, isReverse);
+                cameras++;
+                cmuMerger.UpdateVision(pack.Value.detection, isYellow, selectedBall,ref selectedBallChanged, isReverse, cameras == sslPackets.Count);
                 Frame.OtherBalls = cmuMerger.World.OtherBalls;
                 //////////List<SSL_DetectionRobot> ourRobotsPacket, oppRobotsPacket;
                 //////////if (isYellow)
@@ -637,7 +704,10 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 var ball = cmuMerger.World.Balls[0].vision.pos;
                 ball = Vision2AI(ball, isReverse);
                 DrawingObjects.AddObject(new Circle(ball, 0.04, new Pen(Color.RosyBrown, 0.01f)), "cmu ball");
+                StaticVariables.BallPositions = new List<Position2D>();
+                StaticVariables.BallPositions.Add(cmuMerger.World.Balls[0].vision.pos);
             }
+
             uint count = 0;
             #region comment
             ////////#region Ball
@@ -875,7 +945,13 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 Balls.Add(0, new vraw(cmuMerger.World.Balls[0].vision));
             sslPackets = new Dictionary<uint, SSL_WrapperPacket>();
             lastColorIsYellow = isYellow;
-            lastAvailableCameras = MergerParameters.AvailableCamIds.ToList();
+
+            for (int i = 0; i < cameras_seen.Length; i++)
+            {
+                cameras_seen[i] = false;
+            }
+            num_cameras_seen = 0;
+
             return true;
         }
    

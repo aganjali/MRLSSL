@@ -11,7 +11,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
     public class CmuMerger
     {
-        private static int MaxCameras = 8;
+        private static int MaxCameras = StaticVariables.CameraCount;
 
         public class Observation
         {
@@ -153,11 +153,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         };
 
 
-        bool[] cameras_seen = new bool[MaxCameras];
-        int num_cameras, num_cameras_seen;
-        double last_capture_time;
-
-        bool ready;
+       
 
         frame world;
 
@@ -170,19 +166,11 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 
         ObjectMerger ball;
         private Dictionary<uint, List<SSL_DetectionBall>> balls= new Dictionary<uint, List<SSL_DetectionBall>>();
+        private double last_capture_time;
 
         public CmuMerger()
         {
-            num_cameras = 0;
-            num_cameras_seen = 0;
-            last_capture_time = 0;
-            ready = false;
-            frames = 0;
             world = new frame();
-            for (int i = 0; i < cameras_seen.Length; i++)
-            {
-                cameras_seen[i] = false;
-            }
             ball = new ObjectMerger();
             for (int i = 0; i < StaticVariables.NUM_TEAMS; i++)
             {
@@ -244,34 +232,34 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
         }
 
         // returns whether a new referee message is available
-        public void UpdateVision(SSL_DetectionFrame d, bool isYellow, Position2D selectedBall,ref bool selectedBallChanged, bool isReverse)
+        public void UpdateVision(SSL_DetectionFrame d, bool isYellow, Position2D selectedBall,ref bool selectedBallChanged, bool isReverse, bool ready)
         {
             uint camera = d.camera_id;
 
-            // count how many cameras are sending, at first
-            if (num_cameras <= 0)
-            {
-                if (!cameras_seen[camera])
-                {
-                    num_cameras_seen++;
-                    cameras_seen[camera] = true;
-                }
+            //// count how many cameras are sending, at first
+            //if (num_cameras <= 0)
+            //{
+            //    if (!cameras_seen[camera])
+            //    {
+            //        num_cameras_seen++;
+            //        cameras_seen[camera] = true;
+            //    }
 
-                if (frames++ >= 100)
-                {
-                    num_cameras = num_cameras_seen;
+            //    if (frames++ >= 100)
+            //    {
+            //        num_cameras = num_cameras_seen;
 
-                    for (int i = 0; i < cameras_seen.Length; i++)
-                    {
-                        cameras_seen[i] = false;
-                    }
-                    num_cameras_seen = 0;
-                }
-                else
-                {
-                    return;
-                }
-            }
+            //        for (int i = 0; i < cameras_seen.Length; i++)
+            //        {
+            //            cameras_seen[i] = false;
+            //        }
+            //        num_cameras_seen = 0;
+            //    }
+            //    else
+            //    {
+            //        return;
+            //    }
+            //}
 
             double time = d.t_capture;
             last_capture_time = time;
@@ -368,13 +356,13 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 //}
             }
 
-            if (!cameras_seen[camera])
-            {
-                num_cameras_seen++;
-                cameras_seen[camera] = true;
-            }
+            //if (!cameras_seen[camera])
+            //{
+            //    num_cameras_seen++;
+            //    cameras_seen[camera] = true;
+            //}
 
-            ready = (num_cameras_seen == num_cameras);
+            //ready = (num_cameras_seen == num_cameras);
             if (ready)
             {
                if(selectedBallChanged)
@@ -458,11 +446,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                     }
                 }
 
-                for (int i = 0; i < cameras_seen.Length; i++)
-                {
-                    cameras_seen[i] = false;
-                }
-                num_cameras_seen = 0;
+
             }
         }
         private Position2D Vision2AI(Position2D pos, bool isReverse)
@@ -475,7 +459,6 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
             int sgn = (isReverse) ? -1 : 1;
             return new Position2D(pos.X * sgn * 1000, -pos.Y * sgn * 1000);
         }
-        public bool Ready { get => ready; }
         public frame World { get => world; }
     }
 }

@@ -769,7 +769,7 @@ namespace MRL.SSL.Planning.MotionPlanner
         }
 
         static SaveModelData smd = new SaveModelData(2, true);
-        static HiPerfTimer h = new HiPerfTimer();
+        //static HiPerfTimer h = new HiPerfTimer();
         public static RobotCommands Run(WorldModel Model, out Dictionary<int, Vector2D> lastVel, out Dictionary<int, double> lastOmega)
         {
             initialStates = new Dictionary<int, SingleObjectState>();
@@ -810,10 +810,9 @@ namespace MRL.SSL.Planning.MotionPlanner
             }
             Dictionary<int, List<SingleObjectState>> paths = new Dictionary<int, List<SingleObjectState>>();
             //DrawingObjects.AddObject(new Circle(), "c");
-            h.Start();
+      
             paths = errtManager.Run(Model, initialStates, goals, initialStates.Keys.ToList(), types, aballs, arobots, azones, aOppzones, false, stopBall, VirtualObstacles);
-            h.Stop();
-            Console.WriteLine((h.Duration * 1000).ToString());
+   
            
             //paths.Add(0, new List<SingleObjectState> { new SingleObjectState(new Position2D(1, 1), new Vector2D(), 0), new SingleObjectState(new Position2D(1.0000000000000000001, .999999999999999), new Vector2D(), 0) });
             //Vector2D tmpLastV = Vector2D.Zero;

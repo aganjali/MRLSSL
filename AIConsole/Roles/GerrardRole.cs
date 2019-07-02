@@ -55,8 +55,18 @@ namespace MRL.SSL.AIConsole.Roles
         }
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
+            int? st1ID = FreekickDefence.Static1ID;
+            int? st2ID = FreekickDefence.Static2ID;
+            if (st1ID.HasValue && st2ID.HasValue)
+            {
+                if (Model.OurRobots[st1ID.Value].Location.X > 5 || Model.OurRobots[st2ID.Value].Location.X > 5)
+                {
+                    CurrentState = (int)PlayMode.SingleDefender;
+                    tempState = CurrentState;
+                }
+            }
 
-            if (Model.BallState.Location.X > 0.1 && CurrentState == (int)PlayMode.Attack)
+            else if (Model.BallState.Location.X > 0.1 && CurrentState == (int)PlayMode.Attack)
             {
                 CurrentState = (int)PlayMode.Defence;
                 tempState = CurrentState;
@@ -81,128 +91,37 @@ namespace MRL.SSL.AIConsole.Roles
             var st2ID = FreekickDefence.Static2ID;
             Position2D target = new Position2D();
             Vector2D v = new Vector2D();
-            //if (CurrentState == (int)PlayMode.Attack)
-            //{
 
-            //    target = new Position2D(6 + (Model.BallState.Location.X), (Model.BallState.Location.Y) / 3);
-            //    if (target.X > 3)
-            //    {
-            //        target = new Position2D(3, (Model.BallState.Location.Y) / 3);
-            //    }
+            if (CurrentState == (int)PlayMode.SingleDefender)
+            {
 
-            //}
-
-            //else if (CurrentState == (int)PlayMode.Defence)
-            //{
-            //    //Hysteresis
-            //    if (Model.BallState.Location.Y > 0.1 && right)
-            //    {
-            //        right = false;
-            //        temp = right;
-            //    }
-            //    else if (Model.BallState.Location.Y < -0.1 && !right)
-            //    {
-            //        right = true;
-            //        temp = right;
-            //    }
-            //    else
-            //        right = temp;
-
-
-            //    Dictionary<int, SingleObjectState> rightOpps = Model.Opponents.Where(o => o.Value.Location.X > 0 && o.Value.Location.Y < 0).ToDictionary(o => o.Key, o => o.Value);
-            //    Dictionary<int, SingleObjectState> leftOpps = Model.Opponents.Where(o => o.Value.Location.X > 0 && o.Value.Location.Y > 0).ToDictionary(o => o.Key, o => o.Value);
-
-            //    if (right) //Gerrard position when ball is in right side
-            //    {
-            //        if (leftOpps.Count > 0)
-            //        {
-            //            double minDistRobot = double.MaxValue;
-            //            int minDistId = 0;
-            //            foreach (var item in leftOpps)
-            //            {
-            //                if (item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter) < minDistRobot)
-            //                {
-            //                    minDistRobot = item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter);
-            //                    minDistId = item.Key;
-            //                }
-            //            }
-            //            if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
-            //            {
-
-            //                target = GetSkill<MarkSkill>().OnDangerZoneMark(RobotID, Model, Model.Opponents[minDistId].Location);
-            //                Vector2D v = new Vector2D();
-            //                if (st2ID.HasValue)
-            //                {
-            //                    Position2D st2 = Model.OurRobots[st2ID.Value].Location;
-            //                    v = target - Model.OurRobots[st2ID.Value].Location;
-            //                    if (target.Y < st2.Y + 0.25)
-            //                    {
-            //                        target = new Position2D(Model.OurRobots[RobotID].Location.X, st2.Y + 0.25);
-            //                    }
-            //                }
-            //                else
-            //                {
-            //                }
-            //            }
-            //            else
-            //                target = Model.OurRobots[RobotID].Location;
-
-            //        }
-            //        else
-            //        {
-            //            target = MarkSkill.ourDangerZoneLeftCorner + (MarkSkill.ourDangerZoneLeftCorner - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);
-
-            //        }
-            //    }
-            //    else //Gerrard position when ball is in left side
-            //    {
-            //        if (rightOpps.Count > 0)
-            //        {
-            //            double minDistRobot = double.MaxValue;
-            //            int minDistId = 0;
-            //            foreach (var item in rightOpps)
-            //            {
-            //                if (item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter) < minDistRobot)
-            //                {
-            //                    minDistRobot = item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter);
-            //                    minDistId = item.Key;
-            //                }
-            //            }
-            //            if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
-            //            {
-            //                target = GetSkill<MarkSkill>().OnDangerZoneMark(RobotID, Model, Model.Opponents[minDistId].Location);
-            //                Vector2D v = new Vector2D();
-            //                if (st1ID.HasValue)
-            //                {
-            //                    Position2D st1 = Model.OurRobots[st1ID.Value].Location;
-            //                    v = target - Model.OurRobots[st1ID.Value].Location;
-            //                    if (Math.Abs(target.Y) < Math.Abs(st1.Y) + 0.25)
-            //                    {
-            //                        target = new Position2D(Model.OurRobots[RobotID].Location.X, st1.Y - 0.25);
-            //                    }
-            //                }
-            //                else
-            //                {
-            //                }
-            //            }
-            //            else
-            //            {
-            //                target = Model.OurRobots[RobotID].Location;
-
-            //            }
+                Dictionary<int, SingleObjectState> Opps = Model.Opponents.Where(o => o.Value.Location.X > 0).ToDictionary(o => o.Key, o => o.Value);
+                Dictionary<int, double> oppsDist = new Dictionary<int, double>();
+                double minDistRobot = double.MaxValue;
+                int minDistId = 0;
+                foreach (var item in Opps)
+                {
+                    if (item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter) < minDistRobot)
+                    {
+                        minDistRobot = item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter);
+                        minDistId = item.Key;
+                    }
+                }
+                var a = minDistId;
+                target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
+                if (st1ID.HasValue)
+                {
+                    Position2D st2 = Model.OurRobots[st2ID.Value].Location;
+                    v = target - Model.OurRobots[st2ID.Value].Location;
+                    if (target.X < st2.X - 0.25)
+                    {
+                        target = new Position2D( st2.X - 0.25 , Model.OurRobots[robotID].Location.Y);
+                    }
+                }
 
 
-            //        }
-            //        else
-            //        {
-            //            DrawingObjects.AddObject(new Circle(MarkSkill.ourDangerZoneRightCorner, 0.1, new Pen(Color.Red, 0.01f)));
-            //            target = MarkSkill.ourDangerZoneRightCorner + (MarkSkill.ourDangerZoneRightCorner - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);
-
-            //        }
-
-            //    }
-            //}
-            if (CurrentState == (int)PlayMode.Attack)
+            }
+            else if (CurrentState == (int)PlayMode.Attack)
             {
 
                 target = new Position2D(6 + (Model.BallState.Location.X), (Model.BallState.Location.Y) / 3);
@@ -236,7 +155,7 @@ namespace MRL.SSL.AIConsole.Roles
                         if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
                         {
                             target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
-                            if (st1ID.HasValue)
+                            if (st2ID.HasValue)
                             {
                                 Position2D st2 = Model.OurRobots[st2ID.Value].Location;
                                 v = target - Model.OurRobots[st2ID.Value].Location;
@@ -273,11 +192,14 @@ namespace MRL.SSL.AIConsole.Roles
                         if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
                         {
                             target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
-                            Position2D st1 = Model.OurRobots[st1ID.Value].Location;
-                            v = target - Model.OurRobots[st1ID.Value].Location;
-                            if (Math.Abs(target.Y) < Math.Abs(st1.Y) + 0.25)
+                            if (st1ID.HasValue)
                             {
-                                target = new Position2D(Model.OurRobots[robotID].Location.X, st1.Y - 0.25);
+                                Position2D st1 = Model.OurRobots[st1ID.Value].Location;
+                                v = target - Model.OurRobots[st1ID.Value].Location;
+                                if (Math.Abs(target.Y) < Math.Abs(st1.Y) + 0.25)
+                                {
+                                    target = new Position2D(Model.OurRobots[robotID].Location.X, st1.Y - 0.25);
+                                }
                             }
                         }
                         else
@@ -323,7 +245,8 @@ namespace MRL.SSL.AIConsole.Roles
         enum PlayMode
         {
             Defence,
-            Attack
+            Attack,
+            SingleDefender
         }
         enum Side
         {
@@ -332,3 +255,124 @@ namespace MRL.SSL.AIConsole.Roles
         }
     }
 }
+//if (CurrentState == (int)PlayMode.Attack)
+//{
+
+//    target = new Position2D(6 + (Model.BallState.Location.X), (Model.BallState.Location.Y) / 3);
+//    if (target.X > 3)
+//    {
+//        target = new Position2D(3, (Model.BallState.Location.Y) / 3);
+//    }
+
+//}
+
+//else if (CurrentState == (int)PlayMode.Defence)
+//{
+//    //Hysteresis
+//    if (Model.BallState.Location.Y > 0.1 && right)
+//    {
+//        right = false;
+//        temp = right;
+//    }
+//    else if (Model.BallState.Location.Y < -0.1 && !right)
+//    {
+//        right = true;
+//        temp = right;
+//    }
+//    else
+//        right = temp;
+
+
+//    Dictionary<int, SingleObjectState> rightOpps = Model.Opponents.Where(o => o.Value.Location.X > 0 && o.Value.Location.Y < 0).ToDictionary(o => o.Key, o => o.Value);
+//    Dictionary<int, SingleObjectState> leftOpps = Model.Opponents.Where(o => o.Value.Location.X > 0 && o.Value.Location.Y > 0).ToDictionary(o => o.Key, o => o.Value);
+
+//    if (right) //Gerrard position when ball is in right side
+//    {
+//        if (leftOpps.Count > 0)
+//        {
+//            double minDistRobot = double.MaxValue;
+//            int minDistId = 0;
+//            foreach (var item in leftOpps)
+//            {
+//                if (item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter) < minDistRobot)
+//                {
+//                    minDistRobot = item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter);
+//                    minDistId = item.Key;
+//                }
+//            }
+//            if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
+//            {
+
+//                target = GetSkill<MarkSkill>().OnDangerZoneMark(RobotID, Model, Model.Opponents[minDistId].Location);
+//                Vector2D v = new Vector2D();
+//                if (st2ID.HasValue)
+//                {
+//                    Position2D st2 = Model.OurRobots[st2ID.Value].Location;
+//                    v = target - Model.OurRobots[st2ID.Value].Location;
+//                    if (target.Y < st2.Y + 0.25)
+//                    {
+//                        target = new Position2D(Model.OurRobots[RobotID].Location.X, st2.Y + 0.25);
+//                    }
+//                }
+//                else
+//                {
+//                }
+//            }
+//            else
+//                target = Model.OurRobots[RobotID].Location;
+
+//        }
+//        else
+//        {
+//            target = MarkSkill.ourDangerZoneLeftCorner + (MarkSkill.ourDangerZoneLeftCorner - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);
+
+//        }
+//    }
+//    else //Gerrard position when ball is in left side
+//    {
+//        if (rightOpps.Count > 0)
+//        {
+//            double minDistRobot = double.MaxValue;
+//            int minDistId = 0;
+//            foreach (var item in rightOpps)
+//            {
+//                if (item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter) < minDistRobot)
+//                {
+//                    minDistRobot = item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter);
+//                    minDistId = item.Key;
+//                }
+//            }
+//            if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
+//            {
+//                target = GetSkill<MarkSkill>().OnDangerZoneMark(RobotID, Model, Model.Opponents[minDistId].Location);
+//                Vector2D v = new Vector2D();
+//                if (st1ID.HasValue)
+//                {
+//                    Position2D st1 = Model.OurRobots[st1ID.Value].Location;
+//                    v = target - Model.OurRobots[st1ID.Value].Location;
+//                    if (Math.Abs(target.Y) < Math.Abs(st1.Y) + 0.25)
+//                    {
+//                        target = new Position2D(Model.OurRobots[RobotID].Location.X, st1.Y - 0.25);
+//                    }
+//                }
+//                else
+//                {
+//                }
+//            }
+//            else
+//            {
+//                target = Model.OurRobots[RobotID].Location;
+
+//            }
+
+
+//        }
+//        else
+//        {
+//            DrawingObjects.AddObject(new Circle(MarkSkill.ourDangerZoneRightCorner, 0.1, new Pen(Color.Red, 0.01f)));
+//            target = MarkSkill.ourDangerZoneRightCorner + (MarkSkill.ourDangerZoneRightCorner - GameParameters.OurGoalCenter).GetNormalizeToCopy(0.10);
+
+//        }
+
+//    }
+//}
