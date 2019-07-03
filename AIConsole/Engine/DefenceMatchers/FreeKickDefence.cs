@@ -3873,7 +3873,7 @@ namespace MRL.SSL.AIConsole.Engine
             Vector2D r = avoidBounds[0].Head - center;
             r.X = Math.Abs(r.X);
             r.Y = Math.Abs(r.Y);
-
+            DrawingObjects.AddObject(new Line(center, center + r, new Pen(Color.Black, 0.01f)), "lineobstcleavoid");
             obstacle = new Obstacle()
             {
                 State = new SingleObjectState(center, Vector2D.Zero, 0),

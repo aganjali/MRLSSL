@@ -142,7 +142,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             id = (id > -8) ? -8 : id;
             Obstacle obs = new Obstacle();
             obs.Type = ObstacleType.Rectangle;
-            obs.R = new Vector2D(width / 2, height / 2);
+            obs.R = new Vector2D(width, height);
             obs.Margin = margin;
             obs.State = new SingleObjectState(s);
             obstaclesList[id] = obs;
