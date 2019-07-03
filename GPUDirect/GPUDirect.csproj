@@ -93,7 +93,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\x64\Debug\GPUPlanner.dll">
+    <Content Include="..\x64\Release\GPUPlanner.dll">
       <Link>GPUPlanner.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

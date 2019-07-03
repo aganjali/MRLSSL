@@ -96,6 +96,7 @@ namespace MRL.SSL.AIConsole.Plays
 
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
+            Dictionary<int, RoleBase> assigenroles = new Dictionary<int, RoleBase>();
             FreekickDefence.weAreInKickoff = false;
             FreekickDefence.SwitchToActiveReset();
             DataBridge.SetInitialPoses(Model);
@@ -300,7 +301,9 @@ namespace MRL.SSL.AIConsole.Plays
                     ids = Model.OurRobots.Select(s => s.Key).ToList();
 
                 AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
-                var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+                AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
+
+                assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
 
                 int? n1 = null, n2 = null, regionalandmarker = null, regional = null, golie = null, gotopoint = null, stop = null;
@@ -593,8 +596,9 @@ namespace MRL.SSL.AIConsole.Plays
                 else
                     ids = Model.OurRobots.Select(s => s.Key).ToList();
 
+                AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
 
-                var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+                assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
                 int? n1 = null, n2 = null, marker = null, marker2ID = null, golierole = null, regOrActive = null, STOP = null;
 
@@ -854,7 +858,9 @@ namespace MRL.SSL.AIConsole.Plays
 
                 AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
                 AddRoleInfo(roles, typeof(RegionalDefenderRole2), 1, 0);
-                var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+                AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
+
+                assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
 
 
@@ -1114,7 +1120,9 @@ namespace MRL.SSL.AIConsole.Plays
 
 
                     AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
-                    var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+                    AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
+
+                    assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
                     #endregion
                     #region IDExport
 
@@ -1387,7 +1395,9 @@ namespace MRL.SSL.AIConsole.Plays
                     {
 
                     }
-                    var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+                    AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
+
+                    assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
                     #endregion
                     #region IDExport
 
@@ -1651,7 +1661,9 @@ namespace MRL.SSL.AIConsole.Plays
 
                 }
                 AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
-                var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+                AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
+
+                assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
                 #endregion
                 #region IDExport
 
@@ -1894,7 +1906,9 @@ namespace MRL.SSL.AIConsole.Plays
 
                 //arghavan
                 AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
-                var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+                AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
+
+                assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
                 #endregion
                 #region IDExport
 
@@ -2014,6 +2028,10 @@ namespace MRL.SSL.AIConsole.Plays
             }
             #endregion
 
+            int? attackerID = getID(assigenroles, typeof(FreeKickAttackerRole)); // New
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attackerID, typeof(FreeKickAttackerRole)))
+                Functions[attackerID.Value] = (eng, wmd) => GetRole<FreeKickAttackerRole>(attackerID.Value).Perform(engine, Model, attackerID.Value);
             #region Switches Handling
             FreekickDefence.LastSwitchDefender2Marker1 = FreekickDefence.SwitchDefender2Marker1;//New IO2014
             FreekickDefence.LastSwitchDefender2Marker2 = FreekickDefence.SwitchDefender2Marker2;//New IO2014 

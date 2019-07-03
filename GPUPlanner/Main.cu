@@ -63,7 +63,7 @@ extern void GPlannerScore(float* Robots, int RobotCount, float* Phi, float* Kdx,
 		//cout << "memcpyRobotsX: "<< error << "\n";
 		error = cudaMemcpy(DevRobots + maxRobotCount, Robots + maxRobotCount, RobotCount * sizeof(float), cudaMemcpyHostToDevice);
 		//cout << "memcpyRobotsY: "<< error << "\n";
-		GaussianKernel << <Grid, Block >> >(DevDataX, _RegionCount * _maxSampleCount, DevDataY, _RegionCount * _maxSampleCount, DevEachDataCount, _RegionCount, _RegionCount, DevRobots, 2 * maxRobotCount, RobotCount, _sigmaX, _sigmaY, _maxSampleCount, DevPhi, _maxSampleCount * _RegionCount * maxRobotCount, DevKdx, _maxSampleCount * _RegionCount * maxRobotCount, DevKdy, _maxSampleCount * _RegionCount * maxRobotCount);
+		GaussianKernel << <Grid, Block >> >(DevDataX, _RegionCount * _maxSampleCount, DevDataY, _RegionCount * _maxSampleCount, DevEachDataCount, _RegionCount, _RegionCount, DevRobots, maxRobotCount, RobotCount, _sigmaX, _sigmaY, _maxSampleCount, DevPhi, _maxSampleCount * _RegionCount * maxRobotCount, DevKdx, _maxSampleCount * _RegionCount * maxRobotCount, DevKdy, _maxSampleCount * _RegionCount * maxRobotCount);
 		//error = cudaGetLastError();
 		//cout << "GaussianKernel: "<< error << "\n";
 		error = cudaMemcpy(Phi, DevPhi, RobotCount *_RegionCount * _maxSampleCount * sizeof(float), cudaMemcpyDeviceToHost);
@@ -156,9 +156,9 @@ __global__ void GaussianKernel(float* DataX, int DataXLen0, float* DataY, int Da
 	{
 		float num = DataX[(x2 * maxCount + y)];
 		float num2 = DataY[(x2 * maxCount + y)];
-		float num3 = expf(-(opps[(x)] - num) * (opps[(x)] - num) / sigmax - (opps[(x + 6)] - num2) * (opps[(x + 6)] - num2) / sigmay);
+		float num3 = expf(-(opps[(x)] - num) * (opps[(x)] - num) / sigmax - (opps[(x + oppsLen0)] - num2) * (opps[(x + oppsLen0)] - num2) / sigmay);
 		DevKdx[(x * RegionCount * maxCount + x2 * maxCount + y)] = -2 * ((opps[(x)] - num) / sigmax) * num3;
-		DevKdy[(x * RegionCount * maxCount + x2 * maxCount + y)] = -2 * ((opps[(x + 6)] - num2) / sigmay) * num3;
+		DevKdy[(x * RegionCount * maxCount + x2 * maxCount + y)] = -2 * ((opps[(x + oppsLen0)] - num2) / sigmay) * num3;
 		DevPhi[(x * RegionCount * maxCount + x2 * maxCount + y)] = num3;
 	}
 }
