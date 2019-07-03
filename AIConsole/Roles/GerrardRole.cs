@@ -109,13 +109,20 @@ namespace MRL.SSL.AIConsole.Roles
                 }
                 var a = minDistId;
                 target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
-                if (st1ID.HasValue)
+                if (st2ID.HasValue)
                 {
                     Position2D st2 = Model.OurRobots[st2ID.Value].Location;
                     v = target - Model.OurRobots[st2ID.Value].Location;
-                    if (target.X < st2.X - 0.25)
+                    if (target.X > st2.X - 0.25)
                     {
-                        target = new Position2D( st2.X - 0.25 , Model.OurRobots[robotID].Location.Y);
+                        if (Model.Opponents[minDistId].Location.Y > 0)
+                        {
+                            target = new Position2D(st2.X - 0.25, Model.OurRobots[robotID].Location.Y);
+                        }
+                        else if (Model.Opponents[minDistId].Location.Y < 0)
+                        {
+                            target = new Position2D(st2.X - 0.25, Model.OurRobots[robotID].Location.Y);
+                        }
                     }
                 }
 
