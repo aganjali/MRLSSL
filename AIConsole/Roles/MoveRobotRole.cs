@@ -49,12 +49,12 @@ namespace MRL.SSL.AIConsole.Roles
                 new Pen(Color.LemonChiffon, 0.01f)));
 
                 Planner.Add(RobotID, RobotComponentsController.Target, (RobotComponentsController.Target - Last_Target).AngleInDegrees, PathType.UnSafe, true, true, true, true, true, new List<Obstacle>() {
-                    //new Obstacle()
-                    //{
-                    //    State = new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0),
-                    //    R = new Vector2D(2, 4),
-                    //    Type = ObstacleType.Rectangle
-                    //}
+                    new Obstacle()
+                    {
+                        State = new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0),
+                        R = new Vector2D(2, 4),
+                        Type = ObstacleType.Rectangle
+                    }
                 });
                 Planner.AddKick(RobotID, true);
                 return new SingleWirelessCommand();

@@ -67,7 +67,7 @@ namespace MRL.SSL.AIConsole.Plays.TestPlays
             //{
 
             //}
-
+          //  FreekickDefence.CalculateAvoiderTargets(engine, Model, out );
 
              if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, RobotID, typeof(FreeKickAttackerRole)))
                 Functions[RobotID] = (eng, wmd) => GetRole<FreeKickAttackerRole>(RobotID).Perform(engine,Model,RobotID);

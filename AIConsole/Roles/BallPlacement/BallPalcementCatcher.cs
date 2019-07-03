@@ -29,9 +29,9 @@ namespace MRL.SSL.AIConsole.Roles
         }
         const double behindBallTresh = 0.2;
         const double eatBallTresh = 0.07;
-        const double finishTresh = 0.4;
+        const double finishTresh = 0.7;
 
-        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID,int OtherRobot,int Mode)
+        public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, int OtherRobot, int Mode)
         {
             GetBallSkill activeSkill = new GetBallSkill();
             DrawingObjects.AddObject(new StringDraw("CurrentState= " + (states)CurrentState, "bpcatcher_state", Model.OurRobots[RobotID].Location + new Vector2D(1, 1)));
@@ -39,7 +39,7 @@ namespace MRL.SSL.AIConsole.Roles
             if (CurrentState == (int)states.pass)
             {
 
-                if ((Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 0.20 && Model.BallState.Speed.Size > 0.5)
+                if ((Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location) < 1 && Model.BallState.Speed.Size > 0.5)
                     /* && Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.6 */|| Model.BallState.Speed.Size > 1)
                 {
 
@@ -63,33 +63,59 @@ namespace MRL.SSL.AIConsole.Roles
                 //Vector2D vec1 = StaticVariables.ballPlacementPos - Model.OurRobots[myOtherID].Location;
                 //target = (StaticVariables.ballPlacementPos + vec1.GetNormalizeToCopy(0.09));
                 //angle = (Model.BallState.Location - StaticVariables.ballPlacementPos).AngleInDegrees;
-                Vector2D vec1 = StaticVariables.ballPlacementPos - Model.BallState.Location;
-                target = StaticVariables.ballPlacementPos + vec1.GetNormalizeToCopy(0.15);
-                angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                 avoidBall = false;
                 avoidRobot = false;
-                if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
+                if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) >= 0.1)
                 {
-                    Planner.Add(RobotID, Model.OurRobots[RobotID]);
-                    return;
+
+                    Vector2D vec1 = StaticVariables.ballPlacementPos - Model.BallState.Location;
+                    target = StaticVariables.ballPlacementPos + vec1.GetNormalizeToCopy(0.15);
+                    angle = (Model.OurRobots[OtherRobot].Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                 }
+
+                //Planner.SetParameter(RobotID, 0.8);
+                //Planner.Add(RobotID, target, angle,);
+                //return;
+
             }
             else if (CurrentState == (int)states.finish)
             {
-                if (Model.BallConfidenc<0.5)
+                if (Model.BallConfidenc < 0.5)
                 {
                     Vector2D vec2 = (Model.OurRobots[RobotID].Location - StaticVariables.ballPlacementPos);
-                    target = StaticVariables.ballPlacementPos + vec2.GetNormalizeToCopy(0.6);
+                    target = StaticVariables.ballPlacementPos + vec2.GetNormalizeToCopy(finishTresh);
                     angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                 }
-                else if (Model.BallConfidenc>=0.5)
+                else if (Model.BallConfidenc >= 0.5)
                 {
                     Vector2D vec2 = (Model.OurRobots[RobotID].Location - Model.BallState.Location);
-                    target = Model.BallState.Location + vec2.GetNormalizeToCopy(0.6);
+                    target = Model.BallState.Location + vec2.GetNormalizeToCopy(finishTresh);
                     angle = (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees;
                 }
-               
-               
+                if (!GameParameters.IsInField(target, -RobotParameters.OurRobotParams.Diameter))
+                {
+                     Position2D TempTarget = new Position2D();
+                    List<Position2D> poses = new List<Position2D>();
+                    for (double i = -Math.PI; i < Math.PI; i += Math.PI / 2)
+                    {
+                        Vector2D extendVec = Vector2D.FromAngleSize(i, 0.5);
+                        poses.Add(TempTarget + extendVec);
+                    }
+                    foreach (var item in poses)
+                    {
+                        if (Model.OurRobots.Where(o => o.Value.Location.DistanceFrom(item) < 0.12).ToList().Count < 1
+                            && Model.Opponents.Where(o => o.Value.Location.DistanceFrom(item) < 0.12).ToList().Count < 1)
+                        {
+                            TempTarget = item;
+                            break;
+                        }
+                    }
+                    TempTarget = Model.BallState.Location + (Model.BallState.Location - TempTarget).GetNormalizeToCopy(0.1);
+                    GetSkill<GetBallSkill>().SetAvoidDangerZone(false, false);
+                    GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, TempTarget, false, TempTarget.DistanceFrom(Model.BallState.Location), true);
+                    return;
+                }
+
                 DrawingObjects.AddObject(new Circle(target, 0.1, new Pen(Color.Blue, 0.01f)), "cvi");
                 // DrawingObjects.AddObject(new Line(StaticVariables.ballPlacementPos, Model.BallState.Location, new Pen(Color.Blue)), "cwvi");
 
@@ -104,8 +130,8 @@ namespace MRL.SSL.AIConsole.Roles
 
             }
             //DrawingObjects.AddObject(new Line(StaticVariables.ballPlacementPos, target, new Pen(Color.Red, 0.02f)), "jdv");
-
-            Planner.SetParameter(RobotID, 0.8);
+            //Planner.ChangeDefaulteParams(RobotID, false);
+            //Planner.SetParameter(RobotID, 0.8);
             Planner.Add(RobotID, target, angle, PathType.UnSafe, avoidBall, avoidRobot, false, false, false);
         }
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
@@ -223,7 +249,7 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     CurrentState = (int)states.pass;
                 }
-                else if (Model.BallConfidenc > 0.8 && Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) >= 0.1)
+                else if (Model.BallConfidenc > 0.8 && Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) >= 0.15)
                 {
                     CurrentState = (int)states.waitForBall;
                 }
@@ -247,12 +273,12 @@ namespace MRL.SSL.AIConsole.Roles
         enum states
         {
             //ReachBehindBall,
-            pass,
-            positioning,
-            waitForBall,
+            pass =1,
+            positioning=2,
+            waitForBall=3,
             //eatBall,
             //moveBall,
-            finish
+            finish = 0
         }
 
         public void Reset()

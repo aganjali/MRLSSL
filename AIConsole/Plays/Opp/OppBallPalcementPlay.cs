@@ -34,6 +34,7 @@ namespace MRL.SSL.AIConsole.Plays
         Vector2D vec1 = new Vector2D();
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
+            return false;
             return engine.Status == GameDefinitions.GameStatus.BallPlace_Opponent;
         }
 
@@ -358,6 +359,8 @@ namespace MRL.SSL.AIConsole.Plays
         public override void ResetPlay(WorldModel Model, GameStrategyEngine engine)
         {
             target = new Position2D();
+            PreviouslyAssignedRoles.Clear();
+
         }
     }
 }

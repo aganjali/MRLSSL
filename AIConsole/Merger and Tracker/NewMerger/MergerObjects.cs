@@ -323,7 +323,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                     float dist = (float)last_ball_loc.DistanceFrom(new Position2D(b.x, b.y));
                     if (dist < min_dist && dist < max_dist)
                     {
-                        if (GameParameters.IsInField(Vision2AI(new Position2D(b.x, b.y), isReverse), 0.05))
+                        if (GameParameters.IsInField(Vision2AI(new Position2D(b.x, b.y), isReverse), 0.3))
                         {
                             closest = b;
                             min_dist = dist;

@@ -23,6 +23,7 @@ namespace MRL.SSL.AIConsole.Roles
         public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID)
         {
             int angle = 180;
+
             Position2D target = CalculateTarget(Model, robotID);
             Planner.Add(robotID, target, angle, PathType.UnSafe, false, true, true, true, false);
 
@@ -57,22 +58,23 @@ namespace MRL.SSL.AIConsole.Roles
         {
             int? st1ID = FreekickDefence.Static1ID;
             int? st2ID = FreekickDefence.Static2ID;
-            if (st1ID.HasValue && st2ID.HasValue)
+            //if (Model.OurRobots[st1ID.Value].Location.X > 5 || Model.OurRobots[st2ID.Value].Location.X > 5)
+            //{
+            if (st1ID.HasValue && st2ID.HasValue && (Model.OurRobots[st1ID.Value].Location.X > 5 || Model.OurRobots[st2ID.Value].Location.X > 5))
             {
-                if (Model.OurRobots[st1ID.Value].Location.X > 5 || Model.OurRobots[st2ID.Value].Location.X > 5)
-                {
-                    CurrentState = (int)PlayMode.SingleDefender;
-                    tempState = CurrentState;
-                }
+
+                CurrentState = (int)PlayMode.SingleDefender;
+                tempState = CurrentState;
+
             }
 
-            else if (Model.BallState.Location.X > 0.1 && CurrentState == (int)PlayMode.Attack)
+            else if (Model.BallState.Location.X > 0.1 && (CurrentState == (int)PlayMode.Defence || CurrentState == (int)PlayMode.SingleDefender))
             {
                 CurrentState = (int)PlayMode.Defence;
                 tempState = CurrentState;
 
             }
-            else if (Model.BallState.Location.X < -0.1 && CurrentState == (int)PlayMode.Defence)
+            else if (Model.BallState.Location.X < -0.1 &&( CurrentState == (int)PlayMode.Defence || CurrentState == (int)PlayMode.SingleDefender))
             {
                 CurrentState = (int)PlayMode.Attack;
                 tempState = CurrentState;
@@ -95,10 +97,10 @@ namespace MRL.SSL.AIConsole.Roles
             if (CurrentState == (int)PlayMode.SingleDefender)
             {
 
-                Dictionary<int, SingleObjectState> Opps = Model.Opponents.Where(o => o.Value.Location.X > 0).ToDictionary(o => o.Key, o => o.Value);
+                Dictionary<int, SingleObjectState> Opps = Model.Opponents.Where(o => o.Value.Location.X > -0.5).ToDictionary(o => o.Key, o => o.Value);
                 Dictionary<int, double> oppsDist = new Dictionary<int, double>();
                 double minDistRobot = double.MaxValue;
-                int minDistId = 0;
+                int? minDistId = null;
                 foreach (var item in Opps)
                 {
                     if (item.Value.Location.DistanceFrom(GameParameters.OurGoalCenter) < minDistRobot)
@@ -108,23 +110,33 @@ namespace MRL.SSL.AIConsole.Roles
                     }
                 }
                 var a = minDistId;
-                target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
-                if (st2ID.HasValue)
+                if (minDistId.HasValue)
                 {
-                    Position2D st2 = Model.OurRobots[st2ID.Value].Location;
-                    v = target - Model.OurRobots[st2ID.Value].Location;
-                    if (target.X > st2.X - 0.25)
+                    if (Opps.Count > 0)
                     {
-                        if (Model.Opponents[minDistId].Location.Y > 0)
+                        Position2D st2 = Model.OurRobots[st2ID.Value].Location;
+                        v = target - Model.OurRobots[st2ID.Value].Location;
+                        if (target.X > st2.X - 0.25)
                         {
-                            target = new Position2D(st2.X - 0.25, Model.OurRobots[robotID].Location.Y);
-                        }
-                        else if (Model.Opponents[minDistId].Location.Y < 0)
-                        {
-                            target = new Position2D(st2.X - 0.25, Model.OurRobots[robotID].Location.Y);
+                            if (Model.Opponents[minDistId.Value].Location.Y > 0)
+                            {
+                                target = new Position2D(st2.X - 0.25, Model.OurRobots[robotID].Location.Y);
+                            }
+                            else if (Model.Opponents[minDistId.Value].Location.Y < 0)
+                            {
+                                target = new Position2D(st2.X - 0.25, Model.OurRobots[robotID].Location.Y);
+                            }
                         }
                     }
+                    target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId.Value].Location);
+
                 }
+                else
+                {
+                    target = GameParameters.OurGoalCenter.Extend(-1.7, 0);
+                   //CurrentState == (int)PlayMode.Defence
+                }
+
 
 
             }

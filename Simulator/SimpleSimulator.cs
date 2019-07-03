@@ -216,7 +216,7 @@ namespace Simulator
                 }
                 
 
-                while ((elapsed = sw.ElapsedMilliseconds) < 14) ;
+                while ((elapsed = sw.ElapsedMilliseconds) < StaticVariables.FRAME_PERIOD * 1000) ;
                 
                 timeCapture += elapsed;
 

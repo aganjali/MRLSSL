@@ -11,6 +11,7 @@ using System.IO;
 using System.Xml;
 using MRL.SSL.Planning.GamePlanner;
 using MRL.SSL.Planning.GamePlanner.Types;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Engine
 {
@@ -3783,7 +3784,104 @@ namespace MRL.SSL.AIConsole.Engine
         public static Dictionary<Type, Position2D> PreviousPositions = new Dictionary<Type, Position2D>();
         public static bool BallIsMovedStrategy = false;
 
+        public static List<Position2D> CalculateAvoiderTargets(GameStrategyEngine engine, WorldModel Model, out Obstacle obstacle, double avoidDist = 0.7)
+        {
+            List<Position2D> ret = new List<Position2D>();
+            Position2D BallPlacementPos = StaticVariables.ballPlacementPos;
+            Position2D ballLoc = Model.BallState.Location;
 
+            Line mainAvoidLine = new Line(BallPlacementPos, ballLoc);
+            Vector2D avoidVec = mainAvoidLine.Head - mainAvoidLine.Tail;
+            Line extendedAvoidLine = new Line(mainAvoidLine.Head + avoidVec.GetNormalizeToCopy(avoidDist), mainAvoidLine.Tail - avoidVec.GetNormalizeToCopy(avoidDist));
+            Vector2D avoidPrepL = Vector2D.FromAngleSize(avoidVec.AngleInRadians + Math.PI / 2, avoidDist);
+            Vector2D avoidPrepR = Vector2D.FromAngleSize(avoidVec.AngleInRadians - Math.PI / 2, avoidDist);
+            List<Line> avoidBounds = new List<Line>();
+            avoidBounds.Add(new Line(extendedAvoidLine.Head + avoidPrepL, extendedAvoidLine.Tail + avoidPrepL, new Pen(Color.AliceBlue, 0.01f)));
+            avoidBounds.Add(new Line(extendedAvoidLine.Head + avoidPrepR, extendedAvoidLine.Tail + avoidPrepR, new Pen(Color.AliceBlue, 0.01f)));
+            avoidBounds.Add(new Line(avoidBounds[1].Head, avoidBounds[0].Head, new Pen(Color.AliceBlue, 0.01f)));
+            avoidBounds.Add(new Line(avoidBounds[1].Tail, avoidBounds[0].Tail, new Pen(Color.AliceBlue, 0.01f)));
+
+            if (GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight - BallPlacementPos.X >= avoidDist
+                && GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight - ballLoc.X >= avoidDist)
+            {
+                //new Obstacle()
+                //{
+                //    State = new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0),
+                //    R = new Vector2D(2, 4),
+                //    Type = ObstacleType.Rectangle
+                //};
+
+                Position2D extendedPos = GameParameters.OurGoalCenter.Extend(-(GameParameters.DefenceAreaHeight + RobotParameters.OurRobotParams.Diameter), -GameParameters.DefenceAreaWidth / 2);
+                for (int i = 0; i < 7; i++)
+                {
+                    ret.Add(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)));
+                    //DrawingObjects.AddObject(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)), "position" + i.ToString());
+                }
+            }
+            else
+            {
+               
+                bool hasIntersect = false;
+                int c = 0;
+                foreach (var item in avoidBounds)
+                {
+                    DrawingObjects.AddObject(item, "lineavoid" + c++);
+                    if (GameParameters.LineIntersectWithOurDangerZone(item).Count > 0)
+                    {
+                        hasIntersect = true;
+                        break;
+                    }
+                }
+                if (!hasIntersect)
+                {
+                    //GameParameters.LineIntersectWithOurDangerZone(new Line)
+                    Position2D extendedPos = GameParameters.OurGoalCenter.Extend(-(GameParameters.DefenceAreaHeight / 2 + RobotParameters.OurRobotParams.Diameter), -GameParameters.DefenceAreaWidth / 2.5);
+                    for (int i = 0; i < 7; i++)
+                    {
+                        ret.Add(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.15)));
+                        //DrawingObjects.AddObject(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)), "position" + i.ToString());
+                    }
+                }
+                else
+                {
+                    Line farBound = null;
+                    double minDist = double.MaxValue;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        var bound = avoidBounds[i];
+                        var d = bound.Distance(Position2D.Zero);
+                        if (d < minDist)
+                        {
+                            minDist = d;
+                            farBound = bound;
+                        }
+                    }
+                    var prep = farBound.PerpenducilarLineToPoint(Position2D.Zero).IntersectWithLine(farBound);
+                    if (!prep.HasValue)
+                        prep = Position2D.Zero;
+                    Vector2D v = (Position2D.Zero - prep.Value).GetNormalizeToCopy(0.2);
+                    Position2D extendedPos = farBound.Head + v;
+                    for (int i = 0; i < 7; i++)
+                    {
+                        extendedPos = extendedPos + (farBound.Tail - farBound.Head).GetNormalizeToCopy(0.3);
+                        ret.Add(extendedPos);
+                        //DrawingObjects.AddObject(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)), "position" + i.ToString());
+                    }
+                }
+            }
+            Position2D center = Position2D.Interpolate(StaticVariables.ballPlacementPos, Model.BallState.Location, 0.5);
+            Vector2D r = avoidBounds[0].Head - center;
+            r.X = Math.Abs(r.X);
+            r.Y = Math.Abs(r.Y);
+
+            obstacle = new Obstacle()
+            {
+                State = new SingleObjectState(center, Vector2D.Zero, 0),
+                R = r,
+                Type = ObstacleType.Rectangle
+            };
+            return ret;
+        }
 
         public static List<DefenceInfo> Match(GameStrategyEngine engine, WorldModel Model, List<DefenderCommand> Commands, bool OverLapIFirstDefender)
         {
@@ -6302,6 +6400,7 @@ namespace MRL.SSL.AIConsole.Engine
 
         static bool incomningNear = false;
         private static double extendStatticDefenceTarget = 0;
+       
 
         private static bool BallKickedToGoal(WorldModel Model)
         {

@@ -7,14 +7,14 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.AIConsole.Roles;
 using MRL.SSL.GameDefinitions;
 using System.Drawing;
-
+using MRL.SSL.Planning.MotionPlanner;
 namespace MRL.SSL.AIConsole.Plays.Opp
 {
     class OppBallPlacePlay : PlayBase
     {
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
-            return false;
+            //return false;
             return Status == GameDefinitions.GameStatus.BallPlace_Opponent;
         }
 
@@ -22,32 +22,42 @@ namespace MRL.SSL.AIConsole.Plays.Opp
         {
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
+            if (Model.GoalieID.HasValue)
+            {
+                //Planner.Add();
 
-            DrawingObjects.AddObject(new Circle(StaticVariables.ballPlacementPos, 0.04, new Pen(Color.Orange, 0.01f)), "ballcircle");
-            DrawingObjects.AddObject(new Circle(StaticVariables.ballPlacementPos, 0.5, new Pen(Color.GreenYellow, 0.01f), true, 0.1f, false), "ballcigfdsrcle");
+            }
+            
+            PreviouslyAssignedRoles = CurrentlyAssignedRoles;
 
-            NormalDefenceAssigner def = new Engine.NormalDefenceAssigner();
-            Dictionary<RoleBase, Position2D?> Positions = new Dictionary<RoleBase, Position2D?>();
-            Dictionary<RoleBase, double> Angles = new Dictionary<RoleBase, double>();
-            double d, d2;
-            RoleBase rt;
-            List<RoleInfo> roles = new List<RoleInfo>();
+            #region Matcher
+            RoleBase r;
+            roles = new List<RoleInfo>();
 
-            def.Assign(engine, Model, out Positions, out Angles, false, false, false, false);
-            rt = typeof(DefenderNormalRole1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(rt, 1, 0));
-            rt = typeof(DefenderNormalRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(rt, 1, 0));
+            r = typeof(AvoiderRole1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
+
+            r = typeof(AvoiderRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
+
+            r = typeof(AvoiderRole3).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
+
+            r = typeof(AvoiderRole4).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
+
+            r = typeof(AvoiderRole5).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
+
+            r = typeof(AvoiderRole6).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
+
+            r = typeof(AvoiderRole7).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
 
 
-            rt = typeof(StopRole1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(rt, 1, 0));
 
-            rt = typeof(StopRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(rt, 1, 0));
 
-            rt = typeof(StopRole3).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(rt, 1, 0));
 
             Dictionary<int, RoleBase> matched;
 
@@ -56,69 +66,71 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             else
                 matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.ToList(), roles, PreviouslyAssignedRoles);
 
-            int? Defender1ID = null;
-
-            if (matched.Any(w => w.Value.GetType() == typeof(DefenderNormalRole1)))
-                Defender1ID = matched.Where(w => w.Value.GetType() == typeof(DefenderNormalRole1)).First().Key;
-
-            int? Defender2ID = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(DefenderNormalRole2)))
-                Defender2ID = matched.Where(w => w.Value.GetType() == typeof(DefenderNormalRole2)).First().Key;
-
-            int? stop1 = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(StopRole1)))
-                stop1 = matched.Where(w => w.Value.GetType() == typeof(StopRole1)).First().Key;
-
-            int? stop2 = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(StopRole2)))
-                stop2 = matched.Where(w => w.Value.GetType() == typeof(StopRole2)).First().Key;
-
-            int? stop3 = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(StopRole3)))
-                stop3 = matched.Where(w => w.Value.GetType() == typeof(StopRole3)).First().Key;
+            int? goalie = Model.GoalieID;
 
 
-            Position2D GoaliPos = new Position2D();
-            double gteta = 0;
-            if (Positions.Any(w => w.Key.GetType() == typeof(GoalieNormalRole)))
-                GoaliPos = Positions.Where(w => w.Key.GetType() == typeof(GoalieNormalRole)).First().Value.Value;
-            if (Angles.Any(w => w.Key.GetType() == typeof(GoalieNormalRole)))
-                gteta = Angles.Where(w => w.Key.GetType() == typeof(GoalieNormalRole)).First().Value;
+            int? AvoiderRole1Id = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(AvoiderRole1)))
+                AvoiderRole1Id = matched.Where(w => w.Value.GetType() == typeof(AvoiderRole1)).First().Key;
 
-            Position2D Def1Pos = new Position2D();
-            double d1teta = 0;
-            if (Positions.Any(w => w.Key.GetType() == typeof(DefenderNormalRole1)))
-                Def1Pos = Positions.Where(w => w.Key.GetType() == typeof(DefenderNormalRole1)).First().Value.Value;
-            if (Angles.Any(w => w.Key.GetType() == typeof(DefenderNormalRole1)))
-                d1teta = Angles.Where(w => w.Key.GetType() == typeof(DefenderNormalRole1)).First().Value;
+            int? AvoiderRole2Id = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(AvoiderRole2)))
+                AvoiderRole2Id = matched.Where(w => w.Value.GetType() == typeof(AvoiderRole2)).First().Key;
 
-            Position2D Def2Pos = new Position2D();
-            double d2teta = 0;
-            if (Positions.Any(w => w.Key.GetType() == typeof(DefenderNormalRole2)))
-                Def2Pos = Positions.Where(w => w.Key.GetType() == typeof(DefenderNormalRole2)).First().Value.Value;
-            if (Angles.Any(w => w.Key.GetType() == typeof(DefenderNormalRole2)))
-                d2teta = Angles.Where(w => w.Key.GetType() == typeof(DefenderNormalRole2)).First().Value;
+            int? AvoiderRole3Id = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(AvoiderRole3)))
+                AvoiderRole3Id = matched.Where(w => w.Value.GetType() == typeof(AvoiderRole3)).First().Key;
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(GoalieNormalRole)))
-                Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<GoalieNormalRole>(Model.GoalieID.Value).RunStop(eng, wmd, Model.GoalieID.Value, GoaliPos, gteta);
+            int? AvoiderRole4Id = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(AvoiderRole4)))
+                AvoiderRole4Id = matched.Where(w => w.Value.GetType() == typeof(AvoiderRole4)).First().Key;
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender1ID, typeof(DefenderNormalRole1)))
-                Functions[Defender1ID.Value] = (eng, wmd) => GetRole<DefenderNormalRole1>(Defender1ID.Value).RunStop(eng, wmd, Defender1ID.Value, Def1Pos, d1teta);
+            int? AvoiderRole5Id = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(AvoiderRole5)))
+                AvoiderRole5Id = matched.Where(w => w.Value.GetType() == typeof(AvoiderRole5)).First().Key;
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Defender2ID, typeof(DefenderNormalRole2)))
-                Functions[Defender2ID.Value] = (eng, wmd) => GetRole<DefenderNormalRole2>(Defender2ID.Value).RunStop(eng, wmd, Defender2ID.Value, Def2Pos, d2teta);
+            int? AvoiderRole6Id = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(AvoiderRole6)))
+                AvoiderRole6Id = matched.Where(w => w.Value.GetType() == typeof(AvoiderRole6)).First().Key;
+
+            int? AvoiderRole7Id = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(AvoiderRole7)))
+                AvoiderRole7Id = matched.Where(w => w.Value.GetType() == typeof(AvoiderRole7)).First().Key;
 
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop1, typeof(StopRole1)))
-                Functions[stop1.Value] = (eng, wmd) => GetRole<StopRole1>(stop1.Value).RunRoleStop(eng, wmd, stop1.Value);
+            #endregion
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop2, typeof(StopRole2)))
-                Functions[stop2.Value] = (eng, wmd) => GetRole<StopRole2>(stop2.Value).RunRoleStop(eng, wmd, stop2.Value);
+            #region Assigner
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, goalie, typeof(AvoiderGoalieRole)))
+                Functions[goalie.Value] = (eng, wmd) => GetRole<AvoiderGoalieRole>(goalie.Value).perform(wmd, goalie.Value);
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop3, typeof(StopRole3)))
-                Functions[stop3.Value] = (eng, wmd) => GetRole<StopRole3>(stop3.Value).RunRoleStop(eng, wmd, stop3.Value);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AvoiderRole1Id, typeof(AvoiderRole1)))
+                Functions[AvoiderRole1Id.Value] = (eng, wmd) => GetRole<AvoiderRole1>(AvoiderRole1Id.Value).Perform(engine , Model , AvoiderRole1Id.Value);
 
-            PreviouslyAssignedRoles = CurrentlyAssignedRoles;
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AvoiderRole2Id, typeof(AvoiderRole2)))
+                Functions[AvoiderRole2Id.Value] = (eng, wmd) => GetRole<AvoiderRole2>(AvoiderRole2Id.Value).Perform(engine, Model, AvoiderRole2Id.Value);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AvoiderRole3Id, typeof(AvoiderRole3)))
+                Functions[AvoiderRole3Id.Value] = (eng, wmd) => GetRole<AvoiderRole3>(AvoiderRole3Id.Value).Perform(engine, Model, AvoiderRole3Id.Value);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AvoiderRole4Id, typeof(AvoiderRole4)))
+                Functions[AvoiderRole4Id.Value] = (eng, wmd) => GetRole<AvoiderRole4>(AvoiderRole4Id.Value).Perform(engine, Model, AvoiderRole4Id.Value);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AvoiderRole5Id, typeof(AvoiderRole5)))
+                Functions[AvoiderRole5Id.Value] = (eng, wmd) => GetRole<AvoiderRole5>(AvoiderRole5Id.Value).Perform(engine, Model, AvoiderRole5Id.Value);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AvoiderRole6Id, typeof(AvoiderRole6)))
+                Functions[AvoiderRole6Id.Value] = (eng, wmd) => GetRole<AvoiderRole6>(AvoiderRole6Id.Value).Perform(engine, Model, AvoiderRole6Id.Value);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AvoiderRole7Id, typeof(AvoiderRole7)))
+                Functions[AvoiderRole7Id.Value] = (eng, wmd) => GetRole<AvoiderRole7>(AvoiderRole7Id.Value).Perform(engine, Model, AvoiderRole7Id.Value);
+
+
+            DefenceTest.WeHaveGoalie = true;
+
+            #endregion
+
+
             return CurrentlyAssignedRoles;
         }
 
@@ -134,7 +146,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
         public override void ResetPlay(GameDefinitions.WorldModel Model, GameStrategyEngine engine)
         {
-
+            PreviouslyAssignedRoles.Clear();
         }
     }
 }
