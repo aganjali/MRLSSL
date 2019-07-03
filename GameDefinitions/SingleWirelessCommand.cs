@@ -30,37 +30,85 @@ namespace MRL.SSL.GameDefinitions
         public short Time;
         public int PacketID;
 
-  
-       //new direct lookup
-        private static KickSpeedCoeff[] kickCoeff = new KickSpeedCoeff[12] { 
-            new KickSpeedCoeff(5.684e+16,-3.598,231.9,1.202,38.49,1.239), //0
-            new KickSpeedCoeff(-3.689e+15,181.2,29.35,12.48,3.983,6.681), //1
-            new KickSpeedCoeff(7.066e+15,46.87,33.78,6.283,4.816,4.161), //2
-            new KickSpeedCoeff(7.066e+15,46.87,33.78,6.283,4.816,4.161), //3 same as 2
-            new KickSpeedCoeff(4.263e+15,68.02,2502,8.773,3.285,5.52),//4
+        //        robot0
 
-            new KickSpeedCoeff(0,384.8,17.14,18.44,0.7229,9.266), //5
-            new KickSpeedCoeff(472.5,16.25,14.59,3.171,5.935,3.228), //6
-            new KickSpeedCoeff(0,237.9,17.7,15.32,0.721,8.131), //7
-            new KickSpeedCoeff(0,237.9,17.7,15.32,0.721,8.131), //8 same as 8
-            new KickSpeedCoeff(0,237.9,17.7,15.32,0.721,8.131), //9 same as 8
-            new KickSpeedCoeff(1.062e+16,27.83,87.86,4.825,14.19,3.574),//(2.159e+016,165.3,29.09,9.053,3.902,5.161), //10
+        //      a1 = 198.1(143.4, 252.9)
+        //       b1 =        10.4  (8.442, 12.36)
+        //       c1 =       6.248  (5.2, 7.296)
+
+        //robot 1
+
+
+        //       a1 =       430.8  (-655.1, 1517)
+        //       b1 =       14.89  (-1.589, 31.38)
+        //       c1 =       8.132  (1.624, 14.64)
+
+
+        //robot 3
+
+        //       a1 =        2106  (-2.526e+04, 2.947e+04)
+        //       b1 =       23.68  (-54.63, 102)
+        //       c1 =       10.71  (-11.22, 32.63)
+
+        //robot 4
+
+        //       a1 =       162.3  (97.78, 226.8)
+        //       b1 =       8.988  (6.001, 11.97)
+        //       c1 =       5.266  (3.39, 7.142)
+
+        //robot 6
+
+        // 	a1 =         200  (59.5, 340.6)
+        //       b1 =       8.375  (3.489, 13.26)
+        //       c1 =       4.805  (1.568, 8.041)
+        //robot 7
+
+        //       a1 =         210  (132.8, 287.2)
+        //       b1 =       10.34  (7.75, 12.92)
+        //       c1 =       6.172  (4.781, 7.564)
+
+        //robot8:
+
+        //       a1 =         288  (-423.5, 999.5)
+        //       b1 =        11.5  (-4.97, 27.97)
+        //       c1 =       6.718  (-1.142, 14.58)
+
+        //robot 9:
+
+        //       a1 =        1356  (-8725, 1.144e+04)
+        //       b1 =       21.32  (-23.77, 66.41)
+        //       c1 =       10.03  (-3.513, 23.57)
+
+        //new direct lookup
+
+        private static KickSpeedCoeff[] kickCoeff = new KickSpeedCoeff[12] {
+            new KickSpeedCoeff(198.1,0,  10.4 ,0,6.248,1), //0
+            new KickSpeedCoeff( 430.8 ,0, 14.89,0,8.132,1), //1
+            new KickSpeedCoeff( 317.7 ,0,11.03,0, 6.153,1), //2
+            new KickSpeedCoeff(2106,0,23.68,0,10.71,1), //3 
+            new KickSpeedCoeff(162.3,0,8.988,0,5.266,1),//4
+            new KickSpeedCoeff(162.3,0,8.988,0,5.266,1), //5 same as 4
+            new KickSpeedCoeff( 200,0, 8.375,0,4.805,1), //6
+            new KickSpeedCoeff( 210, 0 , 10.34 , 0 ,6.172 , 1), //7
+            new KickSpeedCoeff(288 ,0 ,11.5 , 0 , 6.718,1), //8
+            new KickSpeedCoeff( 1356 , 0, 21.32,0,10.03 ,1), //9 
+            new KickSpeedCoeff(1356 , 0, 21.32,0,10.03 ,1),//10 same as 9
             new KickSpeedCoeff(/*146.2,0,11.91,0,7.035,1*/)};//11
 
 
-            //new KickSpeedCoeff(2.076e+16,54.17,97.08,5.231,15.64,3.823), //0
-            //new KickSpeedCoeff(8.208e+08,-1.812e+04,59.22,18.68,14.02,6.417), //1
-            //new KickSpeedCoeff(139.4,-49.48,6.854,5.44,4.099,2.566), //2
-            //new KickSpeedCoeff(1.092e+16,204.1,15.45,11.06,1.508,6.416), //3
-            //new KickSpeedCoeff(2.508e+15,180,10.61,9.191,0.7762,5.899), //4
-            //new KickSpeedCoeff(1.837e+16,103.3,72.87,6.674,11.46,4.648), //5
-            //new KickSpeedCoeff(246.8,4.313,13.34,5.142,7.847,0.2422), //6
-            //new KickSpeedCoeff(1.286e+16,161.9,22.11,10,2.558,6.121), //7
-            //new KickSpeedCoeff(89.27,-1.304,9.033,3.81,5.909,0.7313), //8
-            //new KickSpeedCoeff(244.3,21.38,10.23,3.215,4.691,2.689), //9
-            //new KickSpeedCoeff(6.504e+04,-6.921e+04,14.27,14.13,6.076,6.013), //10
-            //new KickSpeedCoeff(284.7,-21.43,12.97,6.011,7.851,1.935)};//11
-       
+        //new KickSpeedCoeff(2.076e+16,54.17,97.08,5.231,15.64,3.823), //0
+        //new KickSpeedCoeff(8.208e+08,-1.812e+04,59.22,18.68,14.02,6.417), //1
+        //new KickSpeedCoeff(139.4,-49.48,6.854,5.44,4.099,2.566), //2
+        //new KickSpeedCoeff(1.092e+16,204.1,15.45,11.06,1.508,6.416), //3
+        //new KickSpeedCoeff(2.508e+15,180,10.61,9.191,0.7762,5.899), //4
+        //new KickSpeedCoeff(1.837e+16,103.3,72.87,6.674,11.46,4.648), //5
+        //new KickSpeedCoeff(246.8,4.313,13.34,5.142,7.847,0.2422), //6
+        //new KickSpeedCoeff(1.286e+16,161.9,22.11,10,2.558,6.121), //7
+        //new KickSpeedCoeff(89.27,-1.304,9.033,3.81,5.909,0.7313), //8
+        //new KickSpeedCoeff(244.3,21.38,10.23,3.215,4.691,2.689), //9
+        //new KickSpeedCoeff(6.504e+04,-6.921e+04,14.27,14.13,6.076,6.013), //10
+        //new KickSpeedCoeff(284.7,-21.43,12.97,6.011,7.851,1.935)};//11
+
         public System.Drawing.Color Color
         {
             get
@@ -197,7 +245,7 @@ namespace MRL.SSL.GameDefinitions
                         _kickPower = kik;//* 0.75;
                         _kickPowerByte = (byte)_kickPower;
                     }
-                    else 
+                    else
                     {
                         _kickPower = 0;//* 0.75;
                         _kickPowerByte = (byte)_kickPower;

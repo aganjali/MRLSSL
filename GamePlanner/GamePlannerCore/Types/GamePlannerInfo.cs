@@ -567,10 +567,10 @@ namespace MRL.SSL.Planning.GamePlanner.Types
                 
             foreach (var passTarget in CenterofRegions)
             {
-                
+                DrawingObjects.AddObject(passTarget, passTarget.toString());
 
                 index++;
-                if (!GameParameters.IsInField(passTarget, -0.1) || GameParameters.IsInDangerousZone(passTarget, true, 0, out dist, out DistFromBorder))
+                if (!GameParameters.IsInField(passTarget, -0.1) || GameParameters.IsInDangerousZone(passTarget, true, 0.15, out dist, out DistFromBorder))
                 {
                     continue;
                 }
@@ -808,7 +808,7 @@ namespace MRL.SSL.Planning.GamePlanner.Types
             double[] scoresOt = new double[CenterofRegions.Count], scoresCr = new double[CenterofRegions.Count];
             foreach (var passTarget in CenterofRegions)
             {
-                //DrawingObjects.AddObject(passTarget, passTarget.toString());
+                DrawingObjects.AddObject(passTarget, passTarget.toString());
                 index++;
                 if (!GameParameters.IsInField(passTarget, -0.1) || GameParameters.IsInDangerousZone(passTarget, true, 0, out dist, out DistFromBorder))
                 {

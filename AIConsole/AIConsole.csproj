@@ -219,6 +219,7 @@
     <Compile Include="Roles\GoalieRole\NewStaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\StaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\VandersarGoalKeeperRole.cs" />
+    <Compile Include="Roles\Positionning\strategyPositioner1.cs" />
     <Compile Include="Roles\Stop\RotationalStopCover.cs" />
     <Compile Include="Roles\Stop\StopRole4.cs" />
     <Compile Include="Roles\Stop\StopRole5.cs" />

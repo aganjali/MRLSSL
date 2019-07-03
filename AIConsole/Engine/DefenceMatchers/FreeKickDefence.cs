@@ -4799,7 +4799,7 @@ namespace MRL.SSL.AIConsole.Engine
 
 
             double oppSpeed = state.Speed.Size;
-            double minDist = (GameParameters.OurGoalCenter - state.Location).Size;// GameParameters.SafeRadi(state, MarkerDefenceUtils.MinDistMarkMargin);
+            double minDist =  GameParameters.SafeRadi(state, MarkerDefenceUtils.MinDistMarkMargin);
 
             Position2D minimum = GameParameters.OurGoalCenter + (state.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(minDist);
             Position2D maximum = state.Location + (GameParameters.OurGoalCenter - state.Location).GetNormalizeToCopy(0.2);

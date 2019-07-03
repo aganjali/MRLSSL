@@ -11,12 +11,13 @@ using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Roles
 {
-    class FreeKickAttackerRole : RoleBase
+    class strategyPositioner1 : RoleBase
+
     {
 
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return Model.OurRobots[RobotID].Location.DistanceFrom(calculateTarget(engine,Model,RobotID));
+            return Model.OurRobots[RobotID].Location.DistanceFrom(calculateTarget(engine, Model, RobotID));
         }
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
@@ -26,7 +27,7 @@ namespace MRL.SSL.AIConsole.Roles
         public void Perform(GameStrategyEngine engine, WorldModel model, int robotID)
         {
             Position2D targetToGo = calculateTarget(engine, model, robotID);
-            Planner.Add(robotID,targetToGo,( model.BallState.Location - targetToGo).AngleInDegrees,PathType.UnSafe,true,true,true,true,false);
+            Planner.Add(robotID, targetToGo, (model.BallState.Location - targetToGo).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
         }
         public override bool Evaluate(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
@@ -37,7 +38,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             return RoleCategory.Active;
         }
-        public Position2D calculateTarget(GameStrategyEngine engine, WorldModel Model,int RobotID)
+        public Position2D calculateTarget(GameStrategyEngine engine, WorldModel Model, int RobotID)
         {
             Position2D target = new Position2D();
             List<Position2D> ballHistory = new List<Position2D>();
@@ -58,20 +59,20 @@ namespace MRL.SSL.AIConsole.Roles
                 //{
                 regionX = -.5;
                 //}
-                Position2D topLeft = new Position2D(regionX, GameParameters.OurRightCorner.Y);
+                Position2D topLeft = new Position2D(2, GameParameters.OurRightCorner.Y);
                 double passSpeed = 4, shootSpeed = Program.MaxKickSpeed;
-                int Rows =2, column = 4;
+                int Rows = 2, column = 4;
 
                 int sgn;
                 sgn = Math.Sign(NormalSharedState.CommonInfo.PassTarget.Y);
 
 
                 topLeft = new Position2D(regionX, sgn < 0 ? 0 : GameParameters.OurRightCorner.Y);
-                double width = (GameParameters.OurGoalCenter.X - 0.5 - 0.25);
-                double heigth = GameParameters.OurLeftCorner.Y + 4;
+                double width = 3;//(GameParameters.OurGoalCenter.X - 0.5 - 0.25);
+                double heigth = 2;//GameParameters.OurLeftCorner.Y + 4;
                 if (!Model.GoalieID.HasValue)
                     return Position2D.Zero;
-                poses =  engine.GameInfo.CalculatePassScore(Model, Model.GoalieID.Value, RobotID/*, attackerPos*/, topLeft, passSpeed, shootSpeed, width, heigth, Rows, column);
+                poses = engine.GameInfo.CalculatePassScore(Model, Model.GoalieID.Value, RobotID/*, attackerPos*/, topLeft, passSpeed, shootSpeed, width, heigth, Rows, column);
 
                 //double maxSc = double.MinValue;
                 //foreach (var item in poses)
@@ -82,7 +83,7 @@ namespace MRL.SSL.AIConsole.Roles
                 //        target = item.pos;
                 //    }
                 //}
-                target = poses[1].pos;
+                target = poses.Where(a => a.type == PassType.Catch).ToList().First().pos;
             }
             ballHistory.Add(Model.BallState.Location);
             target.DrawColor = Color.DarkGreen;
@@ -92,7 +93,8 @@ namespace MRL.SSL.AIConsole.Roles
         }
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return new List<RoleBase>() { new FreeKickAttackerRole() };
+            return new List<RoleBase>() { new strategyPositioner1() };
         }
     }
 }
+
