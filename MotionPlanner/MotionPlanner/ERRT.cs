@@ -218,10 +218,10 @@ namespace MRL.SSL.Planning.MotionPlanner
                 //        obs.ObstaclesList.Remove(item);
                 //}
                 SingleObjectState NearestState ;
-                if (!Failed)
+                //if (!Failed)
+                //    NearestState = new SingleObjectState(init);
+                //else
                     NearestState = new SingleObjectState(init);
-                else
-                    NearestState = new SingleObjectState(Path[1]);
                 //SingleObjectState fromGoalNearestState = new SingleObjectState(goal);
                 
                 if (!obs.Meet(init, goal, MotionPlannerParameters.RobotRadi , sumRemovalObs, true))
@@ -261,7 +261,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                         //    obs.Clear();
                         //    obs.AddObstacle(0, 0, 1, 0, null, null, StopBall);
                         //}
-                        if (!Failed)
+                        //if (!Failed)
                         {
                             //   tree.insert(d, init);
                             tree.Add(d, init);
@@ -271,7 +271,8 @@ namespace MRL.SSL.Planning.MotionPlanner
                         {
                             nodes2try++;
                             target = ChoosTarget(goal, WayPoints);
-                            if (tree.Count > 0)
+                            
+                            if (tree.Count > 0 && (!Failed || (Failed && nodes2try > 1))  )
                             {
                                 float[] d2 = { (float)target.Location.X, (float)target.Location.Y };
                                 //NearestState = tree.nearest(d2);
@@ -307,7 +308,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                         //    ParentState = NearestState
                         //};
                         //NearestState = sos;
-                        if (NearestState.Location.DistanceFrom(goal.Location) >= 0.1)
+                        if (obs.Meet(NearestState, goal, MotionPlannerParameters.RobotRadi, goalRemovalObs, true))
                             Failed = true;
                         else
                             Failed = false;

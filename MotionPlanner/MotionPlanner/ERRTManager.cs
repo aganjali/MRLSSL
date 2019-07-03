@@ -164,7 +164,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                         {
                             errts[i - Count].Failed = false;
                         }
-                        
+
                     }
                     else
                     {

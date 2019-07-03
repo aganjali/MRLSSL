@@ -68,7 +68,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             for (int i = 0; i < 4; i++)
             {
                 d = distance_seg_to_seg(N, T, c[i], c[(i + 1) % 4]);
-                if (d < obstacleRadi) return (true);
+                if (d < obstacleRadi + (useMargin ? margin : 0)) return (true);
             }
             return (Meet(new SingleObjectState(N, Vector2D.Zero, null), obstacleRadi, useMargin) || Meet(new SingleObjectState(T, Vector2D.Zero, null), obstacleRadi, useMargin));
         }

@@ -15,8 +15,8 @@ namespace MRL.SSL.Planning.MotionPlanner
         public static double DangerZoneH = GameParameters.DefenceAreaHeight;
         public static double DangerZoneW = GameParameters.DefenceAreaWidth + 0.01;
         
-        public static double LengthMargin = 0.2;
-        public static double WidthMargin = 0.2;
+        public static double LengthMargin = 0.05;
+        public static double WidthMargin = 0.05;
         public static double FieldLength = Math.Abs(GameParameters.OurGoalCenter.X - GameParameters.OppGoalCenter.X) + 2*LengthMargin;
         public static double FieldWidth = Math.Abs(GameParameters.OurLeftCorner.Y - GameParameters.OurRightCorner.Y) + 2*WidthMargin;
         public static double FieldWidth_H = FieldWidth / 2;
