@@ -30,69 +30,20 @@ namespace MRL.SSL.GameDefinitions
         public short Time;
         public int PacketID;
 
-        //        robot0
-
-        //      a1 = 198.1(143.4, 252.9)
-        //       b1 =        10.4  (8.442, 12.36)
-        //       c1 =       6.248  (5.2, 7.296)
-
-        //robot 1
-
-
-        //       a1 =       430.8  (-655.1, 1517)
-        //       b1 =       14.89  (-1.589, 31.38)
-        //       c1 =       8.132  (1.624, 14.64)
-
-
-        //robot 3
-
-        //       a1 =        2106  (-2.526e+04, 2.947e+04)
-        //       b1 =       23.68  (-54.63, 102)
-        //       c1 =       10.71  (-11.22, 32.63)
-
-        //robot 4
-
-        //       a1 =       162.3  (97.78, 226.8)
-        //       b1 =       8.988  (6.001, 11.97)
-        //       c1 =       5.266  (3.39, 7.142)
-
-        //robot 6
-
-        // 	a1 =         200  (59.5, 340.6)
-        //       b1 =       8.375  (3.489, 13.26)
-        //       c1 =       4.805  (1.568, 8.041)
-        //robot 7
-
-        //       a1 =         210  (132.8, 287.2)
-        //       b1 =       10.34  (7.75, 12.92)
-        //       c1 =       6.172  (4.781, 7.564)
-
-        //robot8:
-
-        //       a1 =         288  (-423.5, 999.5)
-        //       b1 =        11.5  (-4.97, 27.97)
-        //       c1 =       6.718  (-1.142, 14.58)
-
-        //robot 9:
-
-        //       a1 =        1356  (-8725, 1.144e+04)
-        //       b1 =       21.32  (-23.77, 66.41)
-        //       c1 =       10.03  (-3.513, 23.57)
-
         //new direct lookup
 
         private static KickSpeedCoeff[] kickCoeff = new KickSpeedCoeff[12] {
             new KickSpeedCoeff(198.1,0,  10.4 ,0,6.248,1), //0
             new KickSpeedCoeff( 430.8 ,0, 14.89,0,8.132,1), //1
-            new KickSpeedCoeff( 317.7 ,0,11.03,0, 6.153,1), //2
+            new KickSpeedCoeff( 271.4 ,0,9.664 ,0,5.365 ,1), //2
             new KickSpeedCoeff(2106,0,23.68,0,10.71,1), //3 
             new KickSpeedCoeff(162.3,0,8.988,0,5.266,1),//4
-            new KickSpeedCoeff(162.3,0,8.988,0,5.266,1), //5 same as 4
+            new KickSpeedCoeff( 327.7 ,0,12.95,0,7.196,1), //5
             new KickSpeedCoeff( 200,0, 8.375,0,4.805,1), //6
             new KickSpeedCoeff( 210, 0 , 10.34 , 0 ,6.172 , 1), //7
             new KickSpeedCoeff(288 ,0 ,11.5 , 0 , 6.718,1), //8
             new KickSpeedCoeff( 1356 , 0, 21.32,0,10.03 ,1), //9 
-            new KickSpeedCoeff(1356 , 0, 21.32,0,10.03 ,1),//10 same as 9
+            new KickSpeedCoeff( 276.5 , 0, 11.7,0,6.572 ,1),//10 
             new KickSpeedCoeff(/*146.2,0,11.91,0,7.035,1*/)};//11
 
 
