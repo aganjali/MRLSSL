@@ -3859,7 +3859,7 @@ namespace MRL.SSL.AIConsole.Engine
                     var prep = farBound.PerpenducilarLineToPoint(Position2D.Zero).IntersectWithLine(farBound);
                     if (!prep.HasValue)
                         prep = Position2D.Zero;
-                    Vector2D v = (Position2D.Zero - prep.Value).GetNormalizeToCopy(0.2);
+                    Vector2D v = (Position2D.Zero - prep.Value).GetNormalizeToCopy(0.5);
                     Position2D extendedPos = farBound.Head + v;
                     for (int i = 0; i < 7; i++)
                     {
