@@ -111,7 +111,7 @@ namespace MRL.SSL.AIConsole.Roles
                     if (pursueRobotID == RobotID && Model.OurRobots[RobotID].Location.DistanceFrom(inf2.DefenderPosition.Value) > .05)
                     {
                         TargetPos = SwimingFish(Model, WantedRobotID, pursueRobotID, inf2.DefenderPosition.Value, Math.Max(inf2.DefenderPosition.Value.DistanceFrom(inf1.DefenderPosition.Value), .2), out robotAvoidance);
-                        TargetPos = GameParameters.OurGoalCenter + (TargetPos - GameParameters.OurGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(TargetPos, Vector2D.Zero, 0f), RobotParameters.OurRobotParams.Diameter / 2 ));
+                        TargetPos = GameParameters.OurGoalCenter + (TargetPos - GameParameters.OurGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(TargetPos, Vector2D.Zero, 0f), RobotParameters.OurRobotParams.Diameter / 2 - 0.1));
 
                     }
                     else
