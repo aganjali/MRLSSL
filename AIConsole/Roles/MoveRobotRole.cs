@@ -48,7 +48,7 @@ namespace MRL.SSL.AIConsole.Roles
                 DrawingObjects.AddObject(new Line(Model.OurRobots[RobotID].Location, Model.OurRobots[RobotID].Location + Vector2D.FromAngleSize(Model.OurRobots[RobotID].Angle.Value * Math.PI / 180, 1),
                 new Pen(Color.LemonChiffon, 0.01f)));
 
-                Planner.Add(RobotID, RobotComponentsController.Target, (RobotComponentsController.Target - Last_Target).AngleInDegrees, PathType.UnSafe, true, true, true, true, false, new List<Obstacle>() {
+                Planner.Add(RobotID, RobotComponentsController.Target, (RobotComponentsController.Target - Last_Target).AngleInDegrees, PathType.UnSafe, true, true, true, true, true, new List<Obstacle>() {
                     //new Obstacle()
                     //{
                     //    State = new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0),

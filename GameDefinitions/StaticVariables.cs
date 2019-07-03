@@ -14,7 +14,7 @@ namespace MRL.SSL.GameDefinitions
         public static double BallPredictTime = 1.5;
         public static double RobotPredictTime = 0.03333333333333333333333333333333;
         public static double action_delay = 0.03;
-        public static float FRAME_RATE = 60.0f;
+        public static float FRAME_RATE = 73.0f;
         public static float FRAME_PERIOD = (1.0f / FRAME_RATE);
         public static double viewDelay = FRAME_PERIOD;// 0.01666666666666666666666666666667;
         public static double MaxPredictTime = 10;

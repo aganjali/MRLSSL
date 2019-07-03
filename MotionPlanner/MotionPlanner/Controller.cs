@@ -309,8 +309,8 @@ namespace MRL.SSL.Planning.MotionPlanner
             Vector2D V = new Vector2D();
             double outW = 0;
             #endregion
-            //if (RobotID == 5)
-            //    aTunner.Drawings(PIDType.X, 5);
+            if (RobotID == 0)
+                aTunner.Drawings(PIDType.X, RobotID);
             #region Accuercy
             if ((Math.Abs(dX) < TunningDistance && path.Count <= 2) || (path.Count > 2 && pathLength < _tunningDistance))
             {
