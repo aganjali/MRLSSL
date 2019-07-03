@@ -1418,7 +1418,7 @@ namespace MRL.SSL.AIConsole.Skills
             DefrentionalT = dt - LastDr;
             PID = IntegralT2 * kI + DefrentionalT * kd + dt * kP;
 
-            if (Math.Abs(PID - lastPIDangular) > AW / 60)
+            if (Math.Abs(PID - lastPIDangular) > AW / StaticVariables.FRAME_RATE)
                 PID = lastPIDangular + Math.Sign(PID - lastPIDangular) * AW / 60;
 
 

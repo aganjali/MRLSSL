@@ -225,7 +225,7 @@ namespace MRL.SSL.AIConsole.Roles
                 if (Model.OurRobots[RobotID].Location.DistanceFrom(initState) < 0.02)
                     counter3++;
 
-                if (halt || counter3 > 60)
+                if (halt || counter3 > StaticVariables.FRAME_RATE)
                 {
                     CurrentState = (int)LearnState.Stop;
                     counter3 = 0;

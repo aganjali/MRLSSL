@@ -112,7 +112,7 @@ namespace MRL.SSL.GameDefinitions
         {
             states = new List<SingleObjectState>();
         }
-        public static double FRAME_RATE = 60;
+        public static double FRAME_RATE = StaticVariables.FRAME_RATE;
         public static double FRAME_PERIOD = 1 / FRAME_RATE;
         /// <summary>
         /// Get Predicted Ball State In Specified Time

@@ -344,7 +344,7 @@ namespace MRL.SSL.Planning.MotionPlanner
     public static class PIDParameters
     {
         public const int MaxRobotID = 16, PIDModuleCount = 3;
-        static double kp = 7.9, ki = .05, kd = 0.01;
+        static double kp = 7.9, ki = .04, kd = 0.01;
         static PIDCoef[] coefs = new PIDCoef[MaxRobotID * PIDModuleCount];
         public sealed class CoefIndex
         {

@@ -996,7 +996,7 @@ namespace MRL.SSL.AIConsole.Skills
             double vy = (ballPlacement) ? 0.5 : 1.5;
             double accel = (ActiveParameters.KpTotalVyBack * (1 / (Math.Abs(pidBackY.Calculate(dX, 0)) + ActiveParameters.vyOffsetBack + ActiveParameters.KpxVyBack * Math.Abs(finalSpeed.X))) + Math.Max(ActiveParameters.KpyVyBack * (finalSpeed.Y), 0));
 
-            Vtemp = new Vector2D(pidout + ActiveParameters.KpxVxBack * finalSpeed.X, stat.Speed.Y - accel / 60.0);
+            Vtemp = new Vector2D(pidout + ActiveParameters.KpxVxBack * finalSpeed.X, stat.Speed.Y - accel / StaticVariables.FRAME_RATE);
 
             if (Debug)
             {
@@ -1163,7 +1163,7 @@ namespace MRL.SSL.AIConsole.Skills
             if (Debug)
                 CharterData.AddData("dX", -(dX));
             double pidout = -pidSideX.Calculate(dX + extX, 0);
-            MaxSpeed.Y = (ballPlacement)?00.5:3;
+            MaxSpeed.Y = (ballPlacement)?0.5:3;
             Vtemp = new Vector2D(pidout, Math.Min(Math.Abs(vy), MaxSpeed.Y) * Math.Sign(vy)); //todo: V OUT
 
             Vector2D p = new Vector2D(Target2GO.X + extX, Target2GO.Y + extY);

@@ -120,7 +120,7 @@ namespace MRL.SSL.AIConsole.Skills
                 {
                     Vector2D vec = new Vector2D();
                     vec = lastBallPos.Last() - Model.BallState.Location;
-                    finalPassVec += (counter / 2) * vec + counter / 2 * (Model.PredictedBall[1 / 60].Location - Model.BallState.Location);
+                    finalPassVec += (counter / 2) * vec + counter / 2 * (Model.PredictedBall[1 / StaticVariables.FRAME_RATE].Location - Model.BallState.Location);
                 }
             }
             finalPassVec = finalPassVec.GetNormalizeToCopy(2);

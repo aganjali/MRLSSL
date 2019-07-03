@@ -330,9 +330,9 @@ namespace MRL.SSL.AIConsole.Skills
             if (Model.OurRobots[RobotID].Speed.Size > (CutSpeed.Size))
                 A = -6;
             if (A > 0)
-                lastV += movingDirection.GetNormalizeToCopy(Math.Abs(A) / 60);
+                lastV += movingDirection.GetNormalizeToCopy(Math.Abs(A) / StaticVariables.FRAME_RATE);
             else
-                lastV -= movingDirection.GetNormalizeToCopy(Math.Abs(A) / 60);
+                lastV -= movingDirection.GetNormalizeToCopy(Math.Abs(A) / StaticVariables.FRAME_RATE);
 
             if ((CutSpeed - lastV).Size < 1)
                 lastV = CutSpeed;
@@ -374,8 +374,8 @@ namespace MRL.SSL.AIConsole.Skills
             DefrentionalT = dt - LastDr;
             PID = IntegralT2 * kI + DefrentionalT * kd + dt * kP;
 
-            if (Math.Abs(PID - lastPIDangular) > AW / 60)
-                PID = lastPIDangular + Math.Sign(PID - lastPIDangular) * AW / 60;
+            if (Math.Abs(PID - lastPIDangular) > AW / StaticVariables.FRAME_RATE)
+                PID = lastPIDangular + Math.Sign(PID - lastPIDangular) * AW / StaticVariables.FRAME_RATE;
 
 
             if (PID < -PID_Max)

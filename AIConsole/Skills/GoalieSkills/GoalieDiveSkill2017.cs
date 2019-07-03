@@ -151,8 +151,8 @@ namespace MRL.SSL.AIConsole.Skills.GoalieSkills
                     {
                         DrawingObjects.AddObject(new Circle(posToGoExtended, .25, new System.Drawing.Pen(Brushes.HotPink, .02f)), "4654464546645");
                         DrawingObjects.AddObject(new StringDraw("a:" + a.ToString(), new Position2D(4.7, 0)), "6546549844564");
-                        DrawingObjects.AddObject(new StringDraw("timeRobot:" + (timeR * 60).ToString(), new Position2D(4.8, 0)), "65546546464654");
-                        DrawingObjects.AddObject(new StringDraw("timeBall:" + (timeB * 60).ToString(), new Position2D(4.9, 0)), "3132131256465456");
+                        DrawingObjects.AddObject(new StringDraw("timeRobot:" + (timeR * StaticVariables.FRAME_RATE).ToString(), new Position2D(4.8, 0)), "65546546464654");
+                        DrawingObjects.AddObject(new StringDraw("timeBall:" + (timeB * StaticVariables.FRAME_RATE).ToString(), new Position2D(4.9, 0)), "3132131256465456");
                         DrawingObjects.AddObject(new StringDraw("Robot Speed:" + Model.OurRobots[RobotID].Speed.Size.ToString(), new Position2D(5, 0)), "654654646546");
                         DrawingObjects.AddObject(new StringDraw("Ball Speed :" + Model.BallState.Speed.Size.ToString(), new Position2D(5.1, 0)), "312321356465465456");
 

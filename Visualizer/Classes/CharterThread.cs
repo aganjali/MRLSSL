@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MRL.SSL.GameDefinitions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,7 +45,7 @@ namespace MRL.SSL.Visualizer.Classes
             {
                 if(ShowData!=null)
                     ShowData(null);
-                Thread.Sleep(16 + Delay);
+                Thread.Sleep((int)(StaticVariables.FRAME_PERIOD * 1000) + Delay);
             }
         }
 

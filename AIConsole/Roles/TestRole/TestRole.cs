@@ -17,7 +17,7 @@ namespace MRL.SSL.AIConsole.Roles
         const bool debug = true;
         Random rand = new Random();
         const double FieldLength = 5, FieldWidth = 3;
-        const int haltCount = 60;
+        static int haltCount = (int)StaticVariables.FRAME_RATE;
         bool first = true;
         int LCounter = 0;
         Position2D center = new Position2D(0, 0);

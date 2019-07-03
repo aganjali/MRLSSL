@@ -56,7 +56,7 @@ namespace Visualizer.Windows
         List<LogCharterData> lcd;
         LoggerDrawingObject MainLdo;
 
-        int delay = 16;
+        int delay = (int)(StaticVariables.FRAME_RATE * 1000);
 
         enum State
         {

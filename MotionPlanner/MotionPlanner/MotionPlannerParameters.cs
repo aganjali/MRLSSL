@@ -24,5 +24,6 @@ namespace MRL.SSL.Planning.MotionPlanner
         public static double kSpeedRobot = 0;
         public static double kSpeedBall = 0.0;
         public static double GoalExtendFromDangerZoneMargin = 0.11;
+
     }
 }

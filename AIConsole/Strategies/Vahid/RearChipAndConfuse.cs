@@ -150,7 +150,7 @@ namespace MRL.SSL.AIConsole.Strategies
             {
                 if (Model.BallState.Location.DistanceFrom(firstBallPos) < 0.10)
                 {
-                    waitCounter = 60;
+                    waitCounter = (int)StaticVariables.FRAME_RATE;
                     drawPos(peekerPos1, "peeker pos", Color.FromArgb(1, 233, 146, 53));
                     drawPos(attackerPos1, "attacker pos", Color.FromArgb(1, 233, 146, 53));
 

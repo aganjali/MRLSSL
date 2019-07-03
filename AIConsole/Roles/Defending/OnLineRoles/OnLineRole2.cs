@@ -154,7 +154,7 @@ namespace MRL.SSL.AIConsole.Roles
         public double CalBallFrames(double dist)
         {
             double speed = 6.5;
-            return (60 * dist) / speed;
+            return (StaticVariables.FRAME_RATE * dist) / speed;
         }
         public double CalRobotFrames(double d)
         {

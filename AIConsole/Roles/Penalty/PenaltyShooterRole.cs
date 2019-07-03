@@ -83,7 +83,7 @@ namespace MRL.SSL.AIConsole.Roles
                     Random Rnd = new Random();
                     RNDTime = Rnd.Next(Min, Max);
                     RNDTime *= 20;
-                    RNDTime += 60;
+                    RNDTime += (int)StaticVariables.FRAME_RATE;
                     CurrentState = (int)PenaltyState.ToBallNear;
                 }
             }

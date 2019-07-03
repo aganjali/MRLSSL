@@ -263,7 +263,7 @@ namespace Visualizer.Windows
             while (true)
             {
                 Dispatcher.Invoke((Action)(() => PlayAction1()));
-                Thread.Sleep(16);
+                Thread.Sleep((int)(StaticVariables.FRAME_RATE * 1000));
             }
         }
 
@@ -272,7 +272,7 @@ namespace Visualizer.Windows
             while (true)
             {
                 Dispatcher.Invoke((Action)(() => PlayAction2()));
-                Thread.Sleep(16);
+                Thread.Sleep((int)(StaticVariables.FRAME_RATE * 1000));
             }
         }
 
