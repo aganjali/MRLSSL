@@ -1,0 +1,90 @@
+<Data>
+  <AvailableCam Names="0123" />
+  <RealData X="0" Y="500">
+    <CameraData cameraID="0" cameraX="-7.225545" cameraY="489.4015" />
+    <CameraData cameraID="2" cameraX="7.878356" cameraY="500.4271" />
+    <CameraData cameraID="3" cameraX="-4.626313" cameraY="494.64" />
+  </RealData>
+  <RealData X="0" Y="0">
+    <CameraData cameraID="0" cameraX="-4.523826" cameraY="-0.9332358" />
+    <CameraData cameraID="1" cameraX="-2.341777" cameraY="0.8315471" />
+    <CameraData cameraID="2" cameraX="0.2834357" cameraY="-9.495082" />
+    <CameraData cameraID="3" cameraX="0.2591642" cameraY="-3.279884" />
+  </RealData>
+  <RealData X="0" Y="-500">
+    <CameraData cameraID="0" cameraX="-0.7200505" cameraY="-502.0336" />
+    <CameraData cameraID="1" cameraX="1.322475" cameraY="-501.5481" />
+    <CameraData cameraID="2" cameraX="-9.592782" cameraY="-499.5051" />
+  </RealData>
+  <RealData X="-500" Y="0">
+    <CameraData cameraID="0" cameraX="-498.1407" cameraY="3.582583" />
+    <CameraData cameraID="1" cameraX="-481.0649" cameraY="-3.593938" />
+    <CameraData cameraID="2" cameraX="-490.4722" cameraY="-2.713977" />
+  </RealData>
+  <RealData X="500" Y="0">
+    <CameraData cameraID="0" cameraX="487.1098" cameraY="-4.820286" />
+    <CameraData cameraID="1" cameraX="490.3899" cameraY="4.132229" />
+    <CameraData cameraID="2" cameraX="478.6546" cameraY="2.170005" />
+    <CameraData cameraID="3" cameraX="492.6064" cameraY="-5.265918" />
+  </RealData>
+  <RealData X="4495" Y="2995">
+    <CameraData cameraID="3" cameraX="4483.691" cameraY="2987.225" />
+  </RealData>
+  <RealData X="2248" Y="2995">
+    <CameraData cameraID="3" cameraX="2245.248" cameraY="2988.815" />
+  </RealData>
+  <RealData X="0" Y="2995">
+    <CameraData cameraID="2" cameraX="-12.89269" cameraY="3003.307" />
+    <CameraData cameraID="3" cameraX="8.488855" cameraY="2988.399" />
+  </RealData>
+  <RealData X="-2248" Y="2995">
+    <CameraData cameraID="2" cameraX="-2249.392" cameraY="2993.767" />
+  </RealData>
+  <RealData X="-4495" Y="2995">
+    <CameraData cameraID="2" cameraX="-4489.091" cameraY="2978.528" />
+  </RealData>
+  <RealData X="-4495" Y="1250">
+    <CameraData cameraID="2" cameraX="-4494.408" cameraY="1243.12" />
+  </RealData>
+  <RealData X="-4495" Y="0">
+    <CameraData cameraID="0" cameraX="-4488.926" cameraY="-8.68199" />
+    <CameraData cameraID="2" cameraX="-4488.188" cameraY="10.47116" />
+  </RealData>
+  <RealData X="-3495" Y="0">
+    <CameraData cameraID="0" cameraX="-3501.833" cameraY="-5.334768" />
+    <CameraData cameraID="2" cameraX="-3503.067" cameraY="0.3810067" />
+  </RealData>
+  <RealData X="-4495" Y="-1250">
+    <CameraData cameraID="0" cameraX="-4498.723" cameraY="-1252.006" />
+  </RealData>
+  <RealData X="-4495" Y="-2995">
+    <CameraData cameraID="0" cameraX="-4488.765" cameraY="-2987.813" />
+  </RealData>
+  <RealData X="-2248" Y="-2995">
+    <CameraData cameraID="0" cameraX="-2243.678" cameraY="-2988.929" />
+  </RealData>
+  <RealData X="0" Y="-2995">
+    <CameraData cameraID="0" cameraX="-7.684581" cameraY="-2990.646" />
+    <CameraData cameraID="1" cameraX="5.483873" cameraY="-2993.04" />
+  </RealData>
+  <RealData X="2248" Y="-2995">
+    <CameraData cameraID="1" cameraX="2247.368" cameraY="-2985.898" />
+  </RealData>
+  <RealData X="4495" Y="-2995">
+    <CameraData cameraID="1" cameraX="4477.204" cameraY="-2988.611" />
+  </RealData>
+  <RealData X="4495" Y="-1250">
+    <CameraData cameraID="1" cameraX="4493.509" cameraY="-1246.874" />
+  </RealData>
+  <RealData X="4495" Y="0">
+    <CameraData cameraID="1" cameraX="4487.757" cameraY="-12.34051" />
+    <CameraData cameraID="3" cameraX="4491.818" cameraY="2.515545" />
+  </RealData>
+  <RealData X="3495" Y="0">
+    <CameraData cameraID="1" cameraX="3504.843" cameraY="-0.3704243" />
+    <CameraData cameraID="3" cameraX="3510.004" cameraY="-3.982294" />
+  </RealData>
+  <RealData X="4495" Y="1250">
+    <CameraData cameraID="3" cameraX="4494.711" cameraY="1254.604" />
+  </RealData>
+</Data>

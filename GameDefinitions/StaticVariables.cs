@@ -45,7 +45,7 @@ namespace MRL.SSL.GameDefinitions
         public static double BALL_VELOCITY_VARIANCE_NO_ROBOT = 100;
         public static double CAMERA_HEIGHT, BALL_RADIUS = 0.022;
         public static double FieldMargin = 0.25;
-        public static double BALL_TEAMMATE_COLLISION_RADIUS = 100;
+        public static double BALL_TEAMMATE_COLLISION_RADIUS = 100; 
         public static double BALL_OPPONENT_COLLISION_RADIUS = 100;
         public static double BALL_CONFIDENCE_THRESHOLD = .1;
         public static double BALL_POSITION_VARIANCE = 16;
@@ -69,7 +69,7 @@ namespace MRL.SSL.GameDefinitions
         public static List<Position2D> BallPositions = new List<Position2D>();
         public static bool FrameHasBall = false;
         public static Position2D ballPlacementPos = new Position2D();
-        public const int CameraCount = 8;
+        public const int CameraCount = 2;
         public const int VisionPcCounts = 2;
     }
 
