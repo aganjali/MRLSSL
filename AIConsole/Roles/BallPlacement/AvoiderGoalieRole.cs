@@ -13,16 +13,19 @@ namespace MRL.SSL.AIConsole.Roles
     {
         double distAvoid = 0.6;
 
-        public void perform(WorldModel model, int robotId) {
-            Position2D target = GameParameters.OurGoalCenter.Extend(-0.1,0);
-            Planner.Add(robotId, target, 180, PathType.UnSafe, true, true, false, false, false, new List<Obstacle>() {
+        public void perform(GameStrategyEngine engine, WorldModel model, int robotId) {
+
+            Obstacle obs;
+            Position2D goalie;
+            var targets = FreekickDefence.CalculateAvoiderTargets(engine, model, out obs, out goalie);
+            Planner.Add(robotId, goalie, 180, PathType.UnSafe, true, true, false, false, false/*, new List<Obstacle>() {
                     new Obstacle()
                     {
                         State = new SingleObjectState(Position2D.Interpolate(StaticVariables.ballPlacementPos,model.BallState.Location,0.5), Vector2D.Zero, 0),
                         R = new Vector2D(distAvoid, model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)/2 + distAvoid),
                         Type = ObstacleType.Rectangle
                     }
-                });
+                }*/);
         }
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {

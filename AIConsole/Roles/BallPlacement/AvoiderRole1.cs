@@ -17,16 +17,18 @@ namespace MRL.SSL.AIConsole.Roles
         public void Perform(GameStrategyEngine engine, WorldModel model, int robotId)
         {
             Obstacle obs;
-            targets = FreekickDefence.CalculateAvoiderTargets(engine, model, out obs);
+            Position2D goalie;
+            targets = FreekickDefence.CalculateAvoiderTargets(engine, model, out obs, out goalie);
             Position2D target = targets[avoiderIndex];
-            Planner.Add(robotId, target, 180, PathType.UnSafe, true, true, false, false, false, new List<Obstacle>() {
+            Planner.Add(robotId, target, 180, PathType.UnSafe, true, true, false, false, false/*, new List<Obstacle>() {
                    obs
-                });
+                }*/);
         }
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
+            Position2D goalie;
             Obstacle obs;
-            targets = FreekickDefence.CalculateAvoiderTargets(engine, Model, out obs);
+            targets = FreekickDefence.CalculateAvoiderTargets(engine, Model, out obs, out goalie);
             Position2D target = targets[avoiderIndex];
             return target.DistanceFrom(Model.OurRobots[RobotID].Location);
         }

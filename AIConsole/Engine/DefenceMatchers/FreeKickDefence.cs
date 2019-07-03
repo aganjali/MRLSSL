@@ -3784,7 +3784,7 @@ namespace MRL.SSL.AIConsole.Engine
         public static Dictionary<Type, Position2D> PreviousPositions = new Dictionary<Type, Position2D>();
         public static bool BallIsMovedStrategy = false;
 
-        public static List<Position2D> CalculateAvoiderTargets(GameStrategyEngine engine, WorldModel Model, out Obstacle obstacle, double avoidDist = 0.7)
+        public static List<Position2D> CalculateAvoiderTargets(GameStrategyEngine engine, WorldModel Model, out Obstacle obstacle, out Position2D goalieTarget, double avoidDist = 0.7)
         {
             List<Position2D> ret = new List<Position2D>();
             Position2D BallPlacementPos = StaticVariables.ballPlacementPos;
@@ -3800,17 +3800,11 @@ namespace MRL.SSL.AIConsole.Engine
             avoidBounds.Add(new Line(extendedAvoidLine.Head + avoidPrepR, extendedAvoidLine.Tail + avoidPrepR, new Pen(Color.AliceBlue, 0.01f)));
             avoidBounds.Add(new Line(avoidBounds[1].Head, avoidBounds[0].Head, new Pen(Color.AliceBlue, 0.01f)));
             avoidBounds.Add(new Line(avoidBounds[1].Tail, avoidBounds[0].Tail, new Pen(Color.AliceBlue, 0.01f)));
+            goalieTarget = GameParameters.OurGoalCenter.Extend(-0.1, 0);
 
             if (GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight - BallPlacementPos.X >= avoidDist
                 && GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight - ballLoc.X >= avoidDist)
             {
-                //new Obstacle()
-                //{
-                //    State = new SingleObjectState(Position2D.Zero, Vector2D.Zero, 0),
-                //    R = new Vector2D(2, 4),
-                //    Type = ObstacleType.Rectangle
-                //};
-
                 Position2D extendedPos = GameParameters.OurGoalCenter.Extend(-(GameParameters.DefenceAreaHeight + RobotParameters.OurRobotParams.Diameter), -GameParameters.DefenceAreaWidth / 2);
                 for (int i = 0; i < 7; i++)
                 {
@@ -3820,7 +3814,7 @@ namespace MRL.SSL.AIConsole.Engine
             }
             else
             {
-               
+
                 bool hasIntersect = false;
                 int c = 0;
                 foreach (var item in avoidBounds)
@@ -3844,28 +3838,52 @@ namespace MRL.SSL.AIConsole.Engine
                 }
                 else
                 {
-                    Line farBound = null;
-                    double minDist = double.MaxValue;
-                    for (int i = 0; i < 2; i++)
+
+                    double tmp_dist, distBorder;
+                    if ((GameParameters.OurGoalCenter.X - BallPlacementPos.X < avoidDist + RobotParameters.OurRobotParams.Diameter
+                            && GameParameters.OurGoalCenter.X - ballLoc.X < avoidDist + RobotParameters.OurRobotParams.Diameter) || (GameParameters.IsInDangerousZone(Model.BallState.Location, false, avoidDist, out tmp_dist, out distBorder) && GameParameters.OurGoalCenter.X - ballLoc.X < avoidDist + RobotParameters.OurRobotParams.Diameter))
                     {
-                        var bound = avoidBounds[i];
-                        var d = bound.Distance(Position2D.Zero);
-                        if (d < minDist)
+                        int idx = -1, otheridx = -1;
+                        Line farBound = null;
+                        double minDist = double.MaxValue;
+                        for (int i = 0; i < 2; i++)
                         {
-                            minDist = d;
-                            farBound = bound;
+                            var bound = avoidBounds[i];
+                            var d = bound.Distance(Position2D.Zero);
+                            if (d < minDist)
+                            {
+                                idx = i;
+                                if (idx == 0)
+                                    otheridx = 1;
+                                else
+                                    otheridx = 0;
+                                minDist = d;
+                                farBound = bound;
+                            }
                         }
+                        //var prep = farBound.PerpenducilarLineToPoint(Position2D.Zero).IntersectWithLine(farBound);
+                        //if (!prep.HasValue)
+                        //    prep = Position2D.Zero;
+                        Vector2D v = (avoidBounds[idx].Head - avoidBounds[otheridx].Head).GetNormalizeToCopy(0.5);
+                        Position2D extendedPos = farBound.Tail + v;
+                        goalieTarget = extendedPos;
+                        for (int i = 0; i < 7; i++)
+                        {
+                            extendedPos = extendedPos + (farBound.Head - farBound.Tail).GetNormalizeToCopy(0.3);
+                            ret.Add(extendedPos);
+                            //DrawingObjects.AddObject(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)), "position" + i.ToString());
+                        }
+                       // goalieTarget = extendedPos = extendedPos + (farBound.Head - farBound.Tail).GetNormalizeToCopy(0.3);
+
                     }
-                    var prep = farBound.PerpenducilarLineToPoint(Position2D.Zero).IntersectWithLine(farBound);
-                    if (!prep.HasValue)
-                        prep = Position2D.Zero;
-                    Vector2D v = (Position2D.Zero - prep.Value).GetNormalizeToCopy(0.5);
-                    Position2D extendedPos = farBound.Head + v;
-                    for (int i = 0; i < 7; i++)
+                    else
                     {
-                        extendedPos = extendedPos + (farBound.Tail - farBound.Head).GetNormalizeToCopy(0.3);
-                        ret.Add(extendedPos);
-                        //DrawingObjects.AddObject(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)), "position" + i.ToString());
+                        Position2D extendedPos = GameParameters.OurGoalCenter.Extend(-(RobotParameters.OurRobotParams.Diameter) / 2, -GameParameters.DefenceAreaWidth / 2.5);
+                        for (int i = 0; i < 7; i++)
+                        {
+                            ret.Add(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)));
+                            //DrawingObjects.AddObject(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)), "position" + i.ToString());
+                        }
                     }
                 }
             }
@@ -4897,7 +4915,7 @@ namespace MRL.SSL.AIConsole.Engine
 
 
             double oppSpeed = state.Speed.Size;
-            double minDist =  GameParameters.SafeRadi(state, MarkerDefenceUtils.MinDistMarkMargin);
+            double minDist = GameParameters.SafeRadi(state, MarkerDefenceUtils.MinDistMarkMargin);
 
             Position2D minimum = GameParameters.OurGoalCenter + (state.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(minDist);
             Position2D maximum = state.Location + (GameParameters.OurGoalCenter - state.Location).GetNormalizeToCopy(0.2);
@@ -6400,7 +6418,7 @@ namespace MRL.SSL.AIConsole.Engine
 
         static bool incomningNear = false;
         private static double extendStatticDefenceTarget = 0;
-       
+
 
         private static bool BallKickedToGoal(WorldModel Model)
         {

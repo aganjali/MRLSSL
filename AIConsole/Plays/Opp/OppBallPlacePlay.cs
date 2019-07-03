@@ -28,7 +28,6 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
             }
             
-            PreviouslyAssignedRoles = CurrentlyAssignedRoles;
 
             #region Matcher
             RoleBase r;
@@ -102,7 +101,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
             #region Assigner
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, goalie, typeof(AvoiderGoalieRole)))
-                Functions[goalie.Value] = (eng, wmd) => GetRole<AvoiderGoalieRole>(goalie.Value).perform(wmd, goalie.Value);
+                Functions[goalie.Value] = (eng, wmd) => GetRole<AvoiderGoalieRole>(goalie.Value).perform(eng, wmd, goalie.Value);
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, AvoiderRole1Id, typeof(AvoiderRole1)))
                 Functions[AvoiderRole1Id.Value] = (eng, wmd) => GetRole<AvoiderRole1>(AvoiderRole1Id.Value).Perform(engine , Model , AvoiderRole1Id.Value);
@@ -130,7 +129,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
             #endregion
 
-
+            PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             return CurrentlyAssignedRoles;
         }
 
