@@ -9,12 +9,10 @@ using MRL.SSL.Planning.GamePlanner.Types;
 using System.Drawing;
 using MRL.SSL.Planning.MotionPlanner;
 
-namespace MRL.SSL.AIConsole.Roles
+namespace MRL.SSL.AIConsole.Roles.Positionning
 {
-    class strategyPositioner1 : RoleBase
-
+    class strategyPositioner2Role : RoleBase
     {
-
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
             return Model.OurRobots[RobotID].Location.DistanceFrom(calculateTarget(engine, Model, RobotID));
@@ -50,16 +48,6 @@ namespace MRL.SSL.AIConsole.Roles
             {
 
                 List<PassPointData> poses = new List<PassPointData>();
-                double regionX = 0;
-                //if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H / 2)
-                //{
-                //    regionX = Model.BallState.Location.X;
-                //}
-                //else if (Model.BallState.Location.X > -StaticVariables.FIELD_LENGTH_H)
-                //{
-                regionX = -.5;
-                //}
-                Position2D topLeft = new Position2D(2, GameParameters.OurRightCorner.Y);
                 double passSpeed = 4, shootSpeed = Program.MaxKickSpeed;
                 int Rows = 2, column = 4;
 
@@ -67,7 +55,7 @@ namespace MRL.SSL.AIConsole.Roles
                 sgn = Math.Sign(NormalSharedState.CommonInfo.PassTarget.Y);
 
 
-                topLeft = new Position2D(regionX, sgn < 0 ? 0 : GameParameters.OurRightCorner.Y);
+                Position2D topLeft = new Position2D(3, 2);// new Position2D(regionX, sgn < 0 ? 0 : GameParameters.OurRightCorner.Y);
                 double width = 3;//(GameParameters.OurGoalCenter.X - 0.5 - 0.25);
                 double heigth = 2;//GameParameters.OurLeftCorner.Y + 4;
                 if (!Model.GoalieID.HasValue)
@@ -93,8 +81,8 @@ namespace MRL.SSL.AIConsole.Roles
         }
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return new List<RoleBase>() { new strategyPositioner1() };
+            return new List<RoleBase>() { new strategyPositioner1Role(), new ActiveRole() };
         }
     }
 }
-
+}

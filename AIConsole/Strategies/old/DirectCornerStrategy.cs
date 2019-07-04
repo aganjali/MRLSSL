@@ -237,7 +237,7 @@ namespace MRL.SSL.AIConsole.Strategies
                         Position2D tmpT = oppFeasibleLine.Tail + (oppFeasibleLine.Tail - GameParameters.OppGoalCenter).GetNormalizeToCopy(RobotParameters.OurRobotParams.Diameter);
                         Line ourFeasibleLine = new Line(tmpH, tmpT);
                         ourFeasibleLine.DrawPen = new Pen(Color.Red, 0.01f);
-                        dangerC = new Circle(new Position2D(GameParameters.OppGoalCenter.X, Math.Sign(Model.BallState.Location.Y) * 0.175), GameParameters.DefenceareaRadii + RobotParameters.OurRobotParams.Diameter + margin, new Pen(Color.RosyBrown,0.01f));
+                        dangerC = new Circle(new Position2D(GameParameters.OppGoalCenter.X, Math.Sign(Model.BallState.Location.Y) * 0.175), /*GameParameters.DefenceareaRadii +*/ RobotParameters.OurRobotParams.Diameter + margin, new Pen(Color.RosyBrown,0.01f));
                         var intersects = dangerC.Intersect(ourFeasibleLine);
                         Position2D? tmpInter = null;
                         if (intersects.Count > 1)

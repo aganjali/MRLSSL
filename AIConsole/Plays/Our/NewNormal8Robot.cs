@@ -12,7 +12,7 @@ using MRL.SSL.AIConsole.Roles.Defending;
 
 namespace MRL.SSL.AIConsole.Plays.Our
 {
-    class NormalPlay8Robot : PlayBase
+    class MarkerAttackerRole1 : PlayBase
     {
         bool ballIsMoved = false, oppBallOwner = false;
         bool flagFirst = true;
@@ -151,7 +151,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
             r = typeof(Marker1Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 1, 0));
 
-            r = typeof(Marker2Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            r = typeof(MarkerAttackerRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 1, 0));
 
 
@@ -192,8 +192,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
 
             int? Marker2 = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(Marker2Normal8Robot)))
-                Marker2 = matched.Where(w => w.Value.GetType() == typeof(Marker2Normal8Robot)).First().Key;
+            if (matched.Any(w => w.Value.GetType() == typeof(MarkerAttackerRole2)))
+                Marker2 = matched.Where(w => w.Value.GetType() == typeof(MarkerAttackerRole2)).First().Key;
 
             FreekickDefence.Static1ID = st1;
             FreekickDefence.Static2ID = st2;
@@ -465,8 +465,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker1, typeof(Marker1Normal8Robot)))
                 Functions[Marker1.Value] = (eng, wmd) => GetRole<Marker1Normal8Robot>(Marker1.Value).Perform(engine, Model, Marker1.Value, markRegion, OppToMarkID1, oppAttackerIds, oppValue1, oppValue2, field);
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker2, typeof(Marker2Normal8Robot)))
-                Functions[Marker2.Value] = (eng, wmd) => GetRole<Marker2Normal8Robot>(Marker2.Value).Perform(engine, Model, Marker2.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2, field);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker2, typeof(MarkerAttackerRole2)))
+                Functions[Marker2.Value] = (eng, wmd) => GetRole<MarkerAttackerRole2>(Marker2.Value).Perform(engine, Model, Marker2.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2, field);
 
             //else if (Model.BallState.Location.X > 0.6 && !oppBallOwner)
             //{

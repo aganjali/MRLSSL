@@ -16,7 +16,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
         GameDefinitions.GameStatus LastState = GameStatus.Normal;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
-            return false;
+            //return false;
             double dist, DistFromBorder;
             if (LastState == GameStatus.Penalty_Opponent_Go && !GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.07, out dist, out DistFromBorder))
             {

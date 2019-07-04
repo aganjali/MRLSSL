@@ -97,7 +97,7 @@ namespace MRL.SSL.AIConsole.Roles
             if (CurrentState == (int)PlayMode.SingleDefender)
             {
 
-                Dictionary<int, SingleObjectState> Opps = Model.Opponents.Where(o => o.Value.Location.X > -0.5).ToDictionary(o => o.Key, o => o.Value);
+                Dictionary<int, SingleObjectState> Opps = Model.Opponents.Where(o => o.Value.Location.X > -0.5 && o.Value.Location.Y < 3 && o.Value.Location.Y > -3).ToDictionary(o => o.Key, o => o.Value);
                 Dictionary<int, double> oppsDist = new Dictionary<int, double>();
                 double minDistRobot = double.MaxValue;
                 int? minDistId = null;

@@ -143,17 +143,17 @@ namespace MRL.SSL.AIConsole.Roles
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-
+            ;
         }
 
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return 100;
+            return Model.OurRobots[RobotID].Location.DistanceFrom(Model.BallState.Location);
         }
 
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            return new List<RoleBase>();
+            return new List<RoleBase>() { new ActiveRole() };
         }
 
         public override bool Evaluate(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)

@@ -16,7 +16,7 @@ namespace MRL.SSL.AIConsole.Plays
 
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
-            //return false;
+            return false;
             return Status == GameStatus.Penalty_Opponent_Go || Status == GameStatus.Penalty_Opponent_Waiting;
         }
         bool activeBool = false;

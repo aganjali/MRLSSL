@@ -268,7 +268,7 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 Vector2D vec1 = (StaticVariables.ballPlacementPos - Model.BallState.Location);
                 Vector2D vec2 = Vector2D.FromAngleSize(Model.OurRobots[RobotID].Angle.Value, 1);
-                double ballSpeedTresh = 0.3;
+                double ballSpeedTresh = .3;
                 if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) >= 1)
                 {
                     CurrentState = (int)states.pass;
@@ -278,7 +278,7 @@ namespace MRL.SSL.AIConsole.Roles
                 {
                     CurrentState = (int)states.eatBall;
                 }
-                else if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) < 0.1)
+                else if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) <= 0.1)
                 {
                     CurrentState = (int)states.finish;
                 }
@@ -373,7 +373,10 @@ namespace MRL.SSL.AIConsole.Roles
             moveBall=4,
             finish=0
         }
+        //public double CalShootSpeed(WorldModel model , Position2D posToShoot)
+        //{
 
+        //}
         public void Reset()
         {
             //catchSkill = new StarkCatchSkill();

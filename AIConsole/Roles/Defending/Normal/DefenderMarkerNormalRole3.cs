@@ -36,7 +36,15 @@ namespace MRL.SSL.AIConsole.Roles
                 inf = FreekickDefence.CurrentInfos.First(f => f.RoleType == this.GetType());
             Position2D pos = CalculateTarget(engine, Model, RobotID, inf, target, teta, out Teta, FreekickDefence.LastOppToMark3);
             FreekickDefence.PreviousPositions[typeof(DefenderMarkerNormalRole3)] = pos;
+            if (Model.Status == GameStatus.KickOff_OurTeam_Waiting || Model.Status == GameStatus.KickOff_OurTeam_Go
+                || Model.Status == GameStatus.KickOff_Opponent_Waiting || Model.Status == GameStatus.KickOff_Opponent_Go)
+            {
+                //SingleWirelessCommand swc = new SingleWirelessCommand()
+                Planner.Add(RobotID, Model.OurRobots[RobotID].Location, teta, PathType.UnSafe, false, true, true, false);
+                return;
+            }
             Planner.Add(RobotID, pos, teta, PathType.UnSafe, false, true, true, false);
+
         }
 
         public override RoleCategory QueryCategory()

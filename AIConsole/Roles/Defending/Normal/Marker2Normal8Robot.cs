@@ -11,7 +11,7 @@ using MRL.SSL.Planning.GamePlanner.Types;
 
 namespace MRL.SSL.AIConsole.Roles
 {
-    class Marker2Normal8Robot : RoleBase
+    class MarkerAttackerRole2 : RoleBase
     {
         bool ballIsMove = false, oppBallOwner = false;
         public static int? oppMarkID;
@@ -290,7 +290,7 @@ namespace MRL.SSL.AIConsole.Roles
         }
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
-            List<RoleBase> res = new List<RoleBase>() { new Marker1Normal8Robot(), new Marker2Normal8Robot(), new ActiveRole2017() };
+            List<RoleBase> res = new List<RoleBase>() { new Marker1Normal8Robot(), new MarkerAttackerRole2(), new ActiveRole2017() };
             //if (CurrentState == (int)State.regional)
             //{
             //    res = new List<RoleBase>() { new Marker2Normal8Robot() };

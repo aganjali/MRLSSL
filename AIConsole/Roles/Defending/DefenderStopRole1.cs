@@ -61,7 +61,7 @@ namespace MRL.SSL.AIConsole.Roles
                 AvoidBall = true;
             Planner.ChangeDefaulteParams(RobotID, false);
             Planner.SetParameter(RobotID, 1);
-            SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, false, AvoidBall, 1, true);
+            SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, false, AvoidBall, StaticVariables.stopMaxSpeed, true);
             SWC.isChipKick = isChipKick;
             SWC.KickPower = kickPower;
             return SWC;

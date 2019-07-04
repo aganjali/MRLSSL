@@ -18,6 +18,8 @@ namespace MRL.SSL.AIConsole.Roles
             Obstacle obs;
             Position2D goalie;
             var targets = FreekickDefence.CalculateAvoiderTargets(engine, model, out obs, out goalie);
+            Planner.ChangeDefaulteParams(robotId, false);
+            Planner.SetParameter(robotId, 2);
             Planner.Add(robotId, goalie, 180, PathType.UnSafe, true, true, false, false, false/*, new List<Obstacle>() {
                     new Obstacle()
                     {
