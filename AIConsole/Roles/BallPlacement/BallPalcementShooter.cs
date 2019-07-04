@@ -40,7 +40,7 @@ namespace MRL.SSL.AIConsole.Roles
             //var speed = Math.Min(Math.Max(0.9, 0.3 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)), 4);
             double speed = CalShootSpeed(Model, StaticVariables.ballPlacementPos);
             Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 1.5);
+            Planner.SetParameter(RobotID, 2.5);
             DrawingObjects.AddObject(new StringDraw("CurrentState= " + (states)CurrentState, "bpshooter_state", Model.OurRobots[RobotID].Location + new Vector2D(1, 1)));
             if (CurrentState == (int)states.pass)
             {
@@ -377,11 +377,11 @@ namespace MRL.SSL.AIConsole.Roles
         public double CalShootSpeed(WorldModel model , Position2D posToShoot)
         {
             Vector2D vec = model.BallState.Location - posToShoot;
-            return Map(vec.Size , 0 , 12 , 3 , 4.5);
+            return Map(vec.Size , 3 , 9 , 3 , 4.5);
         }
         double Map(double value, double fromSource, double toSource, double fromTarget, double toTarget)
         {
-            return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
+            return Math.Min(toSource - fromSource, Math.Max(0, (value - fromSource))) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
         }
         public void Reset()
         {
