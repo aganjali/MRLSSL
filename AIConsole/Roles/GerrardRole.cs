@@ -24,7 +24,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             double angle = 180;
 
-            Position2D target = CalculateTarget(Model, robotID , out angle);
+            Position2D target = CalculateTarget(Model, robotID, out angle);
             Planner.Add(robotID, target, angle, PathType.UnSafe, false, true, true, true, false);
 
             //if (CurrentState == (int)PlayMode.Attack)
@@ -51,7 +51,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             DetermineNextState(engine, Model, RobotID, previouslyAssignedRoles);
             double angle = 0;
-            var tar = CalculateTarget(Model, RobotID ,out angle);
+            var tar = CalculateTarget(Model, RobotID, out angle);
             double d = Model.OurRobots[RobotID].Location.DistanceFrom(tar);
             return d * d;
         }
@@ -61,7 +61,7 @@ namespace MRL.SSL.AIConsole.Roles
             int? st2ID = FreekickDefence.Static2ID;
             //if (Model.OurRobots[st1ID.Value].Location.X > 5 || Model.OurRobots[st2ID.Value].Location.X > 5)
             //{
-            if (st1ID.HasValue && st2ID.HasValue && (Model.OurRobots[st1ID.Value].Location.X > 5 || Model.OurRobots[st2ID.Value].Location.X > 5))
+            if (st1ID.HasValue && st2ID.HasValue && (Model.OurRobots[st1ID.Value].Location.X > 5.1 || Model.OurRobots[st2ID.Value].Location.X > 5.1))
             {
 
                 CurrentState = (int)PlayMode.SingleDefender;
@@ -75,7 +75,7 @@ namespace MRL.SSL.AIConsole.Roles
                 tempState = CurrentState;
 
             }
-            else if (Model.BallState.Location.X < -0.1 &&( CurrentState == (int)PlayMode.Defence || CurrentState == (int)PlayMode.SingleDefender))
+            else if (Model.BallState.Location.X < -0.1 && (CurrentState == (int)PlayMode.Defence || CurrentState == (int)PlayMode.SingleDefender))
             {
                 CurrentState = (int)PlayMode.Attack;
                 tempState = CurrentState;
@@ -88,7 +88,7 @@ namespace MRL.SSL.AIConsole.Roles
 
             return 1;
         }
-        private Position2D CalculateTarget(WorldModel Model, int robotID , out double angle)
+        private Position2D CalculateTarget(WorldModel Model, int robotID, out double angle)
         {
             angle = 180;
             var st1ID = FreekickDefence.Static1ID;
@@ -138,7 +138,7 @@ namespace MRL.SSL.AIConsole.Roles
                 else
                 {
                     target = GameParameters.OurGoalCenter.Extend(-1.7, 0);
-                   //CurrentState == (int)PlayMode.Defence
+                    //CurrentState == (int)PlayMode.Defence
                 }
 
 
@@ -178,7 +178,7 @@ namespace MRL.SSL.AIConsole.Roles
                         if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
                         {
                             target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
-                            angle = (Model.Opponents[minDistId].Location - Model.OurRobots[robotID].Location ).AngleInDegrees;
+                            angle = (Model.Opponents[minDistId].Location - Model.OurRobots[robotID].Location).AngleInDegrees;
 
                             if (st2ID.HasValue)
                             {
@@ -223,7 +223,7 @@ namespace MRL.SSL.AIConsole.Roles
                             {
                                 Position2D st1 = Model.OurRobots[st1ID.Value].Location;
                                 v = target - Model.OurRobots[st1ID.Value].Location;
-                                if (Math.Abs(target.Y) < Math.Abs(st1.Y) + 0.25)
+                                if (target.Y > st1.Y - 0.25)
                                 {
                                     target = new Position2D(Model.OurRobots[robotID].Location.X, st1.Y - 0.25);
                                 }
