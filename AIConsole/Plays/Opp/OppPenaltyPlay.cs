@@ -20,7 +20,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
         {
             //return false;
             double dist, DistFromBorder;
-            if (LastState == GameStatus.Penalty_OurTeam_Go && (!GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.07, out dist, out DistFromBorder) ||
+            if (LastState == GameStatus.Penalty_Opponent_Go && (!GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.07, out dist, out DistFromBorder) ||
                     (ballFirst.HasValue && Model.BallState.Location.DistanceFrom(ballFirst.Value) > 0.2)))
             { 
                 LastState = GameStatus.Normal;
@@ -69,7 +69,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
             //rt = typeof(PenaltyKeeperRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             //roles.Add(new RoleInfo(rt, 1, 0));
-
+            Position2D firstTarget = GameParameters.OurGoalCenter.Extend(GameParameters.DefenceAreaHeight + 0.85,0);
+            Position2D secondTarget = GameParameters.OurGoalCenter.Extend(GameParameters.DefenceAreaHeight + 0.60, 0);
             rt = typeof(OppPenaltyPositionerRole1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(rt, 1, 0));
 
@@ -85,7 +86,10 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             rt = typeof(OppPenaltyPositionerRole5).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(rt, 1, 0));
 
-
+            rt = typeof(strategyPositioner2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 1, 0));
+            rt = typeof(strategyPositioner3Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 1, 0));
             Dictionary<int, RoleBase> matched;
             if (Model.GoalieID.HasValue)
                 matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.Where(w => w != Model.GoalieID.Value).ToList(), roles, PreviouslyAssignedRoles);
@@ -115,6 +119,12 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             if (matched.Any(w => w.Value.GetType() == typeof(OppPenaltyPositionerRole5)))
                 pos5 = matched.Where(w => w.Value.GetType() == typeof(OppPenaltyPositionerRole5)).First().Key;
 
+            int? pos6 = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(strategyPositioner2Role)))
+                pos6 = matched.Where(w => w.Value.GetType() == typeof(strategyPositioner2Role)).First().Key;
+            int? pos7 = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(strategyPositioner3Role)))
+                pos7 = matched.Where(w => w.Value.GetType() == typeof(strategyPositioner3Role)).First().Key;
 
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(matched.Count);
 
@@ -140,6 +150,12 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, pos5, typeof(OppPenaltyPositionerRole5)))
                 Functions[pos5.Value] = (eng, wmd) => GetRole<OppPenaltyPositionerRole5>(pos5.Value).RunRole(eng, wmd, pos5.Value);
 
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, pos6, typeof(strategyPositioner2Role)))
+                Functions[pos6.Value] = (eng, wmd) => GetRole<strategyPositioner2Role>(pos6.Value).Perform(engine,Model,pos6.Value);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, pos7, typeof(strategyPositioner3Role)))
+                Functions[pos7.Value] = (eng, wmd) => GetRole<strategyPositioner3Role>(pos7.Value).Perform(engine, Model, pos7.Value);
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
 
             return CurrentlyAssignedRoles;

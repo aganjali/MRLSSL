@@ -464,7 +464,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                             if (pathType == PathType.UnSafe)
                             {
                                 //obs.ObstaclesList.Remove(item.Key);
-                                if (!item.Value.Meet(Goal, MotionPlannerParameters.RobotRadi, false))
+                                if (ii == 1 && !item.Value.Meet(Goal, MotionPlannerParameters.RobotRadi, false))
                                 {
                                     
                                     goalRemoveObstacles[item.Key] = - item.Value.Margin;

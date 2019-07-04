@@ -204,7 +204,9 @@ namespace MRL.SSL.AIConsole.Roles
 
         public override void DetermineNextState(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {
-            if ((Model.BallState.Location.X < -0.6 || !oppBallOwner) || NormalSharedState.ActiveInfo.CurrentAction == NormalSharedState.ActiveActionMode.Pass)
+            double dist, distFromBoarder;
+            bool isInDangerzone = GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.15, out dist, out distFromBoarder);
+            if ((Model.BallState.Location.X < -0.6 || !oppBallOwner) || NormalSharedState.ActiveInfo.CurrentAction == NormalSharedState.ActiveActionMode.Pass && !isInDangerzone)
             {
                 CurrentState = (int)State.Attack;
             }

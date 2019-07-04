@@ -157,6 +157,10 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
 
             Dictionary<int, RoleBase> matched;
+            if (FreekickDefence.Static1ID.HasValue && !Model.OurRobots.ContainsKey(FreekickDefence.Static1ID.Value))
+                FreekickDefence.Static1ID = null;
+            if (FreekickDefence.Static2ID.HasValue && !Model.OurRobots.ContainsKey(FreekickDefence.Static2ID.Value))
+                FreekickDefence.Static2ID = null;
 
             if (Model.GoalieID.HasValue)
                 matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.Where(w => w != Model.GoalieID.Value).ToList(), roles, PreviouslyAssignedRoles);

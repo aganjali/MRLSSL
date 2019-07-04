@@ -907,7 +907,10 @@ namespace MRL.SSL.AIConsole.Roles
                             intersect = GameParameters.OurGoalCenter + targetOutofGoal.GetNormalizeToCopy(.28);
                         }
                     }
-                    intersect = (IntersectLine.IntersectWithLine(headLine).Value.Y > 0.0) ? GameParameters.OurGoalLeft.Extend(-.1, -.1) : GameParameters.OurGoalRight.Extend(-.1, .1);
+                    var inters = IntersectLine.IntersectWithLine(headLine);
+                    
+                    intersect = (inters.HasValue && inters.Value.Y > 0.0) ? GameParameters.OurGoalLeft.Extend(-.1, -.1) : GameParameters.OurGoalRight.Extend(-.1, .1);
+                    
 
                     target = intersect.Extend(0, -1 * Math.Sign(intersect.Y) * posVar);
                     counterCenter++;
