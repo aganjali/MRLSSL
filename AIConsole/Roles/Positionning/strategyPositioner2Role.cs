@@ -85,4 +85,4 @@ namespace MRL.SSL.AIConsole.Roles.Positionning
         }
     }
 }
-}
+
