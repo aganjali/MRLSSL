@@ -22,9 +22,9 @@ namespace MRL.SSL.AIConsole.Roles
 
         public void Perform(GameStrategyEngine engine, WorldModel Model, int robotID)
         {
-            int angle = 180;
+            double angle = 180;
 
-            Position2D target = CalculateTarget(Model, robotID);
+            Position2D target = CalculateTarget(Model, robotID , out angle);
             Planner.Add(robotID, target, angle, PathType.UnSafe, false, true, true, true, false);
 
             //if (CurrentState == (int)PlayMode.Attack)
@@ -50,7 +50,8 @@ namespace MRL.SSL.AIConsole.Roles
         public override double CalculateCost(GameStrategyEngine engine, WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
             DetermineNextState(engine, Model, RobotID, previouslyAssignedRoles);
-            var tar = CalculateTarget(Model, RobotID);
+            double angle = 0;
+            var tar = CalculateTarget(Model, RobotID ,out angle);
             double d = Model.OurRobots[RobotID].Location.DistanceFrom(tar);
             return d * d;
         }
@@ -87,8 +88,9 @@ namespace MRL.SSL.AIConsole.Roles
 
             return 1;
         }
-        private Position2D CalculateTarget(WorldModel Model, int robotID)
+        private Position2D CalculateTarget(WorldModel Model, int robotID , out double angle)
         {
+            angle = 180;
             var st1ID = FreekickDefence.Static1ID;
             var st2ID = FreekickDefence.Static2ID;
             Position2D target = new Position2D();
@@ -129,6 +131,8 @@ namespace MRL.SSL.AIConsole.Roles
                         }
                     }
                     target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId.Value].Location);
+                    angle = (Model.Opponents[minDistId.Value].Location - Model.OurRobots[robotID].Location).AngleInDegrees;
+
 
                 }
                 else
@@ -174,6 +178,8 @@ namespace MRL.SSL.AIConsole.Roles
                         if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
                         {
                             target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
+                            angle = (Model.Opponents[minDistId].Location - Model.OurRobots[robotID].Location ).AngleInDegrees;
+
                             if (st2ID.HasValue)
                             {
                                 Position2D st2 = Model.OurRobots[st2ID.Value].Location;
@@ -211,6 +217,8 @@ namespace MRL.SSL.AIConsole.Roles
                         if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
                         {
                             target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
+                            angle = (Model.Opponents[minDistId].Location - Model.OurRobots[robotID].Location).AngleInDegrees;
+
                             if (st1ID.HasValue)
                             {
                                 Position2D st1 = Model.OurRobots[st1ID.Value].Location;
