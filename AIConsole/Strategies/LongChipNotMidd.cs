@@ -13,13 +13,14 @@ namespace MRL.SSL.AIConsole.Strategies
     public class LongChipNotStrategy : StrategyBase
     {
         const double step = 0.5, passerShooterDist = 2;
-        const double tresh = 0.06, angleTresh = 2, waitTresh = 40, finishTresh = 100, initDist = 0.22, maxWaitTresh = 240, faildFarPassSpeedTresh = 0.3, faildNearPassSpeedTresh = -0.05, faildBallDistSecondPass = 0.5, faildMaxCounter = 4, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.2;
+        const double tresh = 0.06, angleTresh = 2, waitTresh = 40, finishTresh = 100, initDist = 0.22, maxWaitTresh = 120, faildFarPassSpeedTresh = 0.3, faildNearPassSpeedTresh = -0.05, faildBallDistSecondPass = 0.5, faildMaxCounter = 4, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.2;
         bool first, passTargetCalculated, Debug = false, nearShooter, shooted;
         int PasserId, PositionerID0, PositionerID1;
         Position2D PasserPos, ShooterPos, PassTarget, ShootTarget, PositionerPos0, PositionerPos1, firstBallPos;
         double PasserAngle, ShooterAngle, RotateTeta, PassSpeed, KickPower;
         int counter, finishCounter, RotateDelay, timeLimitCounter, faildCounter;
         Syncronizer sync;
+
         kickPowerType kickType;
         bool chip, passed, chipOrigin;
 
@@ -37,7 +38,7 @@ namespace MRL.SSL.AIConsole.Strategies
             CurrentState = InitialState;
             first = true;
             passTargetCalculated = false;
-            RotateTeta = 60;
+            RotateTeta = 0;
             PassSpeed = 4;
             KickPower = 8;
             timeLimitCounter = 0;
@@ -308,7 +309,7 @@ namespace MRL.SSL.AIConsole.Strategies
             {
                 if (Debug)
                     DrawingObjects.AddObject(new StringDraw("chip: " + chip, Position2D.Zero));
-                if (Planner.AddRotate(Model, PasserId, PassTarget, 0, kickType, PassSpeed, true).InKickState)
+                if (Planner.AddRotate(Model, PasserId, PassTarget, 0, kickType, PassSpeed, true,0).InKickState)
                     inPassState = true;
                 Planner.Add(PositionerID0, PositionerPos0, (ShootTarget - PositionerPos0).AngleInDegrees, PathType.Safe, true, true, true, true);
                 Planner.Add(PositionerID1, PositionerPos1, (ShootTarget - PositionerPos1).AngleInDegrees, PathType.Safe, true, true, true, true);

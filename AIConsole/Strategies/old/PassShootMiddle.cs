@@ -293,7 +293,7 @@ namespace MRL.SSL.AIConsole.Strategies
                        
                 if (!passTargetCalculated)
                 {
-                    if (Model.BallState.Location.X < -(GameParameters.OurGoalCenter.X - GameParameters.DefenceareaRadii))
+                    if (Model.BallState.Location.X < -(GameParameters.OurGoalCenter.X /*- GameParameters.DefenceareaRadii*/))
                         chipOrigin = true;
                     if (chipOrigin)
                         RotateTeta = 0;

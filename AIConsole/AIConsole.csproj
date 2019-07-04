@@ -218,7 +218,8 @@
     <Compile Include="Roles\GoalieRole\NewStaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\StaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\VandersarGoalKeeperRole.cs" />
-    <Compile Include="Roles\Positionning\strategyPositioner1.cs" />
+    <Compile Include="Roles\Positionning\strategyPositioner1Role.cs" />
+    <Compile Include="Roles\Positionning\strategyPositioner2Role.cs" />
     <Compile Include="Roles\Stop\RotationalStopCover.cs" />
     <Compile Include="Roles\Stop\StopRole4.cs" />
     <Compile Include="Roles\Stop\StopRole5.cs" />
@@ -357,6 +358,32 @@
     <Compile Include="Strategies\Mamad\RearOneTouchPassBack.cs" />
     <Compile Include="Strategies\Mamad\Rotational.cs" />
     <Compile Include="Strategies\Middle3AtackerStrategy.cs" />
+    <Compile Include="Strategies\old\12Strategy.cs" />
+    <Compile Include="Strategies\old\Attack5JustChipStrategy.cs" />
+    <Compile Include="Strategies\old\Attack5Strategy.cs" />
+    <Compile Include="Strategies\old\CatchAndRotateNewStrategy.cs" />
+    <Compile Include="Strategies\old\CatchPassBackStrategy.cs" />
+    <Compile Include="Strategies\old\DefenceRushStrategy.cs" />
+    <Compile Include="Strategies\old\DirectCornerStrategy.cs" />
+    <Compile Include="Strategies\old\FacePunchStrategy.cs" />
+    <Compile Include="Strategies\old\KarimBagheriStrategy.cs" />
+    <Compile Include="Strategies\old\LineCornerStrategy.cs" />
+    <Compile Include="Strategies\old\NewPassShootMiddleStrategy.cs" />
+    <Compile Include="Strategies\old\NMFStrategy.cs" />
+    <Compile Include="Strategies\old\OneDefenceRush.cs" />
+    <Compile Include="Strategies\old\PassAndShoot3Strategy.cs" />
+    <Compile Include="Strategies\old\PassAndShoot4Strategy.cs" />
+    <Compile Include="Strategies\old\PassShootMiddle.cs" />
+    <Compile Include="Strategies\old\PassShootMiddle5Strategy.cs" />
+    <Compile Include="Strategies\old\PassShootMiddleMode0Strategy.cs" />
+    <Compile Include="Strategies\old\PickStopCoverStrategy.cs" />
+    <Compile Include="Strategies\old\QueirozStrategy.cs" />
+    <Compile Include="Strategies\old\QueirozTestStrategy.cs" />
+    <Compile Include="Strategies\old\Rush2TheHole3Strategy.cs" />
+    <Compile Include="Strategies\old\Rush2TheHoleStrategy.cs" />
+    <Compile Include="Strategies\old\SquarePassingStrategy.cs" />
+    <Compile Include="Strategies\old\TurnAndRushStrategy.cs" />
+    <Compile Include="Strategies\old\TurnItUpStrategy.cs" />
     <Compile Include="Strategies\PassAndShootStrategy.cs" />
     <Compile Include="Strategies\PassShootCornerStrategy.cs" />
     <Compile Include="Strategies\Syncronizer.cs" />
@@ -413,6 +440,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Strategies\old\old.zip" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Roles\Penalty\NewPenaltyShooterRole.cs" />

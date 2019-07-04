@@ -1,8 +1,8 @@
 <ActiveParameters>
   <sweepZone>2.2</sweepZone>
   <kickAnyWayRegion>-2.2</kickAnyWayRegion>
-  <kickAcuercy>0.05</kickAcuercy>
-  <kickRegionAcuercy>0.03</kickRegionAcuercy>
+  <kickAcuercy>0.03</kickAcuercy>
+  <kickRegionAcuercy>0.05</kickRegionAcuercy>
   <minGoodness>0.3</minGoodness>
   <nearIncomingRadi>0.3</nearIncomingRadi>
   <nearBallSpeedTresh>1.2</nearBallSpeedTresh>
@@ -13,17 +13,17 @@
   <clearRobotZone>0.5</clearRobotZone>
   <ConfilictZone>0.2</ConfilictZone>
   <IncomingBackBall>0.09</IncomingBackBall>
-  <KpSideY>6.92</KpSideY>
-  <KdSideY>0.05</KdSideY>
+  <KpSideY>4</KpSideY>
+  <KdSideY>0</KdSideY>
   <KiSideY>0</KiSideY>
   <KpSideX>10</KpSideX>
-  <KiSideX>0.1</KiSideX>
-  <KdSideX>0.71</KdSideX>
+  <KiSideX>0</KiSideX>
+  <KdSideX>0</KdSideX>
   <vyOffsetSide>1.2</vyOffsetSide>
   <KpxVySide>8</KpxVySide>
-  <KpyVySide>1.3</KpyVySide>
+  <KpyVySide>1.35</KpyVySide>
   <KpTotalVySide>0.15</KpTotalVySide>
-  <KpxVxSide>1.1</KpxVxSide>
+  <KpxVxSide>1.2</KpxVxSide>
   <KpBackY>1</KpBackY>
   <KiBackY>0</KiBackY>
   <KdBackY>0</KdBackY>

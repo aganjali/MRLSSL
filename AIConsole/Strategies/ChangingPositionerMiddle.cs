@@ -525,7 +525,7 @@ namespace MRL.SSL.AIConsole.Strategies
                     Planner.Add(PositionerID0, Positioner0SecPos, (GameParameters.OppGoalCenter - Model.OurRobots[PositionerID0].Location).AngleInDegrees, PathType.Safe, true, true, true, true);
                     //if (Model.OurRobots[PositionerID0].Location.DistanceFrom(Positioner0Pos) > 0.05 && Model.OurRobots[PositionerID1].Location.DistanceFrom(Positioner1Pos) > 0.05)
                     //{
-                    sync.SyncDirectPass(engine, Model, PasserID, 60, ShooterID, passTarget, shootTarget, PassSpeed, 8, 60);
+                    sync.SyncDirectPass(engine, Model, PasserID, 0, ShooterID, passTarget, shootTarget, PassSpeed, Program.MaxKickSpeed, 60);
                     //}
                     if (passed && Model.BallState.Location.DistanceFrom(Model.OurRobots[PasserID].Location) > 0.15)
                     {
@@ -553,7 +553,7 @@ namespace MRL.SSL.AIConsole.Strategies
 
                     //if (Model.OurRobots[PositionerID0].Location.DistanceFrom(Positioner0Pos) > 0.05 && Model.OurRobots[PositionerID1].Location.DistanceFrom(Positioner1Pos) > 0.05)
                     //{
-                    sync.SyncChipPass(engine, Model, PasserID, 60, ShooterID, passTarget, shootTarget, PassSpeed, 8, 60, false);
+                    sync.SyncChipPass(engine, Model, PasserID, 0, ShooterID, passTarget, shootTarget, PassSpeed, Program.MaxKickSpeed, 60, false);
                     //}
                     // Planner.Add(PositionerID0, Positioner0SecPos, (GameParameters.OppGoalCenter - Model.OurRobots[PositionerID0].Location).AngleInDegrees, PathType.Safe, true, true, true, true);
                     if (passed && Model.BallState.Location.DistanceFrom(Model.OurRobots[PasserID].Location) > 0.15)
@@ -587,7 +587,7 @@ namespace MRL.SSL.AIConsole.Strategies
                 }
                 else if (CurrentState == (int)State.Go)
                 {
-                    sync.SyncChipPass(engine, Model, PasserID, 60, ShooterID, passTarget, Model.BallState.Location, PassSpeed, Program.MaxKickSpeed, 60, false);
+                    sync.SyncChipPass(engine, Model, PasserID, 0, ShooterID, passTarget, Model.BallState.Location, PassSpeed, Program.MaxKickSpeed, 60, false);
                     if (Model.OurRobots[ShooterID].Location.DistanceFrom(shooterPos) > 0.1)
                     {
                         Planner.Add(PositionerID0, Positioner0SecPos, (GameParameters.OppGoalCenter - Model.OurRobots[PositionerID0].Location).AngleInDegrees, PathType.Safe, true, true, true, true);

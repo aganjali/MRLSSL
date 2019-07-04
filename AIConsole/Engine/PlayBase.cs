@@ -115,7 +115,7 @@ namespace MRL.SSL.AIConsole.Engine
             }
             if (defenderRobots > 5)
             {
-                r = typeof(strategyPositioner1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                r = typeof(strategyPositioner1Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
                 roles.Add(new RoleInfo(r, 1, 0));
                 marker4thirdAttacker = true;
             }
@@ -182,8 +182,8 @@ namespace MRL.SSL.AIConsole.Engine
             if (matched.Any(w => w.Value.GetType() == typeof(DefenderMarkerNormalRole3)))
                 marker3 = matched.Where(w => w.Value.GetType() == typeof(DefenderMarkerNormalRole3)).First().Key;
             int? positioner1 = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(strategyPositioner1)))
-                positioner1 = matched.Where(w => w.Value.GetType() == typeof(strategyPositioner1)).First().Key;
+            if (matched.Any(w => w.Value.GetType() == typeof(strategyPositioner1Role)))
+                positioner1 = matched.Where(w => w.Value.GetType() == typeof(strategyPositioner1Role)).First().Key;
             #endregion
             #region GetInformations
             Position2D? GoaliPos = Positions.Where(w => w.Key.GetType() == typeof(GoalieCornerRole)).First().Value;
@@ -241,8 +241,8 @@ namespace MRL.SSL.AIConsole.Engine
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, marker3, typeof(DefenderMarkerNormalRole3)))
                 Functions[marker3.Value] = (eng, wmd) => GetRole<DefenderMarkerNormalRole3>(marker3.Value).Mark(eng, wmd, marker3.Value, Marker3Pos.Value, Marker3ang);
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, positioner1, typeof(strategyPositioner1)))
-                Functions[positioner1.Value] = (eng, wmd) => GetRole<strategyPositioner1>(positioner1.Value).Perform(engine, Model, positioner1.Value);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, positioner1, typeof(strategyPositioner1Role)))
+                Functions[positioner1.Value] = (eng, wmd) => GetRole<strategyPositioner1Role>(positioner1.Value).Perform(engine, Model, positioner1.Value);
             #endregion
             #region Select Strategy Ids
             StrategyIds = new List<int>();

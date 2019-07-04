@@ -71,6 +71,7 @@ namespace MRL.SSL.GameDefinitions
         public static Position2D ballPlacementPos = new Position2D();
         public const int CameraCount = 2;
         public const int VisionPcCounts = 2;
+        public const double stopMaxSpeed = 1.3;
     }
 
 }

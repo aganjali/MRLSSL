@@ -49,7 +49,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
             }
 
-            PreviouslyAssignedRoles = CurrentlyAssignedRoles;
+           // PreviouslyAssignedRoles = CurrentlyAssignedRoles;
 
             #region Matcher
             RoleBase r;

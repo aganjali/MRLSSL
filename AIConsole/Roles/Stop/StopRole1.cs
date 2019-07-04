@@ -87,8 +87,8 @@ namespace MRL.SSL.AIConsole.Roles
                 ballStateFast = Model.BallStateFast;
             }
             Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 1);
-            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, 1, false);
+            Planner.SetParameter(RobotID, StaticVariables.stopMaxSpeed);
+            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, StaticVariables.stopMaxSpeed, false);
         }
 
         public SingleWirelessCommand LongStop(GameStrategyEngine engine, MRL.SSL.GameDefinitions.WorldModel Model, int RobotID)

@@ -93,7 +93,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
             r = typeof(Marker1Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 0.1, 0));
-            r = typeof(Marker2Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            r = typeof(MarkerAttackerRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 0.1, 0));
 
 
@@ -130,8 +130,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
 
             int? attacker2ID = null;
-            if (matched.Any(w => w.Value.GetType() == typeof(Marker2Normal8Robot)))
-                attacker2ID = matched.Where(w => w.Value.GetType() == typeof(Marker2Normal8Robot)).First().Key;
+            if (matched.Any(w => w.Value.GetType() == typeof(MarkerAttackerRole2)))
+                attacker2ID = matched.Where(w => w.Value.GetType() == typeof(MarkerAttackerRole2)).First().Key;
             int? on1 = null;
             if (matched.Any(w => w.Value.GetType() == typeof(OnLineRole1)))
                 on1 = matched.Where(w => w.Value.GetType() == typeof(OnLineRole1)).First().Key;

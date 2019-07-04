@@ -221,6 +221,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 AddRoleInfo(roles, freeRole, 1, 0);
                 AddRoleInfo(roles, typeof(RegionalDefenderRole), 1, 0);
                 AddRoleInfo(roles, typeof(RegionalDefenderRole2), 1, 0);
+                AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
+                AddRoleInfo(roles, typeof(strategyPositioner1Role), 1, 0);
 
                 List<int> ids = new List<int>();
                 if (Model.GoalieID.HasValue)
@@ -231,7 +233,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
 
-                int? n1 = null, n2 = null, regional2 = null, regional = null, golie = null, gotopoint = null;
+                int? n1 = null, n2 = null, regional2 = null, regional = null, golie = null, gotopoint = null,attacker = null,stopCover=null;
 
 
                 n1 = getID(assigenroles, typeof(DefenderCornerRole1));
@@ -241,14 +243,21 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 if (Model.GoalieID.HasValue && Model.OurRobots.ContainsKey(Model.GoalieID.Value))
                     golie = Model.GoalieID;
                 gotopoint = getID(assigenroles, freeRole);
-
+                stopCover = getID(assigenroles, typeof(CornerStopRole));
+                attacker = getID(assigenroles, typeof(strategyPositioner1Role));
 
                 var normal1 = infos.Single(s => s.RoleType == typeof(DefenderCornerRole1));
                 var normal2 = infos.Single(s => s.RoleType == typeof(DefenderCornerRole2));
                 var reg = infos.Single(s => s.RoleType == typeof(RegionalDefenderRole));
                 var reg2 = infos.Single(s => s.RoleType == typeof(RegionalDefenderRole2));
                 var gol = infos.Single(s => s.RoleType == typeof(GoalieCornerRole));
-
+                #region new attacker and rotational stopcover 
+                //robocup 2019 VaHiD
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stopCover, typeof(CornerStopRole)))
+                    Functions[stopCover.Value] = (eng, wmd) => GetRole<CornerStopRole>(stopCover.Value).Run(engine, Model, stopCover.Value, -20 , 90);
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacker, typeof(strategyPositioner1Role)))
+                    Functions[attacker.Value] = (eng, wmd) => GetRole<strategyPositioner1Role>(attacker.Value).Perform(engine, Model, attacker.Value);
+                #endregion
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n1, typeof(DefenderCornerRole1)))
                     Functions[n1.Value] = (eng, wmd) => GetRole<DefenderCornerRole1>(n1.Value).Run(eng, wmd, n1.Value, normal1.DefenderPosition.Value, normal1.Teta);
                 DefenceTest.WeHaveDefenderCornerRole1 = true;
@@ -452,6 +461,9 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
                 AddRoleInfo(roles, typeof(DefenderCornerRole2), 1, 0);
                 AddRoleInfo(roles, freeRole, 1, 0);
+                AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
+                AddRoleInfo(roles, typeof(strategyPositioner1Role), 1, 0);
+
                 if (!usenewmarker)
                     AddRoleInfo(roles, typeof(DefenderMarkerRole), 1, 0);
                 else
@@ -468,7 +480,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
 
-                int? n1 = null, n2 = null, marker = null, regional = null, golie = null, mark2 = null;
+                int? n1 = null, n2 = null, marker = null, regional = null, golie = null, mark2 = null, attacker = null, stopCover = null;
 
                 n1 = getID(assigenroles, typeof(DefenderCornerRole1));
                 n2 = getID(assigenroles, typeof(DefenderCornerRole2));
@@ -483,7 +495,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 if (Model.GoalieID.HasValue && Model.OurRobots.ContainsKey(Model.GoalieID.Value))
                     golie = Model.GoalieID;
                 mark2 = getID(assigenroles, freeRole);
-
+                stopCover = getID(assigenroles, typeof(CornerStopRole));
+                attacker = getID(assigenroles, typeof(strategyPositioner1Role));
 
 
                 var normal1 = infos.Single(s => s.RoleType == typeof(DefenderCornerRole1));
@@ -500,7 +513,14 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                     mark = infos.Single(s => s.RoleType == typeof(NewDefenderMrkerRole));
                 var gol = infos.Single(s => s.RoleType == typeof(GoalieCornerRole));
 
+                #region new attacker and rotational stopcover 
+                //robocup 2019 VaHiD
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stopCover, typeof(CornerStopRole)))
+                    Functions[stopCover.Value] = (eng, wmd) => GetRole<CornerStopRole>(stopCover.Value).Run(engine, Model, stopCover.Value, -20, 90);
 
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacker, typeof(strategyPositioner1Role)))
+                    Functions[attacker.Value] = (eng, wmd) => GetRole<strategyPositioner1Role>(attacker.Value).Perform(engine, Model, attacker.Value);
+                #endregion
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n1, typeof(DefenderCornerRole1)))
                     Functions[n1.Value] = (eng, wmd) => GetRole<DefenderCornerRole1>(n1.Value).Run(eng, wmd, n1.Value, normal1.DefenderPosition.Value, normal1.Teta);
                 DefenceTest.WeHaveDefenderCornerRole1 = true;
@@ -712,7 +732,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 }
 
                 AddRoleInfo(roles, freeRole, 1, 0);
-
+                AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
+                AddRoleInfo(roles, typeof(strategyPositioner1Role), 1, 0);
 
 
 
@@ -724,7 +745,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
 
-                int? n1 = null, n2 = null, marker = null, regional = null, golie = null, mark2 = null;
+                int? n1 = null, n2 = null, marker = null, regional = null, golie = null, mark2 = null, attacker = null, stopCover = null;
 
                 n1 = getID(assigenroles, typeof(DefenderCornerRole1));
                 n2 = getID(assigenroles, typeof(DefenderCornerRole2));
@@ -741,7 +762,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 if (Model.GoalieID.HasValue && Model.OurRobots.ContainsKey(Model.GoalieID.Value))
                     golie = Model.GoalieID;
                 mark2 = getID(assigenroles, freeRole);  ///////////////////////////////////// TODO: OR DEFENDER 2
-
+                stopCover = getID(assigenroles, typeof(CornerStopRole));
+                attacker = getID(assigenroles, typeof(strategyPositioner1Role));
 
                 var normal1 = infos.Single(s => s.RoleType == typeof(DefenderCornerRole1));
                 var normal2 = infos.Single(s => s.RoleType == typeof(DefenderCornerRole2));
@@ -757,6 +779,14 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                     mark = infos.Single(s => s.RoleType == typeof(NewDefenderMrkerRole));
                 var gol = infos.Single(s => s.RoleType == typeof(GoalieCornerRole));
 
+                #region new attacker and rotational stopcover 
+                //robocup 2019 VaHiD
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stopCover, typeof(CornerStopRole)))
+                    Functions[stopCover.Value] = (eng, wmd) => GetRole<CornerStopRole>(stopCover.Value).Run(engine, Model, stopCover.Value, -20, 90);
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacker, typeof(strategyPositioner1Role)))
+                    Functions[attacker.Value] = (eng, wmd) => GetRole<strategyPositioner1Role>(attacker.Value).Perform(engine, Model, attacker.Value);
+                #endregion
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n1, typeof(DefenderCornerRole1)))
                     Functions[n1.Value] = (eng, wmd) => GetRole<DefenderCornerRole1>(n1.Value).Run(eng, wmd, n1.Value, normal1.DefenderPosition.Value, normal1.Teta);
                 DefenceTest.WeHaveDefenderCornerRole1 = true;
@@ -1003,6 +1033,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
                 }
 
+                AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
+                AddRoleInfo(roles, typeof(strategyPositioner1Role), 1, 0);
 
                 List<int> ids = new List<int>();
                 if (Model.GoalieID.HasValue)
@@ -1012,7 +1044,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
 
-                int? n1 = null, n2 = null, marker = null, regional = null, golie = null, mark2 = null;
+                int? n1 = null, n2 = null, marker = null, regional = null, golie = null, mark2 = null, attacker = null, stopCover = null;
 
                 if (!ballismoved)
                     n1 = getID(assigenroles, typeof(DefenderCornerRole3));
@@ -1033,6 +1065,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                 if (Model.GoalieID.HasValue && Model.OurRobots.ContainsKey(Model.GoalieID.Value))
                     golie = Model.GoalieID;
                 mark2 = getID(assigenroles, freeRole);  ///////////////////////////////////// TODO: OR DEFENDER 2
+                stopCover = getID(assigenroles, typeof(CornerStopRole));
+                attacker = getID(assigenroles, typeof(strategyPositioner1Role));
 
                 DefenceInfo normal1 = new DefenceInfo();
                 if (!ballismoved)
@@ -1053,6 +1087,15 @@ namespace MRL.SSL.AIConsole.Plays.Opp
                     mark = infos.Single(s => s.RoleType == typeof(NewDefenderMrkerRole));
                 var gol = infos.Single(s => s.RoleType == typeof(GoalieCornerRole));
 
+
+                #region new attacker and rotational stopcover 
+                //robocup 2019 VaHiD
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stopCover, typeof(CornerStopRole)))
+                    Functions[stopCover.Value] = (eng, wmd) => GetRole<CornerStopRole>(stopCover.Value).Run(engine, Model, stopCover.Value, -20, 90);
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attacker, typeof(strategyPositioner1Role)))
+                    Functions[attacker.Value] = (eng, wmd) => GetRole<strategyPositioner1Role>(attacker.Value).Perform(engine, Model, attacker.Value);
+                #endregion
                 if (!ballismoved)
                 {
                     if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n1, typeof(DefenderCornerRole3)))
@@ -1194,20 +1237,20 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             }
             #endregion
             // added io2018 vahid
-            if (Model.OurRobots.Count > 6)
-            {
-                List<int> ids = new List<int>();
-                if (Model.GoalieID.HasValue)
-                    ids = Model.OurRobots.Where(w => w.Key != Model.GoalieID.Value).Select(s => s.Key).ToList();
-                else
-                    ids = Model.OurRobots.Select(s => s.Key).ToList();
-                AddRoleInfo(roles, typeof(StaticPositionerRole), 1, 0);
-                var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
-                int? SPR = null;
-                SPR = getID(assigenroles, typeof(StaticPositionerRole));
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, SPR, typeof(StaticPositionerRole)))
-                    Functions[SPR.Value] = (eng, wmd) => GetRole<StaticPositionerRole>(SPR.Value).perform(engine, Model, SPR.Value, new Position2D(3.5, 4 * Math.Sign(Model.BallState.Location.Y)));
-            }
+            //if (Model.OurRobots.Count > 6)
+            //{
+            //    List<int> ids = new List<int>();
+            //    if (Model.GoalieID.HasValue)
+            //        ids = Model.OurRobots.Where(w => w.Key != Model.GoalieID.Value).Select(s => s.Key).ToList();
+            //    else
+            //        ids = Model.OurRobots.Select(s => s.Key).ToList();
+            //    AddRoleInfo(roles, typeof(StaticPositionerRole), 1, 0);
+            //    var assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
+            //    int? SPR = null;
+            //    SPR = getID(assigenroles, typeof(StaticPositionerRole));
+            //    if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, SPR, typeof(StaticPositionerRole)))
+            //        Functions[SPR.Value] = (eng, wmd) => GetRole<StaticPositionerRole>(SPR.Value).perform(engine, Model, SPR.Value, new Position2D(3.5, 4 * Math.Sign(Model.BallState.Location.Y)));
+            //}
             ControlParameters.BallIsMoved = ballismoved;
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;
             DefenceTest.BallTest = FreekickDefence.testDefenceState;

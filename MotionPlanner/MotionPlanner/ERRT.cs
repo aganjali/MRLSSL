@@ -435,7 +435,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 obsdic = obs.ObstaclesList.ToDictionary(k => k.Key, v => v.Value);
                 foreach (var item in obsdic)
                 {
-                    if (item.Value.Type != ObstacleType.ZoneCircle && item.Value.Type != ObstacleType.ZoneRectangle && item.Value.Type != ObstacleType.Rectangle)
+                    if (item.Value.Type != ObstacleType.ZoneCircle && item.Value.Type != ObstacleType.ZoneRectangle )
                     {
                         if (ii == 1 && item.Value.Meet(Init, MotionPlannerParameters.RobotRadi, true))
                         {
