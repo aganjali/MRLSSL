@@ -6,11 +6,13 @@ using MRL.SSL.AIConsole.Engine;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.AIConsole.Roles;
 using MRL.SSL.Planning.MotionPlanner;
+using MRL.SSL.CommonClasses.MathLibrary;
 
 namespace MRL.SSL.AIConsole.Plays.Opp
 {
     class OppPenaltyPlay : PlayBase
     {
+        Position2D? ballFirst = null;
         public SingleObjectState ballState = new SingleObjectState();
         public SingleObjectState ballStateFast = new SingleObjectState();
         GameDefinitions.GameStatus LastState = GameStatus.Normal;
@@ -18,8 +20,9 @@ namespace MRL.SSL.AIConsole.Plays.Opp
         {
             //return false;
             double dist, DistFromBorder;
-            if (LastState == GameStatus.Penalty_Opponent_Go && !GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.07, out dist, out DistFromBorder))
-            {
+            if (LastState == GameStatus.Penalty_OurTeam_Go && (!GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.07, out dist, out DistFromBorder) ||
+                    (ballFirst.HasValue && Model.BallState.Location.DistanceFrom(ballFirst.Value) > 0.2)))
+            { 
                 LastState = GameStatus.Normal;
                 Status = GameStatus.Normal;
                 return false;
@@ -32,6 +35,8 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
+            if (!ballFirst.HasValue)
+                ballFirst = Model.BallState.Location;
             FreekickDefence.weAreInKickoff = false;
             DefenceTest.BallTest = FreekickDefence.testDefenceState;
             DefenceTest.MakeOutPut();
@@ -79,6 +84,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
             rt = typeof(OppPenaltyPositionerRole5).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(rt, 1, 0));
+
 
             Dictionary<int, RoleBase> matched;
             if (Model.GoalieID.HasValue)

@@ -36,78 +36,80 @@ namespace MRL.SSL.AIConsole.Roles
         int finishCounter = 0;
         public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, int OtherRobot, int Mode)
         {
+
             GetBallSkill activeSkill = new GetBallSkill();
             //var speed = Math.Min(Math.Max(0.9, 0.3 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)), 4);
             double speed = CalShootSpeed(Model, StaticVariables.ballPlacementPos);
             Planner.ChangeDefaulteParams(RobotID, false);
             Planner.SetParameter(RobotID, 1.5);
             DrawingObjects.AddObject(new StringDraw("CurrentState= " + (states)CurrentState, "bpshooter_state", Model.OurRobots[RobotID].Location + new Vector2D(1, 1)));
+            if (!GameParameters.IsInField(Model.BallState.Location, 0))
+            {
+                const double angleTreshInDegree = 20;
+                //double shootSpeedTresh = CalShooterSpeed(Model , StaticVariables.ballPlacementPos);
+
+                Position2D ballLoc = Model.BallState.Location;
+                Position2D shootTarget = new Position2D();
+                if (ballLoc.X > GameParameters.OurLeftCorner.X - 0.1)
+                {
+                    if (ballLoc.DistanceFrom(GameParameters.OurRightCorner) < ballLoc.DistanceFrom(GameParameters.OurLeftCorner))
+                    {
+                        Vector2D shootVec = Vector2D.FromAngleSize(-angleTreshInDegree * Math.PI / 180, 1);
+                        shootTarget = ballLoc + shootVec;
+                    }
+                    else
+                    {
+                        Vector2D shootVec = Vector2D.FromAngleSize(angleTreshInDegree * Math.PI / 180, 1);
+                        shootTarget = ballLoc + shootVec;
+                    }
+                }
+                else if (ballLoc.X < -(GameParameters.OurLeftCorner.X - 0.1))
+                {
+                    if (ballLoc.DistanceFrom(GameParameters.OppRightCorner) < ballLoc.DistanceFrom(GameParameters.OppLeftCorner))
+                    {
+                        Vector2D shootVec = Vector2D.FromAngleSize((-180 - angleTreshInDegree) * Math.PI / 180, 1);
+                        shootTarget = ballLoc + shootVec;
+                    }
+                    else
+                    {
+                        Vector2D shootVec = Vector2D.FromAngleSize((-180 + angleTreshInDegree) * Math.PI / 180, 1);
+                        shootTarget = ballLoc + shootVec;
+                    }
+                }
+                else if (ballLoc.Y > (GameParameters.OurLeftCorner.Y - 0.1))
+                {
+                    if (ballLoc.X > 0)
+                    {
+                        Vector2D shootVec = Vector2D.FromAngleSize((90 + angleTreshInDegree) * Math.PI / 180, 1);
+                        shootTarget = ballLoc + shootVec;
+                    }
+                    else if (ballLoc.X < 0)
+                    {
+                        Vector2D shootVec = Vector2D.FromAngleSize((90 - angleTreshInDegree) * Math.PI / 180, 1);
+                        shootTarget = ballLoc + shootVec;
+                    }
+                }
+                else if (ballLoc.Y < -(GameParameters.OppLeftCorner.Y - 0.1))
+                {
+                    if (ballLoc.X > 0)
+                    {
+                        Vector2D shootVec = Vector2D.FromAngleSize((-90 - angleTreshInDegree) * Math.PI / 180, 1);
+                        shootTarget = ballLoc + shootVec;
+                    }
+                    else if (ballLoc.X < 0)
+                    {
+                        Vector2D shootVec = Vector2D.FromAngleSize((-90 + angleTreshInDegree) * Math.PI / 180, 1);
+                        shootTarget = ballLoc + shootVec;
+                    }
+                }
+                GetSkill<GetBallSkill>().SetAvoidDangerZone(false, false);
+                GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, shootTarget, false, 0.08, true);
+                Planner.AddKick(RobotID, kickPowerType.Speed, false, speed);
+                return;
+            }
             if (CurrentState == (int)states.pass)
             {
-                if (!GameParameters.IsInField(Model.BallState.Location,0))
-                {
-                    const double angleTreshInDegree = 20;
-                    //double shootSpeedTresh = CalShooterSpeed(Model , StaticVariables.ballPlacementPos);
-
-                    Position2D ballLoc = Model.BallState.Location;
-                    Position2D shootTarget = new Position2D();
-                    if (ballLoc.X >GameParameters.OurLeftCorner.X - 0.1)
-                    {
-                        if (ballLoc.DistanceFrom(GameParameters.OurRightCorner)< ballLoc.DistanceFrom(GameParameters.OurLeftCorner))
-                        {
-                            Vector2D shootVec = Vector2D.FromAngleSize(-angleTreshInDegree * Math.PI/180,1);
-                            shootTarget = ballLoc + shootVec;
-                        }
-                        else
-                        {
-                            Vector2D shootVec = Vector2D.FromAngleSize(angleTreshInDegree * Math.PI / 180, 1);
-                            shootTarget = ballLoc + shootVec;
-                        }
-                    }
-                    else if (ballLoc.X < -(GameParameters.OurLeftCorner.X - 0.1))
-                    {
-                        if (ballLoc.DistanceFrom(GameParameters.OppRightCorner) < ballLoc.DistanceFrom(GameParameters.OppLeftCorner))
-                        {
-                            Vector2D shootVec = Vector2D.FromAngleSize((-180-angleTreshInDegree) * Math.PI / 180, 1);
-                            shootTarget = ballLoc + shootVec;
-                        }
-                        else
-                        {
-                            Vector2D shootVec = Vector2D.FromAngleSize((-180+angleTreshInDegree) * Math.PI / 180, 1);
-                            shootTarget = ballLoc + shootVec;
-                        }
-                    }
-                    else if (ballLoc.Y > (GameParameters.OurLeftCorner.Y - 0.1) )
-                    {
-                        if (ballLoc.X>0)
-                        {
-                            Vector2D shootVec = Vector2D.FromAngleSize((90 + angleTreshInDegree) * Math.PI / 180, 1);
-                            shootTarget = ballLoc + shootVec;
-                        }
-                        else if (ballLoc.X<0)
-                        {
-                            Vector2D shootVec = Vector2D.FromAngleSize((90 - angleTreshInDegree) * Math.PI / 180, 1);
-                            shootTarget = ballLoc + shootVec;
-                        }
-                    }
-                    else if (ballLoc.Y < -(GameParameters.OppLeftCorner.Y - 0.1))
-                    {
-                        if (ballLoc.X > 0)
-                        {
-                            Vector2D shootVec = Vector2D.FromAngleSize((-90 - angleTreshInDegree) * Math.PI / 180, 1);
-                            shootTarget = ballLoc + shootVec;
-                        }
-                        else if (ballLoc.X < 0)
-                        {
-                            Vector2D shootVec = Vector2D.FromAngleSize((-90 + angleTreshInDegree) * Math.PI / 180, 1);
-                            shootTarget = ballLoc + shootVec;
-                        }
-                    }
-                    GetSkill<GetBallSkill>().SetAvoidDangerZone(false, false);
-                    GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, shootTarget, false, 0.08, true);
-                    Planner.AddKick(RobotID, kickPowerType.Speed, false, speed);
-                    return;
-                }
+                
                 if (Model.OurRobots[OtherRobot].Location.DistanceFrom(StaticVariables.ballPlacementPos) > 0.20 /*|| Model.BallState.Speed.Size > 0.2*/)
                 {
                     double dist, boarder;
@@ -305,7 +307,7 @@ namespace MRL.SSL.AIConsole.Roles
             }
             else if (CurrentState == (int)states.moveBall)
             {
-                if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) >= .12)
+                if (Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos) >= 12)
                 {
                     CurrentState = (int)states.pass;
                 }

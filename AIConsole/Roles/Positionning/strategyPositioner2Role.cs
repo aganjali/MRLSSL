@@ -9,7 +9,7 @@ using MRL.SSL.Planning.GamePlanner.Types;
 using System.Drawing;
 using MRL.SSL.Planning.MotionPlanner;
 
-namespace MRL.SSL.AIConsole.Roles.Positionning
+namespace MRL.SSL.AIConsole.Roles
 {
     class strategyPositioner2Role : RoleBase
     {

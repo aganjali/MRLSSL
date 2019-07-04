@@ -15,7 +15,7 @@ namespace MRL.SSL.AIConsole.Strategies
     {
         #region Param
         Syncronizer sync;
-        const double initDist = 0.15, tresh = 0.01, waitTresh = 20, finishTresh = 500, maxWaitTresh = 300, faildMaxCounter = 6, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.3, faildFarPassSpeedTresh = 0.3, faildBallDistSecondPass = 0.3, faildNearPassSpeedTresh = -0.03;
+        const double initDist = 0.15, tresh = 0.2, waitTresh = 10, finishTresh = 500, maxWaitTresh = 120, faildMaxCounter = 6, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.3, faildFarPassSpeedTresh = 0.3, faildBallDistSecondPass = 0.3, faildNearPassSpeedTresh = -0.03;
         bool first = true, inPassState = false, Debug = true;
         bool passed, passerFirsFlag, chipOrigin;
         int PasserID, ShooterID, PositionerID0, PositionerID1, PositionerID2;
@@ -234,7 +234,7 @@ namespace MRL.SSL.AIConsole.Strategies
                 else if (dAngle < -180)
                     dAngle += 360;
 
-                if (Model.OurRobots[PasserID].Location.DistanceFrom(passerPos) < tresh && Model.OurRobots[ShooterID].Location.DistanceFrom(shooterPos) < tresh && Model.OurRobots[PositionerID0].Location.DistanceFrom(Positioner0Pos) < tresh && Model.OurRobots[PositionerID1].Location.DistanceFrom(DefenderPos) < tresh)
+                if (Model.OurRobots[PasserID].Location.DistanceFrom(passerPos) < tresh && Model.OurRobots[ShooterID].Location.DistanceFrom(shooterPos) < 0.2 && Model.OurRobots[PositionerID0].Location.DistanceFrom(Positioner0Pos) < 0.2 && Model.OurRobots[PositionerID1].Location.DistanceFrom(DefenderPos) < 0.2)
                     counter++;
                 if (counter > waitTresh || timeLimitCounter > maxWaitTresh)
                 {
@@ -525,7 +525,7 @@ namespace MRL.SSL.AIConsole.Strategies
                     Planner.Add(PositionerID0, Positioner0SecPos, (GameParameters.OppGoalCenter - Model.OurRobots[PositionerID0].Location).AngleInDegrees, PathType.Safe, true, true, true, true);
                     //if (Model.OurRobots[PositionerID0].Location.DistanceFrom(Positioner0Pos) > 0.05 && Model.OurRobots[PositionerID1].Location.DistanceFrom(Positioner1Pos) > 0.05)
                     //{
-                    sync.SyncDirectPass(engine, Model, PasserID, 0, ShooterID, passTarget, shootTarget, PassSpeed, Program.MaxKickSpeed, 60);
+                    sync.SyncDirectPass(engine, Model, PasserID, 0, ShooterID, passTarget, shootTarget, PassSpeed, Program.MaxKickSpeed, 0);
                     //}
                     if (passed && Model.BallState.Location.DistanceFrom(Model.OurRobots[PasserID].Location) > 0.15)
                     {
@@ -553,7 +553,7 @@ namespace MRL.SSL.AIConsole.Strategies
 
                     //if (Model.OurRobots[PositionerID0].Location.DistanceFrom(Positioner0Pos) > 0.05 && Model.OurRobots[PositionerID1].Location.DistanceFrom(Positioner1Pos) > 0.05)
                     //{
-                    sync.SyncChipPass(engine, Model, PasserID, 0, ShooterID, passTarget, shootTarget, PassSpeed, Program.MaxKickSpeed, 60, false);
+                    sync.SyncChipPass(engine, Model, PasserID, 0, ShooterID, passTarget, shootTarget, PassSpeed, Program.MaxKickSpeed, 0, false);
                     //}
                     // Planner.Add(PositionerID0, Positioner0SecPos, (GameParameters.OppGoalCenter - Model.OurRobots[PositionerID0].Location).AngleInDegrees, PathType.Safe, true, true, true, true);
                     if (passed && Model.BallState.Location.DistanceFrom(Model.OurRobots[PasserID].Location) > 0.15)
@@ -587,7 +587,7 @@ namespace MRL.SSL.AIConsole.Strategies
                 }
                 else if (CurrentState == (int)State.Go)
                 {
-                    sync.SyncChipPass(engine, Model, PasserID, 0, ShooterID, passTarget, Model.BallState.Location, PassSpeed, Program.MaxKickSpeed, 60, false);
+                    sync.SyncChipPass(engine, Model, PasserID, 0, ShooterID, passTarget, Model.BallState.Location, PassSpeed, Program.MaxKickSpeed, 0, false);
                     if (Model.OurRobots[ShooterID].Location.DistanceFrom(shooterPos) > 0.1)
                     {
                         Planner.Add(PositionerID0, Positioner0SecPos, (GameParameters.OppGoalCenter - Model.OurRobots[PositionerID0].Location).AngleInDegrees, PathType.Safe, true, true, true, true);

@@ -298,19 +298,27 @@ namespace MRL.SSL.Planning.MotionPlanner
             double ww = stat.AngularSpeed.Value + finalw;
 
             if (Math.Abs(Vtemp.X) > vxMax)
-                Vtemp.X = Math.Sign(Vtemp.X) * Math.Abs(vxMax);
-
+            {
+                if (Math.Abs(stat.Speed.X) > _maxSpeed.X)
+                    Vtemp.X = stat.Speed.X + _maxAcceleration.X * Math.Sign(-stat.Speed.X) / _framCount;
+                else
+                    Vtemp.X = Math.Sign(Vtemp.X) * Math.Abs(vxMax);
+            }
             if (Math.Abs(Vtemp.Y) > vyMax)
-                Vtemp.Y = Math.Sign(Vtemp.Y) * Math.Abs(vyMax);
-
+            {
+                if (Math.Abs(stat.Speed.Y) > _maxSpeed.Y)
+                    Vtemp.Y = stat.Speed.Y + _maxAcceleration.Y * Math.Sign(-stat.Speed.Y) / _framCount;
+                else
+                    Vtemp.Y = Math.Sign(Vtemp.Y) * Math.Abs(vyMax);
+            }
             if (Math.Abs(ww) > _maxAngularSpeed)
                 ww = Math.Sign(ww) * Math.Abs(ww);
 
             Vector2D V = new Vector2D();
             double outW = 0;
             #endregion
-            if (RobotID == 0)
-                aTunner.Drawings(PIDType.X, RobotID);
+            //if (RobotID == 0)
+            //    aTunner.Drawings(PIDType.X, RobotID);
             #region Accuercy
             if ((Math.Abs(dX) < TunningDistance && path.Count <= 2) || (path.Count > 2 && pathLength < _tunningDistance))
             {
