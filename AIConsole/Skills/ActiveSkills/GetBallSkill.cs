@@ -427,7 +427,7 @@ namespace MRL.SSL.AIConsole.Skills
             double segmentConst = 0.8;
             double maxRearDistance = 0.19;
             double trackBackBall = 0.1;
-            double refrenceBackBall = 0.05;
+            double refrenceBackBall = 0.07;
             if (!useDefaultBackBall)
             {
                 trackBackBall = backB;
@@ -1163,7 +1163,7 @@ namespace MRL.SSL.AIConsole.Skills
             if (Debug)
                 CharterData.AddData("dX", -(dX));
             double pidout = -pidSideX.Calculate(dX + extX, 0);
-            MaxSpeed.Y = (ballPlacement)?0.5:3;
+            MaxSpeed.Y = (ballPlacement)?0.5:2;
             Vtemp = new Vector2D(pidout, Math.Min(Math.Abs(vy), MaxSpeed.Y) * Math.Sign(vy)); //todo: V OUT
 
             Vector2D p = new Vector2D(Target2GO.X + extX, Target2GO.Y + extY);
