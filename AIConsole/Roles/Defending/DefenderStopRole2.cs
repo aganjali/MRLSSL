@@ -35,6 +35,8 @@ namespace MRL.SSL.AIConsole.Roles
             bool AvoidBall = false;
             if (Model.OurRobots[RobotID].Location.DistanceFrom(targ) > 1)
                 AvoidBall = true;
+            AvoidBall = true;
+
             SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, false, AvoidBall, 3.5, true);
             SWC.isChipKick = isChipKick;
             SWC.KickPower = kickPower;
@@ -57,9 +59,10 @@ namespace MRL.SSL.AIConsole.Roles
             bool AvoidBall = false;
             if (Model.OurRobots[RobotID].Location.DistanceFrom(targ) > 1)
                 AvoidBall = true;
+            AvoidBall = true;
             Planner.ChangeDefaulteParams(RobotID, false);
             Planner.SetParameter(RobotID, 1);
-            SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, false, AvoidBall, 1, true);
+            SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, true, AvoidBall, 1, false);
             SWC.isChipKick = isChipKick;
             SWC.KickPower = kickPower;
             return SWC;

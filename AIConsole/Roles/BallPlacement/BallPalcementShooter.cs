@@ -37,7 +37,8 @@ namespace MRL.SSL.AIConsole.Roles
         public void Perform(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, int OtherRobot, int Mode)
         {
             GetBallSkill activeSkill = new GetBallSkill();
-            var speed = Math.Min(Math.Max(0.9, 0.3 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)), 4);
+            //var speed = Math.Min(Math.Max(0.9, 0.3 * Model.BallState.Location.DistanceFrom(StaticVariables.ballPlacementPos)), 4);
+            double speed = CalShootSpeed(Model, StaticVariables.ballPlacementPos);
             Planner.ChangeDefaulteParams(RobotID, false);
             Planner.SetParameter(RobotID, 1.5);
             DrawingObjects.AddObject(new StringDraw("CurrentState= " + (states)CurrentState, "bpshooter_state", Model.OurRobots[RobotID].Location + new Vector2D(1, 1)));
@@ -46,7 +47,7 @@ namespace MRL.SSL.AIConsole.Roles
                 if (!GameParameters.IsInField(Model.BallState.Location,0))
                 {
                     const double angleTreshInDegree = 20;
-                    const double shootSpeedTresh = 3;
+                    //double shootSpeedTresh = CalShooterSpeed(Model , StaticVariables.ballPlacementPos);
 
                     Position2D ballLoc = Model.BallState.Location;
                     Position2D shootTarget = new Position2D();
@@ -104,7 +105,7 @@ namespace MRL.SSL.AIConsole.Roles
                     }
                     GetSkill<GetBallSkill>().SetAvoidDangerZone(false, false);
                     GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, shootTarget, false, 0.08, true);
-                    Planner.AddKick(RobotID, kickPowerType.Speed, false, shootSpeedTresh);
+                    Planner.AddKick(RobotID, kickPowerType.Speed, false, speed);
                     return;
                 }
                 if (Model.OurRobots[OtherRobot].Location.DistanceFrom(StaticVariables.ballPlacementPos) > 0.20 /*|| Model.BallState.Speed.Size > 0.2*/)
@@ -373,7 +374,15 @@ namespace MRL.SSL.AIConsole.Roles
             moveBall=4,
             finish=0
         }
-
+        public double CalShootSpeed(WorldModel model , Position2D posToShoot)
+        {
+            Vector2D vec = model.BallState.Location - posToShoot;
+            return Map(vec.Size , 0 , 12 , 3 , 4.5);
+        }
+        double Map(double value, double fromSource, double toSource, double fromTarget, double toTarget)
+        {
+            return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
+        }
         public void Reset()
         {
             //catchSkill = new StarkCatchSkill();

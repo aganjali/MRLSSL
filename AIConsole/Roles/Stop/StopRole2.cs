@@ -101,7 +101,7 @@ namespace MRL.SSL.AIConsole.Roles
             else
             {
                 target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians +0.7, StopDistFromBall);
-                if (ball.X > 2.5 && ball.Y > 1.5)
+                if (ball.X > 2.5 && Math.Abs(ball.Y) > 1.5)
                 {
                     target = ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians + 0.5, StopDistFromBall);
                 }

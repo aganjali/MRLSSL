@@ -22,7 +22,7 @@ namespace MRL.SSL.Planning.MotionPlanner
             _maxDeceleration = new Vector2D(6.5, 6.5);
 
         public Vector2D TargetSpeed = new Vector2D(0, 0);
-        private int _framCount = 60;
+        private int _framCount = (int)StaticVariables.FRAME_RATE;
         double _mean = 0.5, _variance = 0.5;
 
         DrawCollection DG = new DrawCollection();

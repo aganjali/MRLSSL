@@ -125,10 +125,10 @@ namespace MRL.SSL.AIConsole.Roles
                 inf = FreekickDefence.CurrentInfos.Where(w => w.RoleType == this.GetType()).First();
             double distfromborder, dist;
             double teta = 180;
-            if (Model.Status == GameStatus.Stop && GameParameters.IsInDangerousZone(ballState.Location, false, .5, out dist, out distfromborder))
+            if (Model.Status == GameStatus.Stop && GameParameters.IsInDangerousZone(ballState.Location, false, 1.2, out dist, out distfromborder))
             {
                 Line Stop1 = new Line(GameParameters.OurGoalCenter.Extend(0, -.3), GameParameters.OurGoalCenter.Extend(0, -.3) + (ballState.Location - GameParameters.OurGoalCenter.Extend(0, -.3)));
-                Circle Circl = new Circle(ballState.Location, .5);
+                Circle Circl = new Circle(ballState.Location, .9);
                 Target = Circl.Intersect(Stop1).OrderBy(t => t.DistanceFrom(GameParameters.OurGoalCenter)).First();
             }
             else

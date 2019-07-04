@@ -52,7 +52,8 @@ namespace MRL.SSL.AIConsole.Plays
             List<RoleInfo> roles = new List<RoleInfo>();
             if (GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out d, out d2))
                 isInDangerZone = true;
-            if (!isInDangerZone)
+            isInDangerZone = true;
+            if (false && !isInDangerZone)
             {
                 def.Assign(engine, Model, out Positions, out Angles, false, false, false, false);
                 rt = typeof(DefenderNormalRole1).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
