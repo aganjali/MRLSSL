@@ -59,6 +59,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             int? st1ID = FreekickDefence.Static1ID;
             int? st2ID = FreekickDefence.Static2ID;
+        
             //if (Model.OurRobots[st1ID.Value].Location.X > 5 || Model.OurRobots[st2ID.Value].Location.X > 5)
             //{
             if (st1ID.HasValue && st2ID.HasValue && (Model.OurRobots[st1ID.Value].Location.X > 5.1 || Model.OurRobots[st2ID.Value].Location.X > 5.1))
@@ -175,7 +176,7 @@ namespace MRL.SSL.AIConsole.Roles
                                 minDistId = item.Key;
                             }
                         }
-                        if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
+                        if (!IsInOurDangerZone(Model.Opponents[minDistId].Location) && !IsInOurDangerZone(Model.BallState.Location))
                         {
                             target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
                             angle = (Model.Opponents[minDistId].Location - Model.OurRobots[robotID].Location).AngleInDegrees;
@@ -191,7 +192,12 @@ namespace MRL.SSL.AIConsole.Roles
                             }
                         }
                         else
-                            target = Model.OurRobots[robotID].Location;
+                        {
+                            //target = Model.OurRobots[robotID].Location;
+                            //CurrentState = (int)PlayMode.Attack;
+                            target = new Position2D(3, (Model.BallState.Location.Y) / 3);
+
+                        }
 
                     }
                     else
@@ -214,7 +220,7 @@ namespace MRL.SSL.AIConsole.Roles
                                 minDistId = item.Key;
                             }
                         }
-                        if (!IsInOurDangerZone(Model.Opponents[minDistId].Location))
+                        if (!IsInOurDangerZone(Model.Opponents[minDistId].Location) && !IsInOurDangerZone(Model.BallState.Location))
                         {
                             target = GetSkill<MarkSkill>().OnDangerZoneMark(robotID, Model, Model.Opponents[minDistId].Location);
                             angle = (Model.Opponents[minDistId].Location - Model.OurRobots[robotID].Location).AngleInDegrees;
@@ -230,7 +236,12 @@ namespace MRL.SSL.AIConsole.Roles
                             }
                         }
                         else
-                            target = Model.OurRobots[robotID].Location;
+                        {
+                            //target = Model.OurRobots[robotID].Location;
+                            //CurrentState = (int)PlayMode.Attack;
+                            target = new Position2D(3, (Model.BallState.Location.Y) / 3);
+
+                        }
                     }
                     else
                     {
