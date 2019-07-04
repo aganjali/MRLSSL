@@ -45,7 +45,7 @@ namespace MRL.SSL.AIConsole.Roles
             DrawingObjects.AddObject(new StringDraw("CurrentState= " + (states)CurrentState, "bpshooter_state", Model.OurRobots[RobotID].Location + new Vector2D(1, 1)));
             if (!GameParameters.IsInField(Model.BallState.Location, 0))
             {
-                const double angleTreshInDegree = 20;
+                const double angleTreshInDegree = 40;
                 //double shootSpeedTresh = CalShooterSpeed(Model , StaticVariables.ballPlacementPos);
 
                 Position2D ballLoc = Model.BallState.Location;

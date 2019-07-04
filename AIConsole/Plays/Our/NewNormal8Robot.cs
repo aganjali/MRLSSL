@@ -35,7 +35,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
         Dictionary<double, int> lastScores;
         public override bool IsFeasiblel(GameStrategyEngine engine, WorldModel Model, PlayBase LastPlay, ref GameStatus Status)
         {
-            return false;
+            //return false;
             return Status == GameDefinitions.GameStatus.Normal;
         }
 

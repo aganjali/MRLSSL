@@ -15,7 +15,7 @@ namespace MRL.SSL.AIConsole.Strategies
     public class Syncronizer
     {
         double minErrorRef = 0.0001, distOneTouchTresh = 0.8, passSpeedTresh = 0.12, moveBallTresh = 0.1, distBehindBallTresh = 0.08;
-        double rotateInitDist = 0.13, Vmax = 3.0, Amax = 4, calculateInteralTresh = 0.3, extTimeCoef = 1.35, kiCoef = 5.5 / 5.0;
+        double rotateInitDist = 0.13, Vmax = 3.0, Amax = 4, calculateInteralTresh = 0.3, extTimeCoef = 1.2, kiCoef = 5.5 / 5.0;
 
         double passTime, motionTime, errRefrence, accelTime, deccelTime, KI, extendTime, accelDist, deccelDist;
 
@@ -101,7 +101,7 @@ namespace MRL.SSL.AIConsole.Strategies
             get { return gotoPoint; }
         }
         //1.12
-        double kMotionDirect = 1.2, kMotionChip = 1.3, kPassDirect = 1.0, kPassChip = 1.0, kMotionDirectCatch = 1.3, kMotionChipCatch = 1.30, kPassDirectCatch = 1.0, kPassChipCatch = 1.0;
+        double kMotionDirect = 1.0, kMotionChip = 1.1, kPassDirect = 1.0, kPassChip = 1.0, kMotionDirectCatch = 1.3, kMotionChipCatch = 1.30, kPassDirectCatch = 1.0, kPassChipCatch = 1.0;
         Position2D firstBallPos = Position2D.Zero;
         double chipPassOffset = 80;
 

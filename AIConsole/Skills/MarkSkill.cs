@@ -37,8 +37,7 @@ namespace MRL.SSL.AIConsole.Skills
             {
                 target = GameParameters.SegmentIntersect(oppToGoal, dangerZoneRight).Value;
             }
-
-            else if(GameParameters.SegmentIntersect(oppToGoal, dangerZoneTop).HasValue)
+            else if (GameParameters.SegmentIntersect(oppToGoal, dangerZoneLeft).HasValue)
             {
                 target = GameParameters.SegmentIntersect(oppToGoal, dangerZoneLeft).Value;
             }

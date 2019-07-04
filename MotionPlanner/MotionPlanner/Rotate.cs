@@ -503,7 +503,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                     {
                         ay = 3;
                         maxVy = 1;
-                        OUT.Y = ay * StaticVariables.FRAME_PERIOD;
+                        OUT.Y += ay * StaticVariables.FRAME_PERIOD;
 
                         if (OUT.Y > maxVy)
                             OUT.Y = maxVy;

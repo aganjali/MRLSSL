@@ -438,6 +438,8 @@ namespace MRL.SSL.Planning.MotionPlanner
             for (int k = 0; k < 6; k++)
                 for (int l = 0; l < 6 - k; l++)
                     timeR += coefs[k, l] * Math.Pow(vec.Size, k) * Math.Pow(vec.AngleInRadians, l);
+            timeR /= 60.0;
+            timeR *= StaticVariables.FRAME_RATE;
             //      timeR /= StaticVariables.FRAME_PERIOD;
             timeR += (Math.Max(0, init2Target.Size - maxD) / 2.8) / StaticVariables.FRAME_PERIOD;
 

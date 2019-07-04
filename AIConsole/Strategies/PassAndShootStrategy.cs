@@ -80,7 +80,7 @@ namespace MRL.SSL.AIConsole.Strategies
 
         public override void FillInformation()
         {
-            UseOnlyInMiddle = true; //TODO: true for main game
+            UseOnlyInMiddle = false; //TODO: true for main game
             StrategyName = "SimplePassShoot2013";
             AttendanceSize = 2;
             UseInMiddle = true;
