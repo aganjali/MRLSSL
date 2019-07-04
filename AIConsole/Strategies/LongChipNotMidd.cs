@@ -6,14 +6,14 @@ using MRL.SSL.AIConsole.Engine;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.Planning.MotionPlanner;
-
+using MRL.SSL.AIConsole.Roles;
 
 namespace MRL.SSL.AIConsole.Strategies
 {
     public class LongChipNotStrategy : StrategyBase
     {
         const double step = 0.5, passerShooterDist = 2;
-        const double tresh = 0.06, angleTresh = 2, waitTresh = 40, finishTresh = 100, initDist = 0.22, maxWaitTresh = 120, faildFarPassSpeedTresh = 0.3, faildNearPassSpeedTresh = -0.05, faildBallDistSecondPass = 0.5, faildMaxCounter = 4, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.2;
+        const double tresh = 0.06, angleTresh = 2, waitTresh = 10, finishTresh = 100, initDist = 0.22, maxWaitTresh = 120, faildFarPassSpeedTresh = 0.3, faildNearPassSpeedTresh = -0.05, faildBallDistSecondPass = 0.5, faildMaxCounter = 4, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.2;
         bool first, passTargetCalculated, Debug = false, nearShooter, shooted;
         int PasserId, PositionerID0, PositionerID1;
         Position2D PasserPos, ShooterPos, PassTarget, ShootTarget, PositionerPos0, PositionerPos1, firstBallPos;
@@ -165,7 +165,7 @@ namespace MRL.SSL.AIConsole.Strategies
                 else if (dAngle < -180)
                     dAngle += 360;
 
-                if (Model.OurRobots[PasserId].Location.DistanceFrom(PasserPos) < tresh && Model.OurRobots[PositionerID0].Location.DistanceFrom(PositionerPos0) < 0.1 && Model.OurRobots[PositionerID1].Location.DistanceFrom(PositionerPos1) < 0.23)
+                if (Model.OurRobots[PasserId].Location.DistanceFrom(PasserPos) < 0.2 && Model.OurRobots[PositionerID0].Location.DistanceFrom(PositionerPos0) < 0.5 && Model.OurRobots[PositionerID1].Location.DistanceFrom(PositionerPos1) < 0.5)
                     counter++;
                 if (counter > waitTresh || timeLimitCounter > maxWaitTresh)
                 {
@@ -294,12 +294,16 @@ namespace MRL.SSL.AIConsole.Strategies
 
         public override Dictionary<int, RoleBase> RunStrategy(GameStrategyEngine engine, WorldModel Model, out Dictionary<int, CommonDelegate> Functions)
         {
+            Functions = new Dictionary<int, CommonDelegate>();
+            Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
 
             if (CurrentState == (int)State.First)
             {
-                Planner.ChangeDefaulteParams(PasserId, false);
-                Planner.SetParameter(PasserId, 2.5, 2);
-                Planner.Add(PasserId, PasserPos, PasserAngle, PathType.UnSafe, true, true, true, true);
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, PasserId, typeof(ActiveRole)))
+                    Functions[PasserId] = (eng, wmd) => GetRole<ActiveRole>(PasserId).PerformWithoutKick(engine, Model, PasserId, ShootTarget, false, 0.15);
+                //Planner.ChangeDefaulteParams(PasserId, false);
+                //Planner.SetParameter(PasserId, 2.5, 2);
+               //Planner.Add(PasserId, PasserPos, PasserAngle, PathType.UnSafe, true, true, true, true);
 
                 Planner.Add(PositionerID0, PositionerPos0, (ShootTarget - PositionerPos0).AngleInDegrees, PathType.Safe, true, true, true, true);
                 Planner.Add(PositionerID1, PositionerPos1, (ShootTarget - PositionerPos1).AngleInDegrees, PathType.Safe, true, true, true, true);
@@ -320,8 +324,10 @@ namespace MRL.SSL.AIConsole.Strategies
                 }
                 
             }
-            Functions = new Dictionary<int, CommonDelegate>();
-            return new Dictionary<int, RoleBase>();
+
+
+            PreviouslyAssignedRoles = CurrentlyAssignedRoles;
+            return CurrentlyAssignedRoles;
         }
         bool inrot = false, inPassState = false;
         public enum State

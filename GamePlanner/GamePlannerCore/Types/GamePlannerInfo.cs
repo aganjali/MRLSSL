@@ -567,7 +567,7 @@ namespace MRL.SSL.Planning.GamePlanner.Types
                 
             foreach (var passTarget in CenterofRegions)
             {
-                DrawingObjects.AddObject(passTarget, passTarget.toString());
+                //DrawingObjects.AddObject(passTarget, passTarget.toString());
 
                 index++;
                 if (!GameParameters.IsInField(passTarget, -0.1) || GameParameters.IsInDangerousZone(passTarget, true, 0.15, out dist, out DistFromBorder))

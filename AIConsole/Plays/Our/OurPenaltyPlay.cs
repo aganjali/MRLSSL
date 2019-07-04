@@ -12,12 +12,15 @@ namespace MRL.SSL.AIConsole.Plays
     class OurPenaltyPlay : PlayBase
     {
         GameDefinitions.GameStatus LastState = GameStatus.Normal;
+        Position2D? ballFirst = null;
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, PlayBase LastPlay, ref GameDefinitions.GameStatus Status)
         {
            //return false;
             double dist, DistFromBorder;
-            if (LastState == GameStatus.Penalty_OurTeam_Go && !GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.07, out dist, out DistFromBorder))
+            if (LastState == GameStatus.Penalty_OurTeam_Go && (!GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0.07, out dist, out DistFromBorder) || 
+                (ballFirst.HasValue && Model.BallState.Location.DistanceFrom(ballFirst.Value) > 0.2)))
             {
+                ballFirst = null;
                 LastState = GameStatus.Normal;
                 Status = GameStatus.Normal;
                 return false;
@@ -29,6 +32,8 @@ namespace MRL.SSL.AIConsole.Plays
 
         public override Dictionary<int, RoleBase> RunPlay(GameStrategyEngine engine, GameDefinitions.WorldModel Model, bool RecalculateRoles, out Dictionary<int, CommonDelegate> Functions)
         {
+            if (!ballFirst.HasValue)
+                ballFirst = Model.BallState.Location;
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(Model.OurRobots.Count);
             Functions = new Dictionary<int, CommonDelegate>();
             List<DefenceInfo> infos;
