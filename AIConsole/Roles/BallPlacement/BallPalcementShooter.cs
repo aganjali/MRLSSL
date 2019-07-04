@@ -358,6 +358,7 @@ namespace MRL.SSL.AIConsole.Roles
             return Model.BallState.Location.DistanceFrom(Model.OurRobots[RobotID].Location);
         }
 
+
         public override List<RoleBase> SwichToRole(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> previouslyAssignedRoles)
         {
             return new List<RoleBase>() { new BallPalcementShooter() };

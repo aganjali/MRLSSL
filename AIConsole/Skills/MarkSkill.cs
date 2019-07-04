@@ -37,9 +37,14 @@ namespace MRL.SSL.AIConsole.Skills
             {
                 target = GameParameters.SegmentIntersect(oppToGoal, dangerZoneRight).Value;
             }
-            else
+
+            else if(GameParameters.SegmentIntersect(oppToGoal, dangerZoneTop).HasValue)
             {
                 target = GameParameters.SegmentIntersect(oppToGoal, dangerZoneLeft).Value;
+            }
+            else
+            {
+                target = GameParameters.OurGoalCenter.Extend(GameParameters.DefenceAreaHeight + 0.10 , 0);
             }
             Vector2D v = (target - GameParameters.OurGoalCenter).GetNormalizeToCopy(margin);
             DrawingObjects.AddObject(oppToGoal);
