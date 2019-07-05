@@ -15,7 +15,7 @@ namespace MRL.SSL.AIConsole.Strategies
     {
         #region Param
         Syncronizer sync;
-        const double initDist = 0.15, tresh = 0.2, waitTresh = 10, finishTresh = 500, maxWaitTresh = 120, faildMaxCounter = 6, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.3, faildFarPassSpeedTresh = 0.3, faildBallDistSecondPass = 0.3, faildNearPassSpeedTresh = -0.03;
+        const double initDist = 0.15, tresh = 3, waitTresh = 10, finishTresh = 500, maxWaitTresh = 120, faildMaxCounter = 6, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.3, faildFarPassSpeedTresh = 0.3, faildBallDistSecondPass = 0.3, faildNearPassSpeedTresh = -0.03;
         bool first = true, inPassState = false, Debug = true;
         bool passed, passerFirsFlag, chipOrigin;
         int PasserID, ShooterID, PositionerID0, PositionerID1, PositionerID2;
@@ -234,7 +234,7 @@ namespace MRL.SSL.AIConsole.Strategies
                 else if (dAngle < -180)
                     dAngle += 360;
 
-                if (Model.OurRobots[PasserID].Location.DistanceFrom(passerPos) < tresh && Model.OurRobots[ShooterID].Location.DistanceFrom(shooterPos) < 0.2 && Model.OurRobots[PositionerID0].Location.DistanceFrom(Positioner0Pos) < 0.2 && Model.OurRobots[PositionerID1].Location.DistanceFrom(DefenderPos) < 0.2)
+                if (Model.OurRobots[PasserID].Location.DistanceFrom(passerPos) < tresh && Model.OurRobots[ShooterID].Location.DistanceFrom(shooterPos) < tresh && Model.OurRobots[PositionerID0].Location.DistanceFrom(Positioner0Pos) < tresh && Model.OurRobots[PositionerID1].Location.DistanceFrom(DefenderPos) < tresh)
                     counter++;
                 if (counter > waitTresh || timeLimitCounter > maxWaitTresh)
                 {
