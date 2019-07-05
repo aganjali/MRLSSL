@@ -77,7 +77,7 @@ namespace MRL.SSL.AIConsole.Roles
             Line l8 = new Line(Model.BallState.Location, pos + vecOppRightCorner);
 
 
-            double StopDistFromBall = Math.Min(Math.Max(distToBall, 0.6), 3);
+            double StopDistFromBall = Math.Min(Math.Max(distToBall, 0.9), 3);
             bool NearOppFromBall = false;
             double minDist = double.MaxValue;
             int oppFirstPasser = -1;

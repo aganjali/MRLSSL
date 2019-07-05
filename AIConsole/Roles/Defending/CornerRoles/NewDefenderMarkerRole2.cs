@@ -512,7 +512,7 @@ namespace MRL.SSL.AIConsole.Roles
                                     {
                                         tangent = lines.OrderBy(t => t.Angle).FirstOrDefault();
 
-                                        Vector2D targetVector = Vector2D.FromAngleSize((model.BallState.Location - model.OurRobots[RobotID].Location).AngleInRadians + (Math.PI / 2), .5);
+                                        Vector2D targetVector = Vector2D.FromAngleSize((model.BallState.Location - model.OurRobots[RobotID].Location).AngleInRadians + (Math.PI / 2), .8);
                                         lastTarget = neartangent.Value + targetVector;
                                     }
 

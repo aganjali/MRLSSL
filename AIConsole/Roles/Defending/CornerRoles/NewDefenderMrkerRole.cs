@@ -56,7 +56,7 @@ namespace MRL.SSL.AIConsole.Roles
             //}
             if (!FreekickDefence.BallIsMoved)
             {
-                markDistance = 0.65;
+                markDistance = 0.9;
             }
             else
             {

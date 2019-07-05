@@ -325,10 +325,10 @@ namespace MRL.SSL.AIConsole.Roles
     }
     public static class CommonDefenceUtils
     {
-        public static double StopZone = 0.6;
-        public static double SafeStopZoneMargin = 0.6;
-        public static double StopZoneMarker = 0.7;
-        public static double SafeStopZoneMarginMarker = 0.7;
+        public static double StopZone = 0.8;
+        public static double SafeStopZoneMargin = 0.8;
+        public static double StopZoneMarker = 0.8;
+        public static double SafeStopZoneMarginMarker = 0.8;
         public static Position2D CheckForStopZone(bool BallIsMoved, Position2D pos, WorldModel Model/*, SingleObjectState TargetState*/)
         {
             double dist, DistFromBorder;
