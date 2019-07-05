@@ -3751,6 +3751,8 @@ namespace MRL.SSL.AIConsole.Engine
         public static bool DefenderMarkerRole1ToActive = false;
         public static bool DefenderMarkerRole2ToActive = false;
         public static bool DefenderMarkerRole3ToActive = false;
+        public static bool DefenderMarkerRole4ToActive = false;
+
         public static bool DefenderRegionalRole1ToActive = false;
         public static bool DefenderRegionalRole2ToActive = false;
         public static bool DefenderGoToPointToActive = false;

@@ -210,7 +210,7 @@ namespace MRL.SSL.AIConsole.Strategies.Vahid
             karimID = FindNearestRobotID(karimPos, ref attendance);
             //abdullahID = FindNearestRobotID(firstBallPos, ref attendance);
             #endregion
-            passSpeed = Math.Max(firstBallPos.DistanceFrom(karimPos) * 0.298, 1);
+            passSpeed = Math.Max(firstBallPos.DistanceFrom(karimPos) * 0.5, 1);
             firstFlag = false;
         }
         enum State

@@ -18,7 +18,7 @@ namespace MRL.SSL.AIConsole.Strategies
     {
         const double step = 0.5, passerShooterDist = 2;
         const double ballMovedTresh = 0.07;
-        const double tresh = 0.01, angleTresh = 2, waitTresh = 10, finishTresh = 100, initDist = 0.22, maxWaitTresh = 420, oppZoneMarg = 0.2;
+        const double tresh = 0.2, angleTresh = 2, waitTresh = 10, finishTresh = 100, initDist = 0.22, maxWaitTresh = 240, oppZoneMarg = 0.2;
         bool first, passTargetCalculated;
         int PasserId, ShooterID, PositionerID, goOtCounter;
         Position2D PasserPos, ShooterPos, PositionerPos, Positioner2Pos, PassTarget, ShootTarget, lastShooterPos, lastPasserPos, lastPositionerPos;
@@ -45,7 +45,7 @@ namespace MRL.SSL.AIConsole.Strategies
             chip = false;
             chipOrigin = false;
             passed = false;
-            Mode = 2;
+            Mode = 0;
 
             CurrentState = InitialState;
             first = true;
@@ -53,7 +53,7 @@ namespace MRL.SSL.AIConsole.Strategies
             passTargetCalculated = false;
             getLastPasserPos = false;
             ballMoved = false;
-            RotateTeta = 90;
+            RotateTeta = 30;
             PassSpeed = 4.5;
             KickPower = Program.MaxKickSpeed;
             timeLimitCounter = 0;
@@ -77,7 +77,7 @@ namespace MRL.SSL.AIConsole.Strategies
             goOtCounter = 0;
             counter = 0;
             finishCounter = 0;
-            RotateDelay = 40;
+            RotateDelay = 10;
             AngleT = 60;
             ballIndanger = false;
             getBallSkill = new GetBallSkill();
@@ -217,15 +217,19 @@ namespace MRL.SSL.AIConsole.Strategies
             if (CurrentState == (int)State.First)
             {
                 ShootTarget = GameParameters.OppGoalCenter;
-                PasserPos = Model.BallState.Location + (Model.BallState.Location - ShootTarget).GetNormalizeToCopy(initDist);
-                PasserAngle = (ShootTarget - PasserPos).AngleInDegrees;
+                PasserPos = Model.BallState.Location + new Vector2D(0, Math.Sign(Model.BallState.Location.Y) * initDist);// (Model.BallState.Location - ShootTarget).GetNormalizeToCopy(initDist);
+                PasserAngle = (ShootTarget - PasserPos).AngleInDegrees; 
                 if (Mode == 2)
                 {
                     PasserAngle = (Model.OurRobots[ShooterID].Location - PasserPos).AngleInDegrees;
                 }
+                else if (Mode == 1)
+                {
+                    PasserAngle = (Model.BallState.Location - PasserPos).AngleInDegrees;
+                }
                 if (Mode == 0 || Mode == 1 || Mode == 2)
                 {
-                    ShooterPos = PasserPos + new Vector2D(2, 0).GetNormalizeToCopy(passerShooterDist);
+                    ShooterPos = new Position2D(-3.5, Math.Sign(Model.BallState.Location.Y) * 1.5);// PasserPos + new Vector2D(2, 0).GetNormalizeToCopy(passerShooterDist);
                 }
 
                 if (Mode == 0 || Mode == 1 || Mode == 2)
@@ -241,7 +245,7 @@ namespace MRL.SSL.AIConsole.Strategies
                 PositionerPos = new Position2D(Math.Max(Model.BallState.Location.X - 1, GameParameters.OppGoalCenter.X + 0.3), Math.Sign(-Model.BallState.Location.Y) * 1.5); ;
                 PositionerAng = (ShootTarget - PositionerPos).AngleInDegrees;
 
-                Positioner2Pos = new Position2D(1, Math.Sign(Model.BallState.Location.Y) * 0); ;
+                Positioner2Pos = new Position2D(-1, Math.Sign(Model.BallState.Location.Y) * 0); ;
                 Positioner2Ang = (ShootTarget - Positioner2Pos).AngleInDegrees;
 
                 inrot = false;
@@ -286,7 +290,7 @@ namespace MRL.SSL.AIConsole.Strategies
                         ShooterPos = PositionerPos + new Vector2D(0.25, Math.Sign(Model.BallState.Location.Y) * 0.3);
                         PositionerPos = new Position2D(-1.8, 0);
 
-                        PassTarget = Model.BallState.Location + new Vector2D(1.8, Math.Sign(-Model.BallState.Location.Y) * 0.7);//Math.Max(.8, Model.BallState.Location.DistanceFrom(PassTarget) * .5);
+                        PassTarget = Model.BallState.Location + new Vector2D(1.8, Math.Sign(-Model.BallState.Location.Y) * 0.5);//Math.Max(.8, Model.BallState.Location.DistanceFrom(PassTarget) * .5);
                         if (!passed)
                         {
                             passVec = Vector2D.FromAngleSize(Model.OurRobots[PasserId].Angle.Value * Math.PI / 180, 1);

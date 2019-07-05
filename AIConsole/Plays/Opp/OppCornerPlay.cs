@@ -1556,8 +1556,10 @@ namespace MRL.SSL.AIConsole.Plays
                     FreekickDefence.freeSwitchbetweenRegionalAndMarker = false;
                 }
                 #region role Initial set
-                int denseRobot = accumulatedOppId2(Model, oppAttackerIds);
-                Dictionary<int, float> scores = engine.GameInfo.OppTeam.Scores.Where(y => y.Key != denseRobot).ToDictionary(y => y.Key, t => t.Value);
+                //int denseRobot = accumulatedOppId2(Model, oppAttackerIds);
+                //Dictionary<int, float> scores = engine.GameInfo.OppTeam.Scores.Where(y => y.Key != denseRobot).ToDictionary(y => y.Key, t => t.Value);
+                Dictionary<int, float> scores = engine.GameInfo.OppTeam.Scores.ToDictionary(y => y.Key, t => t.Value);
+
                 defendcommands.Add(new DefenderCommand()
 
                 {
@@ -1612,6 +1614,13 @@ namespace MRL.SSL.AIConsole.Plays
                 }
                 defendcommands.Add(new DefenderCommand()
                 {
+                    RoleType = typeof(NewDefenderMarkerRole4),
+                    OppID = scores.Count > 5 ? scores.ElementAt(5).Key : id
+                });
+                FreekickDefence.OppToMark4 = scores.Count > 5 ? scores.ElementAt(5).Key : id;
+
+                defendcommands.Add(new DefenderCommand()
+                {
                     RoleType = typeof(CornerStopRole),
                     //OppID = scores.Count > 2 ? scores.ElementAt(2).Key : id
                 });
@@ -1648,6 +1657,7 @@ namespace MRL.SSL.AIConsole.Plays
                     freeRole = typeof(ActiveRole);
 
                 AddRoleInfo(roles, freeRole, 1, 0);
+                AddRoleInfo(roles, typeof(NewDefenderMarkerRole4), 1, 0);
 
                 List<int> ids = new List<int>();
                 if (Model.GoalieID.HasValue)
@@ -1661,13 +1671,12 @@ namespace MRL.SSL.AIConsole.Plays
 
                 }
                 AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
-                AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
 
                 assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
                 #endregion
                 #region IDExport
 
-                int? n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null, stop = null, newmarker = null;
+                int? n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null, stop = null, m4 = null;
 
                 n3 = getID(assigenroles, typeof(DefenderCornerRole1)); // New
                 n4 = getID(assigenroles, typeof(NewDefenderMarkerRole2)); // New
@@ -1698,12 +1707,21 @@ namespace MRL.SSL.AIConsole.Plays
                         marker2 = infos.Single(s => s.RoleType == typeof(DefenderMarkerRole3));
                     else
                         marker2 = infos.Single(s => s.RoleType == typeof(NewDefenderMarkerRole3));
+
                 }
+                var marker4 = infos.Single(s => s.RoleType == typeof(NewDefenderMarkerRole4));// New 
+
                 stop = getID(assigenroles, typeof(CornerStopRole));
+                m4 = getID(assigenroles, typeof(NewDefenderMarkerRole4));
                 #endregion
                 #region Role Assigners
                 if (normal3.DefenderPosition.HasValue)
                     DrawingObjects.AddObject(new StringDraw("Its New Role \n Don't have Overlap Solving \n With Defender Corner 1", Color.HotPink, normal3.DefenderPosition.Value.Extend(.3, 0)));
+
+
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, m4, typeof(NewDefenderMarkerRole4)))
+                    Functions[m4.Value] = (eng, wmd) => GetRole<NewDefenderMarkerRole4>(m4.Value).mark(eng, wmd, m4.Value, marker4.OppID.Value);
+
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n3, typeof(DefenderCornerRole1)))
                     Functions[n3.Value] = (eng, wmd) => GetRole<DefenderCornerRole1>(n3.Value).Run(eng, wmd, n3.Value, normal3.DefenderPosition.Value, normal3.Teta); //New 
@@ -1798,8 +1816,10 @@ namespace MRL.SSL.AIConsole.Plays
                     FreekickDefence.freeSwitchbetweenRegionalAndMarker = false;
                 }
                 #region role Initial set
-                int denseRobot = accumulatedOppId2(Model, oppAttackerIds);
-                Dictionary<int, float> scores = engine.GameInfo.OppTeam.Scores.Where(y => y.Key != denseRobot).ToDictionary(y => y.Key, t => t.Value);
+                //int denseRobot = accumulatedOppId2(Model, oppAttackerIds);
+                //Dictionary<int, float> scores = engine.GameInfo.OppTeam.Scores.Where(y => y.Key != denseRobot).ToDictionary(y => y.Key, t => t.Value);
+                Dictionary<int, float> scores = engine.GameInfo.OppTeam.Scores.ToDictionary(y => y.Key, t => t.Value);
+
                 defendcommands.Add(new DefenderCommand()
 
                 {
@@ -1854,6 +1874,12 @@ namespace MRL.SSL.AIConsole.Plays
                 }
                 defendcommands.Add(new DefenderCommand()
                 {
+                    RoleType = typeof(NewDefenderMarkerRole4),
+                    OppID = scores.Count > 5 ? scores.ElementAt(5).Key : id
+                });
+                FreekickDefence.OppToMark4 = scores.Count > 5 ? scores.ElementAt(5).Key : id;
+                defendcommands.Add(new DefenderCommand()
+                {
                     RoleType = typeof(CornerStopRole),
                     //OppID = scores.Count > 2 ? scores.ElementAt(2).Key : id
                 });
@@ -1905,14 +1931,16 @@ namespace MRL.SSL.AIConsole.Plays
                 }
 
                 //arghavan
+                AddRoleInfo(roles, typeof(NewDefenderMarkerRole4), 1, 0);
                 AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
                 AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
+
 
                 assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
                 #endregion
                 #region IDExport
 
-                int? n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null, stop = null, newmarker = null;
+                int? n2 = null, marker = null, golie = null, mark2 = null, n3 = null, n4 = null, stop = null, m4 = null;
 
                 n3 = getID(assigenroles, typeof(DefenderCornerRole1)); // New
                 n4 = getID(assigenroles, typeof(NewDefenderMarkerRole2)); // New
@@ -1944,11 +1972,16 @@ namespace MRL.SSL.AIConsole.Plays
                     else
                         marker2 = infos.Single(s => s.RoleType == typeof(NewDefenderMarkerRole3));
                 }
+                var marker4 = infos.Single(s => s.RoleType == typeof(NewDefenderMarkerRole4));// New 
+                m4 = getID(assigenroles, typeof(NewDefenderMarkerRole4));
+
                 stop = getID(assigenroles, typeof(CornerStopRole));
                 #endregion
                 #region Role Assigners
                 if (normal3.DefenderPosition.HasValue)
                     DrawingObjects.AddObject(new StringDraw("Its New Role \n Don't have Overlap Solving \n With Defender Corner 1", Color.HotPink, normal3.DefenderPosition.Value.Extend(.3, 0)));
+                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, m4, typeof(NewDefenderMarkerRole4)))
+                    Functions[m4.Value] = (eng, wmd) => GetRole<NewDefenderMarkerRole4>(m4.Value).mark(eng, wmd, m4.Value, marker4.OppID.Value);//new
 
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, n3, typeof(DefenderCornerRole1)))
                     Functions[n3.Value] = (eng, wmd) => GetRole<DefenderCornerRole1>(n3.Value).Run(eng, wmd, n3.Value, normal3.DefenderPosition.Value, normal3.Teta); //New 
@@ -2030,6 +2063,7 @@ namespace MRL.SSL.AIConsole.Plays
 
             int? attackerID = getID(assigenroles, typeof(FreeKickAttackerRole)); // New
 
+            
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, attackerID, typeof(FreeKickAttackerRole)))
                 Functions[attackerID.Value] = (eng, wmd) => GetRole<FreeKickAttackerRole>(attackerID.Value).Perform(engine, Model, attackerID.Value);
             #region Switches Handling

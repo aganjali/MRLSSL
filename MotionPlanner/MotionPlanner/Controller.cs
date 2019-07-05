@@ -299,16 +299,16 @@ namespace MRL.SSL.Planning.MotionPlanner
 
             if (Math.Abs(Vtemp.X) > vxMax)
             {
-                if (Math.Abs(stat.Speed.X) > _maxSpeed.X)
-                    Vtemp.X = stat.Speed.X + _maxAcceleration.X * Math.Sign(-stat.Speed.X) / _framCount;
-                else
+                //if (Math.Abs(stat.Speed.X) > _maxSpeed.X)
+                //    Vtemp.X = stat.Speed.X + _maxAcceleration.X * Math.Sign(-stat.Speed.X) / _framCount;
+                //else
                     Vtemp.X = Math.Sign(Vtemp.X) * Math.Abs(vxMax);
             }
             if (Math.Abs(Vtemp.Y) > vyMax)
             {
-                if (Math.Abs(stat.Speed.Y) > _maxSpeed.Y)
-                    Vtemp.Y = stat.Speed.Y + _maxAcceleration.Y * Math.Sign(-stat.Speed.Y) / _framCount;
-                else
+                //if (Math.Abs(stat.Speed.Y) > _maxSpeed.Y)
+                //    Vtemp.Y = stat.Speed.Y + _maxAcceleration.Y * Math.Sign(-stat.Speed.Y) / _framCount;
+                //else
                     Vtemp.Y = Math.Sign(Vtemp.Y) * Math.Abs(vyMax);
             }
             if (Math.Abs(ww) > _maxAngularSpeed)
