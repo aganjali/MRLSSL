@@ -3803,8 +3803,37 @@ namespace MRL.SSL.AIConsole.Engine
             avoidBounds.Add(new Line(avoidBounds[1].Head, avoidBounds[0].Head, new Pen(Color.AliceBlue, 0.01f)));
             avoidBounds.Add(new Line(avoidBounds[1].Tail, avoidBounds[0].Tail, new Pen(Color.AliceBlue, 0.01f)));
             goalieTarget = GameParameters.OurGoalCenter.Extend(-0.1, 0);
-
-            if (GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight - BallPlacementPos.X >= avoidDist
+            if (GameParameters.OppGoalCenter.X + GameParameters.DefenceAreaHeight - BallPlacementPos.X >= 0
+                && GameParameters.OppGoalCenter.X + GameParameters.DefenceAreaHeight - ballLoc.X >= 0)
+            {
+                Position2D extendedPos = GameParameters.OurGoalCenter.Extend(-(GameParameters.DefenceAreaHeight + RobotParameters.OurRobotParams.Diameter), -GameParameters.DefenceAreaWidth / 2);
+                for (int i = 0; i < 2; i++)
+                {
+                    ret.Add(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)));
+                    //DrawingObjects.AddObject(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)), "position" + i.ToString());
+                }
+                extendedPos = new Position2D(GameParameters.OppGoalCenter.X / 2, 0).Extend(0, -GameParameters.DefenceAreaWidth / 2);
+                for (int i = 0; i < 5; i++)
+                {
+                    ret.Add(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)));
+                }
+            }
+            else if (0 - BallPlacementPos.X >= avoidDist
+                && 0 - ballLoc.X >= avoidDist)
+            {
+                Position2D extendedPos = GameParameters.OurGoalCenter.Extend(-(GameParameters.DefenceAreaHeight + RobotParameters.OurRobotParams.Diameter), -GameParameters.DefenceAreaWidth / 2);
+                for (int i = 0; i < 1; i++)
+                {
+                    ret.Add(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)));
+                    //DrawingObjects.AddObject(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)), "position" + i.ToString());
+                }
+                extendedPos = Position2D.Zero.Extend(0, -GameParameters.DefenceAreaWidth / 2);
+                for (int i = 0; i < 6; i++)
+                {
+                    ret.Add(extendedPos.Extend(0, i * (RobotParameters.OurRobotParams.Diameter + 0.19)));
+                }
+            }
+            else if (GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight - BallPlacementPos.X >= avoidDist
                 && GameParameters.OurGoalCenter.X - GameParameters.DefenceAreaHeight - ballLoc.X >= avoidDist)
             {
                 Position2D extendedPos = GameParameters.OurGoalCenter.Extend(-(GameParameters.DefenceAreaHeight + RobotParameters.OurRobotParams.Diameter), -GameParameters.DefenceAreaWidth / 2);
