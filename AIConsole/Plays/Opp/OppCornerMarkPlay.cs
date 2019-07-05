@@ -123,7 +123,7 @@ namespace MRL.SSL.AIConsole.Plays
             Functions = new Dictionary<int, CommonDelegate>();
 
             List<int> oppAttackerIds = new List<int>();
-            Planner.IsStopBall(true);
+            Planner.IsStopBall(!FreekickDefence.BallIsMoved);
 
             double markRegion = -3.5;
             Dictionary<int, float> scores;
