@@ -207,7 +207,7 @@ namespace Simulator
                     if (i == 0)
                         elapsed = 0;
                     wrapper.detection = lists[i];
-                    wrapper.detection.t_capture = timeCapture + elapsed;
+                    wrapper.detection.t_capture = (timeCapture + elapsed) / 1000.0;
                     wrapper.detection.camera_id = (uint)i;
 
                     stream = new MemoryStream();

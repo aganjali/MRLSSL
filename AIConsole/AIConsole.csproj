@@ -193,6 +193,7 @@
     <Compile Include="Roles\Defending\BusDefenceRoles\BusRole4.cs" />
     <Compile Include="Roles\Defending\BusDefenceRoles\BusStopRole1.cs" />
     <Compile Include="Roles\Defending\CornerRoles\ArtiCover.cs" />
+    <Compile Include="Roles\Defending\CornerRoles\NewDefenderMarkerRole4.cs" />
     <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole1.cs" />
     <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole2.cs" />
     <Compile Include="Roles\Defending\NewMarkerRoles\MarkerRole3.cs" />
@@ -219,6 +220,7 @@
     <Compile Include="Roles\GoalieRole\StaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\VandersarGoalKeeperRole.cs" />
     <Compile Include="Roles\Positionning\strategyPositioner1Role.cs" />
+    <Compile Include="Roles\Positionning\strategyPositioner3Role.cs" />
     <Compile Include="Roles\Positionning\strategyPositioner2Role.cs" />
     <Compile Include="Roles\Stop\RotationalStopCover.cs" />
     <Compile Include="Roles\Stop\StopRole4.cs" />

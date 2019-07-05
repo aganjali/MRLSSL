@@ -129,6 +129,8 @@ namespace MRL.SSL.AIConsole.Engine
             {
                 tmp = Model.OurRobots.OrderBy(t => t.Value.Location.DistanceFrom(GameParameters.OurRightCorner)).ToDictionary(d => d.Key, t => t.Value).Keys.ToList();
             }
+            if (PreviouslyAssignedRoles.Count == 0)
+                StraIds = new List<int>();
             ids = tmp.Except(StraIds).ToList();
             //foreach (var item in tmp.ToList())
             //{
@@ -268,6 +270,7 @@ namespace MRL.SSL.AIConsole.Engine
             PrevAssignedRoles = CurrentlyAssignedRoles;
             return CurrentlyAssignedRoles;
         }
+
         protected T GetRole<T>(int robotID) where T : RoleBase, new()
         {
             if (!PreviouslyAssignedRoles.ContainsKey(robotID))

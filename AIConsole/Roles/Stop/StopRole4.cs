@@ -44,11 +44,18 @@ namespace MRL.SSL.AIConsole.Roles.Stop
                 ballState = Model.BallState;
                 ballStateFast = Model.BallStateFast;
             }
-            Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, StaticVariables.stopMaxSpeed);
-            return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID, ballState), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, StaticVariables.stopMaxSpeed, false);
+            if (Model.OurRobots[RobotID].Speed.X > StaticVariables.stopMaxSpeed || Model.OurRobots[RobotID].Speed.Y > StaticVariables.stopMaxSpeed)
+            {
+                Planner.Add(RobotID, Model.OurRobots[RobotID]);
+                return new SingleWirelessCommand();
+            }
+            else
+            {
+                Planner.ChangeDefaulteParams(RobotID, false);
+                Planner.SetParameter(RobotID, StaticVariables.stopMaxSpeed);
+                return GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, GetTarget(Model, RobotID, ballState), (ballState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, true, true, StaticVariables.stopMaxSpeed, false);
+            }
         }
-
         private Position2D GetTarget(WorldModel Model, int RobotID, SingleObjectState ballfakepos)
         {
             //return ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - 0.35, 0.6);
