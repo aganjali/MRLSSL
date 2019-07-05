@@ -22,7 +22,7 @@ namespace MRL.SSL.AIConsole.Skills
         bool Debug = true;
         bool inNear = false;
 
-        Vector2D FieldSize = new Vector2D(6.1, 4.6);
+        Vector2D FieldSize = new Vector2D(7.1, 5.6);
 
         public bool InNear
         {
@@ -1163,7 +1163,7 @@ namespace MRL.SSL.AIConsole.Skills
             if (Debug)
                 CharterData.AddData("dX", -(dX));
             double pidout = -pidSideX.Calculate(dX + extX, 0);
-            MaxSpeed.Y = (ballPlacement)?0.5:2;
+            MaxSpeed.Y = (ballPlacement)?0.5:2.5;
             Vtemp = new Vector2D(pidout, Math.Min(Math.Abs(vy), MaxSpeed.Y) * Math.Sign(vy)); //todo: V OUT
 
             Vector2D p = new Vector2D(Target2GO.X + extX, Target2GO.Y + extY);
@@ -1757,7 +1757,7 @@ namespace MRL.SSL.AIConsole.Skills
         private double AngularController(WorldModel Model, int RobotID, double angle)
         {
             //double Kp = 22, Ki = 2/*0.05*/, Kd = 3.95/*0.32*/, lamda = 0.99, PID_Max = 40;
-            double Kp =9.5, Ki = 0.00/*0.05*/, Kd = 0.4/*0.008*/, lamda = 0.99, PID_Max = 40;
+            double Kp =9.5, Ki = 0.00/*0.05*/, Kd = 0.01/*0.008*/, lamda = 0.99, PID_Max = 40;
             
             MaxIntegral = 100;
             double err = (angle - Model.OurRobots[RobotID].Angle.Value) * Math.PI / 180;
@@ -1860,7 +1860,7 @@ namespace MRL.SSL.AIConsole.Skills
             //double Kp = 22, Ki = 2/*0.05*/, Kd = 3.9/*0.32*/, lamda = 0.99, PID_Max = 40;
             //double Kp = 10, Ki = 0.0/*0.05*/, Kd = 0.0/*0.008*/, lamda = 0.99, PID_Max = 40;
             //double Kp = 9, Ki = 0.01/*0.05*/, Kd = 0.002/*0.008*/, lamda = 0.99, PID_Max = 40;
-            double Kp = 9.5, Ki = 0.01/*0.05*/, Kd = 0.4/*0.008*/, lamda = 0.99, PID_Max = 40;
+            double Kp = 9.5, Ki = 0.01/*0.05*/, Kd = 0.0/*0.008*/, lamda = 0.99, PID_Max = 40;
             MaxIntegralBack = 100;
             double err = (TargetTeta - state.Angle.Value) * Math.PI / 180;
 

@@ -2,19 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MRL.SSL.AIConsole.Engine;
-using MRL.SSL.GameDefinitions;
-using MRL.SSL.CommonClasses.MathLibrary;
-using MRL.SSL.AIConsole.Skills;
-using MRL.SSL.AIConsole.Roles;
-using System.Drawing;
-using MRL.SSL.Planning.MotionPlanner;
 
-namespace MRL.SSL.AIConsole.Strategies.Vahid
+namespace MRL.SSL.AIConsole.Strategies
 {
-    class IMSimpleCornerChip : StrategyBase
+    class RC2019SimpleStrategy
     {
-
         #region intrupt
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, ref GameDefinitions.GameStatus Status)
         {
