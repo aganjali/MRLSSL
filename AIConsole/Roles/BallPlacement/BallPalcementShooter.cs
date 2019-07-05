@@ -103,7 +103,7 @@ namespace MRL.SSL.AIConsole.Roles
                     }
                 }
                 GetSkill<GetBallSkill>().SetAvoidDangerZone(false, false);
-                GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, shootTarget, false, 0.08, true);
+                GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, shootTarget, false, 0.05, true);
                 Planner.AddKick(RobotID, kickPowerType.Speed, false, speed);
                 return;
             }

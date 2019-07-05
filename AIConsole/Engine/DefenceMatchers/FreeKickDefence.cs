@@ -5410,8 +5410,8 @@ namespace MRL.SSL.AIConsole.Engine
                 Position2D rightIntersect;
                 Position2D leftIntersect;
 
-                Line left = new Line(p1, Model.BallState.Location);
-                Line right = new Line(GameParameters.OurGoalRight.Extend(0, 0), Model.BallState.Location);
+                //Line left = new Line(p1, Model.BallState.Location);
+                //Line right = new Line(GameParameters.OurGoalRight.Extend(0, 0), Model.BallState.Location);
 
                 double distToPenaltyAreaThreshold = 0.00;
                 Line l1 = new Line(GameParameters.OurGoalLeft.Extend(-1.20, 0.60 + distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(0, 0.60 + distToPenaltyAreaThreshold));
@@ -5420,28 +5420,34 @@ namespace MRL.SSL.AIConsole.Engine
                 Position2D centerRobot = new Position2D();
                 double dist, distFrom;
                 bool IsInOurDangerZone = GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0, out dist, out distFrom);
-                //  DrawingObjects.AddObject(l1);
-                //DrawingObjects.AddObject(l3);
+                DrawingObjects.AddObject(l1);
+                DrawingObjects.AddObject(l3);
+                DrawingObjects.AddObject(l2);
                 //if (GameParameters.IsInField(Model.BallState.Location, 0))
                 //{
                 //    lastBallPos = Model.BallState.Location;
                 //}
 
 
-                Line intevallToBall = new Line(Position2D.Interpolate(right.Head, left.Head, 0.5), Model.BallState.Location);
-                // DrawingObjects.AddObject(intevallToBall);
+                //Line intevallToBall = new Line(Position2D.Interpolate(right.Head, left.Head, 0.5), Model.BallState.Location);
+                // Line intevallToBall = new Line(GameParameters.OurGoalCenter, Model.BallState.Location);
 
-                if (GameParameters.SegmentIntersect(intevallToBall, l1).HasValue) // left
+                //DrawingObjects.AddObject(intevallToBall);
+                Position2D pl = Position2D.Interpolate(GameParameters.OurGoalLeft, GameParameters.OurGoalCenter, 0.5);
+            
+                Line lefttToBall = new Line(pl, Model.BallState.Location);
+            
+                if (GameParameters.SegmentIntersect(lefttToBall, l1).HasValue) // left
                 {
-                    centerRobot = l1.IntersectWithLine(intevallToBall).Value.Extend(0, 0.1);
+                    centerRobot = l1.IntersectWithLine(lefttToBall).Value.Extend(0, 0);
                 }
-                else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
+                else if (GameParameters.SegmentIntersect(lefttToBall, l3).HasValue) //right
                 {
-                    centerRobot = l3.IntersectWithLine(intevallToBall).Value.Extend(0, -0.1);
+                    centerRobot = l3.IntersectWithLine(lefttToBall).Value.Extend(0, 0);
                 }
-                else if (GameParameters.SegmentIntersect(intevallToBall, l2).HasValue) //top
+                else if (GameParameters.SegmentIntersect(lefttToBall, l2).HasValue) //top
                 {
-                    centerRobot = l2.IntersectWithLine(intevallToBall).Value.Extend(-0.1, 0);
+                    centerRobot = l2.IntersectWithLine(lefttToBall).Value.Extend(0, 0);
                 }
                 else
                 {
@@ -5598,14 +5604,12 @@ namespace MRL.SSL.AIConsole.Engine
                 ////    }
                 ////}            double x = Model.BallState.Location.X;
                 double y = Model.BallState.Location.Y;
-                Position2D p1 = Position2D.Interpolate(GameParameters.OurGoalLeft, GameParameters.OurGoalRight, 0.33);
+           
                 double dist, distFrom;
                 bool IsInOurDangerZone = GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0, out dist, out distFrom);
                 Position2D rightIntersect;
                 Position2D leftIntersect;
-                Line right = new Line(p1, Model.BallState.Location);
-                Line left = new Line(GameParameters.OurGoalLeft.Extend(0, 0), Model.BallState.Location);
-
+            
                 double distToPenaltyAreaThreshold = 0.00;
                 Line l1 = new Line(GameParameters.OurGoalLeft.Extend(-1.20, 0.60 + distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(0, 0.60 + distToPenaltyAreaThreshold));
                 Line l2 = new Line(GameParameters.OurGoalRight.Extend(-1.20 - distToPenaltyAreaThreshold, -0.6 - distToPenaltyAreaThreshold), GameParameters.OurGoalLeft.Extend(-1.20 - distToPenaltyAreaThreshold, 0.6 + distToPenaltyAreaThreshold));
@@ -5615,20 +5619,22 @@ namespace MRL.SSL.AIConsole.Engine
                 //{
                 //    lastBallPos = Model.BallState.Location;
                 //}
-                Line intevallToBall = new Line(Position2D.Interpolate(right.Head, left.Head, 0.5), Model.BallState.Location);
+                Position2D pr = Position2D.Interpolate(GameParameters.OurGoalRight, GameParameters.OurGoalCenter, 0.5);
+
+                Line rightToBall = new Line(pr, Model.BallState.Location);
                 //DrawingObjects.AddObject(intevallToBall);
 
-                if (GameParameters.SegmentIntersect(intevallToBall, l1).HasValue) // left
+                if (GameParameters.SegmentIntersect(rightToBall, l1).HasValue) // left
                 {
-                    centerRobot = l1.IntersectWithLine(intevallToBall).Value.Extend(0, 0.1);
+                    centerRobot = l1.IntersectWithLine(rightToBall).Value.Extend(0, 0);
                 }
-                else if (GameParameters.SegmentIntersect(intevallToBall, l3).HasValue) //right
+                else if (GameParameters.SegmentIntersect(rightToBall, l3).HasValue) //right
                 {
-                    centerRobot = l3.IntersectWithLine(intevallToBall).Value.Extend(0, -0.1);
+                    centerRobot = l3.IntersectWithLine(rightToBall).Value.Extend(0, 0);
                 }
-                else if (GameParameters.SegmentIntersect(intevallToBall, l2).HasValue) //top
+                else if (GameParameters.SegmentIntersect(rightToBall, l2).HasValue) //top
                 {
-                    centerRobot = l2.IntersectWithLine(intevallToBall).Value.Extend(-0.1, 0);
+                    centerRobot = l2.IntersectWithLine(rightToBall).Value.Extend(0, 0);
                 }
                 else
                 {

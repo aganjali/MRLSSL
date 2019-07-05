@@ -60,7 +60,7 @@ namespace MRL.SSL.AIConsole.Roles.Stop
         {
             //return ballState.Location + Vector2D.FromAngleSize((GameParameters.OurGoalCenter - ballState.Location).AngleInRadians - 0.35, 0.6);
             Position2D target = new Position2D();
-            double StopDistFromBall = .65;
+            double StopDistFromBall = .9;
 
 
             Position2D ball = ballState.Location;

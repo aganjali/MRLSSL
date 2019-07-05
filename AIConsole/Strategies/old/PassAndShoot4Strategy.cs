@@ -275,7 +275,7 @@ namespace MRL.SSL.AIConsole.Strategies
                         else
                         {
                             AngleT = 60;
-                            PassTarget = new Position2D(-2.5, Math.Sign(Model.BallState.Location.Y) * 0.3);
+                            PassTarget = new Position2D(-4.5, Math.Sign(Model.BallState.Location.Y) * 0.3);
                         }
 
                         if (!passed)

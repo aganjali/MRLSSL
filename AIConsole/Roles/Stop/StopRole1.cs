@@ -114,12 +114,12 @@ namespace MRL.SSL.AIConsole.Roles
 
         private Position2D GetTarget(WorldModel Model, int RobotID)
         {
-            double StopDistFromBall = .65;
+            double StopDistFromBall = .9;
             Position2D target = new Position2D();
             Position2D Target = new Position2D();
             Position2D DefenderStopRole1 = GameParameters.OurGoalCenter + new Vector2D(-1, -0.17);
             Position2D DefenderStopRole2 = GameParameters.OurGoalCenter + new Vector2D(-1, 0.17);
-            Circle C = new Circle(ballState.Location, 0.7);
+            Circle C = new Circle(ballState.Location, 0.9);
             double angle = Math.Sign(ballState.Location.Y) * 1 * Math.PI / 3;
             if (C.IsInCircle(DefenderStopRole1) || C.IsInCircle(DefenderStopRole2))
             {

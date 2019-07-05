@@ -74,6 +74,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
             DefenceTest.BallTest = FreekickDefence.testDefenceState;
             DefenceTest.GenerateBallPos();
             Planner.IsStopBall(ballismoved);
+            Planner.IsStopBall(true);
 
             if (DefenceTest.BallTest)
             {

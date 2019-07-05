@@ -109,6 +109,7 @@ namespace MRL.SSL.AIConsole.Skills
             {
                 // extendedIntersect = GetDirectPass2(engine, Model, robotID, Target);
                 extendedIntersect = GetDirectPass2New(engine, Model, Model.OurRobots[robotID], Target, otMode);
+
                 if (!isChip)
                     Angle = AngleCorrection(Model, useCMU, KickPower, Target, extendedIntersect /*+ (Target - extendedIntersect).GetNormalizeToCopy(normlizeD)*/, robotID, PassSpeed, true);
                 else

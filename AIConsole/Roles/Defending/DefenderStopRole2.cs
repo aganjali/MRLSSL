@@ -36,11 +36,18 @@ namespace MRL.SSL.AIConsole.Roles
             if (Model.OurRobots[RobotID].Location.DistanceFrom(targ) > 1)
                 AvoidBall = true;
             AvoidBall = true;
-
-            SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, false, AvoidBall, 3.5, true);
-            SWC.isChipKick = isChipKick;
-            SWC.KickPower = kickPower;
-            return SWC;
+            if (Model.OurRobots[RobotID].Speed.X > StaticVariables.stopMaxSpeed || Model.OurRobots[RobotID].Speed.Y > StaticVariables.stopMaxSpeed)
+            {
+                Planner.Add(RobotID, Model.OurRobots[RobotID]);
+                return new SingleWirelessCommand();
+            }
+            else
+            {
+                SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, false, AvoidBall, 3.5, true);
+                SWC.isChipKick = isChipKick;
+                SWC.KickPower = kickPower;
+                return SWC;
+            }
         }
         public SingleWirelessCommand PositioningStop(GameStrategyEngine engine, WorldModel Model, int RobotID, bool isChipKick, double kickPower)
         {

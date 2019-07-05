@@ -60,12 +60,20 @@ namespace MRL.SSL.AIConsole.Roles
             if (Model.OurRobots[RobotID].Location.DistanceFrom(targ) > 1)
                 AvoidBall = true;
             AvoidBall = true;
-            Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 1);
-            SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, true, AvoidBall, StaticVariables.stopMaxSpeed, false);
-            SWC.isChipKick = isChipKick;
-            SWC.KickPower = kickPower;
-            return SWC;
+            if (Model.OurRobots[RobotID].Speed.X > StaticVariables.stopMaxSpeed || Model.OurRobots[RobotID].Speed.Y > StaticVariables.stopMaxSpeed)
+            {
+                Planner.Add(RobotID, Model.OurRobots[RobotID]);
+                return new SingleWirelessCommand();
+            }
+            else
+            {
+                Planner.ChangeDefaulteParams(RobotID, false);
+                Planner.SetParameter(RobotID, 1);
+                SingleWirelessCommand SWC = GetSkill<GotoPointSkill>().GotoPoint(Model, RobotID, targ, teta, true, AvoidBall, StaticVariables.stopMaxSpeed, false);
+                SWC.isChipKick = isChipKick;
+                SWC.KickPower = kickPower;
+                return SWC;
+            }
         }
         public override void DetermineNextState(GameStrategyEngine engine, GameDefinitions.WorldModel Model, int RobotID, Dictionary<int, RoleBase> AssignedRoles)
         {

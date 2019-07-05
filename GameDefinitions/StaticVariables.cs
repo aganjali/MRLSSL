@@ -44,7 +44,7 @@ namespace MRL.SSL.GameDefinitions
         public static double ROBOT_DEF_WIDTH_H = 90;
         public static double BALL_VELOCITY_VARIANCE_NO_ROBOT = 100;
         public static double CAMERA_HEIGHT, BALL_RADIUS = 0.022;
-        public static double FieldMargin = 0.25;
+        public static double FieldMargin = 0.5;
         public static double BALL_TEAMMATE_COLLISION_RADIUS = 100; 
         public static double BALL_OPPONENT_COLLISION_RADIUS = 100;
         public static double BALL_CONFIDENCE_THRESHOLD = .1;
