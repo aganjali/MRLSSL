@@ -118,7 +118,27 @@ namespace MRL.SSL.AIConsole.Roles
             #region Normal
             if (CurrentState == (int)GoalieStates.Normal)
             {
-                //
+                bool DangerousState = false;
+                Position2D ballLoc = Model.BallState.Location;
+                Position2D target;
+                if (ballLoc.X > 4.3 && ballLoc.Y < 1.2 && ballLoc.Y > -1.2)
+                {
+                    List<Position2D> intervalPos = new List<Position2D>();
+                    double DangerousTresh = GameParameters.DefenceAreaWidth / 2;
+
+                    intervalPos = engine.GameInfo.IntervalSelect(engine.GameInfo.GetVisibleIntervals(Model, ballLoc, GameParameters.OurGoalLeft, GameParameters.OurGoalRight, false, true, null, new int[1] { RobotID }));
+                    if (intervalPos.Count > 1 && intervalPos[0].DistanceFrom(intervalPos[1]) > MotionPlannerParameters.RobotRadi * 2)
+                    {
+                        Position2D center = Position2D.Interpolate(intervalPos[0], intervalPos[1], 0.5);
+                        target = center + (ballLoc - center).GetNormalizeToCopy(DangerousTresh);
+                    }
+                    else
+                    {
+                        target = GameParameters.OurGoalCenter + (ballLoc - GameParameters.OurGoalCenter).GetNormalizeToCopy(DangerousTresh);
+                    }
+                    Planner.Add(RobotID, target, (Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees, PathType.UnSafe, false, false, false, false);
+
+                }
                 Position2D postoGo = GameParameters.OurGoalCenter + (GameParameters.OurGoalCenter - defenceSate.Location).GetNormalizeToCopy(-0.4);
                 //WC2017
                 if (postoGo.X > GameParameters.OppGoalCenter.X - 0.11)
@@ -154,7 +174,7 @@ namespace MRL.SSL.AIConsole.Roles
 
                 cut = false;
                 if (!BallKickedToOurGoal(Model) && PosIntersect.HasValue && (Model.OurRobots[RobotID].Location - PosIntersect.Value).GetNormnalizedCopy().InnerProduct((postoGo - PosIntersect.Value).GetNormnalizedCopy()) < -0.1 &&
-                    Model.BallState.Speed.Size > 0.5 && (PosIntersect.Value - Model.BallState.Location).GetNormnalizedCopy().InnerProduct(Model.BallState.Speed.GetNormnalizedCopy()) > 0.1  && Model.OurRobots[RobotID].Location.X<PosIntersect.Value.X)// (PosIntersect.Value.X > Model.OurRobots[RobotID].Location.X + 0.9) && GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out xx, out yy))//&& (PosTarget.X > Model.OurRobots[RobotID].Location.X + 0.9))//(PosTarget.DistanceFrom(GameParameters.OurGoalCenter) < Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter)))
+                    Model.BallState.Speed.Size > 0.5 && (PosIntersect.Value - Model.BallState.Location).GetNormnalizedCopy().InnerProduct(Model.BallState.Speed.GetNormnalizedCopy()) > 0.1 && Model.OurRobots[RobotID].Location.X < PosIntersect.Value.X)// (PosIntersect.Value.X > Model.OurRobots[RobotID].Location.X + 0.9) && GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out xx, out yy))//&& (PosTarget.X > Model.OurRobots[RobotID].Location.X + 0.9))//(PosTarget.DistanceFrom(GameParameters.OurGoalCenter) < Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter)))
                 {
                     if (ballcoeff > 0 && intersectTime != (new Position2D(100, 100)) && (((robotCoeff - ballcoeff) > -0.5 && (robotCoeff - ballcoeff) < 0.5)))
                     {
@@ -236,9 +256,9 @@ namespace MRL.SSL.AIConsole.Roles
                     Position2D intersects = intersect.Value;
                     //WC2017
                     //OurGoalRight.Y - .15 
-                    
+
                     // y between 0.75 and 1.15 or between negetive
-                    if (((intersects.Y > GameParameters.OurGoalLeft.Y + .15 && intersects.Y < GameParameters.BorderWidth/2) || (intersects.Y < GameParameters.OurGoalRight.Y - .15 && intersects.Y > -GameParameters.BorderWidth / 2))
+                    if (((intersects.Y > GameParameters.OurGoalLeft.Y + .15 && intersects.Y < GameParameters.BorderWidth / 2) || (intersects.Y < GameParameters.OurGoalRight.Y - .15 && intersects.Y > -GameParameters.BorderWidth / 2))
                         && Model.BallState.Speed.Size > .3 && Model.BallState.Speed.InnerProduct(GameParameters.OurGoalCenter - Model.BallState.Location) > 0)
                     {
                         skip = true;
@@ -334,7 +354,7 @@ namespace MRL.SSL.AIConsole.Roles
                                 bool gotoperp = false;
                                 Position2D perp = targetvector.PrependecularPoint(GameParameters.OurGoalCenter, Model.OurRobots[RobotID].Location);
                                 Position2D intersectpos = new Line(perp, pos).IntersectWithLine(new Line(GameParameters.OurGoalLeft, GameParameters.OurGoalRight)).Value;
-                                perp=pos+ (pos - intersectpos).GetNormalizeToCopy((pos - intersectpos).Size - 0.11);
+                                perp = pos + (pos - intersectpos).GetNormalizeToCopy((pos - intersectpos).Size - 0.11);
                                 if (perp.DistanceFrom(Model.OurRobots[RobotID].Location) > .1 && perp.DistanceFrom(GameParameters.OurGoalCenter) < pos.DistanceFrom(GameParameters.OurGoalCenter))
                                 {
                                     gotoperp = true;
@@ -495,8 +515,8 @@ namespace MRL.SSL.AIConsole.Roles
                     double robotIntersectTime = timeRobotToTargetInIntersect(Model, RobotID, initialpos, Model.OurRobots[RobotID].Location, intersectTime);
 
                     cut = false;
-                    if (!BallKickedToOurGoal(Model) && PosIntersect.HasValue && (Model.OurRobots[RobotID].Location - PosIntersect.Value).GetNormnalizedCopy().InnerProduct((postoGo - PosIntersect.Value).GetNormnalizedCopy()) < -0.1 && 
-                        Model.BallState.Speed.Size> 0.5 && (PosIntersect.Value-Model.BallState.Location).GetNormnalizedCopy().InnerProduct(Model.BallState.Speed.GetNormnalizedCopy()) > 0.1)// (PosIntersect.Value.X > Model.OurRobots[RobotID].Location.X + 0.9) && GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out xx, out yy))//&& (PosTarget.X > Model.OurRobots[RobotID].Location.X + 0.9))//(PosTarget.DistanceFrom(GameParameters.OurGoalCenter) < Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter)))
+                    if (!BallKickedToOurGoal(Model) && PosIntersect.HasValue && (Model.OurRobots[RobotID].Location - PosIntersect.Value).GetNormnalizedCopy().InnerProduct((postoGo - PosIntersect.Value).GetNormnalizedCopy()) < -0.1 &&
+                        Model.BallState.Speed.Size > 0.5 && (PosIntersect.Value - Model.BallState.Location).GetNormnalizedCopy().InnerProduct(Model.BallState.Speed.GetNormnalizedCopy()) > 0.1)// (PosIntersect.Value.X > Model.OurRobots[RobotID].Location.X + 0.9) && GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out xx, out yy))//&& (PosTarget.X > Model.OurRobots[RobotID].Location.X + 0.9))//(PosTarget.DistanceFrom(GameParameters.OurGoalCenter) < Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter)))
                     {
                         if (ballcoeff > 0 && intersectTime != (new Position2D(100, 100)) && (((robotCoeff - ballcoeff) > -0.5 && (robotCoeff - ballcoeff) < 0.5)))
                         {
@@ -769,7 +789,7 @@ namespace MRL.SSL.AIConsole.Roles
                 }
                 //bisector line from a position
                 Line bisector = Vector2D.Bisector(leftVector, rightVector, defenceSate.Location);
-                DrawingObjects.AddObject(bisector,"bisicktiir");
+                DrawingObjects.AddObject(bisector, "bisicktiir");
                 mainuntersect = goalcenter.Intersect(bisector).Where(y => y.X < GameParameters.OurGoalCenter.X).OrderBy(y => y.DistanceFrom(defenceSate.Location)).FirstOrDefault();
 
                 #region Normal
@@ -829,7 +849,7 @@ namespace MRL.SSL.AIConsole.Roles
 
                 cut = false;
                 if (!BallKickedToOurGoal(Model) && PosIntersect.HasValue && (Model.OurRobots[RobotID].Location - PosIntersect.Value).GetNormnalizedCopy().InnerProduct((postoGo - PosIntersect.Value).GetNormnalizedCopy()) < -0.1 &&
-                    Model.BallState.Speed.Size > 0.5 && (PosIntersect.Value - Model.BallState.Location).GetNormnalizedCopy().InnerProduct(Model.BallState.Speed.GetNormnalizedCopy()) > 0.1 && Model.OurRobots[RobotID].Location.X<PosIntersect.Value.X)// (PosIntersect.Value.X > Model.OurRobots[RobotID].Location.X + 0.9) && GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out xx, out yy))//&& (PosTarget.X > Model.OurRobots[RobotID].Location.X + 0.9))//(PosTarget.DistanceFrom(GameParameters.OurGoalCenter) < Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter)))
+                    Model.BallState.Speed.Size > 0.5 && (PosIntersect.Value - Model.BallState.Location).GetNormnalizedCopy().InnerProduct(Model.BallState.Speed.GetNormnalizedCopy()) > 0.1 && Model.OurRobots[RobotID].Location.X < PosIntersect.Value.X)// (PosIntersect.Value.X > Model.OurRobots[RobotID].Location.X + 0.9) && GameParameters.IsInDangerousZone(Model.BallState.Location, false, 0.2, out xx, out yy))//&& (PosTarget.X > Model.OurRobots[RobotID].Location.X + 0.9))//(PosTarget.DistanceFrom(GameParameters.OurGoalCenter) < Model.OurRobots[RobotID].Location.DistanceFrom(GameParameters.OurGoalCenter)))
                 {
                     if (ballcoeff > 0 && intersectTime != (new Position2D(100, 100)) && (((robotCoeff - ballcoeff) > -0.5 && (robotCoeff - ballcoeff) < 0.5)))
                     {
@@ -867,7 +887,7 @@ namespace MRL.SSL.AIConsole.Roles
                 }
                 if (cut)
                 {
-                    DrawingObjects.AddObject(new Circle(lastPosNormal, 0.1, new System.Drawing.Pen(System.Drawing.Color.Red, 0.02f)), "sdf32s1df32ds");                    
+                    DrawingObjects.AddObject(new Circle(lastPosNormal, 0.1, new System.Drawing.Pen(System.Drawing.Color.Red, 0.02f)), "sdf32s1df32ds");
                 }
                 bool debug = false;
                 if (debug)
@@ -1280,7 +1300,7 @@ namespace MRL.SSL.AIConsole.Roles
                         CurrentState = (int)GoalieStates.Piston;
                     else
                         if (!BallKickedToOurGoal(Model))
-                            CurrentState = (int)GoalieStates.Normal;
+                        CurrentState = (int)GoalieStates.Normal;
                 }
                 #endregion
                 #region KickToRobot

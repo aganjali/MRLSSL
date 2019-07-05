@@ -13,7 +13,7 @@ namespace MRL.SSL.AIConsole.Strategies
     class DrawerKickOffStrategy:StrategyBase
     {
 
-        const double tresh = 0.05, stuckTresh = 0.23, angleTresh = 2, waitTresh = 20, finishTresh = 120, initDist = 0.22, maxWaitTresh = 180, passSpeedTresh = 0.08, behindBallTresh = 0.07, fieldMargin = 0.12;
+        const double tresh = 0.2, stuckTresh = 0.23, angleTresh = 2, waitTresh = 10, finishTresh = 120, initDist = 0.22, maxWaitTresh = 180, passSpeedTresh = 0.08, behindBallTresh = 0.07, fieldMargin = 0.12;
 
         bool first, firstInState, isChip, chipOrigin, shooterFirstMove, goActive, passed, changeShooter, inrot;
         int[] PositionersID;
@@ -74,7 +74,7 @@ namespace MRL.SSL.AIConsole.Strategies
             initialPosCounter = 0;
             finishCounter = 0;
             timeLimitCounter = 0;
-            RotateDelay = 30;
+            RotateDelay = 5;
             ShootTarget = Position2D.Zero;
             PassTarget = Position2D.Zero;
             chipOrigin = true;

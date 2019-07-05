@@ -5452,9 +5452,7 @@ namespace MRL.SSL.AIConsole.Engine
                 Position2D centerRobot = new Position2D();
                 double dist, distFrom;
                 bool IsInOurDangerZone = GameParameters.IsInDangerousZone(Model.BallState.Location, true, 0, out dist, out distFrom);
-                DrawingObjects.AddObject(l1);
-                DrawingObjects.AddObject(l3);
-                DrawingObjects.AddObject(l2);
+
                 //if (GameParameters.IsInField(Model.BallState.Location, 0))
                 //{
                 //    lastBallPos = Model.BallState.Location;

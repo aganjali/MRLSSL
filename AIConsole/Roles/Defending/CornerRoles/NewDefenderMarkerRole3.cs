@@ -708,7 +708,7 @@ namespace MRL.SSL.AIConsole.Roles
                         }
                         else if (new Line(FarTarget, GameParameters.OurGoalCenter).Distance(Model.OurRobots[RobotID].Location) > 0.5 && Model.OurRobots[RobotID].Location.DistanceFrom(markPos) > .5)
                         {
-                            CurrentState = (int)MarkState.FarFront;
+                            CurrentState = (int)MarkState.IntheWay; // todo: farFront
                         }
                         else if (noIntersect)
                         {
@@ -726,7 +726,7 @@ namespace MRL.SSL.AIConsole.Roles
                             {
                                 firstTimeNear = false;
                                 avoidness = true;
-                                CurrentState = (int)MarkState.FarFront;
+                                CurrentState = (int)MarkState.IntheWay; // todo: farfront
                             }
                         }
                         else

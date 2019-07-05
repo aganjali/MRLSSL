@@ -57,7 +57,7 @@ namespace MRL.SSL.AIConsole.Roles
                 int backBallRobotID = model.Opponents.OrderBy(t => t.Value.Location.DistanceFrom(ballState.Location)).Select(u => u.Key).FirstOrDefault();
                 double angleUpperbound = 0;
                 double angle = 0;
-                Vector2D targetVector = Vector2D.FromAngleSize((model.Opponents[backBallRobotID].Angle.Value * Math.PI) / 180, 0.60);
+                Vector2D targetVector = Vector2D.FromAngleSize((model.Opponents[backBallRobotID].Angle.Value * Math.PI) / 180, 0.9);
                 bool goToAngle = false;
                 Line leftLine = new Line(model.Opponents[backBallRobotID].Location + Vector2D.FromAngleSize(((model.Opponents[backBallRobotID].Angle.Value * Math.PI) / 180) - (Math.PI / 2), .05), (model.Opponents[backBallRobotID].Location + Vector2D.FromAngleSize(((model.Opponents[backBallRobotID].Angle.Value * Math.PI) / 180) - (Math.PI / 2), .05)) + targetVector);
                 Line rightLine = new Line(model.Opponents[backBallRobotID].Location + Vector2D.FromAngleSize(((model.Opponents[backBallRobotID].Angle.Value * Math.PI) / 180) - (Math.PI / 2), .05), (model.Opponents[backBallRobotID].Location + Vector2D.FromAngleSize(((model.Opponents[backBallRobotID].Angle.Value * Math.PI) / 180) + (Math.PI / 2), .05)) + targetVector);
@@ -75,7 +75,7 @@ namespace MRL.SSL.AIConsole.Roles
                 Position2D target = ballInitialState + targetVector.GetNormalizeToCopy(.6);//robotBall.GetNormalizeToCopy(.6);
 
                 angleUpperbound = (GameParameters.OurGoalCenter - ballInitialState).AngleInDegrees;
-                Position2D target2 = ballInitialState + (GameParameters.OurGoalCenter - ballInitialState).GetNormalizeToCopy(.6);
+                Position2D target2 = ballInitialState + (GameParameters.OurGoalCenter - ballInitialState).GetNormalizeToCopy(.9);
                 angle = robotBall.AngleInDegrees;
                 Vector2D lowerboundVector = Vector2D.FromAngleSize(sgn * ((lowerBound * Math.PI) / 180), 1);
                 Line lowerboundLine = new Line(ballInitialState, ballInitialState + lowerboundVector);
@@ -109,17 +109,17 @@ namespace MRL.SSL.AIConsole.Roles
                 int sgndec = -Math.Sign(ballInitialState.Y);
                 if (decrese)
                 {
-                    Vector2D targetvector = Vector2D.FromAngleSize(targetVector.AngleInRadians + (((difefrence > .05) ? .05 : 0.00) * sgndec), .7);
+                    Vector2D targetvector = Vector2D.FromAngleSize(targetVector.AngleInRadians + (((difefrence > .05) ? .05 : 0.00) * sgndec), .8);
                     target = ballInitialState + targetvector;
                 }
                 else
                 {
-                    Vector2D targetvector = Vector2D.FromAngleSize(targetVector.AngleInRadians - (((difefrence > .05) ? .05 : 0.00) * sgndec), .7);
+                    Vector2D targetvector = Vector2D.FromAngleSize(targetVector.AngleInRadians - (((difefrence > .05) ? .05 : 0.00) * sgndec), .8);
                     target = ballInitialState + targetvector;
                 }
                 DrawingObjects.AddObject(new Circle(target, .12f, new Pen((goToAngle) ? Brushes.DeepSkyBlue : Brushes.HotPink, .02f)), "2465464");
                 Planner.ChangeDefaulteParams(RobotID, false);
-                Planner.SetParameter(RobotID, 15, 10);
+                Planner.SetParameter(RobotID, 6, 5);
                 Planner.AddKick(RobotID, true);
                 if (goToAngle)
                 {

@@ -198,7 +198,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                 else
                     nodeCountOffset = tree.Count;
                 Obstacles obs = new Obstacles(Model);
-
+                AvoidBall = (StopBall) ? 1 : AvoidBall;
                 obs.AddObstacle(AvoidRobot, AvoidBall, AvoidZone, AvoidOppZone, new List<int>() { RobotID }, null, MotionPlannerParameters.kSpeedBall, MotionPlannerParameters.kSpeedRobot, StopBall);
                 if (virtualObs != null)
                 {
