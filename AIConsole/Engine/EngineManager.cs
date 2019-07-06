@@ -716,6 +716,7 @@ namespace MRL.SSL.AIConsole.Engine
                                 if (senderStation == WirelessSenderDevice.AI)
                                 {
 
+
                                     if (RunningEngines.Count != 2)
                                         commands = Planner.Run(Model4Run0, out lastVel, out lastOmega);
                                     else
@@ -748,7 +749,7 @@ namespace MRL.SSL.AIConsole.Engine
                                     //    Logger.Write(LogType.Info, "0 : " + commands.Commands.ContainsKey(0) + "\t1: " + commands.Commands.ContainsKey(1));
 
 
-                                     PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
+                                    // PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(sequenceNum), false);
                                //     PortManager.SendData(AISettings.Default.SerialPort, commands.CreatPacket(frame), false);
                                     frame++;
                                     if (frame == (int)StaticVariables.FRAME_RATE)

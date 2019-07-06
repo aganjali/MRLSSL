@@ -88,6 +88,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
             double markRegion = -3.5;
             Dictionary<int, float> scores;
             Dictionary<double, int> dd = new Dictionary<double, int>();
+           
             if (goalieID.HasValue)
             {
                 scores = engine.GameInfo.OppTeam.Scores.Where(w => w.Key != engine.GameInfo.OppTeam.GoaliID.Value).ToDictionary(k => k.Key, v => v.Value);
@@ -148,9 +149,16 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
             r = typeof(NewSupporter2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 1, 0));
-            r = typeof(Marker1Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(r, 1, 0));
-
+            if (ActiveParameters.NewActiveParameters.UseSpaceDrible)
+            {
+                r = typeof(ZjuSupporterRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                roles.Add(new RoleInfo(r, 1, 0));
+            }
+            else
+            {
+                r = typeof(Marker1Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+                roles.Add(new RoleInfo(r, 1, 0));
+            }
             r = typeof(MarkerAttackerRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 1, 0));
 
@@ -194,10 +202,14 @@ namespace MRL.SSL.AIConsole.Plays.Our
             if (matched.Any(w => w.Value.GetType() == typeof(Marker1Normal8Robot)))
                 Marker1 = matched.Where(w => w.Value.GetType() == typeof(Marker1Normal8Robot)).First().Key;
 
+            if (matched.Any(w => w.Value.GetType() == typeof(ZjuSupporterRole)))
+                Marker1 = matched.Where(w => w.Value.GetType() == typeof(ZjuSupporterRole)).First().Key;
+
 
             int? Marker2 = null;
             if (matched.Any(w => w.Value.GetType() == typeof(MarkerAttackerRole2)))
                 Marker2 = matched.Where(w => w.Value.GetType() == typeof(MarkerAttackerRole2)).First().Key;
+
 
             FreekickDefence.Static1ID = st1;
             FreekickDefence.Static2ID = st2;
@@ -205,7 +217,7 @@ namespace MRL.SSL.AIConsole.Plays.Our
             #endregion
             NormalSharedState.CommonInfo.ActiveID = ActiveID;
             NormalSharedState.CommonInfo.SupporterID = supportID;
-            NormalSharedState.CommonInfo.AttackerID = Marker1;
+            NormalSharedState.CommonInfo.AttackerID = (ActiveParameters.NewActiveParameters.UseSpaceDrible) ? null : Marker1;
 
             #region Assigner
 
@@ -471,6 +483,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker2, typeof(MarkerAttackerRole2)))
                 Functions[Marker2.Value] = (eng, wmd) => GetRole<MarkerAttackerRole2>(Marker2.Value).Perform(engine, Model, Marker2.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2, field);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker1, typeof(ZjuSupporterRole)))
+                Functions[Marker1.Value] = (eng, wmd) => GetRole<ZjuSupporterRole>(Marker1.Value).Perform(eng, wmd, Marker1.Value);
 
             //else if (Model.BallState.Location.X > 0.6 && !oppBallOwner)
             //{

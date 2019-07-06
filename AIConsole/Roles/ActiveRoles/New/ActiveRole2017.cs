@@ -229,7 +229,7 @@ namespace MRL.SSL.AIConsole.Roles
             new NewRegionalRole(),
             new StaticDefender1(),new StaticDefender2(),new staticDefender3(),
             new AttackerRole2017(),
-            new Marker1Normal8Robot(),new MarkerAttackerRole2() };
+            new Marker1Normal8Robot(),new MarkerAttackerRole2(),new ZjuSupporterRole() };
             if (NormalSharedState.CommonInfo.PickIsFeasible && !NormalSharedState.CommonInfo.IsPicking)
             {
                 if (NormalSharedState.CommonInfo.PickerID == NormalSharedState.CommonInfo.ActiveID)
