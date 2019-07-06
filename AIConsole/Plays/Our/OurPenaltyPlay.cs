@@ -132,12 +132,20 @@ namespace MRL.SSL.AIConsole.Plays
 
             rt = typeof(PenaltyPositionningRole2).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(rt, 1, 0));
-
+            rt = typeof(PenaltyPositionningRole3).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 1, 0));
+            rt = typeof(PenaltyPositionningRole4).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(rt, 1, 0));
             Dictionary<int, RoleBase> matched;
+            List<int> ids = new List<int>();
             if (Model.GoalieID.HasValue)
-                matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.Where(w => w != Model.GoalieID.Value).ToList(), roles, PreviouslyAssignedRoles);
+                ids = Model.OurRobots.Keys.Where(w => w != Model.GoalieID.Value).ToList();
             else
-                matched = _roleMatcher.MatchRoles(engine, Model, Model.OurRobots.Keys.ToList(), roles, PreviouslyAssignedRoles);
+                ids = Model.OurRobots.Keys.ToList();
+            if (isSpecificIdInField && ids.Contains(robotId))
+                ids.Remove(robotId);
+
+            matched = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 
             int? Defender1ID = null;
             if (matched.Any(w => w.Value.GetType() == typeof(DefenderNormalRole1)))
@@ -163,6 +171,14 @@ namespace MRL.SSL.AIConsole.Plays
             int? stop3 = null;
             if (matched.Any(w => w.Value.GetType() == typeof(PenaltyPositionningRole2)))
                 stop3 = matched.Where(w => w.Value.GetType() == typeof(PenaltyPositionningRole2)).First().Key;
+
+            int? stop4 = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(PenaltyPositionningRole3)))
+                stop4 = matched.Where(w => w.Value.GetType() == typeof(PenaltyPositionningRole3)).First().Key;
+
+            int? stop5 = null;
+            if (matched.Any(w => w.Value.GetType() == typeof(PenaltyPositionningRole4)))
+                stop5 = matched.Where(w => w.Value.GetType() == typeof(PenaltyPositionningRole4)).First().Key;
 
 
             DefenceInfo GoaliInfo = null, Def1Info = null, Def2Info = null;
@@ -220,6 +236,12 @@ namespace MRL.SSL.AIConsole.Plays
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop3, typeof(PenaltyPositionningRole2)))
                 Functions[stop3.Value] = (eng, wmd) => GetRole<PenaltyPositionningRole2>(stop3.Value).RunRole(eng, wmd, stop3.Value, PreviouslyAssignedRoles);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop4, typeof(PenaltyPositionningRole3)))
+                Functions[stop4.Value] = (eng, wmd) => GetRole<PenaltyPositionningRole3>(stop4.Value).RunRole(eng, wmd, stop4.Value, PreviouslyAssignedRoles);
+
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, stop5, typeof(PenaltyPositionningRole4)))
+                Functions[stop5.Value] = (eng, wmd) => GetRole<PenaltyPositionningRole4>(stop5.Value).RunRole(eng, wmd, stop5.Value, PreviouslyAssignedRoles);
 
 
             PreviouslyAssignedRoles = CurrentlyAssignedRoles;

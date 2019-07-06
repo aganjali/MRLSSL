@@ -108,7 +108,7 @@ namespace MRL.SSL.AIConsole.Roles
                 Circle min = new Circle();
                 retangle = 0.00;
                 Circle max = new Circle();
-                Predict(model, RobotID, markID, out min, out max, true);
+                Predict(model, RobotID, markID, out min, out max, false);
                 Position2D target = min.Center;
                 if (forTarget)
                 {
@@ -494,7 +494,7 @@ namespace MRL.SSL.AIConsole.Roles
                 Position2D lsttgt = lastTarget;
                 #endregion
                 lastTarget = CommonDefenceUtils.CheckForStopZone(FreekickDefence.BallIsMoved, lastTarget, model);
-                if (!FreekickDefence.BallIsMoved)
+                if (false && !FreekickDefence.BallIsMoved)
                 {
                     double stop1 = Vector2D.AngleBetweenInDegrees(GameParameters.OurGoalCenter - model.BallState.Location, model.OurRobots[RobotID].Location - model.BallState.Location);
                     double radius = (Math.Abs(stop1) < 10) ? .85 : .8;
@@ -699,7 +699,7 @@ namespace MRL.SSL.AIConsole.Roles
                             }
                             else if (CurrentState != (int)MarkState.NearFront)
                             {
-                                CurrentState = (int)MarkState.IntheWay;//todo: removed farfront
+                                CurrentState = (int)MarkState.FarFront; //todo: removed farfront
                             }
                         }
                         else
