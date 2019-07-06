@@ -144,7 +144,7 @@ namespace MRL.SSL.AIConsole.Strategies
                 Planner.Add(fakeID,fakePos,(GameParameters.OppGoalCenter - fakePos).AngleInDegrees,PathType.UnSafe,true,true,true,true,false);
                 if (Model.BallState.Location.DistanceFrom(firstBallPos) < 0.15)
                 {
-                    if (Model.OurRobots[passerID].Location.DistanceFrom(firstBallPos) < 0.15)
+                    if (Model.OurRobots[passerID].Location.DistanceFrom(firstBallPos) > 0.30)
                     {
 
                         if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, passerID, typeof(ActiveRole)))

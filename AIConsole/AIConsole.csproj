@@ -220,6 +220,7 @@
     <Compile Include="Roles\GoalieRole\NewStaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\StaticGoalieRole.cs" />
     <Compile Include="Roles\GoalieRole\VandersarGoalKeeperRole.cs" />
+    <Compile Include="Roles\Penalty\PenaltyShooterRole2014.cs" />
     <Compile Include="Roles\Positionning\strategyPositioner1Role.cs" />
     <Compile Include="Roles\Positionning\strategyPositioner3Role.cs" />
     <Compile Include="Roles\Positionning\strategyPositioner2Role.cs" />

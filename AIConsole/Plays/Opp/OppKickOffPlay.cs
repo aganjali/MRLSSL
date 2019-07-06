@@ -141,7 +141,7 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
             if (!oppcathball && engine.GameInfo.OppTeam.BallOwner.HasValue && Model.Opponents[engine.GameInfo.OppTeam.BallOwner.Value].Location.DistanceFrom(ballState.Location) < 0.12)
                 oppcathball = true;
-            if (lastballstate.DistanceFrom(ballState.Location) > 0.07 && oppcathball)
+            if (lastballstate.DistanceFrom(ballState.Location) > 0.1 && oppcathball)
                 ballismoved = true;
 
             Type freeRole;
