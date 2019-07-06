@@ -716,6 +716,7 @@ namespace MRL.SSL.AIConsole.Engine
                                 if (senderStation == WirelessSenderDevice.AI)
                                 {
 
+
                                     if (RunningEngines.Count != 2)
                                         commands = Planner.Run(Model4Run0, out lastVel, out lastOmega);
                                     else

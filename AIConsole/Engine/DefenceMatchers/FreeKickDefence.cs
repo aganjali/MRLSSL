@@ -5943,7 +5943,7 @@ namespace MRL.SSL.AIConsole.Engine
             int? nullid = null;
             int? ballOwner = GetOurBallOwner(Model, (containId1) ? d1Role.Key : nullid, (containId2) ? d2Role.Key : nullid);
 
-            if (GameParameters.IsInDangerousZone(ballState.Location, false, 0.2, out dis1, out dis2) && ballStateFast.Speed.Size < 2)
+            if (GameParameters.IsInDangerousZone(ballState.Location, false, 0.08, out dis1, out dis2) && ballStateFast.Speed.Size < 2)
             {
                 LastOwner = null;
 

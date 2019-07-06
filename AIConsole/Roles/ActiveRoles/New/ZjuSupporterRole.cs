@@ -12,7 +12,7 @@ using MRL.SSL.AIConsole.Roles.Defending.Normal;
 
 namespace MRL.SSL.AIConsole.Roles
 {
-    public class NewSupporter2Role : RoleBase
+    public class ZjuSupporterRole : RoleBase
     {
         public override RoleCategory QueryCategory()
         {
@@ -31,8 +31,9 @@ namespace MRL.SSL.AIConsole.Roles
                 margin = 0;
                 Position2D p = Model.BallState.Location + (GameParameters.OurGoalCenter - Model.BallState.Location).GetNormalizeToCopy(0.5);
                 double dist, DistFromBorder;
-                if (GameParameters.IsInDangerousZone(p, false, 0.3, out dist, out DistFromBorder) || Model.BallState.Location.X > 4)
+                if (GameParameters.IsInDangerousZone(p, false, 0.0, out dist, out DistFromBorder) || (Model.BallState.Location.X > 4 && Math.Abs(Model.BallState.Location.Y) < GameParameters.DefenceAreaWidth / 2 + MotionPlannerParameters.RobotRadi * 2 + 0.15))
                 {
+                    
                     CurrentState = (int)State.InFrontOfDangerZone;
                     if (Model.BallState.Location.Y > 0)
                         side = DangerZoneSide.Left;
@@ -49,7 +50,7 @@ namespace MRL.SSL.AIConsole.Roles
                 margin = 0.1;
                 Position2D p = Model.BallState.Location + (GameParameters.OurGoalCenter - Model.BallState.Location).GetNormalizeToCopy(0.5);
                 double dist, DistFromBorder;
-                if (!GameParameters.IsInDangerousZone(p, false, 0.4, out dist, out DistFromBorder) && Model.BallState.Location.X <= 4)
+                if (!GameParameters.IsInDangerousZone(p, false, 0.05, out dist, out DistFromBorder) && (Model.BallState.Location.X <= 4 || Math.Abs(Model.BallState.Location.Y) >= GameParameters.DefenceAreaWidth / 2 + MotionPlannerParameters.RobotRadi * 2 + 0.15) )
                     CurrentState = (int)State.Normal;
             }
 
@@ -72,7 +73,7 @@ namespace MRL.SSL.AIConsole.Roles
             Position2D t = CalculateTarget(engine, Model, RobotID, out Teta);
             if (CurrentState == (int)State.Normal)
             {
-                GetSkill<SupportBallSkill>().Perform(engine, Model, RobotID, ActiveID, ActiveState, GameParameters.OurGoalCenter, ActiveTarget, 0.5, far, incomPred, 0);
+                GetSkill<SupportBallSkill>().Perform(engine, Model, RobotID, ActiveID, ActiveState, t, ActiveTarget, behindBallDist, far, incomPred, 0);
             }
             else if (CurrentState == (int)State.InFrontOfDangerZone)
             {
@@ -86,7 +87,7 @@ namespace MRL.SSL.AIConsole.Roles
             //double Teta;
             //Position2D t = CalculateTarget(engine, Model, RobotID, out Teta);
             //return t.DistanceFrom(Model.OurRobots[RobotID].Location);
-            double failMargin = 0.1, supportDist = 0.5;
+            double failMargin = 0.1, supportDist = 0.3;
 
             if (engine.GameInfo.OurTeam.CatchBallLines.ContainsKey(RobotID) &&
                 engine.GameInfo.OurTeam.CatchBallLines[RobotID].Count > 0)
@@ -104,23 +105,42 @@ namespace MRL.SSL.AIConsole.Roles
             return 0 + d;
         }
 
-
+        bool left = false;
         private Position2D CalculateTarget(GameStrategyEngine engine, WorldModel Model, int RobotID, out double Teta)
         {
             Position2D tar = Position2D.Zero;
             Teta = (Model.BallState.Location - GameParameters.OurGoalCenter).AngleInDegrees;
             if (CurrentState == (int)State.Normal)
             {
-                tar = Model.BallState.Location + (GameParameters.OurGoalCenter - Model.BallState.Location).GetNormalizeToCopy(0.5);
+                if (Model.BallState.Location.Y > 0.5)
+                    left = true;
+                else if (Model.BallState.Location.Y < -0.5)
+                    left = false;
+                if (left)
+                    tar = Model.BallState.Location + (new Vector2D(0, -1)).GetNormalizeToCopy(0.5);
+                else
+                    tar = Model.BallState.Location + (new Vector2D(0, 1)).GetNormalizeToCopy(0.5);
+                double dist, border;
+                if (Model.BallState.Location.X < GameParameters.OppGoalCenter.X + GameParameters.DefenceAreaHeight + 0.2)
+                {
+                    if (!left)
+                        tar = new Position2D(GameParameters.OppGoalCenter.X, -GameParameters.DefenceAreaWidth / 2) + new Vector2D(1, 0).GetNormalizeToCopy(GameParameters.DefenceAreaHeight + MotionPlannerParameters.RobotRadi * 2 + 0.17);
+
+                    else
+                        tar = new Position2D(GameParameters.OppGoalCenter.X, GameParameters.DefenceAreaWidth / 2) + new Vector2D(1, 0).GetNormalizeToCopy(GameParameters.DefenceAreaHeight + MotionPlannerParameters.RobotRadi * 2 + 0.17);
+
+                }
+                behindBallDist = tar.DistanceFrom(Model.BallState.Location);
+                // tar = Model.BallState.Location + (GameParameters.OurGoalCenter - Model.BallState.Location).GetNormalizeToCopy(0.5);
             }
             else if (CurrentState == (int)State.InFrontOfDangerZone)
             {
                 if (side == DangerZoneSide.Left)
                 {
-                    tar = new Position2D(1.65 * GameParameters.OurGoalCenter.X / 3, 0.5 * Math.Abs(GameParameters.OurLeftCorner.Y) / 2);
+                    tar = new Position2D(2.0 * GameParameters.OurGoalCenter.X / 3, -0.5 * Math.Abs(GameParameters.OurLeftCorner.Y) / 2);
                 }
                 else
-                    tar = new Position2D(1.65 * GameParameters.OurGoalCenter.X / 3, -0.5 * Math.Abs(GameParameters.OurLeftCorner.Y) / 2);
+                    tar = new Position2D(2.0 * GameParameters.OurGoalCenter.X / 3, 0.5 * Math.Abs(GameParameters.OurLeftCorner.Y) / 2);
                 Teta = 180;
                 //Vector2D ourGoalBallVec = (Model.BallState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(Model.BallState, 0.2));
                 //if (Model.BallState.Location.Y >= margin)
@@ -142,7 +162,7 @@ namespace MRL.SSL.AIConsole.Roles
         {
             List<RoleBase> res = new List<RoleBase>() {
             new ActiveRole2017(),
-            new NewSupporter2Role(),new NewRegionalRole(),};
+            new NewSupporter2Role(),new NewRegionalRole(),new ZjuSupporterRole()};
             if (NormalSharedState.CommonInfo.PickIsFeasible && !NormalSharedState.CommonInfo.IsPicking)
             {
 
@@ -155,7 +175,7 @@ namespace MRL.SSL.AIConsole.Roles
             }
             if (!NormalSharedState.CommonInfo.AttackerMode)
             {
-                res.Add(new Marker1Normal8Robot());
+                //res.Add(new Marker1Normal8Robot());
                 res.Add(new MarkerAttackerRole2());
             }
             else

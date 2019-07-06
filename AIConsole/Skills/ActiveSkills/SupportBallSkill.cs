@@ -33,8 +33,8 @@ namespace MRL.SSL.AIConsole.Skills
 
         public void Perform(GameStrategyEngine engine, WorldModel Model, int RobotID, int? ActiveID, int ActiveState, Position2D Target, Position2D activeTarget, double behindBallDist, bool far, Position2D incomPoint, int angSt)
         {
-            Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 8, 4);
+            //Planner.ChangeDefaulteParams(RobotID, false);
+            //Planner.SetParameter(RobotID, 6, 4);
             activeState = (GetBallState)ActiveState;
             Target = Model.BallState.Location + (Target - Model.BallState.Location).GetNormalizeToCopy(behindBallDist);
             if (ActiveID.HasValue && Model.OurRobots.ContainsKey(ActiveID.Value))
@@ -208,7 +208,7 @@ namespace MRL.SSL.AIConsole.Skills
 
             //    double distance = robotBackBallVec.Size / ((1 / Math.Tan(Math.Abs(teta))) + (1 / Math.Tan(Math.Abs(alfa))));
             Position2D Target2GO = new Position2D();
-            Vector2D FieldSize = new Vector2D(3.10, 2.15);
+            Vector2D FieldSize = new Vector2D(GameParameters.OurGoalCenter.X  + 0.7, Math.Abs(GameParameters.OurLeftCorner.Y) + 0.7);
 
             Position2D backBall = ball.Location - ballTarget.GetNormalizeToCopy(refrenceBackBall);
 
@@ -287,7 +287,7 @@ namespace MRL.SSL.AIConsole.Skills
             pidSideX.Coef = new PIDCoef(ActiveParameters.KpSideX, ActiveParameters.KiSideX, ActiveParameters.KdSideX);
 
             Position2D Target2GO = new Position2D();
-            Vector2D FieldSize = new Vector2D(3.10, 2.15);
+            Vector2D FieldSize = new Vector2D(GameParameters.OurLeftCorner.X  + 0.7, Math.Abs(GameParameters.OurLeftCorner.Y)  + 0.7);
             SingleObjectState stat = new SingleObjectState(Model.OurRobots[RobotID]);
 
 

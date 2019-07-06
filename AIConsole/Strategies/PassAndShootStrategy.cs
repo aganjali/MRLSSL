@@ -13,7 +13,7 @@ namespace MRL.SSL.AIConsole.Strategies
     public class PassAndShootStrategy : StrategyBase
     {
         const double step = 0.5, passerShooterDist = 1;
-        const double tresh = 0.01, angleTresh = 2, waitTresh = 10, finishTresh = 100, initDist = 0.25, maxWaitTresh = 600;
+        const double tresh = 0.2, angleTresh = 2, waitTresh = 10, finishTresh = 100, initDist = 0.25, maxWaitTresh = 600;
         bool first, passTargetCalculated, Debug = true;
         int PasserId, ShooterID;
         Position2D PasserPos, ShooterPos, PassTarget, ShootTarget;
@@ -80,7 +80,7 @@ namespace MRL.SSL.AIConsole.Strategies
 
         public override void FillInformation()
         {
-            UseOnlyInMiddle = false; //TODO: true for main game
+            UseOnlyInMiddle = true; //TODO: true for main game
             StrategyName = "SimplePassShoot2013";
             AttendanceSize = 2;
             UseInMiddle = true;

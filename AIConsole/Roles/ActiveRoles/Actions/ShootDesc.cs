@@ -134,7 +134,8 @@ namespace MRL.SSL.AIConsole.Roles
             Line angleLine = new Line(ball.Location, ball.Location + angleVec);
             Line goalLine = new Line(GameParameters.OppGoalRight, GameParameters.OppGoalLeft);
             Position2D? intersectVsGoalLine = angleLine.IntersectWithLine(goalLine);
-
+            if(!intersectVsGoalLine.HasValue)
+                intersectVsGoalLine = new Line(ball.Location, GameParameters.OppGoalCenter).IntersectWithLine(goalLine);
             if (NormalSharedState.CommonInfo.ActiveIsCatchingPass)
             {
                 actInfo.Target = (NormalSharedState.CommonInfo.GoodPointInGoal.HasValue) ? NormalSharedState.CommonInfo.GoodPointInGoal.Value : GameParameters.OppGoalCenter;
@@ -155,19 +156,22 @@ namespace MRL.SSL.AIConsole.Roles
                     {
                         Position2D ps = new Position2D(GameParameters.OppGoalCenter.X, item.interval.Start), pe = new Position2D(GameParameters.OppGoalCenter.X, item.interval.End);
                         //TODO: CHECK FOR HAS VALUE
-                        Vector2D v1 = ps - intersectVsGoalLine.Value;
-                        Vector2D v2 = pe - intersectVsGoalLine.Value;
-                        if (v1.InnerProduct(v2) < 0)
+                        if (intersectVsGoalLine.HasValue)
                         {
-                            double tmp = Math.Abs(Vector2D.AngleBetweenInDegrees(ps - ball.Location, pe - ball.Location));
-                            if (tmp > ActiveParameters.NewActiveParameters.KickInRegionAcc)
+                            Vector2D v1 = ps - intersectVsGoalLine.Value;
+                            Vector2D v2 = pe - intersectVsGoalLine.Value;
+                            if (v1.InnerProduct(v2) < 0)
                             {
-                                actInfo.Target = Position2D.Interpolate(ps, pe, 0.5);
-                                actInfo.tolerance = tmp;
-                                actInfo.kick = Program.MaxKickSpeed;
-                                actInfo.acc = actInfo.tolerance - ActiveParameters.NewActiveParameters.KickInRegionAcc;
-                                actInfo.strState += " KickInRegion";
-                                break;
+                                double tmp = Math.Abs(Vector2D.AngleBetweenInDegrees(ps - ball.Location, pe - ball.Location));
+                                if (tmp > ActiveParameters.NewActiveParameters.KickInRegionAcc)
+                                {
+                                    actInfo.Target = Position2D.Interpolate(ps, pe, 0.5);
+                                    actInfo.tolerance = tmp;
+                                    actInfo.kick = Program.MaxKickSpeed;
+                                    actInfo.acc = actInfo.tolerance - ActiveParameters.NewActiveParameters.KickInRegionAcc;
+                                    actInfo.strState += " KickInRegion";
+                                    break;
+                                }
                             }
                         }
                     }

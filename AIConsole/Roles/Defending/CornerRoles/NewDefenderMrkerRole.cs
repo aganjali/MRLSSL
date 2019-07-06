@@ -684,7 +684,7 @@ namespace MRL.SSL.AIConsole.Roles
                         }
                         else if (new Line(FarTarget, GameParameters.OurGoalCenter).Distance(Model.OurRobots[RobotID].Location) > 0.5 && Model.OurRobots[RobotID].Location.DistanceFrom(markPos) > .5)
                         {
-                            CurrentState = (int)MarkState.NearFront; //todo: removed farfront
+                            CurrentState = (int)MarkState.FarFront; //todo: removed farfront
                         }
                         else if (noIntersect)
                         {

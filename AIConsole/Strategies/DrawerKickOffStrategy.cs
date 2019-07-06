@@ -246,11 +246,11 @@ namespace MRL.SSL.AIConsole.Strategies
             Functions = new Dictionary<int, CommonDelegate>();
             if (CurrentState==(int)State.InitialState)
             {
-                if (Planner.AddRotate(Model, PasserID, PassTarget, 0, kickPowerType.Speed, PassSpeed, isChip, Math.Max(rotateCounter, RotateDelay), backSensor).IsInRotateDelay)
-                {
-                    rotateCounter++;
-                    inrot = true;
-                }
+                //if (Planner.AddRotate(Model, PasserID, PassTarget, 0, kickPowerType.Speed, PassSpeed, isChip, 0/*Math.Max(rotateCounter, RotateDelay)*/, backSensor).IsInRotateDelay)
+                //{
+                //    rotateCounter++;
+                //    inrot = true;
+                //}
 
                 Planner.ChangeDefaulteParams(ShooterID, false);
                 Planner.SetParameter(ShooterID, 3, 2.5);
@@ -264,7 +264,11 @@ namespace MRL.SSL.AIConsole.Strategies
             }
             else if (CurrentState== (int)State.Rush)
             {
-               
+                if (Planner.AddRotate(Model, PasserID, PassTarget, 0, kickPowerType.Speed, PassSpeed, isChip, 0/*Math.Max(rotateCounter, RotateDelay)*/, backSensor).IsInRotateDelay)
+                {
+                    rotateCounter++;
+                    inrot = true;
+                }
                 if (!goActive)
                 {
                     if (!shooterFirstMove)
@@ -302,8 +306,8 @@ namespace MRL.SSL.AIConsole.Strategies
                 {
                     if (i == drawerIdx && changeShooter)
                     {
-                        Planner.ChangeDefaulteParams(PositionersID[drawerIdx], false);
-                        Planner.SetParameter(PositionersID[drawerIdx], 7, 6);
+                        //Planner.ChangeDefaulteParams(PositionersID[drawerIdx], false);
+                        //Planner.SetParameter(PositionersID[drawerIdx], 7, 6);
                     }
                     Planner.Add(PositionersID[i], PositionersPos[i], PositionersAng[i], PathType.UnSafe, true, true, true, true);
                 }
