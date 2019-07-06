@@ -273,7 +273,7 @@ namespace MRL.SSL.Planning.MotionPlanner
                             target = ChoosTarget(goal, WayPoints);
                             
                             if (tree.Count > 0 && (!Failed || (Failed && nodes2try > 1))  )
-                            {
+                            { 
                                 float[] d2 = { (float)target.Location.X, (float)target.Location.Y };
                                 //NearestState = tree.nearest(d2);
                                 NearestState = tree.GetNearestNeighbours(d2, 1).First().Value;

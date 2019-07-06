@@ -60,7 +60,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 OnGame = MATS.OnGame;
             }
 
-            StaticVariables.action_delay = MATS.ActionDelay;
+           // StaticVariables.action_delay = MATS.ActionDelay;
 
 
             Max_frame_to_find_from_shadow = MATS.MaxFrameToShadow;
@@ -99,8 +99,8 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 }
                 else if (MATS.CamState == MergerAndTrackerSetting.CameraState.All)
                 {
-                    merger.CameraID = 2;
-                    merger.OneCamera = false;
+                    //merger.CameraID = 2;
+                    //merger.OneCamera = false;
                 }
             }
 
@@ -148,11 +148,13 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                     float cy = Packet.geometry.calib[i].tx / 1000.0f;
                     if (cx < 0)
                     {
-                        viewRect = new RectangleF(-3.5f, -2.5f, 3.5f + 0.3f, 5f);
+                        viewRect = new RectangleF(-5.0f, 3.5f, 5f + 1f, 7f);
                     }
                     else
                     {
-                        viewRect = new RectangleF(-0.3f, -2.5f, 3.5f + 0.3f, 5f);
+                        //viewRect = new RectangleF(-0.3f, -2.5f, 3.5f + 0.3f, 5f);
+
+                        viewRect = new RectangleF(-5.0f, 3.5f, 5f + 1f, 7f);
                     }
                     cDMU.AddCamera(new PointF(cx, cy), Packet.geometry.calib[i].tz / 1000.0f, viewRect);
                 }
@@ -188,9 +190,12 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                     float cy = Packet.geometry.calib[i].tx / 1000.0f;
 
                     float margin = 1;
-                    float width = Packet.geometry.field.field_length / 2000.0f + margin, height = Packet.geometry.field.field_width / 1000.0f + margin;
+                    float width = Packet.geometry.field.field_length / 1000.0f, height = Packet.geometry.field.field_width / 1000.0f ;
 
-                    viewRect = new RectangleF(cx - width / 2, cy - height / 2, width, height);
+                    float widthStep = width / ((StaticVariables.CameraCount + 1)/ 2);
+                    float heightStep = height / (StaticVariables.CameraCount % 2);
+
+                    viewRect = new RectangleF(cx - widthStep / 2 - margin / 2, cy - heightStep / 2 - margin / 2, widthStep + margin, heightStep + margin);
                     // DrawingObjects.AddObject(new FlatRectangle(new Position2D(viewRect.X, viewRect.Y), new Vector2D(viewRect.Width, viewRect.Height)) { IsShown = true }, "rectgeo" + cx + "," + cy);
                     cDMU.AddCamera(new PointF(cx, cy), Packet.geometry.calib[i].tz / 1000.0f, viewRect);
                 }

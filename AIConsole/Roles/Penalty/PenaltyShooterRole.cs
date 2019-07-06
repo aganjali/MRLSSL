@@ -7,6 +7,8 @@ using MRL.SSL.CommonClasses.MathLibrary;
 using MRL.SSL.AIConsole.Skills;
 using MRL.SSL.GameDefinitions;
 using MRL.SSL.GameDefinitions.General_Settings;
+using MRL.SSL.Planning.GamePlanner;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Roles
 {
@@ -48,7 +50,12 @@ namespace MRL.SSL.AIConsole.Roles
                 //return GetSkill<GotoPointSkill>().GotoPointInRefrence(Model, RobotID,secondTarget-Model.BallState.Location ,secondTarget, (initializeTarget - Model.OurRobots[RobotID].Location).AngleInDegrees, true, false);
             }
             else
+            {
                 return GetSkill<RotateWheelsSkill>().Rotate(engine, Model, RobotID, KickSpeed, lastoppstate);
+                //Planner.AddKick(RobotID,kickPowerType.Speed,false,6);
+                 //GetSkill<GetBallSkill>().Perform(engine,Model,RobotID,GameParameters.OppGoalLeft,false,0.05);
+                //return new SingleWirelessCommand();
+            }
         }
 
         public override RoleCategory QueryCategory()

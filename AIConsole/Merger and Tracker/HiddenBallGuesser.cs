@@ -29,7 +29,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
 		{
             //SizeF FieldSize = new SizeF((float)Math.Abs(GameParameters.OppLeftCorner.X - GameParameters.OppRightCorner.X), (float)Math.Abs(GameParameters.OppLeftCorner.Y - GameParameters.OppRightCorner.Y));
             GraphicsPath gp = new GraphicsPath();
-            RectangleF TotalFieldarea = new RectangleF(-3.5f, -2.5f, 7, 5);//new RectangleF((float)(GameParameters.OurGoalLeft.X - GameParameters.FieldMargins.X / 2), (float)(GameParameters.OurLeftCorner.Y - GameParameters.FieldMargins.Y / 2), (float)(Math.Abs(GameParameters.OurGoalLeft.X - GameParameters.OppGoalLeft.X) + GameParameters.FieldMargins.X), (float)(Math.Abs(GameParameters.OurRightCorner.Y - GameParameters.OurLeftCorner.Y) + GameParameters.FieldMargins.Y));
+            RectangleF TotalFieldarea = new RectangleF(-4.5f - 0.5f, -3.0f - 0.5f, 10, 7);//new RectangleF((float)(GameParameters.OurGoalLeft.X - GameParameters.FieldMargins.X / 2), (float)(GameParameters.OurLeftCorner.Y - GameParameters.FieldMargins.Y / 2), (float)(Math.Abs(GameParameters.OurGoalLeft.X - GameParameters.OppGoalLeft.X) + GameParameters.FieldMargins.X), (float)(Math.Abs(GameParameters.OurRightCorner.Y - GameParameters.OurLeftCorner.Y) + GameParameters.FieldMargins.Y));
 			Region finalRegion = null;
 
 			List<SingleObjectState> obstacles = new List<SingleObjectState>();
@@ -103,7 +103,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                 if (finalRegion != null && DrawRegion == true)
                 {
                     ShaddowGroup = new DrawCollection();
-                    finalRegion.Transform(new Matrix(100f, 0f, 0f, 100f, 350f, 250f));
+                    finalRegion.Transform(new Matrix(100f, 0f, 0f, 100f, 500f, 350f));
                     gr = Graphics.FromImage(BMP);
                     gr.Clear(Color.Black);
                     gr.FillRegion(Brushes.White, finalRegion);
@@ -128,7 +128,7 @@ namespace MRL.SSL.AIConsole.Merger_and_Tracker
                     //    }
                     //}
                    DrawingObjects.AddObject("Shadow", ShaddowGroup);
-                   finalRegion.Transform(new Matrix(0.01f, 0f, 0f, 0.01f, -3.5f, -2.5f));
+                   finalRegion.Transform(new Matrix(0.01f, 0f, 0f, 0.01f, -5.0f, -3.5f));
                    BMP.UnlockBits(bmpData);
                 }
                 #endregion
