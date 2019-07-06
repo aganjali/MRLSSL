@@ -521,7 +521,7 @@ namespace MRL.SSL.AIConsole.Roles
                 }
 
                 lastTarget = CommonDefenceUtils.CheckForStopZone(FreekickDefence.BallIsMoved, lastTarget, model);
-                if (!FreekickDefence.BallIsMoved)
+                if (false && !FreekickDefence.BallIsMoved)
                 {
                     double stop1 = Vector2D.AngleBetweenInDegrees(GameParameters.OurGoalCenter - model.BallState.Location, model.OurRobots[RobotID].Location - model.BallState.Location);
                     double radius = (Math.Abs(stop1) < 10) ? .85 : .8;
@@ -726,7 +726,7 @@ namespace MRL.SSL.AIConsole.Roles
                             {
                                 firstTimeNear = false;
                                 avoidness = true;
-                                CurrentState = (int)MarkState.IntheWay; // todo: farfront
+                                CurrentState = (int)MarkState.FarFront; // todo: farfront
                             }
                         }
                         else
