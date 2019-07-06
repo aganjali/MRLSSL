@@ -2,11 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MRL.SSL.AIConsole.Engine;
+using MRL.SSL.GameDefinitions;
+using MRL.SSL.CommonClasses.MathLibrary;
+using MRL.SSL.AIConsole.Skills;
+using MRL.SSL.AIConsole.Roles;
+using System.Drawing;
+using MRL.SSL.Planning.MotionPlanner;
 
 namespace MRL.SSL.AIConsole.Strategies
 {
-    class RC2019SimpleStrategy
+    class RC2019SimpleStrategy : StrategyBase
     {
+
         #region intrupt
         public override bool IsFeasiblel(GameStrategyEngine engine, GameDefinitions.WorldModel Model, ref GameDefinitions.GameStatus Status)
         {
@@ -22,33 +30,31 @@ namespace MRL.SSL.AIConsole.Strategies
             Attendance = attendance;
             InitialState = 0;
 
-            FinalState = 3;
-            TrapState = 3;
+            FinalState = 1;
+            TrapState = 1;
         }
         public override void FillInformation()
         {
             UseInMiddle = true;
             UseOnlyInMiddle = false;
-            StrategyName = "IMSimpleCornerChip";
+            StrategyName = "Very Simple chip";
             AttendanceSize = 3;
-            About = "simple chip sync to corner of dangerzone";
+            About = "simple chip for australia RoboCup";
         }
         #endregion
         #region Reset State
         public override void ResetState()
         {
             sync = new Syncronizer();
-            CurrentState = (int)State.positioning;
+            CurrentState = (int)State.go;
             firstFlag = true;
             debug = true;
             passSpeed = 4;
             isChip = true;
-            plannerCounter = 0;
             ourRobots = new List<int>();
             firstBallPos = new Position2D();
-            abdullahPos = new Position2D();
-            majidPos = new Position2D();
-            karimPos = new Position2D();
+            passerPos = new Position2D();
+            fakePos = new Position2D();
         }
 
         #endregion
@@ -57,20 +63,18 @@ namespace MRL.SSL.AIConsole.Strategies
         bool firstFlag;
         bool debug = true;
         List<int> ourRobots;
-        int abdullahID;
-        int majidID;
-        int karimID;
+        int passerID;
+        int shooterID;
+        int fakeID;
         int sgn;
         double passSpeed;
         int ruleTimer;
         bool isChip;
-        int plannerCounter;
         Position2D firstBallPos = new Position2D();
-        Position2D majidPos = new Position2D();
-        Position2D abdullahPos = new Position2D();
-        Position2D karimPos = new Position2D();
-        int waitCounter;
-        CircularMotionSkill CircleSkill;
+        Position2D fakePos = new Position2D();
+        Position2D passerPos = new Position2D();
+        Position2D shooterPos = new Position2D();
+        const int maxFiveTresh = 325;
         #endregion
         #region Custom Functions
         void FindOurRobots(WorldModel model, ref List<int> ourRobots, Dictionary<int, SingleObjectState> targetRobots)
@@ -127,29 +131,33 @@ namespace MRL.SSL.AIConsole.Strategies
         {
             Functions = new Dictionary<int, CommonDelegate>();
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>();
-            DrawingObjects.AddObject(karimPos);
-            DrawingObjects.AddObject(majidPos);
-            if (CurrentState == (int)State.positioning)
+            DrawingObjects.AddObject(new Circle(shooterPos, 0.1, new Pen(Color.Red, 0.01f)));
+            DrawingObjects.AddObject(new Circle(fakePos, 0.1, new Pen(Color.Red, 0.01f)));
+
+            if (CurrentState == (int)State.go)
             {
-                if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, abdullahID, typeof(ActiveRole)))
-                    Functions[abdullahID] = (eng, wmd) => GetRole<ActiveRole>(abdullahID).PerformWithoutKick(engine, Model, abdullahID, GameParameters.OppGoalCenter, false, 0.15);
-                //Planner.ChangeDefaulteParams(majidID, false);
-                //Planner.SetParameter(majidID, 3, 3);
-                Planner.Add(majidID, majidPos, (Model.BallState.Location - majidPos).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
+                //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, passerID, typeof(ActiveRole)))
+                //    Functions[passerID] = (eng, wmd) => GetRole<ActiveRole>(passerID).PerformWithoutKick(engine, Model, passerID, GameParameters.OppGoalCenter, false, 0.15);
+                
+                    Planner.Add(shooterID,shooterPos, (GameParameters.OppGoalCenter - shooterPos).AngleInDegrees, PathType.UnSafe,true,true,true,true,false);
+                
+                Planner.Add(fakeID,fakePos,(GameParameters.OppGoalCenter - fakePos).AngleInDegrees,PathType.UnSafe,true,true,true,true,false);
+                if (Model.BallState.Location.DistanceFrom(firstBallPos) < 0.15)
+                {
+                    if (Model.OurRobots[passerID].Location.DistanceFrom(firstBallPos) < 0.15)
+                    {
 
-                //Planner.ChangeDefaulteParams(karimID, false);
-                //Planner.SetParameter(karimID, 3, 3);
-                Planner.Add(karimID, karimPos, (Model.BallState.Location - karimPos).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
+                        if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, passerID, typeof(ActiveRole)))
+                            Functions[passerID] = (eng, wmd) => GetRole<ActiveRole>(passerID).PerformWithoutKick(engine,Model,passerID,passerPos,false,0.12);
+                    }
+                    else
+                    Planner.AddRotate(Model,passerID,shooterPos,0,kickPowerType.Speed,passSpeed,true,0,false);
+                }
+                else
+                {
+                    Planner.Add(passerID, firstBallPos, (GameParameters.OppGoalCenter - firstBallPos).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
 
-
-            }
-            else if (CurrentState == (int)State.passAndCatch)
-            {
-                Planner.Add(majidID, majidPos, (Model.BallState.Location - karimPos).AngleInDegrees, PathType.UnSafe, true, true, true, true, false);
-
-                sync.SyncChipPass(engine, Model, abdullahID, 0, karimID, karimPos, GameParameters.OppGoalCenter, passSpeed, Program.MaxKickSpeed, 0, false);
-                if (firstBallPos.DistanceFrom(Model.BallState.Location) > 0.10)
-                    Planner.Add(abdullahID, Position2D.Zero.Extend(0, sgn * 2), 0, PathType.UnSafe, true, true, true, true, false);
+                }
 
             }
 
@@ -167,48 +175,49 @@ namespace MRL.SSL.AIConsole.Strategies
                 init(Model, Attendance);
             }
             #endregion
-            if (CurrentState == (int)State.positioning)
+            if (CurrentState == (int)State.go)
             {
-                if (Model.OurRobots[abdullahID].Location.DistanceFrom(Model.BallState.Location) < 0.20)
+                if (ruleTimer > maxFiveTresh || Model.BallState.Location.DistanceFrom(firstBallPos)>3 )
                 {
-                    CurrentState = (int)State.passAndCatch;
+                    CurrentState = (int)State.finish;
                 }
             }
-            if (CurrentState == (int)State.passAndCatch)
-            {
-            }
-            if (sync.Failed || sync.Finished || firstBallPos.DistanceFrom(Model.BallState.Location) > 3 || (firstBallPos.DistanceFrom(Model.BallState.Location) > 0.60 && Model.BallState.Location.DistanceFrom(karimPos) < 0.5))
+            if (sync.Failed || sync.Finished)
             {
                 CurrentState = (int)State.finish;
             }
         }
         void init(WorldModel Model, Dictionary<int, SingleObjectState> attendance)
         {
-            sgn = -Math.Sign(Model.BallState.Location.Y);
+            sgn = Math.Sign(Model.BallState.Location.Y);
 
             firstBallPos = Model.BallState.Location;
             #region finding Positions
-            karimPos = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(Math.PI / 4 - (30 * Math.PI / 180), GameParameters.DefenceAreaHeight * Math.Sqrt(2) + 0.20);
-            karimPos = GameParameters.IntersectWithDangerZone(karimPos, false, 0.45);
-            karimPos = new Position2D(karimPos.X, sgn * karimPos.Y);
-            majidPos = GameParameters.OppGoalCenter + Vector2D.FromAngleSize(Math.PI / 4 - (67 * Math.PI / 180), GameParameters.DefenceAreaHeight * Math.Sqrt(2) + 0.20);
-            majidPos = GameParameters.IntersectWithDangerZone(majidPos, false, 0.45);
-            majidPos = new Position2D(majidPos.X, sgn * majidPos.Y);
-            //abdullahPos = new Position2D(-2.08, -sgn * 2.5);
+            //Find poses
+            Position2D oppCorner = GameParameters.OppRightCorner;
+            oppCorner.Y = sgn * oppCorner.Y;
+            double ballDiffX = Math.Abs(oppCorner.X) - Math.Abs(Model.BallState.Location.X); 
+            double ballDiffY = Math.Abs(oppCorner.Y) - Math.Abs(Model.BallState.Location.Y);
+            Position2D interPol = GameParameters.OppGoalCenter.Extend(/*GameParameters.DefenceAreaHeight / 10 + */ballDiffX, 0);
+            double bullshit = (Model.BallState.Location.X < 4.3) ? 6.5 : 7;
+            Vector2D ExtendVec = (interPol - oppCorner).GetNormalizeToCopy(6.5 - oppCorner.DistanceFrom(Model.BallState.Location));
+            
+            shooterPos = Model.BallState.Location + ExtendVec;
+            shooterPos = shooterPos + (shooterPos - Position2D.Zero).GetNormalizeToCopy(0.35);
+            fakePos = GameParameters.OppGoalCenter.Extend(GameParameters.DefenceAreaHeight + 0.4,0.7 * sgn);
             #endregion
             #region assigning robot IDs
-            abdullahID = FindNearestRobotID(Model.BallState.Location, ref attendance);
-            majidID = FindNearestRobotID(majidPos, ref attendance);
-            karimID = FindNearestRobotID(karimPos, ref attendance);
-            //abdullahID = FindNearestRobotID(firstBallPos, ref attendance);
+            //TODO : Find IDs
+            passerID = FindNearestRobotID(Model.BallState.Location, ref attendance);
+            shooterID  = FindNearestRobotID(shooterPos, ref attendance);
+            fakeID = FindNearestRobotID(shooterPos, ref attendance);
             #endregion
-            passSpeed = Math.Max(firstBallPos.DistanceFrom(karimPos) * 0.5, 1);
+            passSpeed = Math.Max(firstBallPos.DistanceFrom(shooterPos) * 0.5, 1);
             firstFlag = false;
         }
         enum State
         {
-            positioning,
-            passAndCatch,
+            go,
             finish
         }
     }

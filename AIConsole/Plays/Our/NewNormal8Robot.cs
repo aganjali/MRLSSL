@@ -201,9 +201,9 @@ namespace MRL.SSL.AIConsole.Plays.Our
             int? Marker1 = null;
             if (matched.Any(w => w.Value.GetType() == typeof(Marker1Normal8Robot)))
                 Marker1 = matched.Where(w => w.Value.GetType() == typeof(Marker1Normal8Robot)).First().Key;
-
+            int? zjusupp = null;
             if (matched.Any(w => w.Value.GetType() == typeof(ZjuSupporterRole)))
-                Marker1 = matched.Where(w => w.Value.GetType() == typeof(ZjuSupporterRole)).First().Key;
+                zjusupp = matched.Where(w => w.Value.GetType() == typeof(ZjuSupporterRole)).First().Key;
 
 
             int? Marker2 = null;
@@ -483,8 +483,8 @@ namespace MRL.SSL.AIConsole.Plays.Our
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker2, typeof(MarkerAttackerRole2)))
                 Functions[Marker2.Value] = (eng, wmd) => GetRole<MarkerAttackerRole2>(Marker2.Value).Perform(engine, Model, Marker2.Value, markRegion, OppToMarkID2, oppAttackerIds, oppValue1, oppValue2, field);
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Marker1, typeof(ZjuSupporterRole)))
-                Functions[Marker1.Value] = (eng, wmd) => GetRole<ZjuSupporterRole>(Marker1.Value).Perform(eng, wmd, Marker1.Value);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, zjusupp, typeof(ZjuSupporterRole)))
+                Functions[zjusupp.Value] = (eng, wmd) => GetRole<ZjuSupporterRole>(zjusupp.Value).Perform(eng, wmd, zjusupp.Value);
 
             //else if (Model.BallState.Location.X > 0.6 && !oppBallOwner)
             //{
