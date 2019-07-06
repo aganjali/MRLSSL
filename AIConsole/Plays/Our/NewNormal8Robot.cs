@@ -146,15 +146,15 @@ namespace MRL.SSL.AIConsole.Plays.Our
             //roles.Add(new RoleInfo(r, 1, 0));
             r = typeof(GerrardRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
             roles.Add(new RoleInfo(r, 1, 0));
-
-            r = typeof(NewSupporter2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
-            roles.Add(new RoleInfo(r, 1, 0));
             if (ActiveParameters.NewActiveParameters.UseSpaceDrible)
             {
                 r = typeof(ZjuSupporterRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
                 roles.Add(new RoleInfo(r, 1, 0));
             }
-            else
+            r = typeof(NewSupporter2Role).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
+            roles.Add(new RoleInfo(r, 1, 0));
+
+            if (!ActiveParameters.NewActiveParameters.UseSpaceDrible)
             {
                 r = typeof(Marker1Normal8Robot).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
                 roles.Add(new RoleInfo(r, 1, 0));
