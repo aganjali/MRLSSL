@@ -116,13 +116,13 @@ namespace MRL.SSL.AIConsole.Roles
                 else if (Model.BallState.Location.Y < -0.5)
                     left = false;
                 if (left)
-                    tar = Model.BallState.Location + (new Vector2D(0, -1)).GetNormalizeToCopy(0.3);
+                    tar = Model.BallState.Location + (new Vector2D(0, -1)).GetNormalizeToCopy(0.5);
                 else
-                    tar = Model.BallState.Location + (new Vector2D(0, 1)).GetNormalizeToCopy(0.3);
+                    tar = Model.BallState.Location + (new Vector2D(0, 1)).GetNormalizeToCopy(0.5);
                 double dist, border;
                 if (Model.BallState.Location.X < GameParameters.OppGoalCenter.X + GameParameters.DefenceAreaHeight + 0.2)
                 {
-                    if (left)
+                    if (!left)
                         tar = new Position2D(GameParameters.OppGoalCenter.X, -GameParameters.DefenceAreaWidth / 2) + new Vector2D(1, 0).GetNormalizeToCopy(GameParameters.DefenceAreaHeight + MotionPlannerParameters.RobotRadi * 2 + 0.1);
 
                     else
