@@ -1120,7 +1120,7 @@ namespace MRL.SSL.AIConsole.Plays
 
 
                     AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
-                    AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
+                    //AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
 
                     assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
                     #endregion
@@ -1375,7 +1375,7 @@ namespace MRL.SSL.AIConsole.Plays
                         }
                         else
                         {
-                            freeRole = typeof(StopRole1);
+                            freeRole = typeof(CornerStopRole);
                             FreekickDefence.DefenderMarkerRole3ToActive = true;
                         }
                     }
@@ -1383,6 +1383,7 @@ namespace MRL.SSL.AIConsole.Plays
                         freeRole = typeof(ActiveRole);
 
                     AddRoleInfo(roles, freeRole, 1, 0);
+                    AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
 
                     List<int> ids = new List<int>();
                     if (Model.GoalieID.HasValue)
