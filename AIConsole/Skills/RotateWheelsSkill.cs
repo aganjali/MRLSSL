@@ -27,7 +27,7 @@ namespace MRL.SSL.AIConsole.Skills
             SWC = new SingleWirelessCommand();
         }
         Position2D initializeTarget = new Position2D(GameParameters.OppGoalLeft.X, GameParameters.OppGoalLeft.Y + 0.15);
-        
+        int? firstState = null;
         public SingleWirelessCommand Rotate(GameStrategyEngine engine, WorldModel Model, int robotID, double kickSpeed, SingleObjectState lastoppState)
         {
             //return new SingleWirelessCommand() { Kind = 3, isDelayedKick = true, BackSensor = true, SpinBack = 0, KickSpeed = kickPower, spinBackward = true };
@@ -57,23 +57,30 @@ namespace MRL.SSL.AIConsole.Skills
                 obs.State = new SingleObjectState();
             }
             bool isdelayed = true;
-            if (intersect.HasValue && lastoppState != null && !obs.Meet(Model.BallState, new SingleObjectState(intersect.Value, Vector2D.Zero, 0), 0.09))
+
+            if ((firstState.HasValue && firstState.Value == 0) || (!firstState.HasValue && intersect.HasValue && lastoppState != null && !obs.Meet(Model.BallState, new SingleObjectState(intersect.Value, Vector2D.Zero, 0), 0.09)))
             {
+                
+                firstState = 0;
+
                 Planner.Add(robotID, new SingleWirelessCommand() {RobotID = robotID, Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, statusRequest = true, KickSpeed = Program.MaxKickSpeed - 0.10 });
                 return new SingleWirelessCommand();
             }
-            else if (lastoppState == null)
+            else if (!firstState.HasValue && lastoppState == null)
             {
+                firstState = 0;
                 Planner.Add(robotID, new SingleWirelessCommand() { RobotID = robotID, Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, statusRequest = true, KickSpeed = Program.MaxKickSpeed - 0.10 });
                 return new SingleWirelessCommand();
             }
-            else if (state == OppGoallerState.Right)
+            else if ((firstState.HasValue && firstState.Value == 1) ||(!firstState.HasValue && state == OppGoallerState.Right))
             {
+                firstState = 1;
                 Planner.Add(robotID, new SingleWirelessCommand() { RobotID = robotID, Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, spinBackward = true, KickSpeed = Program.MaxKickSpeed - 0.10 });
                 return new SingleWirelessCommand();
             }
-            else
+            else if((firstState.HasValue && firstState.Value == 2) || (!firstState.HasValue && state == OppGoallerState.Left))
             {
+                firstState = 2;
                 Planner.Add(robotID, new SingleWirelessCommand() { RobotID = robotID, Kind = 3, isDelayedKick = isdelayed, SpinBack = spin, spinBackward = false, KickSpeed = Program.MaxKickSpeed - 0.10 });
                 return new SingleWirelessCommand();
             }

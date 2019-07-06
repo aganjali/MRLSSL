@@ -20,10 +20,10 @@ namespace MRL.SSL.AIConsole.Roles
             if (CurrentState == (int)GoallerState.Dive && go)
             {
                 Planner.ChangeDefaulteParams(RobotID, false);
-                Planner.SetParameter(RobotID, 6, 6);
+                Planner.SetParameter(RobotID, 10, 6);
                 Planner.Add(RobotID, new SingleObjectState(Target, Vector2D.Zero, 180), PathType.UnSafe, false, false, false);
             }
-            else
+            else if(CurrentState != (int)GoallerState.Dive)
             {
                 Planner.Add(RobotID, new SingleObjectState(Target, Vector2D.Zero, (float)(Model.BallState.Location - Model.OurRobots[RobotID].Location).AngleInDegrees), PathType.UnSafe, false, false, false);
             }
@@ -52,9 +52,14 @@ namespace MRL.SSL.AIConsole.Roles
                 else
                     counter = 0;
             }
+            //if (CurrentState == (int)GoallerState.Dive)
+            //{
+
+               
+            //}
             if (CurrentState == (int)GoallerState.Dive)
                 counter++;
-            if (counter > 280)
+            if (counter > 280 /*|| Model.BallState.Speed.Size > 0.2*/)
                 go = true;
             DrawingObjects.AddObject(new StringDraw("counter: " + counter, GameParameters.OurGoalCenter + new Vector2D(0.5, 0)));
         }  

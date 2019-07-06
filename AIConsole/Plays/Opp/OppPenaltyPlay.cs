@@ -128,8 +128,10 @@ namespace MRL.SSL.AIConsole.Plays.Opp
 
             Dictionary<int, RoleBase> CurrentlyAssignedRoles = new Dictionary<int, RoleBase>(matched.Count);
 
-            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, goalie, typeof(IntelligencePenaltyGoalKeeperRole)))
-                Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<IntelligencePenaltyGoalKeeperRole>(wmd.GoalieID.Value).Run(eng, wmd, wmd.GoalieID.Value);
+            //if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(IntelligencePenaltyGoalKeeperRole)))
+            //    Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<IntelligencePenaltyGoalKeeperRole>(Model.GoalieID.Value).Run(eng, wmd, Model.GoalieID.Value);
+            if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, Model.GoalieID, typeof(PenaltyGoalieRole)))
+                Functions[Model.GoalieID.Value] = (eng, wmd) => GetRole<PenaltyGoalieRole>(Model.GoalieID.Value).RunRole(eng, wmd, Model.GoalieID.Value, PreviouslyAssignedRoles);
 
 
             if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, pos1, typeof(OppPenaltyPositionerRole1)))
