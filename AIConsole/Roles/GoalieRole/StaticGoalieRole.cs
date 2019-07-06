@@ -1087,7 +1087,7 @@ namespace MRL.SSL.AIConsole.Roles
                 double acceptableballRobotSpeed = ((maxIncomming + maxOutGoing) / 2 - maxVertical) * (Math.Cos(v) * Math.Cos(v)) + ((maxIncomming - maxOutGoing) / 2) * Math.Cos(v) + maxVertical;
                 double maxSpeedToGet = 0.5;
                 double dist, dist2;
-                double margin = FreekickDefence.AdditionalSafeRadi + RobotParameters.OurRobotParams.Diameter / 2;
+                double margin = FreekickDefence.AdditionalSafeRadi;//+ RobotParameters.OurRobotParams.Diameter / 2 ;
 
                 double distToBall = ballState.Location.DistanceFrom(Model.OurRobots[RobotID].Location);
                 if (distToBall == 0)

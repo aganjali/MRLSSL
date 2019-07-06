@@ -33,8 +33,8 @@ namespace MRL.SSL.AIConsole.Skills
 
         public void Perform(GameStrategyEngine engine, WorldModel Model, int RobotID, int? ActiveID, int ActiveState, Position2D Target, Position2D activeTarget, double behindBallDist, bool far, Position2D incomPoint, int angSt)
         {
-            Planner.ChangeDefaulteParams(RobotID, false);
-            Planner.SetParameter(RobotID, 6, 4);
+            //Planner.ChangeDefaulteParams(RobotID, false);
+            //Planner.SetParameter(RobotID, 6, 4);
             activeState = (GetBallState)ActiveState;
             Target = Model.BallState.Location + (Target - Model.BallState.Location).GetNormalizeToCopy(behindBallDist);
             if (ActiveID.HasValue && Model.OurRobots.ContainsKey(ActiveID.Value))

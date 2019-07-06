@@ -31,8 +31,9 @@ namespace MRL.SSL.AIConsole.Roles
                 margin = 0;
                 Position2D p = Model.BallState.Location + (GameParameters.OurGoalCenter - Model.BallState.Location).GetNormalizeToCopy(0.5);
                 double dist, DistFromBorder;
-                if (GameParameters.IsInDangerousZone(p, false, 0.3, out dist, out DistFromBorder) || Model.BallState.Location.X > 4)
+                if (GameParameters.IsInDangerousZone(p, false, 0.0, out dist, out DistFromBorder) || (Model.BallState.Location.X > 4 && Math.Abs(Model.BallState.Location.Y) < GameParameters.DefenceAreaWidth / 2 + MotionPlannerParameters.RobotRadi * 2 + 0.15))
                 {
+                    
                     CurrentState = (int)State.InFrontOfDangerZone;
                     if (Model.BallState.Location.Y > 0)
                         side = DangerZoneSide.Left;
@@ -49,7 +50,7 @@ namespace MRL.SSL.AIConsole.Roles
                 margin = 0.1;
                 Position2D p = Model.BallState.Location + (GameParameters.OurGoalCenter - Model.BallState.Location).GetNormalizeToCopy(0.5);
                 double dist, DistFromBorder;
-                if (!GameParameters.IsInDangerousZone(p, false, 0.4, out dist, out DistFromBorder) && Model.BallState.Location.X <= 4)
+                if (!GameParameters.IsInDangerousZone(p, false, 0.05, out dist, out DistFromBorder) && (Model.BallState.Location.X <= 4 || Math.Abs(Model.BallState.Location.Y) >= GameParameters.DefenceAreaWidth / 2 + MotionPlannerParameters.RobotRadi * 2 + 0.15) )
                     CurrentState = (int)State.Normal;
             }
 
@@ -123,10 +124,10 @@ namespace MRL.SSL.AIConsole.Roles
                 if (Model.BallState.Location.X < GameParameters.OppGoalCenter.X + GameParameters.DefenceAreaHeight + 0.2)
                 {
                     if (!left)
-                        tar = new Position2D(GameParameters.OppGoalCenter.X, -GameParameters.DefenceAreaWidth / 2) + new Vector2D(1, 0).GetNormalizeToCopy(GameParameters.DefenceAreaHeight + MotionPlannerParameters.RobotRadi * 2 + 0.1);
+                        tar = new Position2D(GameParameters.OppGoalCenter.X, -GameParameters.DefenceAreaWidth / 2) + new Vector2D(1, 0).GetNormalizeToCopy(GameParameters.DefenceAreaHeight + MotionPlannerParameters.RobotRadi * 2 + 0.17);
 
                     else
-                        tar = new Position2D(GameParameters.OppGoalCenter.X, GameParameters.DefenceAreaWidth / 2) + new Vector2D(1, 0).GetNormalizeToCopy(GameParameters.DefenceAreaHeight + MotionPlannerParameters.RobotRadi * 2 + 0.1);
+                        tar = new Position2D(GameParameters.OppGoalCenter.X, GameParameters.DefenceAreaWidth / 2) + new Vector2D(1, 0).GetNormalizeToCopy(GameParameters.DefenceAreaHeight + MotionPlannerParameters.RobotRadi * 2 + 0.17);
 
                 }
                 behindBallDist = tar.DistanceFrom(Model.BallState.Location);
@@ -136,10 +137,10 @@ namespace MRL.SSL.AIConsole.Roles
             {
                 if (side == DangerZoneSide.Left)
                 {
-                    tar = new Position2D(1.65 * GameParameters.OurGoalCenter.X / 3, 0.5 * Math.Abs(GameParameters.OurLeftCorner.Y) / 2);
+                    tar = new Position2D(2.0 * GameParameters.OurGoalCenter.X / 3, -0.5 * Math.Abs(GameParameters.OurLeftCorner.Y) / 2);
                 }
                 else
-                    tar = new Position2D(1.65 * GameParameters.OurGoalCenter.X / 3, -0.5 * Math.Abs(GameParameters.OurLeftCorner.Y) / 2);
+                    tar = new Position2D(2.0 * GameParameters.OurGoalCenter.X / 3, 0.5 * Math.Abs(GameParameters.OurLeftCorner.Y) / 2);
                 Teta = 180;
                 //Vector2D ourGoalBallVec = (Model.BallState.Location - GameParameters.OurGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(Model.BallState, 0.2));
                 //if (Model.BallState.Location.Y >= margin)

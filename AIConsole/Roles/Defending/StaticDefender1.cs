@@ -146,10 +146,12 @@ namespace MRL.SSL.AIConsole.Roles
                 GetSkill<GetBallSkill>().Perform(engine, Model, RobotID, TargetToKick(Model, RobotID));
                 Obstacles obs = new Obstacles(Model);
                 obs.AddObstacle(1, 0, 0, 0, new List<int>() { RobotID }, new List<int>());
-                if (!obs.Meet(Model.OurRobots[RobotID], new SingleObjectState(Model.OurRobots[RobotID].Location + Vector2D.FromAngleSize(Model.OurRobots[RobotID].Angle.Value * Math.PI / 180, .5), Vector2D.Zero, 0f), .04))
+                if (!obs.Meet(Model.BallState, new SingleObjectState(Model.BallState.Location + Vector2D.FromAngleSize(Model.OurRobots[RobotID].Angle.Value * Math.PI / 180, .5), Vector2D.Zero, 0f), .04))
                 {
-                    Planner.AddKick(RobotID, kickPowerType.Speed, true, 2);
+                    Planner.AddKick(RobotID, kickPowerType.Speed, true, 3);
+
                 }
+        
                 return new SingleWirelessCommand();
             }
             if (FreekickDefence.EaththeBall)

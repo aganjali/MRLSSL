@@ -389,6 +389,7 @@
     <Compile Include="Strategies\old\TurnItUpStrategy.cs" />
     <Compile Include="Strategies\PassAndShootStrategy.cs" />
     <Compile Include="Strategies\PassShootCornerStrategy.cs" />
+    <Compile Include="Strategies\RC2019SimpleStrategy.cs" />
     <Compile Include="Strategies\Syncronizer.cs" />
     <Compile Include="Strategies\Vahid\Abdullah_Rear.cs" />
     <Compile Include="Strategies\Vahid\CrazyRobots.cs" />

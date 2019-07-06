@@ -165,7 +165,7 @@ namespace MRL.SSL.AIConsole.Strategies
                 else if (dAngle < -180)
                     dAngle += 360;
 
-                if (Model.OurRobots[PasserId].Location.DistanceFrom(PasserPos) < 0.2 && Model.OurRobots[PositionerID0].Location.DistanceFrom(PositionerPos0) < 0.5 && Model.OurRobots[PositionerID1].Location.DistanceFrom(PositionerPos1) < 0.5)
+                if (Model.OurRobots[PasserId].Location.DistanceFrom(PasserPos) < 0.3 && Model.OurRobots[PositionerID0].Location.DistanceFrom(PositionerPos0) < 3 && Model.OurRobots[PositionerID1].Location.DistanceFrom(PositionerPos1) < 3)
                     counter++;
                 if (counter > waitTresh || timeLimitCounter > maxWaitTresh)
                 {
@@ -300,7 +300,7 @@ namespace MRL.SSL.AIConsole.Strategies
             if (CurrentState == (int)State.First)
             {
                 if (StaticRoleAssigner.AssignRole(engine, Model, PreviouslyAssignedRoles, CurrentlyAssignedRoles, PasserId, typeof(ActiveRole)))
-                    Functions[PasserId] = (eng, wmd) => GetRole<ActiveRole>(PasserId).PerformWithoutKick(engine, Model, PasserId, ShootTarget, false, 0.15);
+                    Functions[PasserId] = (eng, wmd) => GetRole<ActiveRole>(PasserId).PerformWithoutKick(engine, Model, PasserId, PassTarget, false, 0.15);
                 //Planner.ChangeDefaulteParams(PasserId, false);
                 //Planner.SetParameter(PasserId, 2.5, 2);
                //Planner.Add(PasserId, PasserPos, PasserAngle, PathType.UnSafe, true, true, true, true);
