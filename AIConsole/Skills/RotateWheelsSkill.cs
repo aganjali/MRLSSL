@@ -58,7 +58,7 @@ namespace MRL.SSL.AIConsole.Skills
             }
             bool isdelayed = true;
 
-            if ((firstState.HasValue && firstState.Value == 0) || (!firstState.HasValue && intersect.HasValue && lastoppState != null && !obs.Meet(Model.BallState, new SingleObjectState(intersect.Value, Vector2D.Zero, 0), 0.12)))
+            if ((firstState.HasValue && firstState.Value == 0) || (!firstState.HasValue && intersect.HasValue && lastoppState != null && !obs.Meet(Model.BallState, new SingleObjectState(intersect.Value, Vector2D.Zero, 0), 0.09)))
             {
                 
                 firstState = 0;

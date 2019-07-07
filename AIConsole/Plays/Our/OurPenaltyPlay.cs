@@ -110,10 +110,8 @@ namespace MRL.SSL.AIConsole.Plays
             RoleBase rt;
             List<RoleInfo> roles = new List<RoleInfo>();
             int robotId = 5;
-            int robotId2 = 2;
-
             bool isSpecificIdInField = false;
-            if (!Model.OurRobots.ContainsKey(robotId) && !Model.OurRobots.ContainsKey(robotId2))
+            if (!Model.OurRobots.ContainsKey(robotId))
             {
                 rt = typeof(PenaltyShooterRole).GetConstructor(new Type[] { }).Invoke(new object[] { }) as RoleBase;
                 roles.Add(new RoleInfo(rt, 10, 0));
@@ -167,19 +165,8 @@ namespace MRL.SSL.AIConsole.Plays
                 if (matched.Any(w => w.Value.GetType() == typeof(PenaltyShooterRole)))
                     stop1 = matched.Where(w => w.Value.GetType() == typeof(PenaltyShooterRole)).First().Key;
             }
-            else 
-            {
-                if (Model.OurRobots.ContainsKey(robotId))
-                {
-                    stop1 = robotId;
-
-                }
-                else if(Model.OurRobots.ContainsKey(robotId2))
-                {
-                    stop1 = robotId2;
-
-                }
-            }
+            else
+                stop1 = robotId;
 
             int? stop2 = null;
             if (matched.Any(w => w.Value.GetType() == typeof(PenaltyPositionningRole1)))
