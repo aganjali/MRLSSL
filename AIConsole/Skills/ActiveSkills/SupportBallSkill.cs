@@ -33,9 +33,10 @@ namespace MRL.SSL.AIConsole.Skills
 
         public void Perform(GameStrategyEngine engine, WorldModel Model, int RobotID, int? ActiveID, int ActiveState, Position2D Target, Position2D activeTarget, double behindBallDist, bool far, Position2D incomPoint, int angSt)
         {
-            //Planner.ChangeDefaulteParams(RobotID, false);
-            //Planner.SetParameter(RobotID, 6, 4);
-            activeState = (GetBallState)ActiveState;
+            SetAvoidDangerZone(false, true);
+               //Planner.ChangeDefaulteParams(RobotID, false);
+               //Planner.SetParameter(RobotID, 6, 4);
+               activeState = (GetBallState)ActiveState;
             Target = Model.BallState.Location + (Target - Model.BallState.Location).GetNormalizeToCopy(behindBallDist);
             if (ActiveID.HasValue && Model.OurRobots.ContainsKey(ActiveID.Value))
             {
@@ -179,6 +180,7 @@ namespace MRL.SSL.AIConsole.Skills
             {
                 backBallPoint = GameParameters.OurGoalCenter + (backBallPoint - GameParameters.OurGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(backBallPoint, Vector2D.Zero, 0), ourSafeRad));
             }
+            backBallPoint = ExtractBackBallFromOppZone(backBallPoint);
             Vector2D robotBackBallVec = backBallPoint - robotLocation;
             Vector2D ballBackBallVec = backBallPoint - ballLocation;
 
@@ -216,6 +218,8 @@ namespace MRL.SSL.AIConsole.Skills
             {
                 backBall = GameParameters.OurGoalCenter + (backBall - GameParameters.OurGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(backBall, Vector2D.Zero, 0), ourSafeRad));
             }
+            backBall = ExtractBackBallFromOppZone(backBall);
+
             Vector2D robotBackBall = backBall - robot.Location;
             Line l = new Line(ball.Location, Target, new Pen(Color.Wheat, 0.02f));
             Line l2 = l.PerpenducilarLineToPoint(robot.Location);
@@ -303,6 +307,7 @@ namespace MRL.SSL.AIConsole.Skills
             {
                 backBall = GameParameters.OurGoalCenter + (backBall - GameParameters.OurGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(backBall, Vector2D.Zero, 0), ourSafeRad));
             }
+            backBall = ExtractBackBallFromOppZone(backBall);
             Vector2D robotBackBall = backBall - robot.Location;
             Line l = new Line(ball.Location, Target, new Pen(Color.Wheat, 0.02f));
             Line l2 = l.PerpenducilarLineToPoint(robot.Location);
@@ -520,7 +525,24 @@ namespace MRL.SSL.AIConsole.Skills
             double outPut = Kp * err + Ki * iErr + Kd * dErr;
             return -outPut;
         }
+        private bool AvoidOurDangerZone = true;
+        private bool AvoidOppDangerZone = true;
+        public void SetAvoidDangerZone(bool avoidOur, bool avoidOpp)
+        {
+            AvoidOurDangerZone = avoidOur;
+            AvoidOppDangerZone = avoidOpp;
+        }
+        double oppSafeRad = 0.0;
 
+        private Position2D ExtractBackBallFromOppZone(Position2D backBallPoint)
+        {
+            double dist, DistFromBorder;
+            if (AvoidOppDangerZone && GameParameters.IsInDangerousZone(backBallPoint, true, 0, out dist, out DistFromBorder))
+            {
+                backBallPoint = GameParameters.OppGoalCenter + (backBallPoint - GameParameters.OppGoalCenter).GetNormalizeToCopy(GameParameters.SafeRadi(new SingleObjectState(new Position2D(-backBallPoint.X, backBallPoint.Y), Vector2D.Zero, 0), oppSafeRad));
+            }
+            return backBallPoint;
+        }
         private void OutGoingSupport(WorldModel Model, int RobotID, int ActiveID, Position2D Target, Position2D SupportTarget, double behindBallDist)
         {
             double BallSpeedCoef = 0.9;
@@ -544,6 +566,7 @@ namespace MRL.SSL.AIConsole.Skills
 
             double trackBackBall = behindBallDist;//Math.Max(Math.Min(0.2 + Model.OurRobots[ActiveID].Location.DistanceFrom(Model.BallState.Location), 0.8), behindBallDist);
             Position2D backBallPoint = ballLocation - ballTargetVec.GetNormalizeToCopy(trackBackBall);
+            backBallPoint = ExtractBackBallFromOppZone(backBallPoint);
 
 
             bool b = Math.Sign(Vector2D.AngleBetweenInDegrees(Model.OurRobots[RobotID].Location - Model.BallState.Location, ballTargetVec)) != Math.Sign(Vector2D.AngleBetweenInDegrees(Model.OurRobots[ActiveID].Location - Model.BallState.Location, ballTargetVec));

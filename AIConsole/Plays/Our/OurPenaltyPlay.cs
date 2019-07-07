@@ -144,8 +144,12 @@ namespace MRL.SSL.AIConsole.Plays
                 ids = Model.OurRobots.Keys.Where(w => w != Model.GoalieID.Value).ToList();
             else
                 ids = Model.OurRobots.Keys.ToList();
-            if (isSpecificIdInField && ids.Contains(robotId))
+            if (isSpecificIdInField &&ids.Contains(robotId))
                 ids.Remove(robotId);
+            else if (isSpecificIdInField && ids.Contains(robotId2))
+            {
+                ids.Remove(robotId2);
+            }
 
             matched = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
 

@@ -13,7 +13,7 @@ namespace MRL.SSL.AIConsole.Strategies
     public class LongChipNotStrategy : StrategyBase
     {
         const double step = 0.5, passerShooterDist = 2;
-        const double tresh = 0.06, angleTresh = 2, waitTresh = 10, finishTresh = 100, initDist = 0.22, maxWaitTresh = 120, faildFarPassSpeedTresh = 0.3, faildNearPassSpeedTresh = -0.05, faildBallDistSecondPass = 0.5, faildMaxCounter = 4, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.2;
+        const double tresh = 0.06, angleTresh = 2, waitTresh = 10, finishTresh = 100, initDist = 0.22, maxWaitTresh = 280, faildFarPassSpeedTresh = 0.3, faildNearPassSpeedTresh = -0.05, faildBallDistSecondPass = 0.5, faildMaxCounter = 4, faildBallMovedDist = 0.06, maxFaildMovedDist = 0.2;
         bool first, passTargetCalculated, Debug = false, nearShooter, shooted;
         int PasserId, PositionerID0, PositionerID1;
         Position2D PasserPos, ShooterPos, PassTarget, ShootTarget, PositionerPos0, PositionerPos1, firstBallPos;
