@@ -1395,6 +1395,8 @@ namespace MRL.SSL.AIConsole.Plays
                     {
 
                     }
+                    AddRoleInfo(roles, typeof(CornerStopRole), 1, 0);
+
                     AddRoleInfo(roles, typeof(FreeKickAttackerRole), 0.5, 0.3);
 
                     assigenroles = _roleMatcher.MatchRoles(engine, Model, ids, roles, PreviouslyAssignedRoles);
