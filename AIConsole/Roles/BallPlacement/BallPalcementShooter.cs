@@ -380,7 +380,7 @@ namespace MRL.SSL.AIConsole.Roles
         public double CalShootSpeed(WorldModel model , Position2D posToShoot)
         {
             Vector2D vec = model.BallState.Location - posToShoot;
-            return Map(vec.Size , 1 , 12 , 1.5 , 5.5);
+            return Map(vec.Size , 3 , 9 , 3 , 4.5);
         }
         double Map(double value, double fromSource, double toSource, double fromTarget, double toTarget)
         {
